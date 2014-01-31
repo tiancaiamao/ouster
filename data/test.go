@@ -1,9 +1,5 @@
 package data
 
-import (
-	. "github.com/tiancaiamao/ouster/data"
-)
-
 var Test = Map{
 	Title:	"Ancient Temple",
 	Width:	104,
