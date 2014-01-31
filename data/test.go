@@ -1,7 +1,7 @@
 package data
 
 import (
-	. "github.com/tiancaiamao/ouster"
+	. "github.com/tiancaiamao/ouster/data"
 )
 
 var Test = Map{
