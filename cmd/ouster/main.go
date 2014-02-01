@@ -34,6 +34,7 @@ func checkError(err error) {
 }
 
 func handleClient(conn net.Conn) {
+	log.Println("accept a connection...")
 	// check username/password, load player info, and so on...
 	playerData, err := login.Login(conn)
 	if err != nil {

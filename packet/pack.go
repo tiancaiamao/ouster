@@ -1,11 +1,13 @@
 package packet
 
 import (
+	"errors"
 	"reflect"
+	// "fmt"
 )
 
 //----------------------------------------------- write-out struct fields with packet writer.
-func Pack(tos int16, tbl interface{}, writer *Packet) []byte {
+func Pack(tos uint16, tbl interface{}, writer *Packet) []byte {
 	if writer == nil {
 		writer = Writer()
 	}
@@ -19,7 +21,7 @@ func Pack(tos int16, tbl interface{}, writer *Packet) []byte {
 	count := v.NumField()
 
 	// write code
-	if tos != -1 {
+	if tos != 0 {
 		writer.WriteU16(uint16(tos))
 	}
 
@@ -36,7 +38,7 @@ func Pack(tos int16, tbl interface{}, writer *Packet) []byte {
 						_write_primitive(f.Index(a), writer)
 					} else {
 						elem := f.Index(a).Interface()
-						Pack(-1, elem, writer)
+						Pack(0, elem, writer)
 					}
 				}
 			}
@@ -44,6 +46,54 @@ func Pack(tos int16, tbl interface{}, writer *Packet) []byte {
 	}
 
 	return writer.Data()
+}
+
+func Unpack(tbl interface{}, reader *Packet) (interface{}, error) {
+	if reader == nil {
+		return nil, errors.New("error parameter: unpack receive a nil reader!")
+	}
+
+	// fmt.Println("type of input:", reflect.TypeOf(tbl).Name())
+	v := reflect.ValueOf(tbl)
+
+	switch v.Kind() {
+	case reflect.Ptr, reflect.Interface:
+		v = v.Elem()
+	}
+	count := v.NumField()
+	// fmt.Println("count of input is:", count)
+
+	var err error
+	for i := 0; i < count; i++ {
+		f := v.Field(i)
+		if _is_primitive(f) {			
+			err = _read_primitive(f, reader)
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			switch f.Type().Kind() {
+			case reflect.Slice, reflect.Array:
+				ui16, err := reader.ReadU16()
+				for a := 0; a < int(ui16); a++ {
+					if _is_primitive(f.Index(a)) {
+						err = _read_primitive(f.Index(a), reader)
+						if err != nil {
+							return nil, err
+						}
+					} else {
+						elem := f.Index(a).Interface()
+						_, err := Unpack(elem, reader)
+						if err != nil {
+							return nil, err
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	return tbl, err
 }
 
 //----------------------------------------------- test whether the field is primitive type
@@ -101,4 +151,62 @@ func _write_primitive(f reflect.Value, writer *Packet) {
 	case reflect.String:
 		writer.WriteString(f.Interface().(string))
 	}
+}
+
+func _read_primitive(f reflect.Value, reader *Packet) error {	
+	switch f.Type().Kind() {
+	case reflect.Bool:
+		tmp, err := reader.ReadBool()
+		f.SetBool(tmp)
+		return err
+	case reflect.Uint8:
+		tmp, err := reader.ReadByte()
+		f.SetUint(uint64(tmp))
+		return err
+	case reflect.Uint16:
+		tmp, err := reader.ReadU16()
+		f.SetUint(uint64(tmp))
+		return err
+	case reflect.Uint32:
+		tmp, err := reader.ReadU32()
+		f.SetUint(uint64(tmp))
+		return err
+	case reflect.Uint64:
+		tmp, err := reader.ReadU64()
+		f.SetUint(tmp)
+		return err
+	case reflect.Int:
+		tmp, err := reader.ReadS32()
+		f.SetInt(int64(tmp))
+		return err
+	case reflect.Int8:
+		tmp, err := reader.ReadByte()
+		f.SetInt(int64(tmp))
+		return err
+	case reflect.Int16:
+		tmp, err := reader.ReadU16()
+		f.SetInt(int64(tmp))
+		return err
+	case reflect.Int32:
+		tmp, err := reader.ReadU32()
+		f.SetUint(uint64(tmp))
+		return err
+	case reflect.Int64:
+		tmp, err := reader.ReadU64()
+		f.SetUint(uint64(tmp))
+		return err
+	case reflect.Float32:
+		tmp, err := reader.ReadFloat32()
+		f.SetFloat(float64(tmp))
+		return err
+	case reflect.Float64:
+		tmp, err := reader.ReadFloat64()
+		f.SetFloat(tmp)
+		return err
+	case reflect.String:
+		tmp, err := reader.ReadString()
+		f.SetString(tmp)
+		return err
+	}
+	return errors.New("not support primitive in struct")
 }

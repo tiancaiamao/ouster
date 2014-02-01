@@ -30,11 +30,11 @@ func (this *PlayerArray) Next() (uint32, *Player) {
 			return this.iter, &this.players[this.iter]
 		}
 	}
-	return uint32(0), nil
+	return this.iter, nil
 }
 
 func (this *PlayerArray) Valid() bool {
-	return this.iter == uint32(len(this.players))
+	return this.iter == uint32(len(this.players)-1)
 }
 
 type Map struct {

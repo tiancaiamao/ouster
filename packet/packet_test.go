@@ -103,3 +103,26 @@ func BenchmarkPacketWriter(b *testing.B) {
 		}
 	}
 }
+
+func TestUnpack(t *testing.T) {
+	ci := CharactorInfoPacket{
+		Name:  "test",
+		Class: "class",
+		Level: 63,
+	}
+
+	buf := Pack(uint16(PCharactorInfo), ci, Writer())
+	t.Log(buf)
+	result, err := Parse(buf)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	raw, ok := result.(*CharactorInfoPacket)
+	if !ok {
+		t.Fatal("not a charactorinfo packet")
+	}
+	if raw.Level != 63 {
+		t.Fatal("parse error")
+	}
+}
