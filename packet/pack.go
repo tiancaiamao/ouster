@@ -3,7 +3,7 @@ package packet
 import (
 	"errors"
 	"reflect"
-	// "fmt"
+	// "log"
 )
 
 //----------------------------------------------- write-out struct fields with packet writer.
@@ -53,9 +53,9 @@ func Unpack(tbl interface{}, reader *Packet) (interface{}, error) {
 		return nil, errors.New("error parameter: unpack receive a nil reader!")
 	}
 
-	// fmt.Println("type of input:", reflect.TypeOf(tbl).Name())
-	v := reflect.ValueOf(tbl)
+	// log.Println("-------------in Unpack");
 
+	v := reflect.ValueOf(tbl)
 	switch v.Kind() {
 	case reflect.Ptr, reflect.Interface:
 		v = v.Elem()
@@ -66,7 +66,7 @@ func Unpack(tbl interface{}, reader *Packet) (interface{}, error) {
 	var err error
 	for i := 0; i < count; i++ {
 		f := v.Field(i)
-		if _is_primitive(f) {			
+		if _is_primitive(f) {
 			err = _read_primitive(f, reader)
 			if err != nil {
 				return nil, err
@@ -92,7 +92,7 @@ func Unpack(tbl interface{}, reader *Packet) (interface{}, error) {
 			}
 		}
 	}
-	
+
 	return tbl, err
 }
 
@@ -153,7 +153,7 @@ func _write_primitive(f reflect.Value, writer *Packet) {
 	}
 }
 
-func _read_primitive(f reflect.Value, reader *Packet) error {	
+func _read_primitive(f reflect.Value, reader *Packet) error {
 	switch f.Type().Kind() {
 	case reflect.Bool:
 		tmp, err := reader.ReadBool()

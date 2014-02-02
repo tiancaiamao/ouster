@@ -7,6 +7,8 @@ import (
 	"io"
 	"net"
 	"time"
+	"log"
+	"bytes"
 )
 
 type LoginError string
@@ -22,33 +24,26 @@ func readPacket(conn io.Reader) (interface{}, error) {
 		return nil, LoginError(err.Error())
 	}
 
-	size := binary.BigEndian.Uint16(header[:])
+	log.Println("read packet head:", header)
+
+	size := binary.BigEndian.Uint32(header[:])
+	log.Println("read a packet, header size:", size)
 	data := make([]byte, size)
 
 	_, err = io.ReadFull(conn, data)
 	if err != nil {
 		return nil, LoginError(err.Error())
 	}
-
+	
+	log.Println("read packet data:", data)
 	// packet解析
 	p, err := packet.Parse(data)
 	if err != nil {
+		log.Println("parse packet error")
 		return nil, LoginError(err.Error())
 	}
 
 	return p, nil
-}
-
-func writeN(buf []byte, conn net.Conn) error {
-	written := 0
-	for written != len(buf) {
-		n, err := conn.Write(buf[:written])
-		if err != nil {
-			return err
-		}
-		written += n
-	}
-	return nil
 }
 
 func Login(conn net.Conn) (*data.Player, error) {
@@ -62,19 +57,26 @@ func Login(conn net.Conn) (*data.Player, error) {
 	if err != nil {
 		return nil, err
 	}
-	pkt, ok := p.(packet.LoginPacket)
+	pkt, ok := p.(*packet.LoginPacket)
 	if !ok {
 		return nil, LoginError("expect a LoginPacket")
 	}
 
+	log.Println("get a LoginPacket...run here")
 	// check username and ignore password ...
 	charactor, err := loadUser(pkt.Username)
 
-	buf := packet.Pack(-1, charactor, packet.Writer())
-	err = writeN(buf, conn)
+	writer := packet.Writer()
+	writer.WriteU32(0)
+	buf := packet.Pack(packet.PCharactorInfo, charactor, writer)
+	binary.BigEndian.PutUint32(buf[:4], uint32(len(buf) - 4))
+	
+	// err = writeN(buf, conn)
+	io.Copy(conn, bytes.NewReader(buf))
 	if err != nil {
 		return nil, LoginError("write LoginOkPacket error")
 	}
+	log.Println("send a CharactorInfoPacket:", buf)
 
 	//------------------
 	p, err = readPacket(conn)
@@ -85,6 +87,7 @@ func Login(conn net.Conn) (*data.Player, error) {
 	if !ok {
 		return nil, LoginError("expect a SelectCharactorPacket")
 	}
+	
 	// load player info ...
 	player, err := loadCharactor(selec.Name)
 	if err != nil {

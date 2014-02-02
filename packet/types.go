@@ -1,9 +1,9 @@
 package packet
 
 import (
-	"bytes"
 	"encoding/binary"
 	"errors"
+	// "log"
 	"reflect"
 )
 
@@ -45,34 +45,35 @@ type SelectCharactorPacket struct {
 	Name string
 }
 
-// id | struct of the packet
+// data = id + struct of the packet
 func Parse(data []byte) (interface{}, error) {
 	if len(data) < 2 {
 		return nil, errors.New("len packetId error")
 	}
-	var packetId uint16
-	err := binary.Read(bytes.NewReader(data[:2]), binary.BigEndian, &packetId)
-	if err != nil {
-		return nil, errors.New("read packetId error")
-	}
 
-	tp, ok := packetMap[packetId]
+	packetId := binary.BigEndian.Uint16(data[:2])
+
+	tp, ok := PacketMap[packetId]
 	if !ok {
 		return nil, errors.New("unknown packetId")
 	}
-	reader := Reader(data[2:])
-	ret, err := Unpack(reflect.New(tp).Interface(), reader)
 	
+	reader := Reader(data[2:])
+	ret, err := Unpack(reflect.New(tp).Interface(), reader)	
+
 	return ret, err
 }
 
-var packetMap map[uint16]reflect.Type
+var PacketMap map[uint16]reflect.Type
+
 const (
-	_ = iota
-	PCharactorInfo uint16 = iota
+	_             = iota
+	PLogin uint16 = iota
+	PCharactorInfo
 )
 
 func init() {
-	packetMap = make(map[uint16]reflect.Type)
-	packetMap[PCharactorInfo] = reflect.TypeOf(CharactorInfoPacket{})
+	PacketMap = make(map[uint16]reflect.Type)
+	PacketMap[PCharactorInfo] = reflect.TypeOf(CharactorInfoPacket{})
+	PacketMap[PLogin] = reflect.TypeOf(LoginPacket{})
 }

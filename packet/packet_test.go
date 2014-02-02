@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"testing"
 	"time"
+	"reflect"
 )
 
 func TestPacketWriter(t *testing.T) {
@@ -111,7 +112,7 @@ func TestUnpack(t *testing.T) {
 		Level: 63,
 	}
 
-	buf := Pack(uint16(PCharactorInfo), ci, Writer())
+	buf := Pack(PCharactorInfo, ci, Writer())
 	t.Log(buf)
 	result, err := Parse(buf)
 	if err != nil {
@@ -125,4 +126,24 @@ func TestUnpack(t *testing.T) {
 	if raw.Level != 63 {
 		t.Fatal("parse error")
 	}
+}
+
+func TestParse(t *testing.T) {
+	// ci := LoginPacket{
+	// 	Username: "genius",
+	// 	Password: "0101001",
+	// }
+
+	// buf := Pack(PLogin, ci, Writer())
+	// t.Log(buf)
+
+	input := []byte{0, 0, 0, 19, 0, 1, 0, 6, 103, 101, 110, 105, 117, 115, 0, 7, 48, 49, 48, 49, 48, 48, 49}
+	itf, err := Parse(input[4:])
+	if err != nil {
+		t.Fatal("parse error", err)
+	}
+	if _, ok := itf.(*LoginPacket); !ok {
+		t.Fatal("not right packet")
+	}
+	t.Log(reflect.TypeOf(itf).Name())
 }
