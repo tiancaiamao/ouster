@@ -22,8 +22,6 @@ func loop(m *Map) {
 		case <-m.heartbeat:
 			//100us的心跳,目前还不确定做什么...npc,怪物...player的逻辑放到自身的goroutine中
 			m.HeartBeat()
-		default:
-			runtime.Gosched()
 		}
 	}
 }

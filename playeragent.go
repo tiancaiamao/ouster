@@ -53,8 +53,6 @@ func (this *Player) loop() {
 		case <-this.scene:
 		case <-this.aoi:
 			// 来自aoi的消息
-		default:
-			runtime.Gosched()
 		}
 	}
 }
