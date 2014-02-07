@@ -3,6 +3,7 @@ package scene
 import (
 	"errors"
 	"github.com/tiancaiamao/ouster"
+	"github.com/tiancaiamao/ouster/player"
 	"github.com/tiancaiamao/ouster/data"
 )
 
@@ -13,18 +14,18 @@ type Player struct {
 }
 
 type PlayerArray struct {
-	players []Player
+	players []*player.Player
 	slot    uint32
 	empty   int
 	iter    uint32
 }
 
-func (this *PlayerArray) Begin() (uint32, *Player) {
+func (this *PlayerArray) Begin() (uint32, *player.Player) {
 	this.iter = uint32(0)
 	return this.Next()
 }
 
-func (this *PlayerArray) Next() (uint32, *Player) {
+func (this *PlayerArray) Next() (uint32, *player.Player) {
 	for ; this.iter < uint32(len(this.players)); this.iter++ {
 		if this.players[this.iter].ch != nil {
 			return this.iter, &this.players[this.iter]
@@ -50,7 +51,7 @@ type Map struct {
 func New(m *data.Map) *Map {
 	ret := new(Map)
 	ret.players = &PlayerArray{
-		players: make([]Player, 0, 200),
+		players: make([]player.Player, 0, 200),
 	}
 
 	ret.quit = make(chan struct{})
@@ -83,7 +84,7 @@ func (m *Map) Login(pos ouster.Point, ch chan interface{}) (playerId uint32, ok 
 				}
 			}
 		} else {
-			m.players.players = append(m.players.players, Player{pos, ch})
+			m.players.players = append(m.players.players, player.Player{pos, ch})
 			return uint32(len(m.players.players) - 1), ok
 		}
 	}

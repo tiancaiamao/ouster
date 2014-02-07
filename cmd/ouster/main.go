@@ -43,8 +43,6 @@ func handleClient(conn net.Conn) {
 
 	// get the map that player current in and connect to it
 	m := scene.Query(playerData.Map)
-
-	
 	
 	ch := make(chan interface{})
 	playerId, succ := m.Login(ouster.Point(playerData.Pos), ch)

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"github.com/tiancaiamao/ouster/tool/config"
+	"github.com/tiancaiamao/ouster/cmd/map/config"
 	"go/parser"
 	"go/printer"
 	"go/token"
@@ -92,13 +92,13 @@ func (m *Map) String() string {
 }
 
 var (
-	input string
+	input  string
 	output string
 )
 
 func init() {
 	const (
-		msgInput = "input file"
+		msgInput  = "input file"
 		msgOutput = "output file"
 	)
 	flag.StringVar(&input, "input", "", msgInput)
@@ -163,35 +163,33 @@ func loadMap(fileName string) (*Map, error) {
 	}
 
 	secs, err = c.Sections("enemygroup")
-	if err != nil {
-		return nil, err
-	}
-	m.EnemyGroups = make([]EnemyGroup, len(secs))
-	for i := 0; i < len(secs); i++ {
-		sec := secs[i]
-		m.EnemyGroups[i].Type, err = sec.String("type")
-		if err != nil {
-			fmt.Println("read enemygroup's type error:", err)
-			return nil, err
+	if secs != nil && err == nil {
+		m.EnemyGroups = make([]EnemyGroup, len(secs))
+		for i := 0; i < len(secs); i++ {
+			sec := secs[i]
+			m.EnemyGroups[i].Type, err = sec.String("type")
+			if err != nil {
+				fmt.Println("read enemygroup's type error:", err)
+				return nil, err
+			}
+			m.EnemyGroups[i].Location, err = sec.String("location")
+			if err != nil {
+				fmt.Println("read enemygroup's location error:", err)
+			}
+			m.EnemyGroups[i].Level, _ = sec.String("level")
+			m.EnemyGroups[i].Number, _ = sec.String("number")
 		}
-		m.EnemyGroups[i].Location, err = sec.String("location")
-		if err != nil {
-			fmt.Println("read enemygroup's location error:", err)
-		}
-		m.EnemyGroups[i].Level, _ = sec.String("level")
-		m.EnemyGroups[i].Number, _ = sec.String("number")
 	}
 
 	secs, err = c.Sections("enemy")
-	if err != nil {
-		return nil, err
-	}
-	m.Enemies = make([]Enemy, len(secs))
-	for i := 0; i < len(secs); i++ {
-		sec := secs[i]
-		m.Enemies[i].Type, _ = sec.String("type")
-		m.Enemies[i].Location, _ = sec.String("location")
-		m.Enemies[i].Direction, _ = sec.String("direction")
+	if secs != nil && err == nil {
+		m.Enemies = make([]Enemy, len(secs))
+		for i := 0; i < len(secs); i++ {
+			sec := secs[i]
+			m.Enemies[i].Type, _ = sec.String("type")
+			m.Enemies[i].Location, _ = sec.String("location")
+			m.Enemies[i].Direction, _ = sec.String("direction")
+		}
 	}
 	return m, nil
 }

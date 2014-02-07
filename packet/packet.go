@@ -276,3 +276,8 @@ func Writer() *Packet {
 	pkt.data = make([]byte, 0, 128)
 	return pkt
 }
+
+func (p *Packet) Reset() {
+	p.pos = 0;
+	p.data = p.data[:0]
+}

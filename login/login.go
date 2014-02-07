@@ -1,14 +1,17 @@
 package login
 
 import (
+	"bytes"
 	"encoding/binary"
+	"encoding/json"
 	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/packet"
+	"github.com/tiancaiamao/ouster/config"
 	"io"
+	"io/ioutil"
+	"log"
 	"net"
 	"time"
-	"log"
-	"bytes"
 )
 
 type LoginError string
@@ -34,7 +37,7 @@ func readPacket(conn io.Reader) (interface{}, error) {
 	if err != nil {
 		return nil, LoginError(err.Error())
 	}
-	
+
 	log.Println("read packet data:", data)
 	// packet解析
 	p, err := packet.Parse(data)
@@ -69,12 +72,11 @@ func Login(conn net.Conn) (*data.Player, error) {
 	writer := packet.Writer()
 	writer.WriteU32(0)
 	buf := packet.Pack(packet.PCharactorInfo, charactor, writer)
-	binary.BigEndian.PutUint32(buf[:4], uint32(len(buf) - 4))
-	
-	// err = writeN(buf, conn)
+	binary.BigEndian.PutUint32(buf[:4], uint32(len(buf)-4))
+
 	io.Copy(conn, bytes.NewReader(buf))
 	if err != nil {
-		return nil, LoginError("write LoginOkPacket error")
+		return nil, LoginError("write CharactorInfoPacket error")
 	}
 	log.Println("send a CharactorInfoPacket:", buf)
 
@@ -83,16 +85,28 @@ func Login(conn net.Conn) (*data.Player, error) {
 	if err != nil {
 		return nil, LoginError(err.Error())
 	}
-	selec, ok := p.(packet.SelectCharactorPacket)
+	_, ok = p.(*packet.SelectCharactorPacket)
 	if !ok {
 		return nil, LoginError("expect a SelectCharactorPacket")
 	}
-	
+	log.Println("run here get a SelectCharactorPacket")
+
 	// load player info ...
-	player, err := loadCharactor(selec.Name)
+	player, err := loadCharactor(config.DataDir+"/player/Delrek")
 	if err != nil {
 		return nil, LoginError(err.Error())
 	}
+
+	writer.Reset()
+	writer.WriteU32(0)
+	buf = packet.Pack(packet.PLoginOk, packet.LoginOkPacket{}, writer)
+	binary.BigEndian.PutUint32(buf[:4], uint32(len(buf)-4))
+
+	io.Copy(conn, bytes.NewReader(buf))
+	if err != nil {
+		return nil, LoginError("write LoginOkPacket error")
+	}
+	log.Println("send a LoginOkPacket:", buf)
 
 	return player, nil
 }
@@ -105,14 +119,16 @@ func loadUser(name string) (packet.CharactorInfoPacket, error) {
 	}, nil
 }
 
-func loadCharactor(charactor string) (*data.Player, error) {
-	if charactor == "test" {
-		return &data.Player{
-			Name:  "test",
-			Class: data.PlayerClass(data.BRUTE),
-			Level: 1,
-		}, nil
-	} else {
+func loadCharactor(filePath string) (*data.Player, error) {
+	buf, err := ioutil.ReadAll(filePath)
+	if err != nil {
 		return nil, LoginError("no such charactor!")
 	}
+	
+	var player data.Player
+	err = json.Unmarshal(buf, &player)
+	if err != nil {
+		return nil, LoginError("error charactor info!")
+	}
+	return &player, nil
 }

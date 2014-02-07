@@ -1,10 +1,10 @@
-package ouster
+package player
 
 import (
 	"io"
 	"log"
 	"net"
-	"runtime"
+	// "runtime"
 	"encoding/binary"
 	"github.com/tiancaiamao/ouster/data"
 )

@@ -42,7 +42,7 @@ type LoginOkPacket struct {
 }
 
 type SelectCharactorPacket struct {
-	Name string
+	Which int
 }
 
 // data = id + struct of the packet
@@ -70,10 +70,14 @@ const (
 	_             = iota
 	PLogin uint16 = iota
 	PCharactorInfo
+	PSelectCharactor
+	PLoginOk
 )
 
 func init() {
 	PacketMap = make(map[uint16]reflect.Type)
 	PacketMap[PCharactorInfo] = reflect.TypeOf(CharactorInfoPacket{})
 	PacketMap[PLogin] = reflect.TypeOf(LoginPacket{})
+	PacketMap[PSelectCharactor] = reflect.TypeOf(SelectCharactorPacket{})
+	PacketMap[PLoginOk] = reflect.TypeOf(LoginOkPacket{})
 }
