@@ -8,13 +8,16 @@ ouster是一个用Go语言写的mmorpg。这个项目是服务端部分，目前
 
 以最小代价基于[flare](https://github.com/clintbellanger/flare-engine)的客户端做出一个mmorpg（原型)。
 
-packet相关的处理
-场景内行走/移动
-游戏逻辑移进服务端
+* packet相关的处理
+* 场景内行走/移动
+* 游戏逻辑移进服务端
+
+这里有个[ppt](http://zenlife.tk/ouster.slide)。
 
 # 下载和安装
 
 go get github.com/tiancaiamao/ouster
+
 go install github.com/tiancaiamao/ouster/cmd/ouster
 
 # 关于我

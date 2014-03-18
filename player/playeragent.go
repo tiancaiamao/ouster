@@ -30,7 +30,7 @@ type Player struct {
 	scene chan interface{}
 }
 
-func NewPlayer(playerId uint32, playerData *data.Player, conn net.Conn, scene chan interface{}) *Player {
+func New(playerId uint32, playerData *data.Player, conn net.Conn, scene chan interface{}) *Player {
 	return &Player {
 		id: playerId,
 		name: playerData.Name,

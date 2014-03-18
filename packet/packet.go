@@ -1,7 +1,6 @@
 package packet
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/ugorji/go/codec"
 	"io"
@@ -55,36 +54,21 @@ func NewEncoder(w io.Writer) *Encoder {
 	return &Encoder{codec.NewEncoder(w, &mh)}
 }
 
-func (enc *Encoder) Encode(pkt *Packet) error {
-	if pkt.Id >= PMax {
+func (enc *Encoder) Encode(id uint16, obj interface{}) error {
+	if id >= PMax {
 		return PacketError("Encode: packet id out ranged")
 	}
 
-	err := enc.Encoder.Encode(pkt.Id)
+	err := enc.Encoder.Encode(id)
 	if err != nil {
 		return err
 	}
 
-	ti := PacketMap[pkt.Id]
-	if ti != reflect.TypeOf(pkt.Obj) {
+	ti := PacketMap[id]
+	if ti != reflect.TypeOf(obj) {
 		return PacketError("Encode: inconsistent of packet's id and Obj\n")
 	}
 
-	err = enc.Encoder.Encode(pkt.Obj)
+	err = enc.Encoder.Encode(obj)
 	return err
-}
-
-func Marshal(pkt *Packet) ([]byte, error) {
-	buf := &bytes.Buffer{}
-	enc := NewEncoder(buf)
-	err := enc.Encode(pkt)
-	if err != nil {
-		return nil, err
-	}
-	return buf.Bytes(), nil
-}
-
-func Unmarshal(data []byte, pkt *Packet) error {
-	dec := NewDecoder(bytes.NewBuffer(data))
-	return dec.Decode(pkt)
 }

@@ -66,15 +66,26 @@ func Login(conn net.Conn) (*data.Player, error) {
 	}
 
 	log.Println("get a LoginPacket...run here")
-	// check username and ignore password ...
+	// check username and ignore password ...check whether this user exist...and so on
+
 	charactor, err := loadUser(pkt.Username)
 
-	writer := packet.Writer()
-	writer.WriteU32(0)
-	buf := packet.Pack(packet.PCharactorInfo, charactor, writer)
-	binary.BigEndian.PutUint32(buf[:4], uint32(len(buf)-4))
+	buf := &bytes.Buffer{}
+	enc := packet.NewEncoder(buf)
+	err = enc.Encode(packet.PCharactorInfo, charactor)
+	if err != nil {
+		return nil, err
+	}
+	
+	len := make([]byte, 4)		//TODO
+	binary.BigEndian.PutUint32(len, uint32(buf.Len()))
 
-	io.Copy(conn, bytes.NewReader(buf))
+	_, err =conn.Write(len)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = io.Copy(conn, buf)
 	if err != nil {
 		return nil, LoginError("write CharactorInfoPacket error")
 	}
@@ -97,12 +108,19 @@ func Login(conn net.Conn) (*data.Player, error) {
 		return nil, LoginError(err.Error())
 	}
 
-	writer.Reset()
-	writer.WriteU32(0)
-	buf = packet.Pack(packet.PLoginOk, packet.LoginOkPacket{}, writer)
-	binary.BigEndian.PutUint32(buf[:4], uint32(len(buf)-4))
+	buf.Reset()
+	err = enc.Encode(packet.PLoginOk, packet.LoginOkPacket{})
+	if err != nil {
+		return nil, err
+	}
 
-	io.Copy(conn, bytes.NewReader(buf))
+	binary.BigEndian.PutUint32(len, uint32(buf.Len()))
+	_,err = conn.Write(len)
+	if err != nil {
+		return nil, LoginError("write LoginOkPacket Head error")
+	}
+
+	io.Copy(conn, buf)
 	if err != nil {
 		return nil, LoginError("write LoginOkPacket error")
 	}
@@ -120,7 +138,7 @@ func loadUser(name string) (packet.CharactorInfoPacket, error) {
 }
 
 func loadCharactor(filePath string) (*data.Player, error) {
-	buf, err := ioutil.ReadAll(filePath)
+	buf, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		return nil, LoginError("no such charactor!")
 	}

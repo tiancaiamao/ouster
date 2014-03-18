@@ -3,29 +3,29 @@ package scene
 import (
 	"errors"
 	"github.com/tiancaiamao/ouster"
-	"github.com/tiancaiamao/ouster/player"
 	"github.com/tiancaiamao/ouster/data"
 )
 
-// pos of a player is part of map, not player!
+// pos attribute of a player is part of map, not player! 
+// while ch is reference of player.Player, not part of map!	
 type Player struct {
 	pos ouster.Point
 	ch  chan interface{}
 }
 
 type PlayerArray struct {
-	players []*player.Player
+	players []Player
 	slot    uint32
 	empty   int
 	iter    uint32
 }
 
-func (this *PlayerArray) Begin() (uint32, *player.Player) {
+func (this *PlayerArray) Begin() (uint32, *Player) {
 	this.iter = uint32(0)
 	return this.Next()
 }
 
-func (this *PlayerArray) Next() (uint32, *player.Player) {
+func (this *PlayerArray) Next() (uint32, *Player) {
 	for ; this.iter < uint32(len(this.players)); this.iter++ {
 		if this.players[this.iter].ch != nil {
 			return this.iter, &this.players[this.iter]
@@ -51,7 +51,7 @@ type Map struct {
 func New(m *data.Map) *Map {
 	ret := new(Map)
 	ret.players = &PlayerArray{
-		players: make([]player.Player, 0, 200),
+		players: make([]Player, 0, 200),
 	}
 
 	ret.quit = make(chan struct{})
@@ -84,7 +84,7 @@ func (m *Map) Login(pos ouster.Point, ch chan interface{}) (playerId uint32, ok 
 				}
 			}
 		} else {
-			m.players.players = append(m.players.players, player.Player{pos, ch})
+			m.players.players = append(m.players.players, Player{pos, ch})
 			return uint32(len(m.players.players) - 1), ok
 		}
 	}

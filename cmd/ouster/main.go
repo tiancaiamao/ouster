@@ -7,6 +7,7 @@ import (
 	"github.com/tiancaiamao/ouster/config"
 	"github.com/tiancaiamao/ouster/scene"
 	"github.com/tiancaiamao/ouster/login"
+	"github.com/tiancaiamao/ouster/player"
 )
 
 func main() {
@@ -47,9 +48,9 @@ func handleClient(conn net.Conn) {
 	ch := make(chan interface{})
 	playerId, succ := m.Login(ouster.Point(playerData.Pos), ch)
 
-	// turn to a player agent
+	// turn into a player agent
 	if succ {
-		player := ouster.NewPlayer(playerId, playerData, conn, ch)
-		player.Go()
+		agent := player.New(playerId, playerData, conn, ch)
+		agent.Go()
 	}	
 }
