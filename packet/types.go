@@ -53,15 +53,16 @@ func Parse(data []byte) (interface{}, error) {
 
 	packetId := binary.BigEndian.Uint16(data[:2])
 
-	tp, ok := PacketMap[packetId]
+	_, ok := PacketMap[packetId]
 	if !ok {
 		return nil, errors.New("unknown packetId")
 	}
-	
-	reader := Reader(data[2:])
-	ret, err := Unpack(reflect.New(tp).Interface(), reader)	
 
-	return ret, err
+	//	reader := Reader(data[2:])
+	//	ret, err := Unpack(reflect.New(tp).Interface(), reader)
+
+	//	return ret, err
+	return nil, nil
 }
 
 var PacketMap map[uint16]reflect.Type
@@ -72,9 +73,12 @@ const (
 	PCharactorInfo
 	PSelectCharactor
 	PLoginOk
+	PTest
+	PMax
 )
 
 func init() {
+	mh.StructToArray = true
 	PacketMap = make(map[uint16]reflect.Type)
 	PacketMap[PCharactorInfo] = reflect.TypeOf(CharactorInfoPacket{})
 	PacketMap[PLogin] = reflect.TypeOf(LoginPacket{})
