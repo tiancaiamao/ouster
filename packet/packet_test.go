@@ -15,19 +15,17 @@ func TestPrimitive(t *testing.T) {
 	}
 
 	for i, v := range testCase {
-		var pkt Packet
-		pkt.Id = PTest
-		pkt.Obj = v
 		PacketMap[PTest] = reflect.TypeOf(v)
 
 		buf := &bytes.Buffer{}
 		enc := NewEncoder(buf)
-		err := enc.Encode(&pkt)
+		err := enc.Encode(PTest, v)
 		if err != nil {
 			t.Fatal(fmt.Sprintf("the %dth testCase failed...%s", i, err.Error()))
 		}
 
 		//		t.Log(buf.Bytes())
+		var pkt Packet
 		pkt.Id = 2345
 		pkt.Obj = nil
 		dec := NewDecoder(buf)
@@ -47,14 +45,14 @@ func TestPrimitive(t *testing.T) {
 func TestStruct(t *testing.T) {
 	var pkt Packet
 	pkt.Id = PLogin
-	pkt.Obj = LoginPacket{
-		Username:"genius",
-		Password:"0101001",
+	obj := LoginPacket{
+		Username: "genius",
+		Password: "0101001",
 	}
 
 	buf := &bytes.Buffer{}
 	enc := NewEncoder(buf)
-	err := enc.Encode(&pkt)
+	err := enc.Encode(PLogin, obj)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -73,4 +71,22 @@ func TestStruct(t *testing.T) {
 		t.Fatal("username or password error")
 	}
 }
- 
+
+func TestExport(t *testing.T) {
+	buf := &bytes.Buffer{}
+	login := LoginPacket{
+		Username: "genius",
+		Password: "0101001",
+	}
+	err := Write(buf, PLogin, login)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	pkt, err := Read(buf)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Log(pkt)
+}

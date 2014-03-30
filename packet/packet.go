@@ -2,6 +2,7 @@ package packet
 
 import (
 	"fmt"
+	"github.com/tiancaiamao/ouster"
 	"github.com/ugorji/go/codec"
 	"io"
 	"reflect"
@@ -61,14 +62,18 @@ func (enc *Encoder) Encode(id uint16, obj interface{}) error {
 
 	err := enc.Encoder.Encode(id)
 	if err != nil {
-		return err
+		return ouster.NewError("Encode id error:" + err.Error())
 	}
 
 	ti := PacketMap[id]
 	if ti != reflect.TypeOf(obj) {
-		return PacketError("Encode: inconsistent of packet's id and Obj\n")
+		fmt.Println("run here11")
+		return PacketError("Encode: inconsistent of packet's id and Obj: id is " + ti.String() + " , but obj is " + reflect.TypeOf(obj).String())
 	}
 
 	err = enc.Encoder.Encode(obj)
-	return err
+	if err != nil {
+		return ouster.NewError("Encode obj error:" + err.Error())
+	}
+	return nil
 }

@@ -1,6 +1,9 @@
 package ouster
 
-import "runtime"
+import (
+	"runtime"
+	"strconv"
+)
 
 type Rect struct {
 	X float32
@@ -21,8 +24,7 @@ type Error struct {
 }
 
 func (e *Error) Error() string {
-//	return e.err + " in function " + e.fun + "at " + e.file + ":"+ e.line
-	return "hello"
+	return e.e + "\nat " + e.file + ":"+ strconv.Itoa(e.line)
 }
 
 func NewError(str string) *Error {
