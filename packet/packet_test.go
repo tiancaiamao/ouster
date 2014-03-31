@@ -90,3 +90,27 @@ func TestExport(t *testing.T) {
 
 	t.Log(pkt)
 }
+
+func TestType(t *testing.T) {
+	buf := &bytes.Buffer{}
+	for k, v := range PacketMap {
+		if k != PMax {
+			err := Write(buf, k, reflect.Zero(v).Interface())
+			if err != nil {
+				t.Fatal(err)
+			}	
+		}		
+	}
+	
+	for k, v := range PacketMap {
+		if k != PMax {
+			pkt, err := Read(buf)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if reflect.TypeOf(pkt) != v {
+				t.Fatal("insistent for ", k)
+			}			
+		}
+	}
+}

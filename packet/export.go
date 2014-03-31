@@ -75,6 +75,6 @@ func Write(conn io.Writer, id uint16, obj interface{}) error {
 	if err != nil {
 		return ouster.NewError(fmt.Sprintf("write %d error", id))
 	}
-	log.Println("send a:", id, buf)
+	// log.Println("send a:", id, buf)
 	return nil
 }

@@ -1,16 +1,14 @@
 package login
 
 import (
-	"bytes"
-	"encoding/binary"
 	"encoding/json"
 	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/packet"
 	"github.com/tiancaiamao/ouster/config"
-	"io"
+	"github.com/tiancaiamao/ouster"
 	"io/ioutil"
-	"log"
 	"net"
+	"log"
 	"time"
 )
 
@@ -18,38 +16,6 @@ type LoginError string
 
 func (l LoginError) Error() string {
 	return "login error:" + string(l)
-}
-
-func readPacket(conn io.Reader) (interface{}, error) {
-	var header [4]byte
-	_, err := io.ReadFull(conn, header[:])
-	if err != nil {
-		return nil, LoginError(err.Error())
-	}
-
-	log.Println("read packet head:", header)
-
-	size := binary.BigEndian.Uint32(header[:])
-	log.Println("read a packet, header size:", size)
-	data := make([]byte, size)
-
-	_, err = io.ReadFull(conn, data)
-	if err != nil {
-		log.Println("ReadFull error")
-		return nil, LoginError(err.Error())
-	}
-
-	log.Println("read packet data:", data)
-	// packet解析
-	p, err := packet.Parse(data)
-	if err != nil {
-		log.Println("parse packet error")
-		return nil, LoginError(err.Error())
-	}
-
-	log.Println("run here.......................")
-
-	return p, nil
 }
 
 // TODO: this should be written as a state machine, provide api something like \n
@@ -65,9 +31,9 @@ func Login(conn net.Conn) (*data.Player, error) {
 	p, err := packet.Read(conn)
 	if err != nil {
 		log.Println("readPacket error")
-		return nil, ouster.NewError(err)
+		return nil, ouster.NewError(err.Error())
 	}
-	pkt, ok := p.(*packet.LoginPacket)
+	pkt, ok := p.(packet.LoginPacket)
 	if !ok {
 		log.Println("expect a LoginPacke")
 		return nil, LoginError("expect a LoginPacket")
@@ -83,16 +49,15 @@ func Login(conn net.Conn) (*data.Player, error) {
 
 	err = packet.Write(conn, packet.PCharactorInfo, charactor)
 	if err != nil {
-		return nil, ouster.NewError(err)
+		return nil, ouster.NewError(err.Error())
 	}
-	log.Println("send a CharactorInfoPacket:", buf)
 
 	//------------------
 	p, err = packet.Read(conn)
 	if err != nil {
 		return nil, LoginError(err.Error())
 	}
-	_, ok = p.(*packet.SelectCharactorPacket)
+	_, ok = p.(packet.SelectCharactorPacket)
 	if !ok {
 		return nil, LoginError("expect a SelectCharactorPacket")
 	}
@@ -101,14 +66,13 @@ func Login(conn net.Conn) (*data.Player, error) {
 	// load player info ...
 	player, err := loadCharactor(config.DataDir+"/player/Delrek")
 	if err != nil {
-		return nil, LoginError(err.Error())
+		return nil, ouster.NewError(err.Error())
 	}
 
-	err = packet.Write(conn, PLoginOk, packet.LoginOkPacket{})
+	err = packet.Write(conn, packet.PLoginOk, packet.LoginOkPacket{})
 	if err != nil {
 		return nil, LoginError("write LoginOkPacket error")
 	}
-	log.Println("send a LoginOkPacket:", buf)
 
 	return player, nil
 }
