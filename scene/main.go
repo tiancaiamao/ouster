@@ -19,12 +19,12 @@ func Initialize() {
 	}
 
 	maps = make(map[string]*Map)
-	for i:=0; i<len(_maps); i++ {
+	for i := 0; i < len(_maps); i++ {
 		name := _names[i]
 		mapData := _maps[i]
-		m := New(mapData)		
+		m := New(mapData)
 		m.Go()
-		
+
 		maps[name] = m
 	}
 }

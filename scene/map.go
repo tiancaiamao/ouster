@@ -3,14 +3,28 @@ package scene
 import (
 	"errors"
 	"github.com/tiancaiamao/ouster"
+	"github.com/tiancaiamao/ouster/aoi"
 	"github.com/tiancaiamao/ouster/data"
+	"github.com/tiancaiamao/ouster/player"
+	"math"
 )
 
-// pos attribute of a player is part of map, not player! 
-// while ch is reference of player.Player, not part of map!	
+type PlayerState uint8
+
+const (
+	STAND PlayerState = iota
+	MOVE
+)
+
+// pos attribute of a player is part of map, not player!
+// while ch is reference of player.Player, not part of map!
+// all Move related attribute of player are here.
 type Player struct {
-	pos ouster.Point
-	ch  chan interface{}
+	pos   ouster.FPoint
+	state PlayerState
+	to    ouster.FPoint
+	ch    chan interface{}
+	this  *player.Player
 }
 
 type PlayerArray struct {
@@ -40,8 +54,8 @@ func (this *PlayerArray) Valid() bool {
 
 type Map struct {
 	data.Map
-
 	players *PlayerArray
+	aoi     *aoi.Aoi
 
 	quit      chan struct{}
 	event     chan interface{}
@@ -60,19 +74,49 @@ func New(m *data.Map) *Map {
 	return ret
 }
 
-func (m *Map) PlayerPosition(playerId uint32) (ouster.Point, error) {
+func (m *Map) PlayerPosition(playerId uint32) (ouster.FPoint, error) {
 	p := m.players.players[playerId]
 	if p.ch == nil {
-		return ouster.Point{}, errors.New("no player correspond to this playerId")
+		return ouster.FPoint{}, errors.New("no player correspond to this playerId")
 	}
 	return p.pos, nil
 }
 
-func (m *Map) HeartBeat() {
-
+func (m *Map) Player(playerId uint32) *Player {
+	if playerId >= uint32(len(m.players.players)) {
+		return nil
+	}
+	p := m.players.players[playerId]
+	if p.ch == nil {
+		return nil
+	}
+	
+	return &m.players.players[playerId]
 }
 
-func (m *Map) Login(pos ouster.Point, ch chan interface{}) (playerId uint32, ok bool) {
+func (m *Map) HeartBeat() {
+	for _, player := m.players.Begin(); m.players.Valid(); _, player = m.players.Next() {
+		if player.state == MOVE {
+			v := player.this.Speed()
+			if ouster.Distance(player.pos, player.to) < v {
+				player.state = STAND
+				player.pos.X = player.to.X
+				player.pos.Y = player.to.Y
+			} else {
+				dx := player.to.X - player.pos.X
+				dy := player.to.Y - player.pos.Y
+				angle := math.Atan2(float64(dy), float64(dx))
+				vx := v * float32(math.Cos(angle))
+				vy := v * float32(math.Sin(angle))
+
+				player.pos.X += vx
+				player.pos.Y += vy
+			}
+		}
+	}
+}
+
+func (m *Map) Login(pos ouster.FPoint, ch chan interface{}) (playerId uint32, ok bool) {
 	if m.players.slot == uint32(len(m.players.players)-1) {
 		if m.players.empty*4 > len(m.players.players) {
 			for i := m.players.slot; i < uint32(len(m.players.players)); i++ {
@@ -84,7 +128,11 @@ func (m *Map) Login(pos ouster.Point, ch chan interface{}) (playerId uint32, ok 
 				}
 			}
 		} else {
-			m.players.players = append(m.players.players, Player{pos, ch})
+			m.players.players = append(m.players.players, Player{
+				pos:   pos,
+				ch:    ch,
+				state: STAND,
+			})
 			return uint32(len(m.players.players) - 1), ok
 		}
 	}

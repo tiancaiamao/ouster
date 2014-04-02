@@ -60,7 +60,7 @@ func Write(conn io.Writer, id uint16, obj interface{}) error {
 	enc := NewEncoder(buf)
 	err := enc.Encode(id, obj)
 	if err != nil {
-		return ouster.NewError("encode error: "+err.Error())
+		return ouster.NewError("encode error: " + err.Error())
 	}
 
 	len := make([]byte, 4) //TODO
@@ -68,7 +68,7 @@ func Write(conn io.Writer, id uint16, obj interface{}) error {
 
 	_, err = conn.Write(len)
 	if err != nil {
-		return ouster.NewError("write to io.Writer error: "+err.Error())
+		return ouster.NewError("write to io.Writer error: " + err.Error())
 	}
 
 	_, err = io.Copy(conn, buf)

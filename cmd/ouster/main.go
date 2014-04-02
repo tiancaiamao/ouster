@@ -46,7 +46,12 @@ func handleClient(conn net.Conn) {
 	m := scene.Query(playerData.Map)
 	
 	ch := make(chan interface{})
-	playerId, succ := m.Login(ouster.Point(playerData.Pos), ch)
+	pos := ouster.FPoint {
+		X: float32(playerData.Pos.X),
+		Y: float32(playerData.Pos.Y),
+	}
+
+	playerId, succ := m.Login(pos, ch)
 
 	// turn into a player agent
 	if succ {

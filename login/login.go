@@ -2,13 +2,13 @@ package login
 
 import (
 	"encoding/json"
+	"github.com/tiancaiamao/ouster"
+	"github.com/tiancaiamao/ouster/config"
 	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/packet"
-	"github.com/tiancaiamao/ouster/config"
-	"github.com/tiancaiamao/ouster"
 	"io/ioutil"
-	"net"
 	"log"
+	"net"
 	"time"
 )
 
@@ -64,7 +64,7 @@ func Login(conn net.Conn) (*data.Player, error) {
 	log.Println("run here get a SelectCharactorPacket")
 
 	// load player info ...
-	player, err := loadCharactor(config.DataDir+"/player/Delrek")
+	player, err := loadCharactor(config.DataDir + "/player/Delrek")
 	if err != nil {
 		return nil, ouster.NewError(err.Error())
 	}
@@ -90,7 +90,7 @@ func loadCharactor(filePath string) (*data.Player, error) {
 	if err != nil {
 		return nil, LoginError("no such charactor!")
 	}
-	
+
 	var player data.Player
 	err = json.Unmarshal(buf, &player)
 	if err != nil {

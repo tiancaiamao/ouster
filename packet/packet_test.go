@@ -98,10 +98,10 @@ func TestType(t *testing.T) {
 			err := Write(buf, k, reflect.Zero(v).Interface())
 			if err != nil {
 				t.Fatal(err)
-			}	
-		}		
+			}
+		}
 	}
-	
+
 	for k, v := range PacketMap {
 		if k != PMax {
 			pkt, err := Read(buf)
@@ -110,7 +110,7 @@ func TestType(t *testing.T) {
 			}
 			if reflect.TypeOf(pkt) != v {
 				t.Fatal("insistent for ", k)
-			}			
+			}
 		}
 	}
 }

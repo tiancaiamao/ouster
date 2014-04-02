@@ -19,10 +19,6 @@ const (
 	LU
 )
 
-type MovePacket struct {
-	Speed     float32
-	Direction DirectionType
-}
 type SkillPacket struct {
 	Id int
 }
@@ -44,6 +40,11 @@ type SelectCharactorPacket struct {
 	Which int
 }
 
+type MovePacket struct {
+	X float32
+	Y float32
+}
+
 var PacketMap map[uint16]reflect.Type
 
 const (
@@ -52,6 +53,7 @@ const (
 	PCharactorInfo
 	PSelectCharactor
 	PLoginOk
+	PMove
 	PTest
 	PMax
 )

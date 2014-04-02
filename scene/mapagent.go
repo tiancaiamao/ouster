@@ -2,18 +2,18 @@ package scene
 
 import (
 	// "runtime"
-	// "github.com/tiancaiamao/ouster/packet"
+	"github.com/tiancaiamao/ouster/packet"
 )
 
 func loop(m *Map) {
-	for {		
+	for {
 		for id, player := m.players.Begin(); m.players.Valid(); id, player = m.players.Next() {
 			select {
 			case msg := <-player.ch:
-				processPlayerInput(id, msg)
+				m.processPlayerInput(id, msg)
 			}
 		}
-		
+
 		select {
 		case <-m.quit:
 			// 处理退出消息
@@ -27,15 +27,28 @@ func loop(m *Map) {
 }
 
 func (m *Map) Go() {
-	go loop(m)
+	loop(m)
 }
 
-func processPlayerInput(playerId uint32, msg interface{}) {
+func (m *Map) processPlayerInput(playerId uint32, msg interface{}) {
 	switch msg.(type) {
-	// case packet.Move:
-	// 	raw := packet.Move(msg)
+	case packet.MovePacket:
+		raw := msg.(packet.MovePacket)
+		player := m.Player(playerId)
+		switch player.state {
+		case STAND, MOVE:
+			player.state = MOVE
+			player.to.X = raw.X
+			player.to.Y = raw.Y
 
-	// case packet.Skill:
-
+			// boardcast to it's nearby players
+			nearby := player.this.NearBy()
+			for _, playerId := range nearby {
+				p := m.Player(playerId)
+				if p != nil {
+					p.ch <- msg
+				}
+			}
+		}
 	}
 }

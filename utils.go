@@ -17,19 +17,30 @@ type Point struct {
 	Y int
 }
 
+type FPoint struct {
+	X float32
+	Y float32
+}
+
+func Distance(p1, p2 FPoint) float32 {
+	dx := p1.X - p2.X
+	dy := p1.Y - p2.Y
+	return dx * dx + dy * dy
+}
+
 type Error struct {
-	e string
+	e    string
 	file string
 	line int
 }
 
 func (e *Error) Error() string {
-	return e.e + "\nat " + e.file + ":"+ strconv.Itoa(e.line)
+	return e.e + "\nat " + e.file + ":" + strconv.Itoa(e.line)
 }
 
 func NewError(str string) *Error {
 	err := &Error{
-		e:str,
+		e: str,
 	}
 	_, file, line, ok := runtime.Caller(1)
 	if ok {
