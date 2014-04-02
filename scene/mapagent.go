@@ -27,7 +27,7 @@ func loop(m *Map) {
 }
 
 func (m *Map) Go() {
-	loop(m)
+	go loop(m)
 }
 
 func (m *Map) processPlayerInput(playerId uint32, msg interface{}) {
