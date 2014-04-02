@@ -3,6 +3,7 @@ package player
 import (
 	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/packet"
+	"github.com/tiancaiamao/ouster/scene"
 	"net"
 )
 
@@ -25,10 +26,12 @@ type Player struct {
 	carried []int
 
 	conn   net.Conn
-	client chan interface{}
+	client <-chan interface{}
+	send   chan<- packet.Packet
 	aoi    <-chan interface{}
 	scene  chan interface{}
 	nearby []uint32
+	m      *scene.Map
 }
 
 func (player *Player) Speed() float32 {
@@ -47,7 +50,7 @@ func New(playerId uint32, playerData *data.Player, conn net.Conn, scene chan int
 	}
 }
 
-func (player *Player) Init(playerId uint32, playerData *data.Player, conn net.Conn, scene chan interface{}) {
+func (player *Player) Init(playerId uint32, playerData *data.Player, conn net.Conn, scene chan interface{}, m *scene.Map) {
 	player.id = playerId
 	player.name = playerData.Name
 	player.class = PlayerClass(playerData.Class)
@@ -56,6 +59,7 @@ func (player *Player) Init(playerId uint32, playerData *data.Player, conn net.Co
 	player.carried = playerData.Carried
 	player.conn = conn
 	player.scene = scene
+	player.m = m
 }
 
 func (this *Player) loop() {
@@ -76,30 +80,48 @@ func (this *Player) handleClientMessage(msg interface{}) {
 	switch msg.(type) {
 	case packet.MovePacket:
 		move := msg.(packet.MovePacket)
-
 		this.scene <- move
+	case packet.PlayerInfoPacket:
+		info := msg.(packet.PlayerInfoPacket)
+		for k, _ := range info {
+			switch k {
+			case "name":
+				info["name"] = this.name
+			case "hp":
+				info["hp"] = this.hp
+			case "mp":
+				info["mp"] = this.mp
+			case "speed":
+				info["speed"] = this.speed
+			case "pos":
+				info["pos"], _ = this.m.PlayerPosition(this.id)
+			}
+		}
+		this.send <- packet.Packet{packet.PPlayerInfoPacket, info}
 	}
 }
 
 func (this *Player) handleSceneMessage(msg interface{}) {
 	switch msg.(type) {
 	case packet.MovePacket:
-		this.client <- packet.Packet{packet.PMove, msg}
+		this.send <- packet.Packet{packet.PMove, msg}
 	}
 }
 
 func (player *Player) Go() {
 	go player.loop()
-	go func(player *Player) {
+	
+	ch := make(chan packet.Packet)
+	player.send = ch
+	go func(player *Player, ch packet.Packet) {
 		for {
-			data := <-player.client
-			pkt := data.(packet.Packet)
+			data := <-ch
 			err := packet.Write(player.conn, pkt.Id, pkt.Obj)
 			if err != nil {
 				continue
 			}
 		}
-	}(player)
+	}(player, ch)
 	for {
 		data, err := packet.Read(player.conn)
 		if err != nil {

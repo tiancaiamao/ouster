@@ -45,6 +45,8 @@ type MovePacket struct {
 	Y float32
 }
 
+type PlayerInfoPacket map[string]interface{}
+
 var PacketMap map[uint16]reflect.Type
 
 const (
