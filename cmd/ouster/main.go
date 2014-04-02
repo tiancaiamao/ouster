@@ -1,13 +1,14 @@
 package main
 
-import (	
-	"net"
-	"log"
-	"github.com/tiancaiamao/ouster"
+import (
+	// "github.com/tiancaiamao/ouster"
 	"github.com/tiancaiamao/ouster/config"
-	"github.com/tiancaiamao/ouster/scene"
 	"github.com/tiancaiamao/ouster/login"
+	"github.com/tiancaiamao/ouster/packet"
 	"github.com/tiancaiamao/ouster/player"
+	"github.com/tiancaiamao/ouster/scene"
+	"log"
+	"net"
 )
 
 func main() {
@@ -44,19 +45,33 @@ func handleClient(conn net.Conn) {
 
 	// get the map that player current in and connect to it
 	m := scene.Query(playerData.Map)
-	
+
 	ch := make(chan interface{})
-	pos := ouster.FPoint {
-		X: float32(playerData.Pos.X),
-		Y: float32(playerData.Pos.Y),
-	}
-	
+	// pos := ouster.FPoint{
+	// 	X: float32(playerData.Pos.X),
+	// 	Y: float32(playerData.Pos.Y),
+	// }
+
 	agent := new(player.Player)
-	playerId, succ := m.Login(pos, ch, agent)
+	agent.Player2scene = make(chan interface{})
+	agent.Scene2player = make(chan interface{})
+	playerId, succ := m.Login(agent)
 
 	// turn into a player agent
 	if succ {
+		// open a goroutine to read from conn
+		go func() {
+			for {
+				data, err := packet.Read(conn)
+				if err != nil {
+					// write a reset packet...
+					continue
+				}
+				ch <- data
+			}
+		}()
+
 		agent.Init(playerId, playerData, conn, ch)
 		agent.Go()
-	}	
+	}
 }

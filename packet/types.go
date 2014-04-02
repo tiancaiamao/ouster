@@ -56,6 +56,7 @@ const (
 	PSelectCharactor
 	PLoginOk
 	PMove
+	PPlayerInfo
 	PTest
 	PMax
 )

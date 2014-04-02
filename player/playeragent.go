@@ -1,9 +1,9 @@
 package player
 
 import (
+	"github.com/tiancaiamao/ouster"
 	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/packet"
-	"github.com/tiancaiamao/ouster/scene"
 	"net"
 )
 
@@ -12,6 +12,13 @@ type PlayerClass uint8
 const (
 	_     = iota
 	BRUTE = iota
+)
+
+type PlayerState uint8
+
+const (
+	STAND PlayerState = iota
+	MOVE
 )
 
 // mostly the same as data.Player, but this is in memory instead.
@@ -29,11 +36,17 @@ type Player struct {
 	client <-chan interface{}
 	send   chan<- packet.Packet
 	aoi    <-chan interface{}
-	scene  chan interface{}
+	Scene2player chan interface{}
+	Player2scene chan interface{}
 	nearby []uint32
-	m      *scene.Map
+
+	// Own by scene...write allowed only by scene agent
+	Pos   ouster.FPoint
+	State PlayerState
+	To    ouster.FPoint
 }
 
+// provide for scene to use
 func (player *Player) Speed() float32 {
 	return player.speed
 }
@@ -50,7 +63,7 @@ func New(playerId uint32, playerData *data.Player, conn net.Conn, scene chan int
 	}
 }
 
-func (player *Player) Init(playerId uint32, playerData *data.Player, conn net.Conn, scene chan interface{}, m *scene.Map) {
+func (player *Player) Init(playerId uint32, playerData *data.Player, conn net.Conn, ch chan interface{}) {
 	player.id = playerId
 	player.name = playerData.Name
 	player.class = PlayerClass(playerData.Class)
@@ -58,8 +71,7 @@ func (player *Player) Init(playerId uint32, playerData *data.Player, conn net.Co
 	player.mp = playerData.MP
 	player.carried = playerData.Carried
 	player.conn = conn
-	player.scene = scene
-	player.m = m
+	player.client = ch
 }
 
 func (this *Player) loop() {
@@ -68,7 +80,7 @@ func (this *Player) loop() {
 		select {
 		case msg = <-this.client:
 			this.handleClientMessage(msg)
-		case <-this.scene:
+		case <-this.Scene2player:
 			this.handleSceneMessage(msg)
 		case <-this.aoi:
 			// 来自aoi的消息
@@ -80,7 +92,7 @@ func (this *Player) handleClientMessage(msg interface{}) {
 	switch msg.(type) {
 	case packet.MovePacket:
 		move := msg.(packet.MovePacket)
-		this.scene <- move
+		this.Player2scene <- move
 	case packet.PlayerInfoPacket:
 		info := msg.(packet.PlayerInfoPacket)
 		for k, _ := range info {
@@ -94,10 +106,10 @@ func (this *Player) handleClientMessage(msg interface{}) {
 			case "speed":
 				info["speed"] = this.speed
 			case "pos":
-				info["pos"], _ = this.m.PlayerPosition(this.id)
+				info["pos"] = this.Pos
 			}
 		}
-		this.send <- packet.Packet{packet.PPlayerInfoPacket, info}
+		this.send <- packet.Packet{packet.PPlayerInfo, info}
 	}
 }
 
@@ -110,25 +122,16 @@ func (this *Player) handleSceneMessage(msg interface{}) {
 
 func (player *Player) Go() {
 	go player.loop()
-	
+
 	ch := make(chan packet.Packet)
 	player.send = ch
-	go func(player *Player, ch packet.Packet) {
-		for {
-			data := <-ch
-			err := packet.Write(player.conn, pkt.Id, pkt.Obj)
-			if err != nil {
-				continue
-			}
-		}
-	}(player, ch)
+
 	for {
-		data, err := packet.Read(player.conn)
+		pkt := <-ch
+		err := packet.Write(player.conn, pkt.Id, pkt.Obj)
 		if err != nil {
-			// write a reset packet...
 			continue
 		}
-		player.client <- data
 	}
 }
 
