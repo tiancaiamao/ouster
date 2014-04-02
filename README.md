@@ -15,7 +15,7 @@ ouster是一个用Go语言写的mmorpg。这个项目是服务端部分，目前
 这里有个[ppt](http://zenlife.tk/ouster.slide)。
 
 # 下载和安装
-
+
 go get github.com/tiancaiamao/ouster
 
 go install github.com/tiancaiamao/ouster/cmd/ouster

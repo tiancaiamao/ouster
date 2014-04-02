@@ -2,9 +2,6 @@ package player
 
 import (
 	"github.com/tiancaiamao/ouster"
-	"github.com/tiancaiamao/ouster/data"
-	"github.com/tiancaiamao/ouster/packet"
-	"net"
 )
 
 type PlayerClass uint8
@@ -24,6 +21,7 @@ const (
 // mostly the same as data.Player, but this is in memory instead.
 type Player struct {
 	id    uint32 // alloc by scene
+	scene string
 	name  string
 	class PlayerClass
 	hp    int
@@ -66,6 +64,7 @@ func New(playerId uint32, playerData *data.Player, conn net.Conn, scene chan int
 func (player *Player) Init(playerId uint32, playerData *data.Player, conn net.Conn, ch chan interface{}) {
 	player.id = playerId
 	player.name = playerData.Name
+	player.scene = playerData.Scene
 	player.class = PlayerClass(playerData.Class)
 	player.hp = playerData.HP
 	player.mp = playerData.MP
@@ -74,18 +73,8 @@ func (player *Player) Init(playerId uint32, playerData *data.Player, conn net.Co
 	player.client = ch
 }
 
-func (this *Player) loop() {
-	var msg interface{}
-	for {
-		select {
-		case msg = <-this.client:
-			this.handleClientMessage(msg)
-		case <-this.Scene2player:
-			this.handleSceneMessage(msg)
-		case <-this.aoi:
-			// 来自aoi的消息
-		}
-	}
+func (player *Player) NearBy() []uint32 {
+	return player.nearby
 }
 
 func (this *Player) handleClientMessage(msg interface{}) {
@@ -107,34 +96,10 @@ func (this *Player) handleClientMessage(msg interface{}) {
 				info["speed"] = this.speed
 			case "pos":
 				info["pos"] = this.Pos
+			case "scene":
+				info["scene"] = this.scene
 			}
 		}
 		this.send <- packet.Packet{packet.PPlayerInfo, info}
 	}
-}
-
-func (this *Player) handleSceneMessage(msg interface{}) {
-	switch msg.(type) {
-	case packet.MovePacket:
-		this.send <- packet.Packet{packet.PMove, msg}
-	}
-}
-
-func (player *Player) Go() {
-	go player.loop()
-
-	ch := make(chan packet.Packet)
-	player.send = ch
-
-	for {
-		pkt := <-ch
-		err := packet.Write(player.conn, pkt.Id, pkt.Obj)
-		if err != nil {
-			continue
-		}
-	}
-}
-
-func (player *Player) NearBy() []uint32 {
-	return player.nearby
 }

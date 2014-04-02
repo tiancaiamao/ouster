@@ -15,5 +15,6 @@ type Player struct {
 	HP int
 	MP int
 	Carried []int
-	Pos Point  // NOTE:this property belongs to Map
+	Pos Point  
+	Scene string
 }
