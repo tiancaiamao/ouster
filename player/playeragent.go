@@ -47,6 +47,17 @@ func New(playerId uint32, playerData *data.Player, conn net.Conn, scene chan int
 	}
 }
 
+func (player *Player) Init(playerId uint32, playerData *data.Player, conn net.Conn, scene chan interface{}) {
+	player.id = playerId
+	player.name = playerData.Name
+	player.class = PlayerClass(playerData.Class)
+	player.hp = playerData.HP
+	player.mp = playerData.MP
+	player.carried = playerData.Carried
+	player.conn = conn
+	player.scene = scene
+}
+
 func (this *Player) loop() {
 	var msg interface{}
 	for {

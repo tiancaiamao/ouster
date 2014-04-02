@@ -90,7 +90,7 @@ func (m *Map) Player(playerId uint32) *Player {
 	if p.ch == nil {
 		return nil
 	}
-	
+
 	return &m.players.players[playerId]
 }
 
@@ -116,13 +116,14 @@ func (m *Map) HeartBeat() {
 	}
 }
 
-func (m *Map) Login(pos ouster.FPoint, ch chan interface{}) (playerId uint32, ok bool) {
+func (m *Map) Login(pos ouster.FPoint, ch chan interface{}, player *player.Player) (playerId uint32, ok bool) {
 	if m.players.slot == uint32(len(m.players.players)-1) {
 		if m.players.empty*4 > len(m.players.players) {
 			for i := m.players.slot; i < uint32(len(m.players.players)); i++ {
 				if m.players.players[i].ch == nil {
 					m.players.players[i].ch = ch
 					m.players.players[i].pos = pos
+					m.players.players[i].this = player
 					m.players.slot = i
 					return i, true
 				}
@@ -132,6 +133,7 @@ func (m *Map) Login(pos ouster.FPoint, ch chan interface{}) (playerId uint32, ok
 				pos:   pos,
 				ch:    ch,
 				state: STAND,
+				this:  player,
 			})
 			return uint32(len(m.players.players) - 1), ok
 		}

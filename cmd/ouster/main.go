@@ -50,12 +50,13 @@ func handleClient(conn net.Conn) {
 		X: float32(playerData.Pos.X),
 		Y: float32(playerData.Pos.Y),
 	}
-
-	playerId, succ := m.Login(pos, ch)
+	
+	agent := new(player.Player)
+	playerId, succ := m.Login(pos, ch, agent)
 
 	// turn into a player agent
 	if succ {
-		agent := player.New(playerId, playerData, conn, ch)
+		agent.Init(playerId, playerData, conn, ch)
 		agent.Go()
 	}	
 }
