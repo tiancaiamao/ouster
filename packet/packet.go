@@ -67,7 +67,6 @@ func (enc *Encoder) Encode(id uint16, obj interface{}) error {
 
 	ti := PacketMap[id]
 	if ti != reflect.TypeOf(obj) {
-		fmt.Println("run here11")
 		return PacketError("Encode: inconsistent of packet's id and Obj: id is " + ti.String() + " , but obj is " + reflect.TypeOf(obj).String())
 	}
 

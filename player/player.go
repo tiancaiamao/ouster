@@ -2,6 +2,9 @@ package player
 
 import (
 	"github.com/tiancaiamao/ouster"
+	"github.com/tiancaiamao/ouster/data"
+	"github.com/tiancaiamao/ouster/packet"
+	"net"
 )
 
 type PlayerClass uint8
@@ -30,13 +33,13 @@ type Player struct {
 
 	carried []int
 
-	conn   net.Conn
-	client <-chan interface{}
-	send   chan<- packet.Packet
-	aoi    <-chan interface{}
+	conn         net.Conn
+	client       <-chan interface{}
+	send         chan<- packet.Packet
+	aoi          <-chan interface{}
 	Scene2player chan interface{}
 	Player2scene chan interface{}
-	nearby []uint32
+	nearby       []uint32
 
 	// Own by scene...write allowed only by scene agent
 	Pos   ouster.FPoint

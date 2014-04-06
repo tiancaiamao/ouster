@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/tiancaiamao/ouster/packet"
 	"io"
-	"os"
+	// "os"
 	"reflect"
 )
 
@@ -18,12 +18,14 @@ type FPoint struct {
 }
 
 func main() {
-	for _, v := range packet.PacketMap {
+	// for _, v := range packet.PacketMap {
 		// fmt.Println(k, "----", v)
-		Marshal(v, os.Stdout)
-		Unmarshal(v, os.Stdout)
-	}
-	Unmarshal(reflect.TypeOf(FPoint{}), os.Stdout)
+		// Marshal(v, os.Stdout)
+		// Unmarshal(v, os.Stdout)
+		
+	// }
+	// Unmarshal(reflect.TypeOf(FPoint{}), os.Stdout)
+	PacketId()
 	return
 }
 
@@ -47,7 +49,7 @@ func Unmarshal(obj reflect.Type, writer io.Writer) {
 `, fild.Type.Name(), i, fild.Name)
 	}
 
-	fmt.Fprintf(writer, `
+	fmt.Fprintf(writer, `	return true;
 }
 
 `)
@@ -70,4 +72,12 @@ func Marshal(obj reflect.Type, writer io.Writer) {
 	fmt.Fprintf(writer, `}
 
 `)
+}
+
+func PacketId() {
+	for k, v := range packet.PacketMap {
+		// XXXPacket -> PXXX
+		str := "P"+v.Name()[:len(v.Name())-6]
+		fmt.Printf("#define %s %d\n", str, k)
+	}
 }

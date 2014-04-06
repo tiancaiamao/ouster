@@ -7,6 +7,7 @@ import (
 	"github.com/tiancaiamao/ouster"
 	"io"
 	"log"
+	"reflect"
 )
 
 // Read a packet from a io.Reader, the format of a packet consistent of
@@ -52,7 +53,19 @@ func parse(data []byte) (interface{}, error) {
 		return nil, ouster.NewError(err.Error())
 	}
 	log.Println("read a packet:", pkt.Id, pkt.Obj)
-	return pkt.Obj, nil
+
+	// translate map to XXXPacket
+	if reflect.TypeOf(pkt.Obj).Kind() == reflect.Map {
+		tp := PacketMap[pkt.Id]
+		if !reflect.TypeOf(pkt.Obj).ConvertibleTo(tp) {
+			return nil, ouster.NewError("in consistent PacketId and content's Type")
+		}
+		ret := reflect.ValueOf(pkt.Obj).Convert(tp).Interface()
+		// log.Println("convert to ", tp.Name())
+		return ret, nil
+	} else {
+		return pkt.Obj, nil
+	}
 }
 
 func Write(conn io.Writer, id uint16, obj interface{}) error {

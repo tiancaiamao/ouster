@@ -36,6 +36,8 @@ type CharactorInfoPacket struct {
 type LoginOkPacket struct {
 }
 
+type PlayerInfoPacket map[string]interface{}
+
 type SelectCharactorPacket struct {
 	Which int
 }
@@ -44,8 +46,6 @@ type MovePacket struct {
 	X float32
 	Y float32
 }
-
-type PlayerInfoPacket map[string]interface{}
 
 var PacketMap map[uint16]reflect.Type
 
@@ -68,4 +68,5 @@ func init() {
 	PacketMap[PLogin] = reflect.TypeOf(LoginPacket{})
 	PacketMap[PSelectCharactor] = reflect.TypeOf(SelectCharactorPacket{})
 	PacketMap[PLoginOk] = reflect.TypeOf(LoginOkPacket{})
+	PacketMap[PPlayerInfo] = reflect.TypeOf(PlayerInfoPacket{})
 }
