@@ -82,8 +82,8 @@ func (player *Player) NearBy() []uint32 {
 
 func (this *Player) handleClientMessage(msg interface{}) {
 	switch msg.(type) {
-	case packet.MovePacket:
-		move := msg.(packet.MovePacket)
+	case packet.CMovePacket:
+		move := msg.(packet.CMovePacket)
 		this.Player2scene <- move
 	case packet.PlayerInfoPacket:
 		info := msg.(packet.PlayerInfoPacket)

@@ -81,4 +81,6 @@ func init() {
 	PacketMap[PSelectCharactor] = reflect.TypeOf(SelectCharactorPacket{})
 	PacketMap[PLoginOk] = reflect.TypeOf(LoginOkPacket{})
 	PacketMap[PPlayerInfo] = reflect.TypeOf(PlayerInfoPacket{})
+	PacketMap[PCMove] = reflect.TypeOf(CMovePacket{})
+	PacketMap[PSMove] = reflect.TypeOf(SMovePacket{})
 }

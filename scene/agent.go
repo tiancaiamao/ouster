@@ -32,8 +32,8 @@ func (m *Map) Go() {
 
 func (m *Map) processPlayerInput(playerId uint32, msg interface{}) {
 	switch msg.(type) {
-	case packet.MovePacket:
-		raw := msg.(packet.MovePacket)
+	case packet.CMovePacket:
+		raw := msg.(packet.CMovePacket)
 		pc := m.Player(playerId)
 		switch pc.State {
 		case player.STAND, player.MOVE:

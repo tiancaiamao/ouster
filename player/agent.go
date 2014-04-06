@@ -20,8 +20,8 @@ func (this *Player) loop() {
 
 func (this *Player) handleSceneMessage(msg interface{}) {
 	switch msg.(type) {
-	case packet.MovePacket:
-		this.send <- packet.Packet{packet.PMove, msg}
+	case packet.CMovePacket:
+		this.send <- packet.Packet{packet.PCMove, msg}
 	}
 }
 
