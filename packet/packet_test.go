@@ -99,18 +99,42 @@ func TestType(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-		}
-	}
 
-	for k, v := range PacketMap {
-		if k != PMax {
 			pkt, err := Read(buf)
 			if err != nil {
 				t.Fatal(err)
 			}
 			if reflect.TypeOf(pkt) != v {
-				t.Fatal("insistent for ", k)
+				t.Fatal("insistent for ", k, PacketNameById(k))
 			}
 		}
+	}
+}
+
+func TestMap(t *testing.T) {
+	buf := &bytes.Buffer{}
+	pkt := PlayerInfoPacket{}
+	pkt["scene"] = nil
+	pkt["mp"] = nil
+	pkt["hp"] = nil
+	pkt["name"] = nil
+	pkt["speed"] = nil
+	pkt["pos"] = nil
+
+	err := Write(buf, PPlayerInfo, pkt)
+	if err != nil {
+		t.Fatal(err)
+	} else {
+		t.Log(buf.Bytes())
+	}
+
+	in := [...]byte{0, 0, 0, 35, byte(PPlayerInfo), 134, 162, 104, 112, 192, 164, 110, 97, 109, 101, 192, 165, 115, 112, 101, 101, 100, 192, 163, 112, 111, 115, 192, 165, 115, 99, 101, 110, 101, 192, 162, 109, 112, 192}
+	r := bytes.NewBuffer(in[:])
+	val, err := Read(r)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := val.(PlayerInfoPacket); !ok {
+		t.Fatal("wrong type resolved")
 	}
 }

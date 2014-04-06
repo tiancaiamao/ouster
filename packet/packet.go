@@ -29,6 +29,16 @@ func NewDecoder(r io.Reader) *Decoder {
 	return &Decoder{codec.NewDecoder(r, &mh)}
 }
 
+func PacketNameById(id uint16) string {
+	v, ok := PacketMap[id]
+	if !ok {
+		return fmt.Sprintf("UnKnown PacketId: %d", id)
+	}
+
+	// XXXPacket -> PXXX
+	return "P" + v.Name()[:len(v.Name())-6]
+}
+
 func (dec *Decoder) Decode(pkt *Packet) error {
 	err := dec.Decoder.Decode(&pkt.Id)
 	if err != nil || pkt.Id >= PMax {
@@ -37,7 +47,7 @@ func (dec *Decoder) Decode(pkt *Packet) error {
 
 	ti, ok := PacketMap[pkt.Id]
 	if !ok {
-		return PacketError("Decode: invalid packet id")
+		return ouster.NewError(fmt.Sprintf("Decode: invalid packet id %d", pkt.Id))
 	}
 
 	// TODO: use a object pool here to avoid frequence allocation

@@ -4,6 +4,7 @@ import (
 	//	"encoding/binary"
 	//	 "log"
 	"reflect"
+	"github.com/tiancaiamao/ouster"
 )
 
 type DirectionType uint8
@@ -42,9 +43,19 @@ type SelectCharactorPacket struct {
 	Which int
 }
 
-type MovePacket struct {
+type CMovePacket struct {
 	X float32
 	Y float32
+}
+
+type SMove struct {
+	Id uint32
+	Cur ouster.Point
+	To ouster.Point
+}
+
+type SMovePacket struct {
+	Array []SMove
 }
 
 var PacketMap map[uint16]reflect.Type
@@ -55,8 +66,9 @@ const (
 	PCharactorInfo
 	PSelectCharactor
 	PLoginOk
-	PMove
 	PPlayerInfo
+	PCMove
+	PSMove
 	PTest
 	PMax
 )
