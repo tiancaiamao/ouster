@@ -84,20 +84,25 @@ func (m *Map) HeartBeat() {
 	}
 }
 
-func (m *Map) Login(player *player.Player) (playerId uint32, ok bool) {
+func (m *Map) Login(player *player.Player) error {
+	var idx uint32
 	if m.players.slot == uint32(len(m.players.players)-1) {
 		if m.players.empty*4 > len(m.players.players) {
 			for i := m.players.slot; i < uint32(len(m.players.players)); i++ {
 				if m.players.players[i] == nil {
 					m.players.players[i] = player
 					m.players.slot = i
-					return i, true
+
+					idx = i
 				}
 			}
 		} else {
 			m.players.players = append(m.players.players, player)
-			return uint32(len(m.players.players) - 1), ok
+			idx = uint32(len(m.players.players) - 1)
 		}
 	}
-	return m.players.slot, true
+
+	player.Id = idx
+	player.Scene = m.Title
+	return nil
 }

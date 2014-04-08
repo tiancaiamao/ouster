@@ -23,8 +23,8 @@ const (
 
 // mostly the same as data.Player, but this is in memory instead.
 type Player struct {
-	id    uint32 // alloc by scene
-	scene string
+	Id    uint32 // set by scene.Login
+	Scene string // set by scene.Login
 	name  string
 	class PlayerClass
 	hp    int
@@ -34,11 +34,11 @@ type Player struct {
 	carried []int
 
 	conn         net.Conn
-	client       <-chan interface{}
+	client       <-chan interface{} // actually, a XXXPacket struct
 	send         chan<- packet.Packet
 	aoi          <-chan interface{}
-	Scene2player chan interface{}
-	Player2scene chan interface{}
+	Scene2player chan interface{} // alloc in player.New
+	Player2scene chan interface{} // alloc in player.New
 	nearby       []uint32
 
 	// Own by scene...write allowed only by scene agent
@@ -52,29 +52,30 @@ func (player *Player) Speed() float32 {
 	return player.speed
 }
 
-func New(playerId uint32, playerData *data.Player, conn net.Conn, scene chan interface{}) *Player {
+func New(playerData *data.Player, conn net.Conn) *Player {
 	return &Player{
-		id:      playerId,
-		name:    playerData.Name,
-		class:   PlayerClass(playerData.Class),
-		hp:      playerData.HP,
-		mp:      playerData.MP,
-		carried: playerData.Carried,
-		conn:    conn,
+		name:         playerData.Name,
+		class:        PlayerClass(playerData.Class),
+		hp:           playerData.HP,
+		mp:           playerData.MP,
+		carried:      playerData.Carried,
+		conn:         conn,
+		Scene2player: make(chan interface{}),
+		Player2scene: make(chan interface{}),
 	}
 }
 
-func (player *Player) Init(playerId uint32, playerData *data.Player, conn net.Conn, ch chan interface{}) {
-	player.id = playerId
-	player.name = playerData.Name
-	player.scene = playerData.Scene
-	player.class = PlayerClass(playerData.Class)
-	player.hp = playerData.HP
-	player.mp = playerData.MP
-	player.carried = playerData.Carried
-	player.conn = conn
-	player.client = ch
-}
+// func (player *Player) Init(playerId uint32, playerData *data.Player, conn net.Conn, ch chan interface{}) {
+// 	player.id = playerId
+// 	player.name = playerData.Name
+// 	player.scene = playerData.Scene
+// 	player.class = PlayerClass(playerData.Class)
+// 	player.hp = playerData.HP
+// 	player.mp = playerData.MP
+// 	player.carried = playerData.Carried
+// 	player.conn = conn
+// 	player.client = ch
+// }
 
 func (player *Player) NearBy() []uint32 {
 	return player.nearby
@@ -83,8 +84,8 @@ func (player *Player) NearBy() []uint32 {
 func (this *Player) handleClientMessage(msg interface{}) {
 	switch msg.(type) {
 	case packet.CMovePacket:
-		move := msg.(packet.CMovePacket)
-		this.Player2scene <- move
+		// move := msg.(packet.CMovePacket)
+		// this.Player2scene <- move
 	case packet.PlayerInfoPacket:
 		info := msg.(packet.PlayerInfoPacket)
 		for k, _ := range info {
@@ -100,7 +101,7 @@ func (this *Player) handleClientMessage(msg interface{}) {
 			case "pos":
 				info["pos"] = this.Pos
 			case "scene":
-				info["scene"] = this.scene
+				info["scene"] = this.Scene
 			}
 		}
 		this.send <- packet.Packet{packet.PPlayerInfo, info}

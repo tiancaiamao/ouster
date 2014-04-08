@@ -2,14 +2,18 @@ package player
 
 import (
 	"github.com/tiancaiamao/ouster/packet"
+	"log"
 )
 
 func (this *Player) loop() {
 	var msg interface{}
+	log.Println("=======here in player agent's loop=======")
 	for {
 		select {
 		case msg = <-this.client:
+			log.Println("............................")
 			this.handleClientMessage(msg)
+			log.Println("****************************")
 		case <-this.Scene2player:
 			this.handleSceneMessage(msg)
 		case <-this.aoi:
@@ -21,21 +25,43 @@ func (this *Player) loop() {
 func (this *Player) handleSceneMessage(msg interface{}) {
 	switch msg.(type) {
 	case packet.CMovePacket:
-		this.send <- packet.Packet{packet.PCMove, msg}
+		log.Println("read a CMovePacket...")
+		// this.send <- packet.Packet{packet.PCMove, msg}
 	}
 }
 
 func (player *Player) Go() {
-	go player.loop()
+	read := make(chan interface{}, 1)
+	write := make(chan packet.Packet, 1)
+	player.send = write
+	player.client = read
 
-	ch := make(chan packet.Packet)
-	player.send = ch
-
-	for {
-		pkt := <-ch
-		err := packet.Write(player.conn, pkt.Id, pkt.Obj)
-		if err != nil {
-			continue
+	// open a goroutine to read from conn
+	go func() {
+		for {
+			data, err := packet.Read(player.conn)
+			if err != nil {
+				// write a reset packet...
+				log.Println(err)
+				continue
+			}
+			log.Println("packet before send to chan", data)
+			read <- data
+			log.Println("packet after send to chan", data)
 		}
-	}
+	}()
+
+	// open a goroutine to write to conn
+	go func() {
+		for {
+			pkt := <-write
+			err := packet.Write(player.conn, pkt.Id, pkt.Obj)
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+		}
+	}()
+
+	player.loop()
 }
