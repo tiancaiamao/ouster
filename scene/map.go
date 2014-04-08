@@ -6,6 +6,8 @@ import (
 	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/player"
 	"math"
+	"time"
+	// "log"
 )
 
 type PlayerArray struct {
@@ -40,7 +42,7 @@ type Map struct {
 
 	quit      chan struct{}
 	event     chan interface{}
-	heartbeat chan struct{}
+	heartbeat <-chan time.Time
 }
 
 func New(m *data.Map) *Map {
@@ -51,7 +53,8 @@ func New(m *data.Map) *Map {
 
 	ret.quit = make(chan struct{})
 	ret.event = make(chan interface{})
-	ret.heartbeat = make(chan struct{})
+	ret.heartbeat = time.Tick(50 * time.Microsecond)
+
 	return ret
 }
 
@@ -82,6 +85,7 @@ func (m *Map) HeartBeat() {
 			}
 		}
 	}
+	// log.Println("in scene's HeartBeat")
 }
 
 func (m *Map) Login(player *player.Player) error {

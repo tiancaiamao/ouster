@@ -4,6 +4,7 @@ import (
 	"github.com/tiancaiamao/ouster"
 	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/packet"
+	"log"
 	"net"
 )
 
@@ -84,8 +85,10 @@ func (player *Player) NearBy() []uint32 {
 func (this *Player) handleClientMessage(msg interface{}) {
 	switch msg.(type) {
 	case packet.CMovePacket:
-		// move := msg.(packet.CMovePacket)
-		// this.Player2scene <- move
+		move := msg.(packet.CMovePacket)
+		log.Println("before send to scene----")
+		this.Player2scene <- move
+		log.Println("after send to scene----")
 	case packet.PlayerInfoPacket:
 		info := msg.(packet.PlayerInfoPacket)
 		for k, _ := range info {

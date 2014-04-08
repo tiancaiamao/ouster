@@ -7,7 +7,6 @@ import (
 
 func (this *Player) loop() {
 	var msg interface{}
-	log.Println("=======here in player agent's loop=======")
 	for {
 		select {
 		case msg, ok := <-this.client:

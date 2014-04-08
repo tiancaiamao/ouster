@@ -3,15 +3,26 @@ package scene
 import (
 	"github.com/tiancaiamao/ouster/packet"
 	"github.com/tiancaiamao/ouster/player"
+	"log"
 )
 
 func loop(m *Map) {
 	for {
+		count := 0
 		for id, player := m.players.Begin(); m.players.Valid(); id, player = m.players.Next() {
+			log.Println("player---", id)
+			count++
 			select {
 			case msg := <-player.Player2scene:
+				log.Println("scene get a msg from player---------------------")
 				m.processPlayerInput(id, msg)
+			default:
+				break
 			}
+		}
+
+		if count > 0 {
+			log.Println("player count = ", count)
 		}
 
 		select {
@@ -20,7 +31,8 @@ func loop(m *Map) {
 		case <-m.event:
 			// 处理地图事件...比如boss刷了之类的
 		case <-m.heartbeat:
-			//100us的心跳,目前还不确定做什么...npc,怪物...player的逻辑放到自身的goroutine中
+			//50ms的心跳,目前还不确定做什么...npc,怪物...player的逻辑放到
+			//自身的goroutine中
 			m.HeartBeat()
 		}
 	}
@@ -33,6 +45,7 @@ func (m *Map) Go() {
 func (m *Map) processPlayerInput(playerId uint32, msg interface{}) {
 	switch msg.(type) {
 	case packet.CMovePacket:
+		log.Println("scene receive and process a CMovePacket")
 		raw := msg.(packet.CMovePacket)
 		pc := m.Player(playerId)
 		switch pc.State {
