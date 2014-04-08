@@ -10,10 +10,13 @@ func (this *Player) loop() {
 	log.Println("=======here in player agent's loop=======")
 	for {
 		select {
-		case msg = <-this.client:
-			log.Println("............................")
-			this.handleClientMessage(msg)
-			log.Println("****************************")
+		case msg, ok := <-this.client:
+			if !ok {
+				// kick the player off...
+				return
+			} else {
+				this.handleClientMessage(msg)
+			}
 		case <-this.Scene2player:
 			this.handleSceneMessage(msg)
 		case <-this.aoi:
@@ -41,9 +44,10 @@ func (player *Player) Go() {
 		for {
 			data, err := packet.Read(player.conn)
 			if err != nil {
-				// write a reset packet...
 				log.Println(err)
-				continue
+				player.conn.Close()
+				close(read)
+				return
 			}
 			log.Println("packet before send to chan", data)
 			read <- data
