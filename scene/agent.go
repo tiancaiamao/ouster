@@ -8,21 +8,13 @@ import (
 
 func loop(m *Map) {
 	for {
-		count := 0
-		for id, player := m.players.Begin(); m.players.Valid(); id, player = m.players.Next() {
-			log.Println("player---", id)
-			count++
+		for id, player := range m.players {
 			select {
 			case msg := <-player.Player2scene:
-				log.Println("scene get a msg from player---------------------")
-				m.processPlayerInput(id, msg)
+				m.processPlayerInput(uint32(id), msg)
 			default:
 				break
 			}
-		}
-
-		if count > 0 {
-			log.Println("player count = ", count)
 		}
 
 		select {

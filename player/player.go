@@ -4,7 +4,6 @@ import (
 	"github.com/tiancaiamao/ouster"
 	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/packet"
-	"log"
 	"net"
 )
 
@@ -66,18 +65,6 @@ func New(playerData *data.Player, conn net.Conn) *Player {
 	}
 }
 
-// func (player *Player) Init(playerId uint32, playerData *data.Player, conn net.Conn, ch chan interface{}) {
-// 	player.id = playerId
-// 	player.name = playerData.Name
-// 	player.scene = playerData.Scene
-// 	player.class = PlayerClass(playerData.Class)
-// 	player.hp = playerData.HP
-// 	player.mp = playerData.MP
-// 	player.carried = playerData.Carried
-// 	player.conn = conn
-// 	player.client = ch
-// }
-
 func (player *Player) NearBy() []uint32 {
 	return player.nearby
 }
@@ -86,9 +73,7 @@ func (this *Player) handleClientMessage(msg interface{}) {
 	switch msg.(type) {
 	case packet.CMovePacket:
 		move := msg.(packet.CMovePacket)
-		log.Println("before send to scene----")
 		this.Player2scene <- move
-		log.Println("after send to scene----")
 	case packet.PlayerInfoPacket:
 		info := msg.(packet.PlayerInfoPacket)
 		for k, _ := range info {
