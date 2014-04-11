@@ -5,6 +5,7 @@ import (
 	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/packet"
 	"net"
+	"time"
 )
 
 type PlayerClass uint8
@@ -40,6 +41,8 @@ type Player struct {
 	Scene2player chan interface{} // alloc in player.New
 	Player2scene chan interface{} // alloc in player.New
 	nearby       []uint32
+	heartbeat    <-chan time.Time
+	ticker       uint32
 
 	// Own by scene...write allowed only by scene agent
 	Pos   ouster.FPoint
@@ -62,6 +65,7 @@ func New(playerData *data.Player, conn net.Conn) *Player {
 		conn:         conn,
 		Scene2player: make(chan interface{}),
 		Player2scene: make(chan interface{}),
+		heartbeat:    time.Tick(50 * time.Microsecond),
 	}
 }
 
@@ -101,14 +105,27 @@ type CMovePacketAck struct{}
 func (this *Player) handleSceneMessage(msg interface{}) {
 	switch msg.(type) {
 	case CMovePacketAck:
-		posSync := packet.PosSyncPacket{
-			Cur: this.Pos,
-			To:  this.To,
-		}
-		pkt := packet.Packet{
-			Id:  packet.PPosSync,
-			Obj: posSync,
-		}
-		this.send <- pkt
+		sendPosSync(this)
+	}
+}
+
+func sendPosSync(this *Player) {
+	posSync := packet.PosSyncPacket{
+		Cur: this.Pos,
+		To:  this.To,
+	}
+	pkt := packet.Packet{
+		Id:  packet.PPosSync,
+		Obj: posSync,
+	}
+	this.send <- pkt
+}
+
+func (this *Player) heartBeat() {
+	this.ticker++
+
+	// send PosSync every 400 ms
+	if this.State == MOVE && (this.ticker&8) == 0 {
+		sendPosSync(this)
 	}
 }

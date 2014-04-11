@@ -20,6 +20,8 @@ func (this *Player) loop() {
 			this.handleSceneMessage(msg)
 		case <-this.aoi:
 			// 来自aoi的消息
+		case <-this.heartbeat:
+			this.heartBeat()
 		}
 	}
 }
