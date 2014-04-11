@@ -16,19 +16,11 @@ func (this *Player) loop() {
 			} else {
 				this.handleClientMessage(msg)
 			}
-		case <-this.Scene2player:
+		case msg = <-this.Scene2player:
 			this.handleSceneMessage(msg)
 		case <-this.aoi:
 			// 来自aoi的消息
 		}
-	}
-}
-
-func (this *Player) handleSceneMessage(msg interface{}) {
-	switch msg.(type) {
-	case packet.CMovePacket:
-		log.Println("read a CMovePacket...")
-		// this.send <- packet.Packet{packet.PCMove, msg}
 	}
 }
 
@@ -48,9 +40,9 @@ func (player *Player) Go() {
 				close(read)
 				return
 			}
-			log.Println("packet before send to chan", data)
+			// log.Println("packet before send to chan", data)
 			read <- data
-			log.Println("packet after send to chan", data)
+			// log.Println("packet after send to chan", data)
 		}
 	}()
 

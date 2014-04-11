@@ -55,5 +55,6 @@ func (m *Map) processPlayerInput(playerId uint32, msg interface{}) {
 				}
 			}
 		}
+		pc.Scene2player <- player.CMovePacketAck{}
 	}
 }

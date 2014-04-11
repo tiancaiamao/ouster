@@ -3,9 +3,9 @@ package data
 // import ("fmt")
 
 type EnemyGroupType uint32
+
 const (
 	_ = iota
-
 )
 
 type Rect struct {
@@ -31,24 +31,27 @@ type EnemyGroup struct {
 }
 
 type LayerType uint32
+
 const (
-	_ = iota
+	_                    = iota
 	BACKGROUND LayerType = iota
 	OBJECT
 	COLLISION
 )
+
 type Layer struct {
-	Type   LayerType
+	Type LayerType
 	// Format string // must be dec
-	Data   []uint16
+	Data []uint16
 }
 
 type EnemyType uint32
+
 const (
-	_ = iota
+	_                      = iota
 	CURSED_GRAVE EnemyType = iota
 	SKELETAL_ARCHER
-	UNDEAD 
+	UNDEAD
 	WYVERN
 )
 
@@ -84,11 +87,11 @@ type Npc struct {
 
 type MapType uint32
 type Map struct {
-	Title       string //Title of map
-	Width       uint16 //Height of map
-	Height      uint16 //Width of map
+	Title  string //Title of map
+	Width  uint16 //Height of map
+	Height uint16 //Width of map
 	// Tileset     string //Tileset use for map
-	Location    Point  //Spawn point location in map
+	Location    Point //Spawn point location in map
 	Layers      []Layer
 	Enemies     []Enemy
 	EnemyGroups []EnemyGroup
@@ -97,8 +100,3 @@ type Map struct {
 	Type        MapType
 	Additive    bool
 }
-
-// func init() {
-// 	fmt.Println("background is ", BACKGROUND)
-// 	fmt.Println("object is ", OBJECT)
-// }

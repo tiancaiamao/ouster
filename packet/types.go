@@ -3,8 +3,8 @@ package packet
 import (
 	//	"encoding/binary"
 	//	 "log"
-	"reflect"
 	"github.com/tiancaiamao/ouster"
+	"reflect"
 )
 
 type DirectionType uint8
@@ -48,10 +48,15 @@ type CMovePacket struct {
 	Y float32
 }
 
+type PosSyncPacket struct {
+	Cur ouster.FPoint
+	To  ouster.FPoint
+}
+
 type SMove struct {
-	Id uint32
+	Id  uint32
 	Cur ouster.Point
-	To ouster.Point
+	To  ouster.Point
 }
 
 type SMovePacket struct {
@@ -69,6 +74,7 @@ const (
 	PPlayerInfo
 	PCMove
 	PSMove
+	PPosSync
 	PTest
 	PMax
 )
@@ -83,4 +89,5 @@ func init() {
 	PacketMap[PPlayerInfo] = reflect.TypeOf(PlayerInfoPacket{})
 	PacketMap[PCMove] = reflect.TypeOf(CMovePacket{})
 	PacketMap[PSMove] = reflect.TypeOf(SMovePacket{})
+	PacketMap[PPosSync] = reflect.TypeOf(PosSyncPacket{})
 }

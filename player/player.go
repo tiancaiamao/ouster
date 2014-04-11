@@ -95,3 +95,20 @@ func (this *Player) handleClientMessage(msg interface{}) {
 		this.send <- packet.Packet{packet.PPlayerInfo, info}
 	}
 }
+
+type CMovePacketAck struct{}
+
+func (this *Player) handleSceneMessage(msg interface{}) {
+	switch msg.(type) {
+	case CMovePacketAck:
+		posSync := packet.PosSyncPacket{
+			Cur: this.Pos,
+			To:  this.To,
+		}
+		pkt := packet.Packet{
+			Id:  packet.PPosSync,
+			Obj: posSync,
+		}
+		this.send <- pkt
+	}
+}
