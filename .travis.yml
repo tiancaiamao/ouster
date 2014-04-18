@@ -1,0 +1,2 @@
+language: go
+script: go install github.com/tiancaiamao/ouster/cmd/ouster
