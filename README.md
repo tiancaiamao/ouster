@@ -1,4 +1,5 @@
 # 关于ouster
+[![Build Status](https://travis-ci.org/tiancaiamao/ouster.svg?branch=master)](https://travis-ci.org/tiancaiamao/ouster)
 
 ouster是一个用Go语言写的mmorpg。这个项目是服务端部分，目前还在此项目还处在早期开发阶段。
 
