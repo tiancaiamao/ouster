@@ -47,11 +47,16 @@ func (m *Map) processPlayerInput(playerId uint32, msg interface{}) {
 			pc.To.Y = raw.Y
 
 			// boardcast to it's nearby players
+			smove := packet.SMovePacket{
+				Id:  playerId,
+				Cur: pc.Pos,
+				To:  pc.To,
+			}
 			nearby := pc.NearBy()
 			for _, playerId := range nearby {
 				p := m.Player(playerId)
 				if p != nil {
-					p.Scene2player <- msg
+					p.Scene2player <- smove
 				}
 			}
 		}

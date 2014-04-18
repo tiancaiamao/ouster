@@ -22,6 +22,7 @@ type Map struct {
 func New(m *data.Map) *Map {
 	ret := new(Map)
 	ret.players = make([]*player.Player, 0, 200)
+	ret.aoi = aoi.New()
 
 	ret.quit = make(chan struct{})
 	ret.event = make(chan interface{})
@@ -38,7 +39,12 @@ func (m *Map) Player(playerId uint32) *player.Player {
 }
 
 func (m *Map) HeartBeat() {
-	for _, pc := range m.players {
+	for id, pc := range m.players {
+		if pc == nil {
+			continue
+		}
+
+		// process player move
 		if pc.State == player.MOVE {
 			v := pc.Speed()
 			if ouster.Distance(pc.Pos, pc.To) < v {
@@ -55,8 +61,20 @@ func (m *Map) HeartBeat() {
 				pc.Pos.X += vx
 				pc.Pos.Y += vy
 			}
+
+			// aoi update
+			m.aoi.Update(uint32(id), aoi.ModeWatcher|aoi.ModeMarker, aoi.FPoint(pc.Pos))
 		}
 	}
+
+	m.aoi.Message(func(watcher uint32, marker uint32) {
+		if watcher >= 0 && watcher < uint32(len(m.players)) {
+			pc := m.players[watcher]
+			if pc != nil {
+				pc.Aoi <- marker
+			}
+		}
+	})
 }
 
 func (m *Map) Login(player *player.Player) error {
@@ -64,6 +82,8 @@ func (m *Map) Login(player *player.Player) error {
 	m.players = append(m.players, player)
 	player.Id = uint32(idx)
 	player.Scene = m.Title
+
+	m.aoi.Update(player.Id, aoi.ModeWatcher|aoi.ModeMarker, aoi.FPoint(player.Pos))
 
 	return nil
 }

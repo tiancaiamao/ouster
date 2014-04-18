@@ -19,6 +19,7 @@ type FPoint struct {
 	X float32
 	Y float32
 }
+
 type AoiCallback func(watcher uint32, markder uint32)
 type AoiInterface interface {
 	Update(id uint32, mode AoiMode, pos FPoint)

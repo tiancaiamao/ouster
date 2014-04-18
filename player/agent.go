@@ -18,8 +18,8 @@ func (this *Player) loop() {
 			}
 		case msg = <-this.Scene2player:
 			this.handleSceneMessage(msg)
-		case <-this.aoi:
-			// 来自aoi的消息
+		case id := <-this.Aoi:
+			this.nearby = append(this.nearby, id)
 		case <-this.heartbeat:
 			this.heartBeat()
 		}

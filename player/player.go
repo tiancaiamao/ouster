@@ -37,7 +37,7 @@ type Player struct {
 	conn         net.Conn
 	client       <-chan interface{} // actually, a XXXPacket struct
 	send         chan<- packet.Packet
-	aoi          <-chan interface{}
+	Aoi          chan uint32
 	Scene2player chan interface{} // alloc in player.New
 	Player2scene chan interface{} // alloc in player.New
 	nearby       []uint32
@@ -63,6 +63,7 @@ func New(playerData *data.Player, conn net.Conn) *Player {
 		mp:           playerData.MP,
 		carried:      playerData.Carried,
 		conn:         conn,
+		Aoi:          make(chan uint32),
 		Scene2player: make(chan interface{}),
 		Player2scene: make(chan interface{}),
 		heartbeat:    time.Tick(50 * time.Microsecond),
@@ -106,6 +107,12 @@ func (this *Player) handleSceneMessage(msg interface{}) {
 	switch msg.(type) {
 	case CMovePacketAck:
 		sendPosSync(this)
+	case packet.SMovePacket:
+		pkt := packet.Packet{
+			Id:  packet.PSMove,
+			Obj: msg,
+		}
+		this.send <- pkt
 	}
 }
 

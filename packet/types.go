@@ -53,14 +53,10 @@ type PosSyncPacket struct {
 	To  ouster.FPoint
 }
 
-type SMove struct {
-	Id  uint32
-	Cur ouster.Point
-	To  ouster.Point
-}
-
 type SMovePacket struct {
-	Array []SMove
+	Id  uint32
+	Cur ouster.FPoint
+	To  ouster.FPoint
 }
 
 var PacketMap map[uint16]reflect.Type
