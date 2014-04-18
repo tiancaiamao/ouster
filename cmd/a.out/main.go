@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	m := &data.Test
+	m := &data.AncientTemple
 	l := m.Layers[2]
 	fmt.Println(l.Type)
 	fmt.Println("size of Layer[2] is", len(l.Data))

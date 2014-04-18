@@ -25,9 +25,9 @@ func main() {
 		Unmarshal(v, os.Stdout)
 
 	}
-	Marshal(reflect.TypeOf(packet.SMove{}), os.Stdout)
-	Unmarshal(reflect.TypeOf(packet.SMove{}), os.Stdout)
-	
+	// Marshal(reflect.TypeOf(packet.SMove{}), os.Stdout)
+	// Unmarshal(reflect.TypeOf(packet.SMove{}), os.Stdout)
+		
 	Marshal(reflect.TypeOf(Fpoint{}), os.Stdout)
 	Unmarshal(reflect.TypeOf(Fpoint{}), os.Stdout)
 	// PacketId()
