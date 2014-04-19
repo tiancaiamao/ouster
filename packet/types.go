@@ -20,9 +20,26 @@ const (
 	LU
 )
 
-type SkillPacket struct {
-	Id int
+type SkillTargetEffectPacket struct {
+	Skill int
+	From  int
+	To    int
+	Hurt  int
+	Succ  bool
 }
+
+type SkillRegionEffectPacket struct {
+	Skill int
+	From  int
+	To    ouster.FPoint
+}
+
+type SkillPacket struct {
+	Id     int
+	Target int
+	Region ouster.FPoint
+}
+
 type LoginPacket struct {
 	Username string
 	Password string
@@ -71,6 +88,7 @@ const (
 	PCMove
 	PSMove
 	PPosSync
+	PSkillTargetEffect
 	PTest
 	PMax
 )
@@ -86,4 +104,5 @@ func init() {
 	PacketMap[PCMove] = reflect.TypeOf(CMovePacket{})
 	PacketMap[PSMove] = reflect.TypeOf(SMovePacket{})
 	PacketMap[PPosSync] = reflect.TypeOf(PosSyncPacket{})
+	PacketMap[PSkillTargetEffect] = reflect.TypeOf(SkillTargetEffectPacket{})
 }

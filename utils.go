@@ -22,10 +22,20 @@ type FPoint struct {
 	Y float32
 }
 
+type Creature interface {
+	Strength() int
+	Agility() int
+	Intelligence() int
+
+	Damage() int
+	Dodge() int
+	ToHit() int
+}
+
 func Distance(p1, p2 FPoint) float32 {
 	dx := p1.X - p2.X
 	dy := p1.Y - p2.Y
-	return dx * dx + dy * dy
+	return dx*dx + dy*dy
 }
 
 type Error struct {

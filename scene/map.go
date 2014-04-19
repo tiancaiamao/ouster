@@ -66,6 +66,11 @@ func (m *Map) To(playerId uint32) (ouster.FPoint, error) {
 	return handle.to, nil
 }
 
+func (m *Map) Creature(id int) ouster.Creature {
+	handle := m.Player(uint32(id))
+	return handle.pc
+}
+
 func (m *Map) String() string {
 	return m.Map.Name
 }

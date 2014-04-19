@@ -32,13 +32,13 @@ func (c *Config) AddOption(section string, option string, value string) {
 
 	if secs, ok := c.sections[section]; ok {
 		secs[len(secs)-1][option] = &tValue{v: value}
-		return 
+		return
 	}
 	if sec, ok := c.section[section]; ok {
 		sec[option] = &tValue{v: value}
-		return 
+		return
 	}
-	return 
+	return
 }
 
 // RemoveOption removes a option and value from the configuration.

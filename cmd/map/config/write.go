@@ -15,10 +15,10 @@
 package config
 
 import (
-	// "bufio"
-	// "fmt"
-	// "os"
-	// "strings"
+// "bufio"
+// "fmt"
+// "os"
+// "strings"
 )
 
 // WriteFile saves the configuration representation to a file.

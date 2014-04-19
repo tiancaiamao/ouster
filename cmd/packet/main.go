@@ -17,8 +17,6 @@ type Fpoint struct {
 	Y float32
 }
 
-
-
 func main() {
 	for _, v := range packet.PacketMap {
 		Marshal(v, os.Stdout)
@@ -27,7 +25,7 @@ func main() {
 	}
 	// Marshal(reflect.TypeOf(packet.SMove{}), os.Stdout)
 	// Unmarshal(reflect.TypeOf(packet.SMove{}), os.Stdout)
-		
+
 	Marshal(reflect.TypeOf(Fpoint{}), os.Stdout)
 	Unmarshal(reflect.TypeOf(Fpoint{}), os.Stdout)
 	// PacketId()

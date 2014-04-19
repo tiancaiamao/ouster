@@ -1,6 +1,6 @@
-package  config
+package config
 
 const (
-	DataDir = "/Users/genius/.ouster"
+	DataDir           = "/Users/genius/.ouster"
 	ServerPort string = ":9997"
 )

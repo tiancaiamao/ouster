@@ -29,11 +29,11 @@ type kv struct {
 }
 
 type Aoi struct {
-	all map[uint32]*object
+	all     map[uint32]*object
 	move    []kv
 	change  []kv
 	version uint32
-	hotpair map[key]value	
+	hotpair map[key]value
 }
 
 func New() *Aoi {

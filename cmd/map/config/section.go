@@ -40,7 +40,7 @@ func (c *Config) AddSection(section string) {
 			secs = append(secs, make(map[string]*tValue))
 			c.sections[section] = secs
 			// fmt.Println("already hava the section, change to array:", section, len(c.sections[section]))
-		} else {			
+		} else {
 			c.section[section] = make(map[string]*tValue)
 			// fmt.Println("add to section:", section)
 		}

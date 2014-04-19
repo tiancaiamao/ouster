@@ -101,7 +101,7 @@ func (c *Config) read(buf *bufio.Reader) (err error) {
 			case section != "" && option != "":
 				// prev, _ := c.RawString(section, option)
 				value := strings.TrimSpace(stripComments(l))
-				last = last +"\n"+value
+				last = last + "\n" + value
 				// fmt.Println("multiline:", last)
 				c.AddOption(section, option, last)
 

@@ -68,7 +68,7 @@ type Config struct {
 
 	// Section -> option : value | []option:value
 	// data map[string]interface{} // a map[string]*tValue of of a array of that
-	section map[string]Section
+	section  map[string]Section
 	sections map[string][]Section
 }
 

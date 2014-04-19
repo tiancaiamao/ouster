@@ -4,6 +4,7 @@ import (
 	"github.com/tiancaiamao/ouster"
 	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/packet"
+	"github.com/tiancaiamao/ouster/skill"
 	"net"
 	"time"
 )
@@ -27,6 +28,7 @@ const (
 type scene interface {
 	Pos(uint32) (ouster.FPoint, error)
 	To(uint32) (ouster.FPoint, error)
+	Creature(int) ouster.Creature
 	String() string
 }
 
@@ -40,6 +42,10 @@ type Player struct {
 	hp    int
 	mp    int
 	speed float32
+
+	strength     int
+	agility      int
+	intelligence int
 
 	carried []int
 
@@ -56,6 +62,31 @@ type Player struct {
 
 	// Own by scene...write allowed only by scene agent
 	State PlayerState
+}
+
+// implement Create
+func (player *Player) Agility() int {
+	return player.agility
+}
+
+func (player *Player) Strength() int {
+	return player.strength
+}
+
+func (player *Player) Intelligence() int {
+	return player.intelligence
+}
+
+func (player *Player) Damage() int {
+	return player.strength
+}
+
+func (player *Player) Dodge() int {
+	return player.agility
+}
+
+func (player *Player) ToHit() int {
+	return player.agility
 }
 
 // provide for scene to use
@@ -108,6 +139,42 @@ func (this *Player) handleClientMessage(msg interface{}) {
 			}
 		}
 		this.send <- packet.Packet{packet.PPlayerInfo, info}
+	case packet.SkillPacket:
+		raw := msg.(packet.SkillPacket)
+		this.execute(raw)
+	}
+}
+
+type BaseAttack struct{}
+
+func (_ BaseAttack) ExecuteTarget(from, to ouster.Creature) (int, bool) {
+	return 10, true
+}
+
+type SkillEffect struct {
+	Id   int
+	To   int
+	Succ bool
+	Hurt int
+}
+
+func (player *Player) execute(pkt packet.SkillPacket) {
+	skl := skill.Query(pkt.Id)
+	switch skl.(type) {
+	case skill.SelfSkill:
+
+	case skill.TargetSkill:
+		skill := skl.(skill.TargetSkill)
+		target := player.Scene.Creature(pkt.Target)
+		hurt, ok := skill.ExecuteTarget(player, target)
+
+		player.write <- SkillEffect{
+			Id:   pkt.Id,
+			To:   pkt.Target,
+			Succ: ok,
+			Hurt: hurt,
+		}
+	case skill.RegionSkill:
 	}
 }
 
@@ -120,6 +187,12 @@ func (this *Player) handleSceneMessage(msg interface{}) {
 	case packet.SMovePacket:
 		pkt := packet.Packet{
 			Id:  packet.PSMove,
+			Obj: msg,
+		}
+		this.send <- pkt
+	case packet.SkillTargetEffectPacket:
+		pkt := packet.Packet{
+			Id:  packet.PSkillTargetEffect,
 			Obj: msg,
 		}
 		this.send <- pkt

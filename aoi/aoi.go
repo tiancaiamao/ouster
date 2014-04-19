@@ -41,7 +41,7 @@ type MyAoi struct {
 	watcherMove   map[uint32]*object
 	markerMove    map[uint32]*object
 	// moveQueue     []uint32
-	version       uint32
+	version uint32
 }
 
 func NewMy() *MyAoi {

@@ -1,20 +1,22 @@
 package data
 
 type PlayerClass uint8
+
 const (
-	_ = iota
+	_     = iota
 	BRUTE = iota
 	Knight
 )
+
 type Player struct {
-	Name string
-	Class PlayerClass
-	Level uint8
-	Map string
-	XP int
-	HP int
-	MP int
+	Name    string
+	Class   PlayerClass
+	Level   uint8
+	Map     string
+	XP      int
+	HP      int
+	MP      int
 	Carried []int
-	Pos Point  
-	Scene string
+	Pos     Point
+	Scene   string
 }

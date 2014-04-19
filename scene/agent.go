@@ -62,5 +62,24 @@ func (m *Map) processPlayerInput(playerId uint32, msg interface{}) {
 			}
 		}
 		handle.write <- player.CMovePacketAck{}
+	case player.SkillEffect:
+		log.Println("scene receive and process a SkillEffect")
+		raw := msg.(player.SkillEffect)
+		handle := m.Player(playerId)
+		pc := handle.pc
+
+		nearby := pc.NearBy()
+		for _, playerId := range nearby {
+			p := m.Player(playerId)
+			if p != nil {
+				p.write <- packet.SkillTargetEffectPacket{
+					Skill: raw.Id,
+					From:  int(playerId),
+					To:    raw.To,
+					Hurt:  raw.Hurt,
+					Succ:  raw.Succ,
+				}
+			}
+		}
 	}
 }

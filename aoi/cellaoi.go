@@ -29,25 +29,25 @@ func NewCellAoi(mapWidth uint32, mapHeight, uint32, cellWidth uint32, cellHeight
 }
 
 // func getCell(x uint32, y uint32) []uint32 {
-// 	return 
+// 	return
 // }
 
 func (aoi *CellAoi) Update(id uint32, mode AoiMode, pos Point) {
 	// prevPos, ok := id2Pos[id]
 	// if !ok {
-		
+
 	// } else {
 	// 	old := getCell(prevPos)
-		
+
 	// 	for nearby := range old {
-			
+
 	// 	}
-		
+
 	// 	in := getCell(pos.X, pos.Y)
 	// 	for nearby := range in {
-			
+
 	// 	}
-		
+
 	// }
 }
 
