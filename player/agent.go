@@ -16,9 +16,9 @@ func (this *Player) loop() {
 			} else {
 				this.handleClientMessage(msg)
 			}
-		case msg = <-this.Scene2player:
+		case msg = <-this.read:
 			this.handleSceneMessage(msg)
-		case id := <-this.Aoi:
+		case id := <-this.aoi:
 			this.nearby = append(this.nearby, id)
 		case <-this.heartbeat:
 			this.heartBeat()

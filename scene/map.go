@@ -9,9 +9,21 @@ import (
 	"time"
 )
 
+type Handle struct {
+	// Player don't expose public field, but provide getter
+	// so we can read but not write in this package
+	pc *player.Player
+
+	aoi   chan<- uint32
+	write chan<- interface{}
+	read  <-chan interface{}
+	pos   ouster.FPoint
+	to    ouster.FPoint
+}
+
 type Map struct {
 	data.Map
-	players []*player.Player
+	players []Handle
 	aoi     *aoi.Aoi
 
 	quit      chan struct{}
@@ -21,7 +33,7 @@ type Map struct {
 
 func New(m *data.Map) *Map {
 	ret := new(Map)
-	ret.players = make([]*player.Player, 0, 200)
+	ret.players = make([]Handle, 0, 200)
 	ret.aoi = aoi.New()
 
 	ret.quit = make(chan struct{})
@@ -31,59 +43,88 @@ func New(m *data.Map) *Map {
 	return ret
 }
 
-func (m *Map) Player(playerId uint32) *player.Player {
+func (m *Map) Player(playerId uint32) *Handle {
 	if playerId >= uint32(len(m.players)) {
 		return nil
 	}
-	return m.players[playerId]
+	return &m.players[playerId]
+}
+
+func (m *Map) Pos(playerId uint32) (ouster.FPoint, error) {
+	handle := m.Player(playerId)
+	if handle == nil {
+		return ouster.FPoint{}, ouster.NewError("query a non-exist id")
+	}
+	return handle.pos, nil
+}
+
+func (m *Map) To(playerId uint32) (ouster.FPoint, error) {
+	handle := m.Player(playerId)
+	if handle == nil {
+		return ouster.FPoint{}, ouster.NewError("query a non-exist id")
+	}
+	return handle.to, nil
+}
+
+func (m *Map) String() string {
+	return m.Map.Name
 }
 
 func (m *Map) HeartBeat() {
-	for id, pc := range m.players {
-		if pc == nil {
+	for id, handle := range m.players {
+		if handle.pc == nil {
 			continue
 		}
 
 		// process player move
+		pc := handle.pc
 		if pc.State == player.MOVE {
 			v := pc.Speed()
-			if ouster.Distance(pc.Pos, pc.To) < v {
+			if ouster.Distance(handle.pos, handle.to) < v {
 				pc.State = player.STAND
-				pc.Pos.X = pc.To.X
-				pc.Pos.Y = pc.To.Y
+				handle.pos.X = handle.to.X
+				handle.pos.Y = handle.to.Y
 			} else {
-				dx := pc.To.X - pc.Pos.X
-				dy := pc.To.Y - pc.Pos.Y
+				dx := handle.to.X - handle.pos.X
+				dy := handle.to.Y - handle.pos.Y
 				angle := math.Atan2(float64(dy), float64(dx))
 				vx := v * float32(math.Cos(angle))
 				vy := v * float32(math.Sin(angle))
 
-				pc.Pos.X += vx
-				pc.Pos.Y += vy
+				handle.pos.X += vx
+				handle.to.Y += vy
 			}
 
 			// aoi update
-			m.aoi.Update(uint32(id), aoi.ModeWatcher|aoi.ModeMarker, aoi.FPoint(pc.Pos))
+			m.aoi.Update(uint32(id), aoi.ModeWatcher|aoi.ModeMarker, aoi.FPoint(handle.pos))
 		}
 	}
 
 	m.aoi.Message(func(watcher uint32, marker uint32) {
 		if watcher >= 0 && watcher < uint32(len(m.players)) {
-			pc := m.players[watcher]
-			if pc != nil {
-				pc.Aoi <- marker
+			handle := m.players[watcher]
+			if handle.pc != nil {
+				handle.aoi <- marker
 			}
 		}
 	})
 }
 
-func (m *Map) Login(player *player.Player) error {
-	idx := len(m.players)
-	m.players = append(m.players, player)
-	player.Id = uint32(idx)
-	player.Scene = m.Title
+func (m *Map) Login(player *player.Player, pos ouster.FPoint, a chan<- uint32, rd <-chan interface{}, wr chan<- interface{}) error {
+	var handle Handle
+	handle.pc = player
+	handle.pos = pos
+	handle.to = pos
+	handle.read = rd
+	handle.write = wr
 
-	m.aoi.Update(player.Id, aoi.ModeWatcher|aoi.ModeMarker, aoi.FPoint(player.Pos))
+	idx := len(m.players)
+	m.players = append(m.players, handle)
+
+	player.Id = uint32(idx)
+	player.Scene = m
+
+	m.aoi.Update(player.Id, aoi.ModeWatcher|aoi.ModeMarker, aoi.FPoint(pos))
 
 	return nil
 }

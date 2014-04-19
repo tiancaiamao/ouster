@@ -22,10 +22,19 @@ const (
 	MOVE
 )
 
+// package scene have import player, if player import scene it would be a circle
+// so use a interface to avoid direct use of scene.
+type scene interface {
+	Pos(uint32) (ouster.FPoint, error)
+	To(uint32) (ouster.FPoint, error)
+	String() string
+}
+
 // mostly the same as data.Player, but this is in memory instead.
 type Player struct {
 	Id    uint32 // set by scene.Login
-	Scene string // set by scene.Login
+	Scene scene  // set by scene.Login
+
 	name  string
 	class PlayerClass
 	hp    int
@@ -34,20 +43,19 @@ type Player struct {
 
 	carried []int
 
-	conn         net.Conn
-	client       <-chan interface{} // actually, a XXXPacket struct
-	send         chan<- packet.Packet
-	Aoi          chan uint32
-	Scene2player chan interface{} // alloc in player.New
-	Player2scene chan interface{} // alloc in player.New
-	nearby       []uint32
-	heartbeat    <-chan time.Time
-	ticker       uint32
+	conn   net.Conn
+	client <-chan interface{} // actually, a XXXPacket struct
+	send   chan<- packet.Packet
+	aoi    <-chan uint32
+
+	read      <-chan interface{} // alloc in player.New
+	write     chan<- interface{} // alloc in player.New
+	nearby    []uint32
+	heartbeat <-chan time.Time
+	ticker    uint32
 
 	// Own by scene...write allowed only by scene agent
-	Pos   ouster.FPoint
 	State PlayerState
-	To    ouster.FPoint
 }
 
 // provide for scene to use
@@ -55,18 +63,20 @@ func (player *Player) Speed() float32 {
 	return player.speed
 }
 
-func New(playerData *data.Player, conn net.Conn) *Player {
+func New(playerData *data.Player, conn net.Conn, a <-chan uint32, rd <-chan interface{}, wr chan<- interface{}) *Player {
 	return &Player{
-		name:         playerData.Name,
-		class:        PlayerClass(playerData.Class),
-		hp:           playerData.HP,
-		mp:           playerData.MP,
-		carried:      playerData.Carried,
-		conn:         conn,
-		Aoi:          make(chan uint32),
-		Scene2player: make(chan interface{}),
-		Player2scene: make(chan interface{}),
-		heartbeat:    time.Tick(50 * time.Microsecond),
+		name:    playerData.Name,
+		class:   PlayerClass(playerData.Class),
+		hp:      playerData.HP,
+		mp:      playerData.MP,
+		carried: playerData.Carried,
+		conn:    conn,
+
+		aoi:   a,
+		read:  rd,
+		write: wr,
+
+		heartbeat: time.Tick(50 * time.Microsecond),
 	}
 }
 
@@ -78,7 +88,7 @@ func (this *Player) handleClientMessage(msg interface{}) {
 	switch msg.(type) {
 	case packet.CMovePacket:
 		move := msg.(packet.CMovePacket)
-		this.Player2scene <- move
+		this.write <- move
 	case packet.PlayerInfoPacket:
 		info := msg.(packet.PlayerInfoPacket)
 		for k, _ := range info {
@@ -92,9 +102,9 @@ func (this *Player) handleClientMessage(msg interface{}) {
 			case "speed":
 				info["speed"] = this.speed
 			case "pos":
-				info["pos"] = this.Pos
+				info["pos"], _ = this.Scene.Pos(this.Id)
 			case "scene":
-				info["scene"] = this.Scene
+				info["scene"] = this.Scene.String()
 			}
 		}
 		this.send <- packet.Packet{packet.PPlayerInfo, info}
@@ -117,10 +127,10 @@ func (this *Player) handleSceneMessage(msg interface{}) {
 }
 
 func sendPosSync(this *Player) {
-	posSync := packet.PosSyncPacket{
-		Cur: this.Pos,
-		To:  this.To,
-	}
+	var posSync packet.PosSyncPacket
+	posSync.Cur, _ = this.Scene.Pos(this.Id)
+	posSync.To, _ = this.Scene.To(this.Id)
+
 	pkt := packet.Packet{
 		Id:  packet.PPosSync,
 		Obj: posSync,

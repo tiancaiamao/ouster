@@ -10,7 +10,7 @@ func loop(m *Map) {
 	for {
 		for id, player := range m.players {
 			select {
-			case msg := <-player.Player2scene:
+			case msg := <-player.read:
 				m.processPlayerInput(uint32(id), msg)
 			default:
 				break
@@ -39,27 +39,28 @@ func (m *Map) processPlayerInput(playerId uint32, msg interface{}) {
 	case packet.CMovePacket:
 		log.Println("scene receive and process a CMovePacket")
 		raw := msg.(packet.CMovePacket)
-		pc := m.Player(playerId)
+		handle := m.Player(playerId)
+		pc := handle.pc
 		switch pc.State {
 		case player.STAND, player.MOVE:
 			pc.State = player.MOVE
-			pc.To.X = raw.X
-			pc.To.Y = raw.Y
+			handle.to.X = raw.X
+			handle.to.Y = raw.Y
 
 			// boardcast to it's nearby players
 			smove := packet.SMovePacket{
 				Id:  playerId,
-				Cur: pc.Pos,
-				To:  pc.To,
+				Cur: handle.pos,
+				To:  handle.to,
 			}
 			nearby := pc.NearBy()
 			for _, playerId := range nearby {
 				p := m.Player(playerId)
 				if p != nil {
-					p.Scene2player <- smove
+					p.write <- smove
 				}
 			}
 		}
-		pc.Scene2player <- player.CMovePacketAck{}
+		handle.write <- player.CMovePacketAck{}
 	}
 }
