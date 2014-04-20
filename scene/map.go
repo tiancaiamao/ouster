@@ -23,8 +23,9 @@ type Handle struct {
 
 type Map struct {
 	data.Map
-	players []Handle
-	aoi     *aoi.Aoi
+	players  []Handle
+	monsters []Monster
+	aoi      *aoi.Aoi
 
 	quit      chan struct{}
 	event     chan interface{}
