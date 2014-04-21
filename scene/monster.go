@@ -10,6 +10,13 @@ const (
 	flagActive
 )
 
+type MonsterState uint8
+
+const (
+	stateIdle = iota
+	state
+)
+
 type Monster struct {
 	Id uint32
 
@@ -21,6 +28,11 @@ type Monster struct {
 	defence int
 	tohit   int
 	dodge   int
+
+	speed int
+
+	state  MonsterState
+	target uint32
 
 	// mask the monster's current status, flagDead means it's dead.
 	// flagActive means it's active by player...
@@ -45,6 +57,38 @@ func (m *Monster) Init(meta interface{}) {
 	m.meta = meta
 }
 
-func (m *Monster) HeartBeat() {
+// a state machine
+func (m *Monster) HeartBeat(m *Map) {
+	handle := m.Player(target)
+	pc := handle.pc
+	d := dist(m.pos, handle.pos)
+	if d < 10 {
+		msg := packet.SkillTargetEffectPacket{
+			Skill: 1,
+			From:  m.Id,
+			To:    m.target,
+			Hurt:  1,
+			Succ:  true,
+		}
+		nearby := pc.NearBy()
+		boardcast(nearby, msg)
+	} else {
+		dx := handle.pos.X - m.pos.X
+		dy := handle.pos.Y - m.pos.Y
+		angle := math.Atan2(float64(dy), float64(dx))
+		vx := v * float32(math.Cos(angle))
+		vy := v * float32(math.Sin(angle))
 
+		m.pos.X += vx
+		m.pos.Y += vy
+	}
+}
+
+func boardcast(nearby []uint32, msg interface{}) {
+	for _, playerId := range nearby {
+		p := m.Player(playerId)
+		if p != nil {
+			p.write <- msg
+		}
+	}
 }

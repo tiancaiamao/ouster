@@ -42,6 +42,8 @@ type Map struct {
 	heartbeat <-chan time.Time
 }
 
+const maskNPC uint32 = 1 << 31
+
 func New(m *data.Map) *Map {
 	ret := new(Map)
 	ret.players = make([]Handle, 0, 200)
@@ -113,7 +115,7 @@ func (m *Map) HeartBeat() {
 				vy := v * float32(math.Sin(angle))
 
 				handle.pos.X += vx
-				handle.to.Y += vy
+				handle.pos.Y += vy
 			}
 
 			// aoi update
@@ -134,14 +136,25 @@ func (m *Map) HeartBeat() {
 			continue
 		}
 
-		monster.HeartBeat()
+		monster.HeartBeat(m)
 	}
 
 	m.aoi.Message(func(watcher uint32, marker uint32) {
-		if watcher >= 0 && watcher < uint32(len(m.players)) {
-			handle := m.players[watcher]
+		// watcher is a player
+		if (watcher & maskNPC) == 0 {
+			handle := &m.players[watcher]
 			if handle.pc != nil {
 				handle.aoi <- marker
+			}
+		}
+
+		// marker is a monster
+		if (marker & maskNPC) != 0 {
+			id := marker &^ maskNPC
+			monster := &m.monsters[id]
+			if (monster.flag & maskActive) == 0 {
+				monster.flag |= maskActive
+				monster.target = watcher
 			}
 		}
 	})

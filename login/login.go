@@ -19,7 +19,8 @@ func (l LoginError) Error() string {
 }
 
 // TODO: this should be written as a state machine, provide api something like \n
-// session :=login.New()	// create a login new session, which is actually the state\n
+// session :=login.New()	
+// create a login new session, which is actually the state\n
 // session.Login(conn)
 func Login(conn net.Conn) (*data.Player, error) {
 	err := conn.SetReadDeadline(time.Now().Add(3 * time.Minute))
