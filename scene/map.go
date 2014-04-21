@@ -21,8 +21,18 @@ type Handle struct {
 	to    ouster.FPoint
 }
 
+// id 0xxxxxx player
+// id 1xxxxxx non-player
+// id 10xxxxx npc
+// id 11xxxxx monster
+// id 110xxxx
+
 type Map struct {
 	data.Map
+
+	// used to control monster's reborn
+	enemyGroup []uint8
+
 	players  []Handle
 	monsters []Monster
 	aoi      *aoi.Aoi
@@ -35,6 +45,11 @@ type Map struct {
 func New(m *data.Map) *Map {
 	ret := new(Map)
 	ret.players = make([]Handle, 0, 200)
+	ret.monsters = make([]Monster, len(m.Enemies))
+	// for , v := range m.Enemies {
+	// 	ret.monsters[i].Init(v)
+	// }
+
 	ret.aoi = aoi.New()
 
 	ret.quit = make(chan struct{})
@@ -104,6 +119,22 @@ func (m *Map) HeartBeat() {
 			// aoi update
 			m.aoi.Update(uint32(id), aoi.ModeWatcher|aoi.ModeMarker, aoi.FPoint(handle.pos))
 		}
+	}
+
+	for _, monster := range m.monsters {
+		if (monster.flag & flagDead) != 0 {
+			monster.reborn++
+			if monster.reborn >= 100 {
+				monster.flag = monster.flag &^ flagDead
+			}
+			continue
+		}
+
+		if (monster.flag & flagActive) == 0 {
+			continue
+		}
+
+		monster.HeartBeat()
 	}
 
 	m.aoi.Message(func(watcher uint32, marker uint32) {

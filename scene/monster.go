@@ -2,6 +2,7 @@ package scene
 
 import (
 	"github.com/tiancaiamao/ouster"
+	"github.com/tiancaiamao/ouster/data"
 )
 
 const (
@@ -27,4 +28,23 @@ type Monster struct {
 
 	// if flag & flagDead, reborn after that times heartbeat
 	reborn int
+	// the config information that generate this monster
+	meta interface{}
+}
+
+func (m *Monster) Init(meta interface{}) {
+	switch meta.(type) {
+	case data.Enemy:
+		e := meta.(data.Enemy)
+		m.pos.X = float32(e.Location.X)
+		m.pos.Y = float32(e.Location.Y)
+	case data.EnemyGroup:
+
+	}
+
+	m.meta = meta
+}
+
+func (m *Monster) HeartBeat() {
+
 }
