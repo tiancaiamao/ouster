@@ -28,7 +28,7 @@ const (
 type scene interface {
 	Pos(uint32) (ouster.FPoint, error)
 	To(uint32) (ouster.FPoint, error)
-	Creature(int) ouster.Creature
+	Creature(uint32) ouster.Creature
 	String() string
 }
 
@@ -153,7 +153,7 @@ func (_ BaseAttack) ExecuteTarget(from, to ouster.Creature) (int, bool) {
 
 type SkillEffect struct {
 	Id   int
-	To   int
+	To   uint32
 	Succ bool
 	Hurt int
 }

@@ -3,6 +3,8 @@ package scene
 import (
 	"github.com/tiancaiamao/ouster"
 	"github.com/tiancaiamao/ouster/data"
+	"github.com/tiancaiamao/ouster/packet"
+	"math"
 )
 
 const (
@@ -29,7 +31,7 @@ type Monster struct {
 	tohit   int
 	dodge   int
 
-	speed int
+	speed float32
 
 	state  MonsterState
 	target uint32
@@ -58,10 +60,10 @@ func (m *Monster) Init(meta interface{}) {
 }
 
 // a state machine
-func (m *Monster) HeartBeat(m *Map) {
-	handle := m.Player(target)
+func (m *Monster) HeartBeat(mp *Map) {
+	handle := mp.Player(m.target)
 	pc := handle.pc
-	d := dist(m.pos, handle.pos)
+	d := ouster.Distance(m.pos, handle.pos)
 	if d < 10 {
 		msg := packet.SkillTargetEffectPacket{
 			Skill: 1,
@@ -71,22 +73,22 @@ func (m *Monster) HeartBeat(m *Map) {
 			Succ:  true,
 		}
 		nearby := pc.NearBy()
-		boardcast(nearby, msg)
+		boardcast(nearby, msg, mp)
 	} else {
 		dx := handle.pos.X - m.pos.X
 		dy := handle.pos.Y - m.pos.Y
 		angle := math.Atan2(float64(dy), float64(dx))
-		vx := v * float32(math.Cos(angle))
-		vy := v * float32(math.Sin(angle))
+		vx := m.speed * float32(math.Cos(angle))
+		vy := m.speed * float32(math.Sin(angle))
 
 		m.pos.X += vx
 		m.pos.Y += vy
 	}
 }
 
-func boardcast(nearby []uint32, msg interface{}) {
+func boardcast(nearby []uint32, msg interface{}, mp *Map) {
 	for _, playerId := range nearby {
-		p := m.Player(playerId)
+		p := mp.Player(playerId)
 		if p != nil {
 			p.write <- msg
 		}

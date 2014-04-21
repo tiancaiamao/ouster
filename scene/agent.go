@@ -74,7 +74,7 @@ func (m *Map) processPlayerInput(playerId uint32, msg interface{}) {
 			if p != nil {
 				p.write <- packet.SkillTargetEffectPacket{
 					Skill: raw.Id,
-					From:  int(playerId),
+					From:  playerId,
 					To:    raw.To,
 					Hurt:  raw.Hurt,
 					Succ:  raw.Succ,

@@ -22,8 +22,8 @@ const (
 
 type SkillTargetEffectPacket struct {
 	Skill int
-	From  int
-	To    int
+	From  uint32
+	To    uint32
 	Hurt  int
 	Succ  bool
 }
@@ -36,7 +36,7 @@ type SkillRegionEffectPacket struct {
 
 type SkillPacket struct {
 	Id     int
-	Target int
+	Target uint32
 	Region ouster.FPoint
 }
 

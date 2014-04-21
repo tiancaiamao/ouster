@@ -84,8 +84,8 @@ func (m *Map) To(playerId uint32) (ouster.FPoint, error) {
 	return handle.to, nil
 }
 
-func (m *Map) Creature(id int) ouster.Creature {
-	handle := m.Player(uint32(id))
+func (m *Map) Creature(id uint32) ouster.Creature {
+	handle := m.Player(id)
 	return handle.pc
 }
 
@@ -152,8 +152,8 @@ func (m *Map) HeartBeat() {
 		if (marker & maskNPC) != 0 {
 			id := marker &^ maskNPC
 			monster := &m.monsters[id]
-			if (monster.flag & maskActive) == 0 {
-				monster.flag |= maskActive
+			if (monster.flag & flagActive) == 0 {
+				monster.flag |= flagActive
 				monster.target = watcher
 			}
 		}
