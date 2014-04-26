@@ -5,6 +5,7 @@ import (
 	"github.com/tiancaiamao/ouster"
 	"github.com/tiancaiamao/ouster/config"
 	"github.com/tiancaiamao/ouster/packet"
+	"io"
 	"net"
 )
 
@@ -13,18 +14,37 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer conn.Close()
 
-	go func(c net.Conn) {
-		for {
-			pkt, err := packet.Read(c)
-			if err != nil {
-				fmt.Println(err)
-				c.Close()
-			}
-
-			fmt.Println(pkt)
+	go func() {
+		ln, err := net.Listen("tcp", ":8782")
+		if err != nil {
+			panic(err)
 		}
-	}(conn)
+
+		fd, err := ln.Accept()
+		if err != nil {
+			panic(err)
+		}
+		ln.Close()
+		defer fd.Close()
+
+		for {
+			// forward packet to server
+			io.Copy(conn, fd)
+		}
+	}()
+
+	// goroutine for display packet from server
+	for {
+		pkt, err := packet.Read(conn)
+		if err != nil {
+			fmt.Println(err)
+			break
+		}
+
+		fmt.Println(pkt)
+	}
 }
 
 func Login() (net.Conn, error) {
