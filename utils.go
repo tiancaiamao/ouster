@@ -1,6 +1,7 @@
 package ouster
 
 import (
+	"math/rand"
 	"runtime"
 	"strconv"
 )
@@ -59,4 +60,18 @@ func NewError(str string) *Error {
 	}
 
 	return err
+}
+
+// if tohit == dodge, the default formula is 0.85
+// if tohit < dodge, then tohit / dodge should be primary factor, also take other factor into consideration
+// if tohit > dodge, then the differential should be important, also dodge.
+func HitTest(tohit int, dodge int) bool {
+	var prob float32
+	if tohit < dodge {
+		prob = 0.85*float32(tohit)/float32(dodge) - 0.15*float32(dodge-tohit)/float32(tohit)
+	} else {
+		prob = 0.85 + 0.15*float32(tohit-dodge)/float32(dodge)
+	}
+
+	return rand.Float32 < prob
 }

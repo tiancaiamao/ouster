@@ -102,6 +102,7 @@ func New(playerData *data.Player, conn net.Conn, a <-chan uint32, rd <-chan inte
 		mp:      playerData.MP,
 		carried: playerData.Carried,
 		conn:    conn,
+		speed:   5,
 
 		aoi:   a,
 		read:  rd,
@@ -215,7 +216,7 @@ func (this *Player) heartBeat() {
 	this.ticker++
 
 	// send PosSync every 400 ms
-	if this.State == MOVE && (this.ticker&8) == 0 {
+	if this.State == MOVE && (this.ticker%16) == 0 {
 		sendPosSync(this)
 	}
 }

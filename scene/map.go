@@ -5,6 +5,7 @@ import (
 	"github.com/tiancaiamao/ouster/aoi"
 	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/player"
+	"log"
 	"math"
 	"time"
 )
@@ -116,6 +117,8 @@ func (m *Map) HeartBeat() {
 
 				handle.pos.X += vx
 				handle.pos.Y += vy
+
+				log.Println(handle.pos34)
 			}
 
 			// aoi update
