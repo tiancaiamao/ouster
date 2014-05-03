@@ -1,5 +1,9 @@
 package darkeden
 
+import (
+	"encoding/binary"
+)
+
 type LCLoginOKPacket struct{}
 
 func (loginOk LCLoginOKPacket) Id() PacketID {
@@ -24,7 +28,7 @@ func (v LCVersionCheckOKPacket) String() string {
 	return "version check ok"
 }
 func (v LCVersionCheckOKPacket) Bytes() []byte {
-	return []byte{0, 0}
+	return []byte{0}
 }
 
 type LCWorldListPacket struct{}
@@ -74,4 +78,34 @@ func (pl *LCPCListPacket) Bytes() []byte {
 		8, 178, 187, 212, 217, 209, 218, 202, 206, 0,
 		76, 29, 0, 0, 9, 0, 11, 0, 10, 0, 50, 170, 9, 0, 0, 53, 15, 0, 0, 47, 12, 0, 0, 18, 0, 18, 0, 20, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 144, 1, 170, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 8, 181, 216, 211, 252, 214, 174, 195, 197, 1, 76, 29, 0, 0, 0, 121, 1, 101, 0, 121, 1, 0, 0, 8, 10, 0, 25, 0, 10, 0, 59, 1, 59, 1, 0, 0, 0, 0, 150, 50, 0, 0, 0, 0, 68, 0, 0, 0, 15, 39, 15, 39, 100, 4, 183, 232, 191, 241, 2, 76, 29, 0, 0, 0, 0, 0, 164, 1, 1, 121, 1, 20, 0, 20, 0, 20, 0, 216, 1, 216, 1, 150, 50, 125, 0, 0, 0, 217, 0, 0, 0, 15, 39, 100,
 	}
+}
+
+type LCReconnectPacket struct {
+	Ip   string
+	Port uint16
+	Key  []byte
+}
+
+func (rc *LCReconnectPacket) Id() PacketID {
+	return PACKET_LC_RECONNECT
+}
+func (rc *LCReconnectPacket) String() string {
+	return "reconnect"
+}
+func (rc *LCReconnectPacket) Bytes() []byte {
+	//[5 13 49 57 50 46 49 54 56 46 49 46 49 50 51 14 39 0 0 0 32 6 11]
+	sz := 1 + len(rc.Ip) + 2 + 6
+	ret := make([]byte, sz)
+	ret[0] = 5
+	ret[1] = byte(len(rc.Ip))
+	for i := 0; i < len(rc.Ip); i++ {
+		ret[i] = rc.Ip[i]
+	}
+
+	binary.LittleEndian.PutUint16(ret[1+len(rc.Ip):], rc.Port)
+
+	for i := 0; i < len(rc.Key); i++ {
+		ret[1+len(rc.Ip)+2+i] = rc.Key[i]
+	}
+	return ret
 }

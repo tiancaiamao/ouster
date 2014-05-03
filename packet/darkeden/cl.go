@@ -40,6 +40,9 @@ func (worldList CLGetWorldListPacket) Id() PacketID {
 func (w CLGetWorldListPacket) String() string {
 	return "get world list"
 }
+func readGetWorldList(buf []byte) (Packet, error) {
+	return CLGetWorldListPacket{}, nil
+}
 
 type CLSelectWorldPacket uint8
 
@@ -64,4 +67,25 @@ func (ss CLSelectServerPacket) String() string {
 }
 func readSelectServer(buf []byte) (Packet, error) {
 	return CLSelectServerPacket(buf[0]), nil
+}
+
+type PCType uint8
+type CLSelectPcPacket struct {
+	Name string
+	Type PCType
+}
+
+func (sp *CLSelectPcPacket) Id() PacketID {
+	return PACKET_CL_SELECT_PC
+}
+func (sp *CLSelectPcPacket) String() string {
+	return "select pc"
+}
+func readSelectPc(buf []byte) (Packet, error) {
+	//	[5 8 178 187 212 217 209 218 202 206 0]
+	sz := buf[1]
+	return &CLSelectPcPacket{
+		Type: PCType(buf[0]),
+		Name: string(buf[2 : 2+sz]),
+	}, nil
 }

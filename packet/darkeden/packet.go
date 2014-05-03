@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"io"
+	"log"
 )
 
 type PacketID uint16
@@ -493,7 +494,7 @@ const (
 	PACKET_UC_UPDATE
 	PACKET_UC_UPDATE_LIST
 	PACKET_CL_AGREEMENT
-	PACKET_MAX
+	PACKET_MAX = 255
 )
 
 const (
@@ -522,6 +523,8 @@ func init() {
 	}
 	table[PACKET_CL_SELECT_WORLD] = readSelectWorld
 	table[PACKET_CL_SELECT_SERVER] = readSelectServer
+	table[PACKET_CL_GET_WORLD_LIST] = readGetWorldList
+	table[PACKET_CL_SELECT_PC] = readSelectPc
 }
 
 func Read(reader io.Reader) (ret Packet, err error) {
@@ -529,33 +532,49 @@ func Read(reader io.Reader) (ret Packet, err error) {
 	var sz PacketSize
 	var buf [300]byte
 
-	err = binary.Read(reader, binary.BigEndian, &id)
+	err = binary.Read(reader, binary.LittleEndian, &id)
 	if err != nil {
 		return
 	}
 
-	err = binary.Read(reader, binary.BigEndian, &sz)
+	err = binary.Read(reader, binary.LittleEndian, &sz)
 	if err != nil {
 		return
 	}
+
+	log.Printf("read a packet id = %d, sz = %d\n", id, sz)
 
 	n, err := io.ReadFull(reader, buf[:sz+1])
-	if n != int(sz) {
+	if err != nil {
 		return
 	}
+	if n != int(sz+1) {
+		err = errors.New("read get less data than needed")
+		return
+	}
+
+	log.Println("ReadFull get:", buf[:sz+1])
+
+	// ignore := []byte{0}
+	// n, err = reader.Read(ignore)
 
 	f := table[id]
 	if f == nil {
+		log.Println("id not in table...")
 		err = errors.New("not supported packet id")
 		return
 	}
 
-	ret, err = f(buf[:sz])
+	// log.Println("befor exec func")
+	ret, err = f(buf[:sz+1])
+	// log.Println("after exec func and ret=", ret)
 	return
 }
 
 func Write(writer io.Writer, pkt Packet) error {
-	err := binary.Write(writer, binary.BigEndian, pkt.Id())
+	id := pkt.Id()
+	id += (1 << 8)
+	err := binary.Write(writer, binary.LittleEndian, id)
 	if err != nil {
 		return err
 	}
@@ -566,21 +585,24 @@ func Write(writer io.Writer, pkt Packet) error {
 	}
 
 	buf := b.Bytes()
-	sz := PacketSize(len(buf))
-	err = binary.Write(writer, binary.BigEndian, sz-1)
+	log.Println("the packet data is ", buf)
+	sz := PacketSize(len(buf) - 1)
+	err = binary.Write(writer, binary.LittleEndian, sz)
 	if err != nil {
 		return err
 	}
 
+	log.Println("before...")
 	var off int
 	for off < len(buf) {
-		n, err := writer.Write(buf[:off])
+		n, err := writer.Write(buf[off:])
 		if err != nil {
 			return err
 		}
 
 		off += n
 	}
+	log.Println("after...")
 
 	return nil
 }
