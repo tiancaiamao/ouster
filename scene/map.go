@@ -5,7 +5,7 @@ import (
 	"github.com/tiancaiamao/ouster/aoi"
 	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/player"
-	"log"
+	// "log"
 	"math"
 	"time"
 )
@@ -57,7 +57,7 @@ func New(m *data.Map) *Map {
 
 	ret.quit = make(chan struct{})
 	ret.event = make(chan interface{})
-	ret.heartbeat = time.Tick(50 * time.Microsecond)
+	ret.heartbeat = time.Tick(50 * time.Millisecond)
 
 	return ret
 }
@@ -117,8 +117,6 @@ func (m *Map) HeartBeat() {
 
 				handle.pos.X += vx
 				handle.pos.Y += vy
-
-				log.Println(handle.pos34)
 			}
 
 			// aoi update

@@ -24,11 +24,9 @@ type FPoint struct {
 }
 
 type Creature interface {
-	Strength() int
-	Agility() int
-	Intelligence() int
-
+	HP() int
 	Damage() int
+	Defense() int
 	Dodge() int
 	ToHit() int
 }
@@ -73,5 +71,5 @@ func HitTest(tohit int, dodge int) bool {
 		prob = 0.85 + 0.15*float32(tohit-dodge)/float32(dodge)
 	}
 
-	return rand.Float32 < prob
+	return rand.Float32() < prob
 }

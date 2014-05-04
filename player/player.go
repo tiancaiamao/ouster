@@ -42,6 +42,7 @@ type Player struct {
 	hp    int
 	mp    int
 	speed float32
+	level int
 
 	strength     int
 	agility      int
@@ -89,9 +90,17 @@ func (player *Player) ToHit() int {
 	return player.agility
 }
 
+func (player *Player) HP() int {
+	return 4*player.strength + player.level
+}
+
 // provide for scene to use
 func (player *Player) Speed() float32 {
 	return player.speed
+}
+
+func (player *Player) Defense() int {
+	return player.strength
 }
 
 func New(playerData *data.Player, conn net.Conn, a <-chan uint32, rd <-chan interface{}, wr chan<- interface{}) *Player {
@@ -108,7 +117,7 @@ func New(playerData *data.Player, conn net.Conn, a <-chan uint32, rd <-chan inte
 		read:  rd,
 		write: wr,
 
-		heartbeat: time.Tick(50 * time.Microsecond),
+		heartbeat: time.Tick(50 * time.Millisecond),
 	}
 }
 
