@@ -31,7 +31,7 @@ type Creature interface {
 	ToHit() int
 }
 
-func Distance(p1, p2 FPoint) float32 {
+func Distance2(p1, p2 FPoint) float32 {
 	dx := p1.X - p2.X
 	dy := p1.Y - p2.Y
 	return dx*dx + dy*dy

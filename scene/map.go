@@ -5,7 +5,7 @@ import (
 	"github.com/tiancaiamao/ouster/aoi"
 	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/player"
-	// "log"
+	"log"
 	"math"
 	"time"
 )
@@ -94,26 +94,56 @@ func (m *Map) String() string {
 	return m.Map.Name
 }
 
-func (m *Map) HeartBeat() {
-	for id, handle := range m.players {
+func (m *Map) movePC() {
+	for id := 0; id < len(m.players); id++ {
+		handle := &m.players[id]
 		if handle.pc == nil {
 			continue
 		}
 
-		// process player move
 		pc := handle.pc
 		if pc.State == player.MOVE {
 			v := pc.Speed()
-			if ouster.Distance(handle.pos, handle.to) < v {
+			if ouster.Distance2(handle.pos, handle.to) <= v*v {
 				pc.State = player.STAND
 				handle.pos.X = handle.to.X
 				handle.pos.Y = handle.to.Y
+				pc.SendPosSync()
 			} else {
 				dx := handle.to.X - handle.pos.X
 				dy := handle.to.Y - handle.pos.Y
 				angle := math.Atan2(float64(dy), float64(dx))
 				vx := v * float32(math.Cos(angle))
 				vy := v * float32(math.Sin(angle))
+
+				newX := uint16(handle.pos.X + vx)
+				newY := uint16(handle.pos.Y + vy)
+
+				idx := newX*m.Width + newY
+				for _, layer := range m.Layers {
+					if layer.Type == data.BACKGROUND {
+						flag := layer.Data[idx]
+						if flag != 0 {
+							// encounter a obscure
+							pc.State = player.STAND
+							handle.pos.X = handle.to.X
+							handle.pos.Y = handle.to.Y
+							pc.SendPosSync()
+						}
+					}
+					if layer.Type == data.COLLISION {
+						flag := layer.Data[idx]
+						if flag != 0 {
+							// encounter a obscure
+							pc.State = player.STAND
+							handle.pos.X = handle.to.X
+							handle.pos.Y = handle.to.Y
+							pc.SendPosSync()
+						} else {
+							layer.Data[idx] = 1
+						}
+					}
+				}
 
 				handle.pos.X += vx
 				handle.pos.Y += vy
@@ -123,7 +153,9 @@ func (m *Map) HeartBeat() {
 			m.aoi.Update(uint32(id), aoi.ModeWatcher|aoi.ModeMarker, aoi.FPoint(handle.pos))
 		}
 	}
+}
 
+func (m *Map) moveMonster() {
 	for _, monster := range m.monsters {
 		if (monster.flag & flagDead) != 0 {
 			monster.reborn++
@@ -139,6 +171,11 @@ func (m *Map) HeartBeat() {
 
 		monster.HeartBeat(m)
 	}
+}
+
+func (m *Map) HeartBeat() {
+	m.movePC()
+	m.moveMonster()
 
 	m.aoi.Message(func(watcher uint32, marker uint32) {
 		// watcher is a player

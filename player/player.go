@@ -111,7 +111,7 @@ func New(playerData *data.Player, conn net.Conn, a <-chan uint32, rd <-chan inte
 		mp:      playerData.MP,
 		carried: playerData.Carried,
 		conn:    conn,
-		speed:   5,
+		speed:   0.5,
 
 		aoi:   a,
 		read:  rd,
@@ -193,7 +193,7 @@ type CMovePacketAck struct{}
 func (this *Player) handleSceneMessage(msg interface{}) {
 	switch msg.(type) {
 	case CMovePacketAck:
-		sendPosSync(this)
+		this.SendPosSync()
 	case packet.SMovePacket:
 		pkt := packet.Packet{
 			Id:  packet.PSMove,
@@ -209,7 +209,7 @@ func (this *Player) handleSceneMessage(msg interface{}) {
 	}
 }
 
-func sendPosSync(this *Player) {
+func (this *Player) SendPosSync() {
 	var posSync packet.PosSyncPacket
 	posSync.Cur, _ = this.Scene.Pos(this.Id)
 	posSync.To, _ = this.Scene.To(this.Id)

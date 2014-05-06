@@ -63,7 +63,7 @@ func (m *Monster) Init(meta interface{}) {
 func (m *Monster) HeartBeat(mp *Map) {
 	handle := mp.Player(m.target)
 	pc := handle.pc
-	d := ouster.Distance(m.pos, handle.pos)
+	d := ouster.Distance2(m.pos, handle.pos)
 	if d < 10 {
 		msg := packet.SkillTargetEffectPacket{
 			Skill: 1,
