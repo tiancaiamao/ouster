@@ -5,7 +5,7 @@ import (
 )
 
 var (
-	maps map[string]*Map
+	maps map[string]*Zone
 )
 
 func Initialize() {
@@ -18,7 +18,7 @@ func Initialize() {
 		"frontier_outpost",
 	}
 
-	maps = make(map[string]*Map)
+	maps = make(map[string]*Zone)
 	for i := 0; i < len(_maps); i++ {
 		name := _names[i]
 		mapData := _maps[i]
@@ -29,6 +29,6 @@ func Initialize() {
 	}
 }
 
-func Query(mapName string) *Map {
+func Query(mapName string) *Zone {
 	return maps[mapName]
 }

@@ -5,7 +5,7 @@ import (
 	"github.com/tiancaiamao/ouster/aoi"
 	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/player"
-	"log"
+	// "log"
 	"math"
 	"time"
 )
@@ -28,7 +28,7 @@ type Handle struct {
 // id 11xxxxx monster
 // id 110xxxx
 
-type Map struct {
+type Zone struct {
 	data.Map
 
 	// used to control monster's reborn
@@ -45,8 +45,8 @@ type Map struct {
 
 const maskNPC uint32 = 1 << 31
 
-func New(m *data.Map) *Map {
-	ret := new(Map)
+func New(m *data.Map) *Zone {
+	ret := new(Zone)
 	ret.players = make([]Handle, 0, 200)
 	ret.monsters = make([]Monster, len(m.Enemies))
 	// for , v := range m.Enemies {
@@ -62,14 +62,14 @@ func New(m *data.Map) *Map {
 	return ret
 }
 
-func (m *Map) Player(playerId uint32) *Handle {
+func (m *Zone) Player(playerId uint32) *Handle {
 	if playerId >= uint32(len(m.players)) {
 		return nil
 	}
 	return &m.players[playerId]
 }
 
-func (m *Map) Pos(playerId uint32) (ouster.FPoint, error) {
+func (m *Zone) Pos(playerId uint32) (ouster.FPoint, error) {
 	handle := m.Player(playerId)
 	if handle == nil {
 		return ouster.FPoint{}, ouster.NewError("query a non-exist id")
@@ -77,7 +77,7 @@ func (m *Map) Pos(playerId uint32) (ouster.FPoint, error) {
 	return handle.pos, nil
 }
 
-func (m *Map) To(playerId uint32) (ouster.FPoint, error) {
+func (m *Zone) To(playerId uint32) (ouster.FPoint, error) {
 	handle := m.Player(playerId)
 	if handle == nil {
 		return ouster.FPoint{}, ouster.NewError("query a non-exist id")
@@ -85,16 +85,16 @@ func (m *Map) To(playerId uint32) (ouster.FPoint, error) {
 	return handle.to, nil
 }
 
-func (m *Map) Creature(id uint32) ouster.Creature {
+func (m *Zone) Creature(id uint32) ouster.Creature {
 	handle := m.Player(id)
 	return handle.pc
 }
 
-func (m *Map) String() string {
+func (m *Zone) String() string {
 	return m.Map.Name
 }
 
-func (m *Map) movePC() {
+func (m *Zone) movePC() {
 	for id := 0; id < len(m.players); id++ {
 		handle := &m.players[id]
 		if handle.pc == nil {
@@ -155,7 +155,7 @@ func (m *Map) movePC() {
 	}
 }
 
-func (m *Map) moveMonster() {
+func (m *Zone) moveMonster() {
 	for _, monster := range m.monsters {
 		if (monster.flag & flagDead) != 0 {
 			monster.reborn++
@@ -173,7 +173,7 @@ func (m *Map) moveMonster() {
 	}
 }
 
-func (m *Map) HeartBeat() {
+func (m *Zone) HeartBeat() {
 	m.movePC()
 	m.moveMonster()
 
@@ -198,7 +198,7 @@ func (m *Map) HeartBeat() {
 	})
 }
 
-func (m *Map) Login(player *player.Player, pos ouster.FPoint, a chan<- uint32, rd <-chan interface{}, wr chan<- interface{}) error {
+func (m *Zone) Login(player *player.Player, pos ouster.FPoint, a chan<- uint32, rd <-chan interface{}, wr chan<- interface{}) error {
 	var handle Handle
 	handle.pc = player
 	handle.pos = pos

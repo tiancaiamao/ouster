@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-func loop(m *Map) {
+func loop(m *Zone) {
 	for {
 		for id, player := range m.players {
 			select {
@@ -30,11 +30,11 @@ func loop(m *Map) {
 	}
 }
 
-func (m *Map) Go() {
+func (m *Zone) Go() {
 	go loop(m)
 }
 
-func (m *Map) processPlayerInput(playerId uint32, msg interface{}) {
+func (m *Zone) processPlayerInput(playerId uint32, msg interface{}) {
 	switch msg.(type) {
 	case packet.CMovePacket:
 		log.Println("scene receive and process a CMovePacket")

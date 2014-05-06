@@ -226,6 +226,6 @@ func (this *Player) heartBeat() {
 
 	// send PosSync every 400 ms
 	if this.State == MOVE && (this.ticker%16) == 0 {
-		sendPosSync(this)
+		this.SendPosSync()
 	}
 }

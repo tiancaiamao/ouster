@@ -60,7 +60,7 @@ func (m *Monster) Init(meta interface{}) {
 }
 
 // a state machine
-func (m *Monster) HeartBeat(mp *Map) {
+func (m *Monster) HeartBeat(mp *Zone) {
 	handle := mp.Player(m.target)
 	pc := handle.pc
 	d := ouster.Distance2(m.pos, handle.pos)
@@ -86,7 +86,7 @@ func (m *Monster) HeartBeat(mp *Map) {
 	}
 }
 
-func boardcast(nearby []uint32, msg interface{}, mp *Map) {
+func boardcast(nearby []uint32, msg interface{}, mp *Zone) {
 	for _, playerId := range nearby {
 		p := mp.Player(playerId)
 		if p != nil {
