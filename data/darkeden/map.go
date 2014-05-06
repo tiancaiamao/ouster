@@ -1,0 +1,147 @@
+package darkeden
+
+import (
+	"encoding/binary"
+	"errors"
+	"io"
+	"log"
+)
+
+const (
+	TILE_GROUND_BLOCKED = iota
+	TILE_AIR_BLOCKED
+	TILE_UNDERGROUND_BLOCKED
+	TILE_WALKING_CREATURE
+	TILE_FLYING_CREATURE
+	TILE_BURROWING_CREATURE
+	TILE_ITEM
+	TILE_OBSTACLE
+	TILE_EFFECT
+	TILE_BUILDING
+	TILE_PORTAL
+	TILE_TERRAIN
+)
+
+type Map struct {
+	Name      string
+	Desc      string
+	ZoneType  uint8
+	ZoneID    uint16
+	ZoneLevel uint8
+	Width     uint16
+	Height    uint16
+	Data      []byte
+}
+
+func Load(smp io.Reader) (*Map, error) {
+	var tmp [32]byte
+
+	_, err := smp.Read(tmp[:4])
+	if err != nil {
+		return nil, errors.New("read version length error")
+	}
+	versionLen := binary.LittleEndian.Uint32(tmp[:4])
+	log.Println("versionLen=", versionLen)
+
+	version := make([]byte, versionLen)
+	_, err = smp.Read(version)
+	if err != nil {
+		return nil, errors.New("read version error")
+	}
+	log.Println("version=", string(version))
+
+	_, err = smp.Read(tmp[:2])
+	if err != nil {
+		return nil, errors.New("read zone id error")
+	}
+	zoneID := binary.LittleEndian.Uint16(tmp[:2])
+	log.Println("zoneID=", zoneID)
+
+	_, err = smp.Read(tmp[:2])
+	if err != nil {
+		return nil, errors.New("read zone group id error")
+	}
+	zoneGroupID := binary.LittleEndian.Uint16(tmp[:2])
+	log.Println("zoneGroupID=", zoneGroupID)
+
+	_, err = smp.Read(tmp[:4])
+	if err != nil {
+		return nil, errors.New("read zone name length error")
+	}
+	zonenameLen := binary.LittleEndian.Uint32(tmp[:4])
+	log.Println("zonenameLen=", zonenameLen)
+
+	var zoneName []byte
+	if zonenameLen > 0 {
+		zoneName := make([]byte, zonenameLen)
+		_, err = smp.Read(zoneName)
+		if err != nil {
+			return nil, errors.New("read zone name error")
+		}
+
+		log.Println("zoneName=", zoneName)
+	}
+
+	_, err = smp.Read(tmp[:1])
+	if err != nil {
+		return nil, errors.New("read zone type error")
+	}
+	zoneType := tmp[0]
+	log.Println("zoneType=", zoneType)
+
+	_, err = smp.Read(tmp[:1])
+	if err != nil {
+		return nil, errors.New("read zone level error")
+	}
+	zoneLevel := tmp[0]
+	log.Println("zoneLevel=", zoneLevel)
+
+	_, err = smp.Read(tmp[:4])
+	descLen := binary.LittleEndian.Uint32(tmp[:4])
+	log.Println("descLen=", descLen)
+
+	var desc []byte
+	if descLen > 0 {
+		desc := make([]byte, descLen)
+		_, err = smp.Read(desc)
+		if err != nil {
+			return nil, errors.New("read zone description error")
+		}
+		log.Println("desc=", desc)
+	}
+
+	_, err = smp.Read(tmp[:2])
+	if err != nil {
+		return nil, errors.New("read width error")
+	}
+	width := binary.LittleEndian.Uint16(tmp[:2])
+	log.Println("width=", width)
+
+	_, err = smp.Read(tmp[:2])
+	if err != nil {
+		return nil, errors.New("read height error")
+	}
+	height := binary.LittleEndian.Uint16(tmp[:2])
+	log.Println("height=", height)
+
+	flags := make([]byte, width*height)
+	if err != nil {
+		return nil, errors.New("read flag error")
+	}
+
+	// for y := 0; y < height; y++ {
+	// 	for x := 0; x < width; x++ {
+	//
+	// 	}
+	// }
+	return &Map{
+		Name:      string(zoneName),
+		Desc:      string(desc),
+		ZoneType:  zoneType,
+		ZoneID:    zoneID,
+		ZoneLevel: zoneLevel,
+		Width:     width,
+		Height:    height,
+		Data:      flags,
+	}, nil
+}
