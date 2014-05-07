@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/tiancaiamao/ouster/config"
 	"github.com/tiancaiamao/ouster/packet/darkeden"
 	"log"
 	"net"
@@ -8,7 +9,7 @@ import (
 )
 
 func main() {
-	ln, err := net.Listen("tcp", ":9999")
+	ln, err := net.Listen("tcp", config.LoginServerPort)
 	if err != nil {
 		panic(err)
 	}
@@ -24,11 +25,11 @@ func main() {
 }
 
 func serve(conn net.Conn) {
+	defer conn.Close()
 	for {
 		pkt, err := darkeden.Read(conn)
 		if err != nil {
 			log.Println("read packet error in loginserver's serve:", err)
-			conn.Close()
 			return
 		}
 
@@ -52,6 +53,7 @@ func serve(conn net.Conn) {
 				Key:  []byte{0, 0, 0, 32, 6, 11},
 			}
 			darkeden.Write(conn, reconnect)
+			return
 		default:
 			log.Printf("get a unknow packet: %d\n", pkt.Id())
 		}

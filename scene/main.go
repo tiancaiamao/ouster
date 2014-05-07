@@ -1,7 +1,8 @@
 package scene
 
 import (
-	"github.com/tiancaiamao/ouster/data"
+	"github.com/tiancaiamao/ouster/data/darkeden"
+	"os"
 )
 
 var (
@@ -9,24 +10,13 @@ var (
 )
 
 func Initialize() {
-	_maps := []*data.Map{
-		&data.AncientTemple,
-		&data.FrontierOutpost,
-	}
-	_names := []string{
-		"ancient_temple",
-		"frontier_outpost",
-	}
+	dir := "/Users/genius/project/vs/data/"
+	smp, _ := os.Open(dir + "limbo_lair_se.smp")
+	mapData, _ := darkeden.Load(smp)
 
-	maps = make(map[string]*Zone)
-	for i := 0; i < len(_maps); i++ {
-		name := _names[i]
-		mapData := _maps[i]
-		m := New(mapData)
-		m.Go()
-
-		maps[name] = m
-	}
+	m := New(mapData)
+	maps["test"] = m
+	m.Go()
 }
 
 func Query(mapName string) *Zone {

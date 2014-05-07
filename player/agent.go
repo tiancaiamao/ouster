@@ -1,7 +1,7 @@
 package player
 
 import (
-	"github.com/tiancaiamao/ouster/packet"
+	"github.com/tiancaiamao/ouster/packet/darkeden"
 	"log"
 )
 
@@ -27,15 +27,15 @@ func (this *Player) loop() {
 }
 
 func (player *Player) Go() {
-	read := make(chan interface{}, 1)
-	write := make(chan packet.Packet, 1)
+	read := make(chan darkeden.Packet, 1)
+	write := make(chan darkeden.Packet, 1)
 	player.send = write
 	player.client = read
 
 	// open a goroutine to read from conn
 	go func() {
 		for {
-			data, err := packet.Read(player.conn)
+			data, err := darkeden.Read(player.conn)
 			if err != nil {
 				log.Println(err)
 				player.conn.Close()
@@ -52,7 +52,7 @@ func (player *Player) Go() {
 	go func() {
 		for {
 			pkt := <-write
-			err := packet.Write(player.conn, pkt.Id, pkt.Obj)
+			err := darkeden.Write(player.conn, pkt)
 			if err != nil {
 				log.Println(err)
 				continue

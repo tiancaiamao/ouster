@@ -3,7 +3,7 @@ package scene
 import (
 	"github.com/tiancaiamao/ouster"
 	"github.com/tiancaiamao/ouster/aoi"
-	"github.com/tiancaiamao/ouster/data"
+	"github.com/tiancaiamao/ouster/data/darkeden"
 	"github.com/tiancaiamao/ouster/player"
 	// "log"
 	"math"
@@ -18,8 +18,9 @@ type Handle struct {
 	aoi   chan<- uint32
 	write chan<- interface{}
 	read  <-chan interface{}
-	pos   ouster.FPoint
-	to    ouster.FPoint
+
+	pos ouster.FPoint
+	to  ouster.FPoint
 }
 
 // id 0xxxxxx player
@@ -29,14 +30,14 @@ type Handle struct {
 // id 110xxxx
 
 type Zone struct {
-	data.Map
+	darkeden.Map
 
 	// used to control monster's reborn
 	enemyGroup []uint8
 
 	players  []Handle
 	monsters []Monster
-	aoi      *aoi.Aoi
+	aoi      *aoi.CellAoi
 
 	quit      chan struct{}
 	event     chan interface{}
@@ -45,15 +46,15 @@ type Zone struct {
 
 const maskNPC uint32 = 1 << 31
 
-func New(m *data.Map) *Zone {
+func New(m *darkeden.Map) *Zone {
 	ret := new(Zone)
 	ret.players = make([]Handle, 0, 200)
-	ret.monsters = make([]Monster, len(m.Enemies))
+	ret.monsters = make([]Monster, 0, 200)
 	// for , v := range m.Enemies {
 	// 	ret.monsters[i].Init(v)
 	// }
 
-	ret.aoi = aoi.New()
+	ret.aoi = aoi.NewCellAoi(m.Width, m.Height, 32, 32)
 
 	ret.quit = make(chan struct{})
 	ret.event = make(chan interface{})
@@ -108,7 +109,7 @@ func (m *Zone) movePC() {
 				pc.State = player.STAND
 				handle.pos.X = handle.to.X
 				handle.pos.Y = handle.to.Y
-				pc.SendPosSync()
+				// pc.SendPosSync()
 			} else {
 				dx := handle.to.X - handle.pos.X
 				dy := handle.to.Y - handle.pos.Y
@@ -116,41 +117,41 @@ func (m *Zone) movePC() {
 				vx := v * float32(math.Cos(angle))
 				vy := v * float32(math.Sin(angle))
 
-				newX := uint16(handle.pos.X + vx)
-				newY := uint16(handle.pos.Y + vy)
+				// newX := uint16(handle.pos.X + vx)
+				// newY := uint16(handle.pos.Y + vy)
 
-				idx := newX*m.Width + newY
-				for _, layer := range m.Layers {
-					if layer.Type == data.BACKGROUND {
-						flag := layer.Data[idx]
-						if flag != 0 {
-							// encounter a obscure
-							pc.State = player.STAND
-							handle.pos.X = handle.to.X
-							handle.pos.Y = handle.to.Y
-							pc.SendPosSync()
-						}
-					}
-					if layer.Type == data.COLLISION {
-						flag := layer.Data[idx]
-						if flag != 0 {
-							// encounter a obscure
-							pc.State = player.STAND
-							handle.pos.X = handle.to.X
-							handle.pos.Y = handle.to.Y
-							pc.SendPosSync()
-						} else {
-							layer.Data[idx] = 1
-						}
-					}
-				}
+				// idx := newX*m.Width + newY
+				// for _, layer := range m.Layers {
+				//					 if layer.Type == data.BACKGROUND {
+				//						 flag := layer.Data[idx]
+				//						 if flag != 0 {
+				//							 // encounter a obscure
+				//							 pc.State = player.STAND
+				//							 handle.pos.X = handle.to.X
+				//							 handle.pos.Y = handle.to.Y
+				//							 pc.SendPosSync()
+				//						 }
+				//					 }
+				//					 if layer.Type == data.COLLISION {
+				//						 flag := layer.Data[idx]
+				//						 if flag != 0 {
+				//							 // encounter a obscure
+				//							 pc.State = player.STAND
+				//							 handle.pos.X = handle.to.X
+				//							 handle.pos.Y = handle.to.Y
+				//							 pc.SendPosSync()
+				//						 } else {
+				//							 layer.Data[idx] = 1
+				//						 }
+				//					 }
+				//				 }
 
 				handle.pos.X += vx
 				handle.pos.Y += vy
 			}
 
 			// aoi update
-			m.aoi.Update(uint32(id), aoi.ModeWatcher|aoi.ModeMarker, aoi.FPoint(handle.pos))
+			// m.aoi.Update(uint32(id), aoi.ModeWatcher|aoi.ModeMarker, aoi.FPoint(handle.pos))
 		}
 	}
 }
@@ -177,32 +178,33 @@ func (m *Zone) HeartBeat() {
 	m.movePC()
 	m.moveMonster()
 
-	m.aoi.Message(func(watcher uint32, marker uint32) {
-		// watcher is a player
-		if (watcher & maskNPC) == 0 {
-			handle := &m.players[watcher]
-			if handle.pc != nil {
-				handle.aoi <- marker
-			}
-		}
-
-		// marker is a monster
-		if (marker & maskNPC) != 0 {
-			id := marker &^ maskNPC
-			monster := &m.monsters[id]
-			if (monster.flag & flagActive) == 0 {
-				monster.flag |= flagActive
-				monster.target = watcher
-			}
-		}
-	})
+	// m.aoi.Message(func(watcher uint32, marker uint32) {
+	// 	// watcher is a player
+	// 	if (watcher & maskNPC) == 0 {
+	// 		handle := &m.players[watcher]
+	// 		if handle.pc != nil {
+	// 			handle.aoi <- marker
+	// 		}
+	// 	}
+	//
+	// 	// marker is a monster
+	// 	if (marker & maskNPC) != 0 {
+	// 		id := marker &^ maskNPC
+	// 		monster := &m.monsters[id]
+	// 		if (monster.flag & flagActive) == 0 {
+	// 			monster.flag |= flagActive
+	// 			monster.target = watcher
+	// 		}
+	// 	}
+	// })
 }
 
-func (m *Zone) Login(player *player.Player, pos ouster.FPoint, a chan<- uint32, rd <-chan interface{}, wr chan<- interface{}) error {
+func (m *Zone) Login(player *player.Player, x uint16, y uint16, a chan<- uint32, rd <-chan interface{}, wr chan<- interface{}) error {
 	var handle Handle
 	handle.pc = player
-	handle.pos = pos
-	handle.to = pos
+	handle.pos.X = float32(x)
+	handle.pos.Y = float32(y)
+	handle.to = handle.pos
 	handle.read = rd
 	handle.write = wr
 
@@ -212,7 +214,7 @@ func (m *Zone) Login(player *player.Player, pos ouster.FPoint, a chan<- uint32, 
 	player.Id = uint32(idx)
 	player.Scene = m
 
-	m.aoi.Update(player.Id, aoi.ModeWatcher|aoi.ModeMarker, aoi.FPoint(pos))
+	// m.aoi.Update(player.Id, aoi.ModeWatcher|aoi.ModeMarker, aoi.FPoint(pos))
 
 	return nil
 }

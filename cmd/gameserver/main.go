@@ -2,9 +2,8 @@ package main
 
 import (
 	// "github.com/tiancaiamao/ouster"
-	"github.com/tiancaiamao/ouster"
+	// "github.com/tiancaiamao/ouster"
 	"github.com/tiancaiamao/ouster/config"
-	"github.com/tiancaiamao/ouster/login"
 	"github.com/tiancaiamao/ouster/player"
 	"github.com/tiancaiamao/ouster/scene"
 	"log"
@@ -16,7 +15,7 @@ func main() {
 
 	scene.Initialize()
 
-	listener, err := net.Listen("tcp", config.ServerPort)
+	listener, err := net.Listen("tcp", config.GameServerPort)
 	checkError(err)
 
 	log.Println("Game Server OK.")
@@ -37,24 +36,19 @@ func checkError(err error) {
 
 func handleClient(conn net.Conn) {
 	log.Println("accept a connection...")
-	// check username/password, load player info, and so on...
-	playerData, err := login.Login(conn)
-	if err != nil {
-		return
-	}
+	defer conn.Close()
 
 	aoi := make(chan uint32)
 	scene2player := make(chan interface{})
 	player2scene := make(chan interface{})
 
-	agent := player.New(playerData, conn, aoi, scene2player, player2scene)
+	agent := player.New(conn, aoi, scene2player, player2scene)
 
 	// get the map that player current in
-	m := scene.Query(playerData.Map)
-	err = m.Login(agent, ouster.FPoint{
-		X: float32(playerData.Pos.X),
-		Y: float32(playerData.Pos.Y),
-	}, aoi, player2scene, scene2player)
+	m := scene.Query("test")
+
+	err := m.Login(agent, 40, 50, aoi, player2scene, scene2player)
+
 	if err != nil {
 		// login to scene error
 		return

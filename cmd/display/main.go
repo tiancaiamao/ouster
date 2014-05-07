@@ -48,7 +48,7 @@ func main() {
 }
 
 func Login() (net.Conn, error) {
-	conn, err := net.Dial("tcp", "127.0.0.1"+config.ServerPort)
+	conn, err := net.Dial("tcp", "127.0.0.1"+config.GameServerPort)
 	if err != nil {
 		return nil, err
 	}

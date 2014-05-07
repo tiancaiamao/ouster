@@ -50,7 +50,7 @@ var idx2dir [8][2]int = [8][2]int{
 	[2]int{-1, 0},
 }
 
-func NewCellAoi(mapWidth uint16, mapHeight, uint16, cellWidth uint16, cellHeight uint16) *CellAoi {
+func NewCellAoi(mapWidth, mapHeight, cellWidth, cellHeight uint16) *CellAoi {
 	ret := &CellAoi{
 		mapWidth:   mapWidth,
 		mapHeight:  mapHeight,

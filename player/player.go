@@ -2,9 +2,10 @@ package player
 
 import (
 	"github.com/tiancaiamao/ouster"
-	"github.com/tiancaiamao/ouster/data"
-	"github.com/tiancaiamao/ouster/packet"
-	"github.com/tiancaiamao/ouster/skill"
+	// "github.com/tiancaiamao/ouster/data"
+	"github.com/tiancaiamao/ouster/packet/darkeden"
+	// "github.com/tiancaiamao/ouster/skill"
+	"log"
 	"net"
 	"time"
 )
@@ -51,12 +52,12 @@ type Player struct {
 	carried []int
 
 	conn   net.Conn
-	client <-chan interface{} // actually, a XXXPacket struct
-	send   chan<- packet.Packet
+	client <-chan darkeden.Packet
+	send   chan<- darkeden.Packet
 	aoi    <-chan uint32
 
-	read      <-chan interface{} // alloc in player.New
-	write     chan<- interface{} // alloc in player.New
+	read      <-chan interface{}
+	write     chan<- interface{}
 	nearby    []uint32
 	heartbeat <-chan time.Time
 	ticker    uint32
@@ -103,15 +104,14 @@ func (player *Player) Defense() int {
 	return player.strength
 }
 
-func New(playerData *data.Player, conn net.Conn, a <-chan uint32, rd <-chan interface{}, wr chan<- interface{}) *Player {
+func New(conn net.Conn, a <-chan uint32, rd <-chan interface{}, wr chan<- interface{}) *Player {
 	return &Player{
-		name:    playerData.Name,
-		class:   PlayerClass(playerData.Class),
-		hp:      playerData.HP,
-		mp:      playerData.MP,
-		carried: playerData.Carried,
-		conn:    conn,
-		speed:   0.5,
+		name:  "test",
+		class: 1,
+		hp:    110,
+		mp:    110,
+		conn:  conn,
+		speed: 0.5,
 
 		aoi:   a,
 		read:  rd,
@@ -125,33 +125,16 @@ func (player *Player) NearBy() []uint32 {
 	return player.nearby
 }
 
-func (this *Player) handleClientMessage(msg interface{}) {
-	switch msg.(type) {
-	case packet.CMovePacket:
-		move := msg.(packet.CMovePacket)
-		this.write <- move
-	case packet.PlayerInfoPacket:
-		info := msg.(packet.PlayerInfoPacket)
-		for k, _ := range info {
-			switch k {
-			case "name":
-				info["name"] = this.name
-			case "hp":
-				info["hp"] = this.hp
-			case "mp":
-				info["mp"] = this.mp
-			case "speed":
-				info["speed"] = this.speed
-			case "pos":
-				info["pos"], _ = this.Scene.Pos(this.Id)
-			case "scene":
-				info["scene"] = this.Scene.String()
-			}
-		}
-		this.send <- packet.Packet{packet.PPlayerInfo, info}
-	case packet.SkillPacket:
-		raw := msg.(packet.SkillPacket)
-		this.execute(raw)
+func (player *Player) handleClientMessage(pkt darkeden.Packet) {
+	switch pkt.Id() {
+	case darkeden.PACKET_CG_CONNECT:
+		player.send <- &darkeden.GCUpdateInfoPacket{}
+	case darkeden.PACKET_CG_READY:
+		log.Println("get a CG Ready Packet!!!")
+	case darkeden.PACKET_CG_MOVE:
+		player.write <- pkt
+	case darkeden.PACKET_CG_ATTACK:
+	case darkeden.PACKET_CG_BLOOD_DRAIN:
 	}
 }
 
@@ -168,64 +151,31 @@ type SkillEffect struct {
 	Hurt int
 }
 
-func (player *Player) execute(pkt packet.SkillPacket) {
-	skl := skill.Query(pkt.Id)
-	switch skl.(type) {
-	case skill.SelfSkill:
-
-	case skill.TargetSkill:
-		skill := skl.(skill.TargetSkill)
-		target := player.Scene.Creature(pkt.Target)
-		hurt, ok := skill.ExecuteTarget(player, target)
-
-		player.write <- SkillEffect{
-			Id:   pkt.Id,
-			To:   pkt.Target,
-			Succ: ok,
-			Hurt: hurt,
-		}
-	case skill.RegionSkill:
-	}
-}
+// func (player *Player) execute(pkt packet.SkillPacket) {
+// 	skl := skill.Query(pkt.Id)
+// 	switch skl.(type) {
+// 	case skill.SelfSkill:
+//
+// 	case skill.TargetSkill:
+// 		skill := skl.(skill.TargetSkill)
+// 		target := player.Scene.Creature(pkt.Target)
+// 		hurt, ok := skill.ExecuteTarget(player, target)
+//
+// 		player.write <- SkillEffect{
+// 			Id:   pkt.Id,
+// 			To:   pkt.Target,
+// 			Succ: ok,
+// 			Hurt: hurt,
+// 		}
+// 	case skill.RegionSkill:
+// 	}
+// }
 
 type CMovePacketAck struct{}
 
 func (this *Player) handleSceneMessage(msg interface{}) {
-	switch msg.(type) {
-	case CMovePacketAck:
-		this.SendPosSync()
-	case packet.SMovePacket:
-		pkt := packet.Packet{
-			Id:  packet.PSMove,
-			Obj: msg,
-		}
-		this.send <- pkt
-	case packet.SkillTargetEffectPacket:
-		pkt := packet.Packet{
-			Id:  packet.PSkillTargetEffect,
-			Obj: msg,
-		}
-		this.send <- pkt
-	}
-}
-
-func (this *Player) SendPosSync() {
-	var posSync packet.PosSyncPacket
-	posSync.Cur, _ = this.Scene.Pos(this.Id)
-	posSync.To, _ = this.Scene.To(this.Id)
-
-	pkt := packet.Packet{
-		Id:  packet.PPosSync,
-		Obj: posSync,
-	}
-	this.send <- pkt
 }
 
 func (this *Player) heartBeat() {
 	this.ticker++
-
-	// send PosSync every 400 ms
-	if this.State == MOVE && (this.ticker%16) == 0 {
-		this.SendPosSync()
-	}
 }

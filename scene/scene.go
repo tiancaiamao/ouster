@@ -2,6 +2,7 @@ package scene
 
 import (
 	"github.com/tiancaiamao/ouster/packet"
+	"github.com/tiancaiamao/ouster/packet/darkeden"
 	"github.com/tiancaiamao/ouster/player"
 	"log"
 )
@@ -36,6 +37,8 @@ func (m *Zone) Go() {
 
 func (m *Zone) processPlayerInput(playerId uint32, msg interface{}) {
 	switch msg.(type) {
+	case darkeden.CGMovePacket:
+
 	case packet.CMovePacket:
 		log.Println("scene receive and process a CMovePacket")
 		raw := msg.(packet.CMovePacket)
