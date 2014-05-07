@@ -22,6 +22,16 @@ const (
 	TILE_TERRAIN
 )
 
+const (
+	NO_SAFE_ZONE       = 0x00
+	SLAYER_SAFE_ZONE   = 0x01
+	VAMPIRE_SAFE_ZONE  = 0x02
+	COMPLETE_SAFE_ZONE = 0x04
+	NO_PK_ZONE         = 0x08
+	SAFE_ZONE          = 0x17
+	OUSTERS_SAFE_ZONE  = 0x10
+)
+
 type Map struct {
 	Name      string
 	Desc      string
@@ -68,6 +78,7 @@ func Load(smp io.Reader) (*Map, error) {
 	if err != nil {
 		return nil, errors.New("read zone name length error")
 	}
+	log.Println("zonenameLen byte = ", tmp[:4])
 	zonenameLen := binary.LittleEndian.Uint32(tmp[:4])
 	log.Println("zonenameLen=", zonenameLen)
 
