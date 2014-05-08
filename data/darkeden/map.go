@@ -135,7 +135,9 @@ func Load(smp io.Reader) (*Map, error) {
 	height := binary.LittleEndian.Uint16(tmp[:2])
 	// log.Println("height=", height)
 
-	flags := make([]byte, width*height)
+	// NOTE: use width*height directly overflow uint16 and get 0 !!!
+	flags := make([]byte, int(width)*int(height))
+	_, err = smp.Read(flags)
 	if err != nil {
 		return nil, errors.New("read flag error")
 	}
