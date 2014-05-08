@@ -1,6 +1,7 @@
 package player
 
 import (
+	"bytes"
 	"github.com/tiancaiamao/ouster/packet/darkeden"
 	"log"
 )
@@ -52,11 +53,16 @@ func (player *Player) Go() {
 	go func() {
 		for {
 			pkt := <-write
+			log.Println("write channel get a pkt ", pkt.String())
 			err := darkeden.Write(player.conn, pkt)
 			if err != nil {
 				log.Println(err)
 				continue
 			}
+
+			buf := &bytes.Buffer{}
+			darkeden.Write(buf, pkt)
+			log.Println("send packet to client: ", buf.Bytes())
 		}
 	}()
 

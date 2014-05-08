@@ -94,18 +94,18 @@ func (rc *LCReconnectPacket) String() string {
 }
 func (rc *LCReconnectPacket) Bytes() []byte {
 	//[5 13 49 57 50 46 49 54 56 46 49 46 49 50 51 14 39 0 0 0 32 6 11]
-	sz := 1 + len(rc.Ip) + 2 + 6
+	sz := 2 + len(rc.Ip) + 2 + 6
 	ret := make([]byte, sz)
 	ret[0] = 5
 	ret[1] = byte(len(rc.Ip))
 	for i := 0; i < len(rc.Ip); i++ {
-		ret[i] = rc.Ip[i]
+		ret[i+2] = rc.Ip[i]
 	}
 
-	binary.LittleEndian.PutUint16(ret[1+len(rc.Ip):], rc.Port)
+	binary.LittleEndian.PutUint16(ret[2+len(rc.Ip):], rc.Port)
 
 	for i := 0; i < len(rc.Key); i++ {
-		ret[1+len(rc.Ip)+2+i] = rc.Key[i]
+		ret[4+len(rc.Ip)+i] = rc.Key[i]
 	}
 	return ret
 }

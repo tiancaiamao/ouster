@@ -1,8 +1,7 @@
 package scene
 
 import (
-	"github.com/tiancaiamao/ouster/data/darkeden"
-	"os"
+	"github.com/tiancaiamao/ouster/data"
 )
 
 var (
@@ -10,13 +9,12 @@ var (
 )
 
 func Initialize() {
-	dir := "/Users/genius/project/vs/data/"
-	smp, _ := os.Open(dir + "limbo_lair_se.smp")
-	mapData, _ := darkeden.Load(smp)
+	maps = make(map[string]*Zone)
+	maps["limbo_lair_se"] = New(data.LimboLairSE)
 
-	m := New(mapData)
-	maps["test"] = m
-	m.Go()
+	for _, m := range maps {
+		m.Go()
+	}
 }
 
 func Query(mapName string) *Zone {

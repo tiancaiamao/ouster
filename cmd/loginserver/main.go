@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	// "os"
+	"bytes"
 )
 
 func main() {
@@ -48,10 +49,14 @@ func serve(conn net.Conn) {
 			darkeden.Write(conn, darkeden.LCVersionCheckOKPacket{})
 		case darkeden.PACKET_CL_SELECT_PC:
 			reconnect := &darkeden.LCReconnectPacket{
-				Ip:   "192.168.1.123",
+				Ip:   "192.168.1.2",
 				Port: 9998,
 				Key:  []byte{0, 0, 0, 32, 6, 11},
 			}
+
+			stdout := &bytes.Buffer{}
+			darkeden.Write(stdout, reconnect)
+			log.Println(stdout.Bytes())
 			darkeden.Write(conn, reconnect)
 			return
 		default:

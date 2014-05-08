@@ -152,7 +152,7 @@ const (
 	PACKET_CG_USE_POTION_FROM_INVENTORY
 	PACKET_CG_USE_POTION_FROM_QUICKSLOT
 	PACKET_CG_USE_POWER_POINT
-	PACKET_CG_VERIFY_TIME
+	PACKET_CG_VERIFY_TIME = 142
 	PACKET_CG_VISIBLE
 	PACKET_CG_WHISPER
 	PACKET_CG_WITHDRAW_PET
@@ -530,6 +530,9 @@ func init() {
 	table[PACKET_CG_READY] = func([]byte) (Packet, error) {
 		return CGReadyPacket{}, nil
 	}
+	table[PACKET_CG_VERIFY_TIME] = func([]byte) (Packet, error) {
+		return CGVerifyTimePacket{}, nil
+	}
 }
 
 func Read(reader io.Reader) (ret Packet, err error) {
@@ -590,14 +593,14 @@ func Write(writer io.Writer, pkt Packet) error {
 	}
 
 	buf := b.Bytes()
-	log.Println("the packet data is ", buf)
+	// log.Println("the packet data is ", buf)
 	sz := PacketSize(len(buf) - 1)
 	err = binary.Write(writer, binary.LittleEndian, sz)
 	if err != nil {
 		return err
 	}
 
-	log.Println("before...")
+	//	log.Println("before...")
 	var off int
 	for off < len(buf) {
 		n, err := writer.Write(buf[off:])
@@ -607,7 +610,7 @@ func Write(writer io.Writer, pkt Packet) error {
 
 		off += n
 	}
-	log.Println("after...")
+	//	log.Println("after...")
 
 	return nil
 }

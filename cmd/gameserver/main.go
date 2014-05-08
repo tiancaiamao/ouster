@@ -45,8 +45,10 @@ func handleClient(conn net.Conn) {
 	agent := player.New(conn, aoi, scene2player, player2scene)
 
 	// get the map that player current in
-	m := scene.Query("test")
-
+	m := scene.Query("limbo_lair_se")
+	if m == nil {
+		panic("what the fuck??")
+	}
 	err := m.Login(agent, 40, 50, aoi, player2scene, scene2player)
 
 	if err != nil {

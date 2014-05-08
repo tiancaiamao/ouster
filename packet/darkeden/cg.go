@@ -29,7 +29,8 @@ func readConnect(buf []byte) (Packet, error) {
 	return ret, nil
 }
 
-type CGReadyPacket struct {}
+type CGReadyPacket struct{}
+
 func (ready CGReadyPacket) Id() PacketID {
 	return PACKET_CG_READY
 }
@@ -51,4 +52,13 @@ func (move CGMovePacket) String() string {
 }
 func readMove(buf []byte) (Packet, error) {
 	return nil, nil
+}
+
+type CGVerifyTimePacket struct{}
+
+func (verifyTime CGVerifyTimePacket) Id() PacketID {
+	return PACKET_CG_VERIFY_TIME
+}
+func (verifyTime CGVerifyTimePacket) String() string {
+	return "verify time"
 }
