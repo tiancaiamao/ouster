@@ -131,11 +131,20 @@ func (player *Player) handleClientMessage(pkt darkeden.Packet) {
 		player.send <- &darkeden.GCUpdateInfoPacket{}
 	case darkeden.PACKET_CG_READY:
 		log.Println("get a CG Ready Packet!!!")
-		// don't what's this packet
-		//	player.conn.Write([]byte{85, 1, 3, 0, 0, 0, 2, 145, 237, 2, 62, 1, 4, 0, 0, 0, 3, 0, 0, 0, 0, 105, 1, 3, 0, 0, 0, 4, 1, 1, 0, 0, 61, 1, 1, 0, 0, 0, 5, 0, 19, 1, 17, 0, 0, 0, 6, 5, 18, 40, 0, 19, 50, 0, 20, 80, 0, 16, 33, 0, 17, 35, 0, 0, 173, 0, 26, 0, 0, 0, 7, 80, 48, 0, 0, 8, 194, 179, 181, 199, 182, 224, 183, 242, 0, 0, 150, 235, 1, 174, 0, 174, 0, 1, 0, 0, 0, 34, 1, 6, 0, 0, 0, 8, 31, 0, 100, 0, 0, 0, 32, 1, 15, 0, 0, 0, 9, 3, 0, 0, 5, 0, 1, 0, 1, 30, 0, 2, 0, 1, 30, 0, 249, 0, 1, 0, 0, 0, 10, 0, 248, 0, 1, 0, 0, 0, 11, 0, 31, 1, 24, 0, 0, 0, 12, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 185, 0, 27, 0, 0, 0, 48, 176, 47, 0, 0, 73, 0, 8, 200, 248, 182, 224, 210, 193, 182})
-		player.conn.Write([]byte{85, 1, 3, 0, 0, 0, 2, 145, 237, 2})
+		player.send <- &darkeden.GCSetPositionPacket{
+			X:   145,
+			Y:   237,
+			Dir: 2,
+		}
 	case darkeden.PACKET_CG_MOVE:
 		player.write <- pkt
+		move := pkt.(darkeden.CGMovePacket)
+		moveOk := darkeden.GCMoveOKPacket{
+			Dir: move.Dir,
+			X:   move.X,
+			Y:   move.Y,
+		}
+		player.send <- moveOk
 	case darkeden.PACKET_CG_ATTACK:
 	case darkeden.PACKET_CG_BLOOD_DRAIN:
 	case darkeden.PACKET_CG_VERIFY_TIME:

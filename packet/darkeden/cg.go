@@ -39,9 +39,9 @@ func (ready CGReadyPacket) String() string {
 }
 
 type CGMovePacket struct {
+	Dir uint8
 	X   uint8
 	Y   uint8
-	Dir uint8
 }
 
 func (move CGMovePacket) Id() PacketID {
@@ -51,7 +51,12 @@ func (move CGMovePacket) String() string {
 	return "move"
 }
 func readMove(buf []byte) (Packet, error) {
-	return nil, nil
+	ret := CGMovePacket{
+		Dir: buf[0],
+		X:   buf[1],
+		Y:   buf[2],
+	}
+	return ret, nil
 }
 
 type CGVerifyTimePacket struct{}
@@ -61,4 +66,27 @@ func (verifyTime CGVerifyTimePacket) Id() PacketID {
 }
 func (verifyTime CGVerifyTimePacket) String() string {
 	return "verify time"
+}
+
+type CGAttackPacket struct {
+	ObjectID uint32
+	X        uint8
+	Y        uint8
+	Dir      uint8
+}
+
+func (attack CGAttackPacket) Id() PacketID {
+	return PACKET_CG_ATTACK
+}
+func (attack CGAttackPacket) String() string {
+	return "attack"
+}
+func (attack CGAttackPacket) Bytes() []byte {
+	// [160 55 218 53 0 0 39 189]
+	ret := make([]byte, 7)
+	binary.LittleEndian.PutUint32(ret, attack.ObjectID)
+	ret[4] = attack.X
+	ret[5] = attack.Y
+	ret[6] = attack.Dir
+	return ret
 }

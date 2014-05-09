@@ -4,7 +4,11 @@ import (
 	"time"
 )
 
-type GCMoveOKPacket struct{}
+type GCMoveOKPacket struct {
+	Dir uint8
+	X   uint8
+	Y   uint8
+}
 
 func (moveOk GCMoveOKPacket) Id() PacketID {
 	return PACKET_GC_MOVE_OK
@@ -12,8 +16,8 @@ func (moveOk GCMoveOKPacket) Id() PacketID {
 func (moveOk GCMoveOKPacket) String() string {
 	return "move ok"
 }
-func (moveOK GCMoveOKPacket) Bytes() []byte {
-	return []byte{}
+func (moveOk GCMoveOKPacket) Bytes() []byte {
+	return []byte{moveOk.Dir, moveOk.X, moveOk.Y, 217}
 }
 
 type NPCType struct{}
@@ -90,4 +94,70 @@ func (updateInfo *GCUpdateInfoPacket) Bytes() []byte {
 		0, 0, 4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 122, 48, 0, 0, 32, 1, 0, 0, 232, 3, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 3, 123, 48, 0,
 		0, 44, 0, 0, 2, 58, 38, 32, 28, 0, 0, 0, 0, 4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 4, 0, 0, 2, 146, 1, 54, 66, 109, 0, 246, 224, 0, 21, 0, 145, 237, 190, 7, 3, 19, 16,
 		10, 40, 0, 0, 13, 2, 0, 5, 9, 0, 61, 0, 62, 0, 64, 0, 163, 0, 0, 0, 17, 0, 0, 0, 0, 24, 125, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 52, 1, 5, 0, 0, 0, 1, 0, 117, 48, 0, 0}
+}
+
+type GCSetPositionPacket struct {
+	X   uint8
+	Y   uint8
+	Dir uint8
+}
+
+func (setPosition GCSetPositionPacket) Id() PacketID {
+	return PACKET_GC_SET_POSITION
+}
+func (setPosition GCSetPositionPacket) String() string {
+	return "set position"
+}
+func (setPosition GCSetPositionPacket) Bytes() []byte {
+	return []byte{setPosition.Dir, setPosition.X, setPosition.Y, 2}
+}
+
+type GCAddBat struct {
+	ObjectID  uint32
+	Name      string
+	ItemType  uint16
+	X         uint8
+	Y         uint8
+	Dir       uint8
+	CurrentHP uint16
+	MaxHP     uint16
+	GuildID   uint16
+	Color     uint16
+}
+
+func (addBat *GCAddBat) Id() PacketID {
+	return PACKET_GC_ADD_BAT
+}
+func (addBat *GCAddBat) String() string {
+	return "add bat"
+}
+func (addBat *GCAddBat) Bytes() []byte {
+	// [7 80 48 0 0 8 194 179 181 199 182 224 183 242 0 0 150 235 1 174 0 174 0 1 0 0 0]
+	return []byte{7, 80, 48, 0, 0, 8, 194, 179, 181, 199, 182, 224, 183, 242, 0, 0, 150, 235, 1, 174, 0, 174, 0, 1, 0, 0, 0}
+}
+
+type GCAddMonsterFromBurrowing struct {
+	ObjectID    uint32       // object id
+	MonsterType uint16       // monster type
+	MonsterName string       // monster name
+	MainColor   uint16       // monster main color
+	SubColor    uint16       // monster sub color
+	X           uint8        // x coord.
+	Y           uint8        // y coord.
+	Dir         uint8        // monster direction
+	EffectInfo  []EffectInfo // effects info on monster
+	CurrentHP   uint16       // current hp
+	MaxHP       uint16       // maximum hp
+}
+
+func (monster *GCAddMonsterFromBurrowing) Id() PacketID {
+	return PACKET_GC_ADD_MONSTER_FROM_BURROWING
+}
+func (monster *GCAddMonsterFromBurrowing) String() string {
+	return "add monster from burrowing"
+}
+func (monster *GCAddMonsterFromBurrowing) Bytes() []byte {
+	// 185 0 27 0 0 0 48 176 47 0 0 73 0 8 200 248 182 224 210 193 182 247 36 231 240 24 148 227 4 0 156 0 156 0
+	// 185 0 27 0 0 0 48 62 48 0 0 213 0 8 185 197 181 194 203 185 182 161 53 0 0 0 137 238 0 0 54 1 54 1
+	return []byte{48, 62, 48, 0, 0, 213, 0, 8, 185, 197, 181, 194, 203, 185, 182, 161, 53, 0, 0, 0, 137, 238, 0, 0, 54, 1, 54, 1}
 }
