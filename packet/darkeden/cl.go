@@ -14,7 +14,6 @@ func (login *CLLoginPacket) String() string {
 }
 
 func readLogin(buf []byte) (Packet, error) {
-	buf = buf[1:]
 	szUsername := int(buf[0])
 	szPassword := int(buf[1+szUsername])
 	return &CLLoginPacket{
@@ -82,10 +81,10 @@ func (sp *CLSelectPcPacket) String() string {
 	return "select pc"
 }
 func readSelectPc(buf []byte) (Packet, error) {
-	//	[5 8 178 187 212 217 209 218 202 206 0]
-	sz := buf[1]
+	//	[8 178 187 212 217 209 218 202 206 0]
+	sz := buf[0]
 	return &CLSelectPcPacket{
-		Type: PCType(buf[0]),
-		Name: string(buf[2 : 2+sz]),
+		Type: PCType(buf[len(buf)-1]),
+		Name: string(buf[1 : 1+sz]),
 	}, nil
 }

@@ -33,6 +33,17 @@ type scene interface {
 	String() string
 }
 
+const (
+	LEFT      = 53
+	RIGHT     = 49
+	UP        = 34
+	DOWN      = 55
+	LEFTUP    = 50
+	RIGHTUP   = 48
+	LEFTDOWN  = 52
+	RIGHTDOWN = 54
+)
+
 // mostly the same as data.Player, but this is in memory instead.
 type Player struct {
 	Id    uint32 // set by scene.Login

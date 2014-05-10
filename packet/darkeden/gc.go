@@ -17,7 +17,26 @@ func (moveOk GCMoveOKPacket) String() string {
 	return "move ok"
 }
 func (moveOk GCMoveOKPacket) Bytes() []byte {
-	return []byte{moveOk.Dir, moveOk.X, moveOk.Y, 217}
+	return []byte{0, moveOk.X, moveOk.Dir, moveOk.Y}
+}
+
+type GCMovePacket struct {
+	ObjectID uint32
+	X        uint8
+	Y        uint8
+	Dir      uint8
+}
+
+func (move GCMovePacket) Id() PacketID {
+	return PACKET_GC_MOVE
+}
+func (move GCMovePacket) String() string {
+	return "move"
+}
+func (move GCMovePacket) Bytes() []byte {
+	ret := []byte{48, 0, 0, 0, 0, move.X, move.Y, move.Dir}
+	binary.LittleEndian.PutUint32(ret[1:])
+	return ret
 }
 
 type NPCType struct{}
@@ -160,4 +179,31 @@ func (monster *GCAddMonsterFromBurrowing) Bytes() []byte {
 	// 185 0 27 0 0 0 48 176 47 0 0 73 0 8 200 248 182 224 210 193 182 247 36 231 240 24 148 227 4 0 156 0 156 0
 	// 185 0 27 0 0 0 48 62 48 0 0 213 0 8 185 197 181 194 203 185 182 161 53 0 0 0 137 238 0 0 54 1 54 1
 	return []byte{48, 62, 48, 0, 0, 213, 0, 8, 185, 197, 181, 194, 203, 185, 182, 161, 53, 0, 0, 0, 137, 238, 0, 0, 54, 1, 54, 1}
+}
+
+type GCAddMonster struct {
+	ObjectID    uint32
+	MonsterType uint16
+	MonsterName string
+	MainColor   uint16
+	SubColor    uint16
+	X           uint8
+	Y           uint8
+	Dir         uint8
+	EffectInfo  []EffectInfo
+	CurrentHP   uint16
+	MaxHP       uint16
+	FromFlag    byte
+}
+
+func (monster *GCAddMonster) Id() PacketID {
+	return PACKET_GC_ADD_MONSTER
+}
+func (monster *GCAddMonster) String() string {
+	return "add monster"
+}
+func (monster *GCAddMonster) Bytes() []byte {
+	//[47 218 47 0 0 223 0 6 196 218 185 254 203 185 7 0 174 0 102 79 5 0 133 0 133 0 0]
+	//[123 166 47 0 0 72 0 4 192 188 197 181 5 137 133 0 164 214 6 0 156 0 156 0 0]
+	return
 }

@@ -193,7 +193,7 @@ const (
 	PACKET_GC_ADD_INJURIOUS_CREATURE
 	PACKET_GC_ADD_INSTALLED_MINE_TO_ZONE
 	PACKET_GC_ADD_ITEM_TO_ITEM_VERIFY
-	PACKET_GC_ADD_MONSTER
+	PACKET_GC_ADD_MONSTER = 183
 	PACKET_GC_ADD_MONSTER_CORPSE
 	PACKET_GC_ADD_MONSTER_FROM_BURROWING = 185
 	PACKET_GC_ADD_MONSTER_FROM_TRANSFORMATION
@@ -539,6 +539,7 @@ func init() {
 func Read(reader io.Reader) (ret Packet, err error) {
 	var id PacketID
 	var sz PacketSize
+	var seq uint8
 	var buf [300]byte
 
 	err = binary.Read(reader, binary.LittleEndian, &id)
@@ -551,18 +552,23 @@ func Read(reader io.Reader) (ret Packet, err error) {
 		return
 	}
 
-	log.Printf("read a packet id = %d, sz = %d\n", id, sz)
-
-	n, err := io.ReadFull(reader, buf[:sz+1])
+	err = binary.Read(reader, binary.LittleEndian, &seq)
 	if err != nil {
 		return
 	}
-	if n != int(sz+1) {
+
+	log.Printf("read a packet id = %d, sz = %d\n", id, sz)
+
+	n, err := io.ReadFull(reader, buf[sz])
+	if err != nil {
+		return
+	}
+	if n != int(sz) {
 		err = errors.New("read get less data than needed")
 		return
 	}
 
-	log.Println("ReadFull get:", buf[:sz+1])
+	log.Println("ReadFull get:", buf[:sz])
 
 	// ignore := []byte{0}
 	// n, err = reader.Read(ignore)
@@ -575,12 +581,24 @@ func Read(reader io.Reader) (ret Packet, err error) {
 	}
 
 	// log.Println("befor exec func")
-	ret, err = f(buf[:sz+1])
+	ret, err = f(buf[:sz])
 	// log.Println("after exec func and ret=", ret)
 	return
 }
 
-func Write(writer io.Writer, pkt Packet) error {
+type PacketWriter interface {
+	Write(writer io.Writer, pkt Packet) error
+}
+
+type writer struct {
+	Seq uint8
+}
+
+func NewWriter() *writer {
+	return &writer{}
+}
+
+func (w *writer) Write(writer io.Writer, pkt Packet) error {
 	id := pkt.Id()
 	err := binary.Write(writer, binary.LittleEndian, id)
 	if err != nil {
@@ -594,13 +612,18 @@ func Write(writer io.Writer, pkt Packet) error {
 
 	buf := b.Bytes()
 	// log.Println("the packet data is ", buf)
-	sz := PacketSize(len(buf) - 1)
+	sz := PacketSize(len(buf))
 	err = binary.Write(writer, binary.LittleEndian, sz)
 	if err != nil {
 		return err
 	}
 
-	//	log.Println("before...")
+	err = binary.Write(write, binary.LittleEndian, w.Seq)
+	if err != nil {
+		return err
+	}
+	w.Seq++
+
 	var off int
 	for off < len(buf) {
 		n, err := writer.Write(buf[off:])
@@ -610,7 +633,6 @@ func Write(writer io.Writer, pkt Packet) error {
 
 		off += n
 	}
-	//	log.Println("after...")
 
 	return nil
 }

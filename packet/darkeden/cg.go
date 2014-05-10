@@ -19,13 +19,13 @@ func (connect *CGConnectPacket) String() string {
 	return "connect"
 }
 func readConnect(buf []byte) (Packet, error) {
-	// [ 0 0 0 0 240 1 4 183 232 191 241 0 80 86 192 0 8]
+	// [ 0 0 0 240 1 4 183 232 191 241 0 80 86 192 0 8]
 	ret := new(CGConnectPacket)
 	ret.Key = binary.LittleEndian.Uint32(buf[:4])
-	ret.PCType = buf[5]
-	length := buf[6]
-	ret.PCName = string(buf[7 : 7+length])
-	copy(ret.MacAddress[:], buf[8+length:12+length])
+	ret.PCType = buf[4]
+	length := buf[5]
+	ret.PCName = string(buf[6 : 6+length])
+	copy(ret.MacAddress[:], buf[6+length:])
 	return ret, nil
 }
 
@@ -52,8 +52,8 @@ func (move CGMovePacket) String() string {
 }
 func readMove(buf []byte) (Packet, error) {
 	ret := CGMovePacket{
-		Dir: buf[0],
-		X:   buf[1],
+		X:   buf[0],
+		Dir: buf[1],
 		Y:   buf[2],
 	}
 	return ret, nil
@@ -81,8 +81,12 @@ func (attack CGAttackPacket) Id() PacketID {
 func (attack CGAttackPacket) String() string {
 	return "attack"
 }
+func readAttack([]byte) (Packet, error) {
+	var ret CGAttackPacket
+	return ret, nil
+}
 func (attack CGAttackPacket) Bytes() []byte {
-	// [160 55 218 53 0 0 39 189]
+	// [55 218 53 0 0 39 189]
 	ret := make([]byte, 7)
 	binary.LittleEndian.PutUint32(ret, attack.ObjectID)
 	ret[4] = attack.X
