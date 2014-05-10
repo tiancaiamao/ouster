@@ -1,8 +1,10 @@
 package darkeden
 
 import (
+	"bytes"
 	"encoding/binary"
 	"github.com/tiancaiamao/ouster/packet"
+	"io"
 	"time"
 )
 
@@ -19,7 +21,7 @@ func (moveOk GCMoveOKPacket) String() string {
 	return "move ok"
 }
 func (moveOk GCMoveOKPacket) Bytes() []byte {
-	return []byte{0, moveOk.X, moveOk.Dir, moveOk.Y}
+	return []byte{moveOk.X, moveOk.Dir, moveOk.Y}
 }
 
 type GCMovePacket struct {
@@ -36,8 +38,8 @@ func (move GCMovePacket) String() string {
 	return "move"
 }
 func (move GCMovePacket) Bytes() []byte {
-	ret := []byte{48, 0, 0, 0, 0, move.X, move.Y, move.Dir}
-	binary.LittleEndian.PutUint32(ret[1:], move.ObjectID)
+	ret := []byte{0, 0, 0, 0, move.X, move.Y, move.Dir}
+	binary.LittleEndian.PutUint32(ret[:], move.ObjectID)
 	return ret
 }
 
@@ -106,7 +108,7 @@ func (updateInfo *GCUpdateInfoPacket) Bytes() []byte {
 	//48 0 0 44 0 0 2 16 1 136 19 0 0 0 0 3 0 0 0 0 1 0 0 0 1 0 120 48 0 0 34 5 0 0
 	//1 0 0 0 0 0 255 255 255 255 0 8 0 0 0 0 1 121 48 0 0 32 0 0 2 53 43 232 3 0 0
 	//0 0 4 0 0 0]
-	return []byte{0, 86, 117, 48, 0, 0, 4, 183, 232, 191, 241, 150, 0, 0, 0, 164, 1, 0, 76, 29, 0, 0,
+	return []byte{86, 117, 48, 0, 0, 4, 183, 232, 191, 241, 150, 0, 0, 0, 164, 1, 0, 76, 29, 0, 0,
 		20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 216, 1, 216, 1, 50, 204, 41, 0, 0, 125, 0, 0,
 		0, 0, 0, 0, 0, 26, 1, 0, 0, 13, 15, 39, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 4, 0, 0,
 		0, 0, 100, 0, 0, 0, 0, 6, 118, 48, 0, 0, 30, 0, 0, 0, 232, 3, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 119,
@@ -130,7 +132,7 @@ func (setPosition GCSetPositionPacket) String() string {
 	return "set position"
 }
 func (setPosition GCSetPositionPacket) Bytes() []byte {
-	return []byte{setPosition.Dir, setPosition.X, setPosition.Y, 2}
+	return []byte{setPosition.X, setPosition.Y, setPosition.Dir}
 }
 
 type GCAddBat struct {
@@ -153,8 +155,8 @@ func (addBat *GCAddBat) String() string {
 	return "add bat"
 }
 func (addBat *GCAddBat) Bytes() []byte {
-	// [7 80 48 0 0 8 194 179 181 199 182 224 183 242 0 0 150 235 1 174 0 174 0 1 0 0 0]
-	return []byte{7, 80, 48, 0, 0, 8, 194, 179, 181, 199, 182, 224, 183, 242, 0, 0, 150, 235, 1, 174, 0, 174, 0, 1, 0, 0, 0}
+	// [80 48 0 0 8 194 179 181 199 182 224 183 242 0 0 150 235 1 174 0 174 0 1 0 0 0]
+	return []byte{80, 48, 0, 0, 8, 194, 179, 181, 199, 182, 224, 183, 242, 0, 0, 150, 235, 1, 174, 0, 174, 0, 1, 0, 0, 0}
 }
 
 type GCAddMonsterFromBurrowing struct {
@@ -180,7 +182,7 @@ func (monster *GCAddMonsterFromBurrowing) String() string {
 func (monster *GCAddMonsterFromBurrowing) Bytes() []byte {
 	// 185 0 27 0 0 0 48 176 47 0 0 73 0 8 200 248 182 224 210 193 182 247 36 231 240 24 148 227 4 0 156 0 156 0
 	// 185 0 27 0 0 0 48 62 48 0 0 213 0 8 185 197 181 194 203 185 182 161 53 0 0 0 137 238 0 0 54 1 54 1
-	return []byte{48, 62, 48, 0, 0, 213, 0, 8, 185, 197, 181, 194, 203, 185, 182, 161, 53, 0, 0, 0, 137, 238, 0, 0, 54, 1, 54, 1}
+	return []byte{62, 48, 0, 0, 213, 0, 8, 185, 197, 181, 194, 203, 185, 182, 161, 53, 0, 0, 0, 137, 238, 0, 0, 54, 1, 54, 1}
 }
 
 type GCAddMonster struct {
@@ -205,7 +207,22 @@ func (monster *GCAddMonster) String() string {
 	return "add monster"
 }
 func (monster *GCAddMonster) Bytes() []byte {
-	//[47 218 47 0 0 223 0 6 196 218 185 254 203 185 7 0 174 0 102 79 5 0 133 0 133 0 0]
-	//[123 166 47 0 0 72 0 4 192 188 197 181 5 137 133 0 164 214 6 0 156 0 156 0 0]
-	return []byte{}
+	//[218 47 0 0 223 0 6 196 218 185 254 203 185 7 0 174 0 102 79 5 0 133 0 133 0 0]
+	//[166 47 0 0 72 0 4 192 188 197 181 5 137 133 0 164 214 6 0 156 0 156 0 0]
+	//[24 47 0 0 8 0 10 203 185 196 170 191 203 206 172 198 230 53 48 48 58 137 192 6 0 156 0 156 0 0]
+	buf := &bytes.Buffer{}
+	binary.Write(buf, binary.LittleEndian, monster.ObjectID)
+	binary.Write(buf, binary.LittleEndian, monster.MonsterType)
+	binary.Write(buf, binary.LittleEndian, uint8(len(monster.MonsterName)))
+	io.WriteString(buf, monster.MonsterName)
+	binary.Write(buf, binary.LittleEndian, monster.MainColor)
+	binary.Write(buf, binary.LittleEndian, monster.SubColor)
+	binary.Write(buf, binary.LittleEndian, monster.X)
+	binary.Write(buf, binary.LittleEndian, monster.Y)
+	binary.Write(buf, binary.LittleEndian, monster.Dir)
+	binary.Write(buf, binary.LittleEndian, uint8(0))
+	binary.Write(buf, binary.LittleEndian, monster.CurrentHP)
+	binary.Write(buf, binary.LittleEndian, monster.MaxHP)
+	binary.Write(buf, binary.LittleEndian, monster.FromFlag)
+	return buf.Bytes()
 }

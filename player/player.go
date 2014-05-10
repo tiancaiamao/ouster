@@ -138,6 +138,8 @@ func (player *Player) NearBy() []uint32 {
 }
 
 func (player *Player) handleClientMessage(pkt packet.Packet) {
+	id := uint32(2351)
+	pos := uint8(0)
 	switch pkt.Id() {
 	case darkeden.PACKET_CG_CONNECT:
 		player.send <- &darkeden.GCUpdateInfoPacket{}
@@ -157,6 +159,21 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 			Y:   move.Y,
 		}
 		player.send <- moveOk
+
+		addMonster := &darkeden.GCAddMonster{
+			ObjectID:    id,
+			MonsterType: 223,
+			MonsterName: "test",
+			MainColor:   7,
+			SubColor:    174,
+			X:           146 + pos,
+			Y:           238 + pos,
+			Dir:         2,
+			CurrentHP:   133,
+			MaxHP:       133,
+		}
+		id++
+		player.send <- addMonster
 	case darkeden.PACKET_CG_ATTACK:
 	case darkeden.PACKET_CG_BLOOD_DRAIN:
 	case darkeden.PACKET_CG_VERIFY_TIME:
