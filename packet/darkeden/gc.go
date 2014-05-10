@@ -136,27 +136,39 @@ func (setPosition GCSetPositionPacket) Bytes() []byte {
 }
 
 type GCAddBat struct {
-	ObjectID  uint32
-	Name      string
-	ItemType  uint16
-	X         uint8
-	Y         uint8
-	Dir       uint8
-	CurrentHP uint16
-	MaxHP     uint16
-	GuildID   uint16
-	Color     uint16
+	ObjectID    uint32
+	MonsterName string
+	ItemType    uint16
+	X           uint8
+	Y           uint8
+	Dir         uint8
+	CurrentHP   uint16
+	MaxHP       uint16
+	GuildID     uint16
+	Color       uint16
 }
 
-func (addBat *GCAddBat) Id() packet.PacketID {
+func (bat *GCAddBat) Id() packet.PacketID {
 	return PACKET_GC_ADD_BAT
 }
-func (addBat *GCAddBat) String() string {
+func (bat *GCAddBat) String() string {
 	return "add bat"
 }
-func (addBat *GCAddBat) Bytes() []byte {
+func (bat *GCAddBat) Bytes() []byte {
 	// [80 48 0 0 8 194 179 181 199 182 224 183 242 0 0 150 235 1 174 0 174 0 1 0 0 0]
-	return []byte{80, 48, 0, 0, 8, 194, 179, 181, 199, 182, 224, 183, 242, 0, 0, 150, 235, 1, 174, 0, 174, 0, 1, 0, 0, 0}
+	buf := &bytes.Buffer{}
+	binary.Write(buf, binary.LittleEndian, bat.ObjectID)
+	binary.Write(buf, binary.LittleEndian, uint8(len(bat.MonsterName)))
+	io.WriteString(buf, bat.MonsterName)
+	binary.Write(buf, binary.LittleEndian, bat.ItemType)
+	binary.Write(buf, binary.LittleEndian, bat.X)
+	binary.Write(buf, binary.LittleEndian, bat.Y)
+	binary.Write(buf, binary.LittleEndian, bat.Dir)
+	binary.Write(buf, binary.LittleEndian, bat.CurrentHP)
+	binary.Write(buf, binary.LittleEndian, bat.MaxHP)
+	binary.Write(buf, binary.LittleEndian, bat.GuildID)
+	binary.Write(buf, binary.LittleEndian, bat.Color)
+	return buf.Bytes()
 }
 
 type GCAddMonsterFromBurrowing struct {
@@ -225,4 +237,38 @@ func (monster *GCAddMonster) Bytes() []byte {
 	binary.Write(buf, binary.LittleEndian, monster.MaxHP)
 	binary.Write(buf, binary.LittleEndian, monster.FromFlag)
 	return buf.Bytes()
+}
+
+type GCStatusCurrentHP struct {
+	ObjectID  uint32
+	CurrentHP uint16
+}
+
+func (status GCStatusCurrentHP) Id() packet.PacketID {
+	return PACKET_GC_STATUS_CURRENT_HP
+}
+func (status GCStatusCurrentHP) String() string {
+	return "status current HP"
+}
+func (status GCStatusCurrentHP) Bytes() []byte {
+	buf := &bytes.Buffer{}
+	binary.Write(buf, binary.LittleEndian, status.ObjectID)
+	binary.Write(buf, binary.LittleEndian, status.CurrentHP)
+	return buf.Bytes()
+}
+
+type GCAttackMeleeOK1 uint32
+
+func (attackOk GCAttackMeleeOK1) Id() packet.PacketID {
+	return PACKET_GC_ATTACK_MELEE_OK_1
+}
+
+func (attackOk GCAttackMeleeOK1) String() string {
+	return "attack melee ok 1"
+}
+func (attackOk GCAttackMeleeOK1) Bytes() []byte {
+	// [208 0 6 0 0 0 128 103 48 0 0 0 0]
+	ret := []byte{0, 0, 0, 0, 0, 0}
+	binary.LittleEndian.PutUint32(ret, uint32(attackOk))
+	return ret
 }

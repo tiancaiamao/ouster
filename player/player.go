@@ -138,8 +138,12 @@ func (player *Player) NearBy() []uint32 {
 }
 
 func (player *Player) handleClientMessage(pkt packet.Packet) {
-	id := uint32(2351)
-	pos := uint8(0)
+	var flag bool
+	hp := darkeden.GCStatusCurrentHP{
+		ObjectID:  2351,
+		CurrentHP: 133,
+	}
+
 	switch pkt.Id() {
 	case darkeden.PACKET_CG_CONNECT:
 		player.send <- &darkeden.GCUpdateInfoPacket{}
@@ -160,21 +164,41 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 		}
 		player.send <- moveOk
 
-		addMonster := &darkeden.GCAddMonster{
-			ObjectID:    id,
-			MonsterType: 223,
-			MonsterName: "test",
-			MainColor:   7,
-			SubColor:    174,
-			X:           146 + pos,
-			Y:           238 + pos,
-			Dir:         2,
-			CurrentHP:   133,
-			MaxHP:       133,
+		if !flag {
+			flag = true
+			addMonster := &darkeden.GCAddMonster{
+				ObjectID:    hp.ObjectID,
+				MonsterType: 223,
+				MonsterName: "test",
+				MainColor:   7,
+				SubColor:    174,
+				X:           146,
+				Y:           238,
+				Dir:         2,
+				CurrentHP:   133,
+				MaxHP:       133,
+			}
+			addBat := &darkeden.GCAddBat{
+				ObjectID:    2352,
+				MonsterName: "bat",
+				X:           149,
+				Y:           242,
+				Dir:         1,
+				CurrentHP:   111,
+				MaxHP:       133,
+				GuildID:     1,
+			}
+			player.send <- addBat
+			player.send <- addMonster
 		}
-		id++
-		player.send <- addMonster
+
 	case darkeden.PACKET_CG_ATTACK:
+		if hp.CurrentHP > 0 {
+			hp.CurrentHP -= 5
+			player.send <- hp
+			player.send <- darkeden.GCAttackMeleeOK1(hp.ObjectID)
+		}
+
 	case darkeden.PACKET_CG_BLOOD_DRAIN:
 	case darkeden.PACKET_CG_VERIFY_TIME:
 	}

@@ -82,8 +82,13 @@ func (attack CGAttackPacket) Id() packet.PacketID {
 func (attack CGAttackPacket) String() string {
 	return "attack"
 }
-func readAttack([]byte) (packet.Packet, error) {
+func readAttack(buf []byte) (packet.Packet, error) {
+	// [188 251 55 82 48 0 0]
 	var ret CGAttackPacket
+	ret.X = buf[0]
+	ret.Y = buf[1]
+	ret.Dir = buf[2]
+	ret.ObjectID = binary.LittleEndian.Uint32(buf[3:])
 	return ret, nil
 }
 func (attack CGAttackPacket) Bytes() []byte {
