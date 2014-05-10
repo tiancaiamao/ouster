@@ -3,6 +3,7 @@ package player
 import (
 	"github.com/tiancaiamao/ouster"
 	// "github.com/tiancaiamao/ouster/data"
+	"github.com/tiancaiamao/ouster/packet"
 	"github.com/tiancaiamao/ouster/packet/darkeden"
 	// "github.com/tiancaiamao/ouster/skill"
 	"log"
@@ -63,8 +64,8 @@ type Player struct {
 	carried []int
 
 	conn   net.Conn
-	client <-chan darkeden.Packet
-	send   chan<- darkeden.Packet
+	client <-chan packet.Packet
+	send   chan<- packet.Packet
 	aoi    <-chan uint32
 
 	read      <-chan interface{}
@@ -136,7 +137,7 @@ func (player *Player) NearBy() []uint32 {
 	return player.nearby
 }
 
-func (player *Player) handleClientMessage(pkt darkeden.Packet) {
+func (player *Player) handleClientMessage(pkt packet.Packet) {
 	switch pkt.Id() {
 	case darkeden.PACKET_CG_CONNECT:
 		player.send <- &darkeden.GCUpdateInfoPacket{}

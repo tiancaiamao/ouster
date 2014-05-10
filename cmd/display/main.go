@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/tiancaiamao/ouster"
 	"github.com/tiancaiamao/ouster/config"
-	"github.com/tiancaiamao/ouster/packet"
+	"github.com/tiancaiamao/ouster/packet/msgpack"
 	"io"
 	"net"
 )
@@ -30,14 +30,14 @@ func main() {
 		defer fd.Close()
 
 		for {
-			// forward packet to server
+			// forward msgpack to server
 			io.Copy(conn, fd)
 		}
 	}()
 
-	// goroutine for display packet from server
+	// goroutine for display msgpack from server
 	for {
-		pkt, err := packet.Read(conn)
+		pkt, err := msgpack.Read(conn)
 		if err != nil {
 			fmt.Println(err)
 			break
@@ -53,26 +53,26 @@ func Login() (net.Conn, error) {
 		return nil, err
 	}
 
-	packet.Write(conn, packet.PLogin, packet.LoginPacket{
+	msgpack.Write(conn, msgpack.PLogin, msgpack.Loginmsgpack{
 		Username: "genius",
 		Password: "0101001",
 	})
 
-	info, err := packet.Read(conn)
+	info, err := msgpack.Read(conn)
 	if err != nil {
 		return nil, err
 	}
-	if _, ok := info.(packet.CharactorInfoPacket); !ok {
-		return nil, ouster.NewError("need a CharactorInfoPacket")
+	if _, ok := info.(msgpack.CharactorInfomsgpack); !ok {
+		return nil, ouster.NewError("need a CharactorInfomsgpack")
 	}
 
-	packet.Write(conn, packet.PSelectCharactor, packet.SelectCharactorPacket{
+	msgpack.Write(conn, msgpack.PSelectCharactor, msgpack.SelectCharactormsgpack{
 		Which: 0,
 	})
 
-	loginOk, err := packet.Read(conn)
-	if _, ok := loginOk.(packet.LoginOkPacket); !ok {
-		return nil, ouster.NewError("need a LoginOkPacket")
+	loginOk, err := msgpack.Read(conn)
+	if _, ok := loginOk.(msgpack.LoginOkmsgpack); !ok {
+		return nil, ouster.NewError("need a LoginOkmsgpack")
 	}
 
 	return conn, nil

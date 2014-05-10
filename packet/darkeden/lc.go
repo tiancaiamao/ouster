@@ -2,11 +2,12 @@ package darkeden
 
 import (
 	"encoding/binary"
+	"github.com/tiancaiamao/ouster/packet"
 )
 
 type LCLoginOKPacket struct{}
 
-func (loginOk LCLoginOKPacket) Id() PacketID {
+func (loginOk LCLoginOKPacket) Id() packet.PacketID {
 	return PACKET_LC_LOGIN_OK
 }
 
@@ -20,7 +21,7 @@ func (loginOk LCLoginOKPacket) Bytes() []byte {
 
 type LCVersionCheckOKPacket struct{}
 
-func (v LCVersionCheckOKPacket) Id() PacketID {
+func (v LCVersionCheckOKPacket) Id() packet.PacketID {
 	return PACKET_LC_VERSION_CHECK_OK
 }
 
@@ -33,7 +34,7 @@ func (v LCVersionCheckOKPacket) Bytes() []byte {
 
 type LCWorldListPacket struct{}
 
-func (wl LCWorldListPacket) Id() PacketID {
+func (wl LCWorldListPacket) Id() packet.PacketID {
 	return PACKET_LC_WORLD_LIST
 }
 func (wl LCWorldListPacket) String() string {
@@ -49,7 +50,7 @@ type LCServerListPacket struct {
 	list         []string
 }
 
-func (sl *LCServerListPacket) Id() PacketID {
+func (sl *LCServerListPacket) Id() packet.PacketID {
 	return PACKET_LC_SERVER_LIST
 }
 func (sl *LCServerListPacket) String() string {
@@ -64,7 +65,7 @@ type LCPCListPacket struct {
 	list []PCInfo
 }
 
-func (pl *LCPCListPacket) Id() PacketID {
+func (pl *LCPCListPacket) Id() packet.PacketID {
 	return PACKET_LC_PC_LIST
 }
 func (pl *LCPCListPacket) String() string {
@@ -86,7 +87,7 @@ type LCReconnectPacket struct {
 	Key  []byte
 }
 
-func (rc *LCReconnectPacket) Id() PacketID {
+func (rc *LCReconnectPacket) Id() packet.PacketID {
 	return PACKET_LC_RECONNECT
 }
 func (rc *LCReconnectPacket) String() string {

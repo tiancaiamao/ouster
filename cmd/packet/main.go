@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/tiancaiamao/ouster/packet"
+	"github.com/tiancaiamao/ouster/packet/msgpack"
 	"io"
 	"os"
 	"reflect"
@@ -18,7 +18,7 @@ type Fpoint struct {
 }
 
 func main() {
-	for _, v := range packet.PacketMap {
+	for _, v := range msgpack.PacketMap {
 		Marshal(v, os.Stdout)
 		Unmarshal(v, os.Stdout)
 
@@ -58,7 +58,7 @@ func Unmarshal(obj reflect.Type, writer io.Writer) {
 `, i)
 
 				fmt.Fprintf(writer, `	for(int i=0; i<obj.via.array.ptr[%d].via.array.size; i++) {
-		Unpack_%s(obj.via.array.ptr[i], &st->Array[i]);			
+		Unpack_%s(obj.via.array.ptr[i], &st->Array[i]);
 	}`, i, fild.Type.Elem().Name())
 			} else {
 				fmt.Fprintf(writer, `	if(!Unpack_%s(obj.via.array.ptr[%d], &st->%s))
@@ -71,7 +71,7 @@ func Unmarshal(obj reflect.Type, writer io.Writer) {
 	if(obj.type != MSGPACK_OBJECT_MAP) {
 		return false;
 	}
-	
+
 	`)
 	default:
 		panic("unsupport!!!")

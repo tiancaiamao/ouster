@@ -1,6 +1,8 @@
 package darkeden
 
 import (
+	"encoding/binary"
+	"github.com/tiancaiamao/ouster/packet"
 	"time"
 )
 
@@ -10,7 +12,7 @@ type GCMoveOKPacket struct {
 	Y   uint8
 }
 
-func (moveOk GCMoveOKPacket) Id() PacketID {
+func (moveOk GCMoveOKPacket) Id() packet.PacketID {
 	return PACKET_GC_MOVE_OK
 }
 func (moveOk GCMoveOKPacket) String() string {
@@ -27,7 +29,7 @@ type GCMovePacket struct {
 	Dir      uint8
 }
 
-func (move GCMovePacket) Id() PacketID {
+func (move GCMovePacket) Id() packet.PacketID {
 	return PACKET_GC_MOVE
 }
 func (move GCMovePacket) String() string {
@@ -35,7 +37,7 @@ func (move GCMovePacket) String() string {
 }
 func (move GCMovePacket) Bytes() []byte {
 	ret := []byte{48, 0, 0, 0, 0, move.X, move.Y, move.Dir}
-	binary.LittleEndian.PutUint32(ret[1:])
+	binary.LittleEndian.PutUint32(ret[1:], move.ObjectID)
 	return ret
 }
 
@@ -90,7 +92,7 @@ type GCUpdateInfoPacket struct {
 	PowerPoint         int
 }
 
-func (updateInfo *GCUpdateInfoPacket) Id() PacketID {
+func (updateInfo *GCUpdateInfoPacket) Id() packet.PacketID {
 	return PACKET_GC_UPDATE_INFO
 }
 func (updateInfo *GCUpdateInfoPacket) String() string {
@@ -121,7 +123,7 @@ type GCSetPositionPacket struct {
 	Dir uint8
 }
 
-func (setPosition GCSetPositionPacket) Id() PacketID {
+func (setPosition GCSetPositionPacket) Id() packet.PacketID {
 	return PACKET_GC_SET_POSITION
 }
 func (setPosition GCSetPositionPacket) String() string {
@@ -144,7 +146,7 @@ type GCAddBat struct {
 	Color     uint16
 }
 
-func (addBat *GCAddBat) Id() PacketID {
+func (addBat *GCAddBat) Id() packet.PacketID {
 	return PACKET_GC_ADD_BAT
 }
 func (addBat *GCAddBat) String() string {
@@ -169,7 +171,7 @@ type GCAddMonsterFromBurrowing struct {
 	MaxHP       uint16       // maximum hp
 }
 
-func (monster *GCAddMonsterFromBurrowing) Id() PacketID {
+func (monster *GCAddMonsterFromBurrowing) Id() packet.PacketID {
 	return PACKET_GC_ADD_MONSTER_FROM_BURROWING
 }
 func (monster *GCAddMonsterFromBurrowing) String() string {
@@ -196,7 +198,7 @@ type GCAddMonster struct {
 	FromFlag    byte
 }
 
-func (monster *GCAddMonster) Id() PacketID {
+func (monster *GCAddMonster) Id() packet.PacketID {
 	return PACKET_GC_ADD_MONSTER
 }
 func (monster *GCAddMonster) String() string {
@@ -205,5 +207,5 @@ func (monster *GCAddMonster) String() string {
 func (monster *GCAddMonster) Bytes() []byte {
 	//[47 218 47 0 0 223 0 6 196 218 185 254 203 185 7 0 174 0 102 79 5 0 133 0 133 0 0]
 	//[123 166 47 0 0 72 0 4 192 188 197 181 5 137 133 0 164 214 6 0 156 0 156 0 0]
-	return
+	return []byte{}
 }

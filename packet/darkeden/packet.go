@@ -3,11 +3,10 @@ package darkeden
 import (
 	"encoding/binary"
 	"errors"
+	"github.com/tiancaiamao/ouster/packet"
 	"io"
 	"log"
 )
-
-type PacketID uint16
 
 const (
 	PACKET_CG_ADD_SMS_ADDRESS = 0
@@ -505,20 +504,15 @@ const (
 
 type PacketSize uint32
 
-type Packet interface {
-	Id() PacketID
-	String() string
-}
-
 type byteser interface {
 	Bytes() []byte
 }
 
-var table [PACKET_MAX]func([]byte) (Packet, error)
+var table [PACKET_MAX]func([]byte) (packet.Packet, error)
 
 func init() {
 	table[PACKET_CL_LOGIN] = readLogin
-	table[PACKET_CL_VERSION_CHECK] = func([]byte) (Packet, error) {
+	table[PACKET_CL_VERSION_CHECK] = func([]byte) (packet.Packet, error) {
 		return CLVersionCheckPacket{}, nil
 	}
 	table[PACKET_CL_SELECT_WORLD] = readSelectWorld
@@ -527,19 +521,26 @@ func init() {
 	table[PACKET_CL_SELECT_PC] = readSelectPc
 
 	table[PACKET_CG_CONNECT] = readConnect
-	table[PACKET_CG_READY] = func([]byte) (Packet, error) {
+	table[PACKET_CG_READY] = func([]byte) (packet.Packet, error) {
 		return CGReadyPacket{}, nil
 	}
-	table[PACKET_CG_VERIFY_TIME] = func([]byte) (Packet, error) {
+	table[PACKET_CG_VERIFY_TIME] = func([]byte) (packet.Packet, error) {
 		return CGVerifyTimePacket{}, nil
 	}
 	table[PACKET_CG_MOVE] = readMove
 }
 
-func Read(reader io.Reader) (ret Packet, err error) {
-	var id PacketID
+type reader struct {
+	Seq uint8
+}
+
+func NewReader() *reader {
+	return &reader{}
+}
+
+func (r *reader) Read(reader io.Reader) (ret packet.Packet, err error) {
+	var id packet.PacketID
 	var sz PacketSize
-	var seq uint8
 	var buf [300]byte
 
 	err = binary.Read(reader, binary.LittleEndian, &id)
@@ -552,14 +553,14 @@ func Read(reader io.Reader) (ret Packet, err error) {
 		return
 	}
 
-	err = binary.Read(reader, binary.LittleEndian, &seq)
+	err = binary.Read(reader, binary.LittleEndian, &r.Seq)
 	if err != nil {
 		return
 	}
 
 	log.Printf("read a packet id = %d, sz = %d\n", id, sz)
 
-	n, err := io.ReadFull(reader, buf[sz])
+	n, err := io.ReadFull(reader, buf[:sz])
 	if err != nil {
 		return
 	}
@@ -586,10 +587,6 @@ func Read(reader io.Reader) (ret Packet, err error) {
 	return
 }
 
-type PacketWriter interface {
-	Write(writer io.Writer, pkt Packet) error
-}
-
 type writer struct {
 	Seq uint8
 }
@@ -598,7 +595,7 @@ func NewWriter() *writer {
 	return &writer{}
 }
 
-func (w *writer) Write(writer io.Writer, pkt Packet) error {
+func (w *writer) Write(writer io.Writer, pkt packet.Packet) error {
 	id := pkt.Id()
 	err := binary.Write(writer, binary.LittleEndian, id)
 	if err != nil {
@@ -618,7 +615,7 @@ func (w *writer) Write(writer io.Writer, pkt Packet) error {
 		return err
 	}
 
-	err = binary.Write(write, binary.LittleEndian, w.Seq)
+	err = binary.Write(writer, binary.LittleEndian, w.Seq)
 	if err != nil {
 		return err
 	}

@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/tiancaiamao/ouster/packet"
+	"github.com/tiancaiamao/ouster/packet/msgpack"
 	"net"
 	"os"
 )
@@ -38,7 +38,7 @@ func main() {
 			}
 
 			fmt.Println(X, Y, "-------")
-			packet.Write(conn, packet.PCMove, packet.CMovePacket{
+			msgpack.Write(conn, msgpack.PCMove, msgpack.CMovePacket{
 				X: float32(X),
 				Y: float32(Y),
 			})

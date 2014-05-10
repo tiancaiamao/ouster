@@ -27,8 +27,11 @@ func main() {
 
 func serve(conn net.Conn) {
 	defer conn.Close()
+
+	reader := darkeden.NewReader()
+	writer := darkeden.NewWriter()
 	for {
-		pkt, err := darkeden.Read(conn)
+		pkt, err := reader.Read(conn)
 		if err != nil {
 			log.Println("read packet error in loginserver's serve:", err)
 			return
@@ -38,15 +41,15 @@ func serve(conn net.Conn) {
 
 		switch pkt.Id() {
 		case darkeden.PACKET_CL_GET_WORLD_LIST:
-			darkeden.Write(conn, darkeden.LCWorldListPacket{})
+			writer.Write(conn, darkeden.LCWorldListPacket{})
 		case darkeden.PACKET_CL_LOGIN:
-			darkeden.Write(conn, darkeden.LCLoginOKPacket{})
+			writer.Write(conn, darkeden.LCLoginOKPacket{})
 		case darkeden.PACKET_CL_SELECT_SERVER:
-			darkeden.Write(conn, &darkeden.LCPCListPacket{})
+			writer.Write(conn, &darkeden.LCPCListPacket{})
 		case darkeden.PACKET_CL_SELECT_WORLD:
-			darkeden.Write(conn, &darkeden.LCServerListPacket{})
+			writer.Write(conn, &darkeden.LCServerListPacket{})
 		case darkeden.PACKET_CL_VERSION_CHECK:
-			darkeden.Write(conn, darkeden.LCVersionCheckOKPacket{})
+			writer.Write(conn, darkeden.LCVersionCheckOKPacket{})
 		case darkeden.PACKET_CL_SELECT_PC:
 			reconnect := &darkeden.LCReconnectPacket{
 				Ip:   "192.168.1.2",
@@ -55,9 +58,9 @@ func serve(conn net.Conn) {
 			}
 
 			stdout := &bytes.Buffer{}
-			darkeden.Write(stdout, reconnect)
+			writer.Write(stdout, reconnect)
 			log.Println(stdout.Bytes())
-			darkeden.Write(conn, reconnect)
+			writer.Write(conn, reconnect)
 			return
 		default:
 			log.Printf("get a unknow packet: %d\n", pkt.Id())

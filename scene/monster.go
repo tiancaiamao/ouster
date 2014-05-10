@@ -3,7 +3,6 @@ package scene
 import (
 	"github.com/tiancaiamao/ouster"
 	"github.com/tiancaiamao/ouster/data"
-	"github.com/tiancaiamao/ouster/packet"
 	"math"
 )
 
@@ -62,18 +61,18 @@ func (m *Monster) Init(meta interface{}) {
 // a state machine
 func (m *Monster) HeartBeat(mp *Zone) {
 	handle := mp.Player(m.target)
-	pc := handle.pc
+	// pc := handle.pc
 	d := ouster.Distance2(m.pos, handle.pos)
 	if d < 10 {
-		msg := packet.SkillTargetEffectPacket{
-			Skill: 1,
-			From:  m.Id,
-			To:    m.target,
-			Hurt:  1,
-			Succ:  true,
-		}
-		nearby := pc.NearBy()
-		boardcast(nearby, msg, mp)
+		// msg := packet.SkillTargetEffectPacket{
+		// 	Skill: 1,
+		// 	From:  m.Id,
+		// 	To:    m.target,
+		// 	Hurt:  1,
+		// 	Succ:  true,
+		// }
+		// nearby := pc.NearBy()
+		// boardcast(nearby, msg, mp)
 	} else {
 		dx := handle.pos.X - m.pos.X
 		dy := handle.pos.Y - m.pos.Y

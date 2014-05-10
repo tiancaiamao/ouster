@@ -2,6 +2,7 @@ package darkeden
 
 import (
 	"encoding/binary"
+	"github.com/tiancaiamao/ouster/packet"
 )
 
 type CGConnectPacket struct {
@@ -12,13 +13,13 @@ type CGConnectPacket struct {
 	MacAddress [4]byte
 }
 
-func (connect *CGConnectPacket) Id() PacketID {
+func (connect *CGConnectPacket) Id() packet.PacketID {
 	return PACKET_CG_CONNECT
 }
 func (connect *CGConnectPacket) String() string {
 	return "connect"
 }
-func readConnect(buf []byte) (Packet, error) {
+func readConnect(buf []byte) (packet.Packet, error) {
 	// [ 0 0 0 240 1 4 183 232 191 241 0 80 86 192 0 8]
 	ret := new(CGConnectPacket)
 	ret.Key = binary.LittleEndian.Uint32(buf[:4])
@@ -31,7 +32,7 @@ func readConnect(buf []byte) (Packet, error) {
 
 type CGReadyPacket struct{}
 
-func (ready CGReadyPacket) Id() PacketID {
+func (ready CGReadyPacket) Id() packet.PacketID {
 	return PACKET_CG_READY
 }
 func (ready CGReadyPacket) String() string {
@@ -44,13 +45,13 @@ type CGMovePacket struct {
 	Y   uint8
 }
 
-func (move CGMovePacket) Id() PacketID {
+func (move CGMovePacket) Id() packet.PacketID {
 	return PACKET_CG_MOVE
 }
 func (move CGMovePacket) String() string {
 	return "move"
 }
-func readMove(buf []byte) (Packet, error) {
+func readMove(buf []byte) (packet.Packet, error) {
 	ret := CGMovePacket{
 		X:   buf[0],
 		Dir: buf[1],
@@ -61,7 +62,7 @@ func readMove(buf []byte) (Packet, error) {
 
 type CGVerifyTimePacket struct{}
 
-func (verifyTime CGVerifyTimePacket) Id() PacketID {
+func (verifyTime CGVerifyTimePacket) Id() packet.PacketID {
 	return PACKET_CG_VERIFY_TIME
 }
 func (verifyTime CGVerifyTimePacket) String() string {
@@ -75,13 +76,13 @@ type CGAttackPacket struct {
 	Dir      uint8
 }
 
-func (attack CGAttackPacket) Id() PacketID {
+func (attack CGAttackPacket) Id() packet.PacketID {
 	return PACKET_CG_ATTACK
 }
 func (attack CGAttackPacket) String() string {
 	return "attack"
 }
-func readAttack([]byte) (Packet, error) {
+func readAttack([]byte) (packet.Packet, error) {
 	var ret CGAttackPacket
 	return ret, nil
 }
