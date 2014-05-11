@@ -155,7 +155,7 @@ func (bat *GCAddBat) String() string {
 	return "add bat"
 }
 func (bat *GCAddBat) Bytes() []byte {
-	// [80 48 0 0 8 194 179 181 199 182 224 183 242 0 0 150 235 1 174 0 174 0 1 0 0 0]
+
 	buf := &bytes.Buffer{}
 	binary.Write(buf, binary.LittleEndian, bat.ObjectID)
 	binary.Write(buf, binary.LittleEndian, uint8(len(bat.MonsterName)))
@@ -172,17 +172,17 @@ func (bat *GCAddBat) Bytes() []byte {
 }
 
 type GCAddMonsterFromBurrowing struct {
-	ObjectID    uint32       // object id
-	MonsterType uint16       // monster type
-	MonsterName string       // monster name
-	MainColor   uint16       // monster main color
-	SubColor    uint16       // monster sub color
-	X           uint8        // x coord.
-	Y           uint8        // y coord.
-	Dir         uint8        // monster direction
-	EffectInfo  []EffectInfo // effects info on monster
-	CurrentHP   uint16       // current hp
-	MaxHP       uint16       // maximum hp
+	ObjectID    uint32
+	MonsterType uint16
+	MonsterName string
+	MainColor   uint16
+	SubColor    uint16
+	X           uint8
+	Y           uint8
+	Dir         uint8
+	EffectInfo  []EffectInfo
+	CurrentHP   uint16
+	MaxHP       uint16
 }
 
 func (monster *GCAddMonsterFromBurrowing) Id() packet.PacketID {
@@ -192,8 +192,7 @@ func (monster *GCAddMonsterFromBurrowing) String() string {
 	return "add monster from burrowing"
 }
 func (monster *GCAddMonsterFromBurrowing) Bytes() []byte {
-	// 185 0 27 0 0 0 48 176 47 0 0 73 0 8 200 248 182 224 210 193 182 247 36 231 240 24 148 227 4 0 156 0 156 0
-	// 185 0 27 0 0 0 48 62 48 0 0 213 0 8 185 197 181 194 203 185 182 161 53 0 0 0 137 238 0 0 54 1 54 1
+
 	return []byte{62, 48, 0, 0, 213, 0, 8, 185, 197, 181, 194, 203, 185, 182, 161, 53, 0, 0, 0, 137, 238, 0, 0, 54, 1, 54, 1}
 }
 
@@ -267,8 +266,309 @@ func (attackOk GCAttackMeleeOK1) String() string {
 	return "attack melee ok 1"
 }
 func (attackOk GCAttackMeleeOK1) Bytes() []byte {
-	// [208 0 6 0 0 0 128 103 48 0 0 0 0]
+
 	ret := []byte{0, 0, 0, 0, 0, 0}
 	binary.LittleEndian.PutUint32(ret, uint32(attackOk))
+	return ret
+}
+
+type GCCannotUsePacket uint32
+
+func (cannot GCCannotUsePacket) Id() packet.PacketID {
+	return PACKET_GC_CANNOT_USE
+}
+func (cannot GCCannotUsePacket) String() string {
+	return "cannot use"
+}
+func (cannot GCCannotUsePacket) Bytes() []byte {
+	ret := []byte{0, 0, 0, 0}
+	binary.LittleEndian.PutUint32(ret, uint32(cannot))
+	return ret
+}
+
+type ModifyType byte
+
+const (
+	MODIFY_BASIC_STR ModifyType = iota
+	MODIFY_CURRENT_STR
+	MODIFY_MAX_STR
+	MODIFY_STR_EXP
+	MODIFY_BASIC_DEX
+	MODIFY_CURRENT_DEX
+	MODIFY_MAX_DEX
+	MODIFY_DEX_EXP
+	MODIFY_BASIC_INT
+	MODIFY_CURRENT_INT
+	MODIFY_MAX_INT
+	MODIFY_INT_EXP
+	MODIFY_CURRENT_HP
+	MODIFY_MAX_HP
+	MODIFY_CURRENT_MP
+	MODIFY_MAX_MP
+	MODIFY_MIN_DAMAGE
+	MODIFY_MAX_DAMAGE
+	MODIFY_DEFENSE
+	MODIFY_PROTECTION
+	MODIFY_TOHIT
+	MODIFY_VISION
+	MODIFY_FAME
+	MODIFY_GOLD
+	MODIFY_SWORD_DOMAIN_LEVEL
+	MODIFY_SWORD_DOMAIN_EXP
+	MODIFY_SWORD_DOMAIN_GOAL_EXP
+	MODIFY_BLADE_DOMAIN_LEVEL
+	MODIFY_BLADE_DOMAIN_EXP
+	MODIFY_BLADE_DOMAIN_GOAL_EXP
+	MODIFY_HEAL_DOMAIN_LEVEL
+	MODIFY_HEAL_DOMAIN_EXP
+	MODIFY_HEAL_DOMAIN_GOAL_EXP
+	MODIFY_ENCHANT_DOMAIN_LEVEL
+	MODIFY_ENCHANT_DOMAIN_EXP
+	MODIFY_ENCHANT_DOMAIN_GOAL_EXP
+	MODIFY_GUN_DOMAIN_LEVEL
+	MODIFY_GUN_DOMAIN_EXP
+	MODIFY_GUN_DOMAIN_GOAL_EXP
+	MODIFY_ETC_DOMAIN_LEVEL
+	MODIFY_ETC_DOMAIN_EXP
+	MODIFY_ETC_DOMAIN_GOAL_EXP
+	MODIFY_SKILL_LEVEL
+	MODIFY_LEVEL
+	MODIFY_EFFECT_STAT
+	MODIFY_DURATION
+	MODIFY_BULLET
+	MODIFY_BONUS_POINT
+	MODIFY_DURABILITY
+	MODIFY_NOTORIETY
+	MODIFY_VAMP_GOAL_EXP
+	MODIFY_SILVER_DAMAGE
+	MODIFY_ATTACK_SPEED
+	MODIFY_ALIGNMENT
+	MODIFY_SILVER_DURABILITY
+	MODIFY_REGEN_RATE
+	MODIFY_GUILDID
+	MODIFY_RANK
+	MODIFY_RANK_EXP
+	MODIFY_OUSTERS_GOAL_EXP
+	MODIFY_SKILL_BONUS_POINT
+	MODIFY_ELEMENTAL_FIRE
+	MODIFY_ELEMENTAL_WATER
+	MODIFY_ELEMENTAL_EARTH
+	MODIFY_ELEMENTAL_WIND
+	MODIFY_SKILL_EXP
+	MODIFY_PET_HP
+	MODIFY_PET_EXP
+	MODIFY_LAST_TARGET
+	MODIFY_UNIONID
+	MODIFY_UNIONGRADE
+	MODIFY_ADVANCEMENT_CLASS_LEVEL
+	MODIFY_ADVANCEMENT_CLASS_GOAL_EXP
+	MODIFY_MAX
+)
+
+var ModifyType2String []string = []string{
+	"BASIC_STR",
+	"CURRENT_STR",
+	"MAX_STR",
+	"STR_EXP",
+	"BASIC_DEX",
+	"CURRENT_DEX",
+	"MAX_DEX",
+	"DEX_EXP",
+	"BASIC_INT",
+	"CURRENT_INT",
+	"MAX_INT",
+	"INT_EXP",
+	"CURRENT_HP",
+	"MAX_HP",
+	"CURRENT_MP",
+	"MAX_MP",
+	"MIN_DAMAGE",
+	"MAX_DAMAGE",
+	"DEFENSE",
+	"PROTECTION",
+	"TOHIT",
+	"VISION",
+	"FAME",
+	"GOLD",
+	"SWORD_DOMAIN_LEVEL",
+	"SWORD_DOMAIN_EXP",
+	"SWORD_DOMAIN_GOAL_EXP",
+	"BLADE_DOMAIN_LEVEL",
+	"BLADE_DOMAIN_EXP",
+	"BLADE_DOMAIN_GOAL_EXP",
+	"HEAL_DOMAIN_LEVEL",
+	"HEAL_DOMAIN_EXP",
+	"HEAL_DOMAIN_GOAL_EXP",
+	"ENCHANT_DOMAIN_LEVEL",
+	"ENCHANT_DOMAIN_EXP",
+	"ENCHANT_DOMAIN_GOAL_EXP",
+	"GUN_DOMAIN_LEVEL",
+	"GUN_DOMAIN_EXP",
+	"GUN_DOMAIN_GOAL_EXP",
+	"ETC_DOMAIN_LEVEL",
+	"ETC_DOMAIN_EXP",
+	"ETC_DOMAIN_GOAL_EXP",
+	"SKILL_LEVEL",
+	"LEVEL",
+	"EFFECT_STAT",
+	"DURATION",
+	"BULLET",
+	"BONUS_POINT",
+	"DURABILITY",
+	"NOTORIETY",
+	"VAMP_EXP",
+	"SILVER_DAMAGE",
+	"ATTACK_SPEED",
+	"ALIGNMENT",
+	"SILVER_DURABILITY",
+	"REGEN_RATE",
+	"GUILDID",
+	"RANK",
+	"RANK_EXP",
+	"MODIFY_OUSTERS_EXP",
+	"MODIFY_SKILL_BONUS_POINT",
+	"MODIFY_ELEMENTAL_FIRE",
+	"MODIFY_ELEMENTAL_WATER",
+	"MODIFY_ELEMENTAL_EARTH",
+	"MODIFY_ELEMENTAL_WIND",
+	"MODIFY_SKILL_EXP",
+	"MODIFY_PET_HP",
+	"MODIFY_PET_EXP",
+	"MODIFY_LAST_TARGET",
+	"MODIFY_UNIONID",
+	"MODIFY_UNIONGRADE",
+	"MODIFY_ADVANCEMENT_CLASS_LEVEL",
+	"MODIFY_ADVANCEMENT_CLASS_GOAL_EXP",
+	"MAX",
+}
+
+type ModifyInfo struct {
+	Short map[ModifyType]uint16
+	Long  map[ModifyType]uint32
+}
+
+func (modify *ModifyInfo) Dump(writer io.Writer) {
+	szShort := uint8(len(modify.Short))
+	binary.Write(writer, binary.LittleEndian, szShort)
+	for k, v := range modify.Short {
+		binary.Write(writer, binary.LittleEndian, k)
+		binary.Write(writer, binary.LittleEndian, v)
+	}
+
+	szLong := uint8(len(modify.Long))
+	binary.Write(writer, binary.LittleEndian, szLong)
+	for k, v := range modify.Long {
+		binary.Write(writer, binary.LittleEndian, k)
+		binary.Write(writer, binary.LittleEndian, v)
+	}
+}
+
+type GCBloodDrainOK1 struct {
+	Modify   ModifyInfo
+	ObjectID uint32
+}
+
+func (bdo *GCBloodDrainOK1) Id() packet.PacketID {
+	return PACKET_GC_BLOOD_DRAIN_OK_1
+}
+func (bdo *GCBloodDrainOK1) String() string {
+	return "blood drain ok 1"
+}
+func (bdo *GCBloodDrainOK1) Bytes() []byte {
+	// 237, 53, 0, 0, 2, 51, 0, 0, 12, 216, 1, 0}
+	buf := &bytes.Buffer{}
+	binary.Write(buf, binary.LittleEndian, bdo.ObjectID)
+	bdo.Modify.Dump(buf)
+	return buf.Bytes()
+}
+
+type GCModifyInformationPacket ModifyInfo
+
+func (modify *GCModifyInformationPacket) Id() packet.PacketID {
+	return PACKET_GC_MODIFY_INFORMATION
+}
+func (modify *GCModifyInformationPacket) String() string {
+	return "modify information"
+}
+func (modify *GCModifyInformationPacket) Bytes() []byte {
+	buf := &bytes.Buffer{}
+	raw := (*ModifyInfo)(modify)
+	raw.Dump(buf)
+	return buf.Bytes()
+}
+
+type GCAddEffect struct {
+	ObjectID uint32
+	EffectID uint16
+	Duration uint16
+}
+
+func (effect GCAddEffect) Id() packet.PacketID {
+	return PACKET_GC_ADD_EFFECT
+}
+func (effect GCAddEffect) String() string {
+	return "add effect"
+}
+func (effect GCAddEffect) Bytes() []byte {
+	ret := make([]byte, 8)
+	binary.LittleEndian.PutUint32(ret, effect.ObjectID)
+	binary.LittleEndian.PutUint16(ret[4:], effect.EffectID)
+	binary.LittleEndian.PutUint16(ret[6:], effect.Duration)
+	return ret
+}
+
+type GCAddMonsterCorpse struct {
+	ObjectID    uint32
+	MonsterType uint16
+	MonsterName string
+
+	X       uint8
+	Y       uint8
+	Dir     uint8
+	HasHead bool
+
+	TreasureCount uint8
+	LastKiller    uint32
+}
+
+func (corpse *GCAddMonsterCorpse) Id() packet.PacketID {
+	return PACKET_GC_ADD_MONSTER_CORPSE
+}
+func (corpse *GCAddMonsterCorpse) String() string {
+	return "add monster corpse"
+}
+func (corpse *GCAddMonsterCorpse) Bytes() []byte {
+	buf := &bytes.Buffer{}
+	binary.Write(buf, binary.LittleEndian, corpse.ObjectID)
+	binary.Write(buf, binary.LittleEndian, corpse.MonsterType)
+	binary.Write(buf, binary.LittleEndian, uint8(len(corpse.MonsterName)))
+	if len(corpse.MonsterName) > 0 {
+		io.WriteString(buf, corpse.MonsterName)
+	}
+	binary.Write(buf, binary.LittleEndian, corpse.X)
+	binary.Write(buf, binary.LittleEndian, corpse.Y)
+	binary.Write(buf, binary.LittleEndian, corpse.Dir)
+	if corpse.HasHead {
+		binary.Write(buf, binary.LittleEndian, uint8(1))
+	} else {
+		binary.Write(buf, binary.LittleEndian, uint8(0))
+	}
+
+	binary.Write(buf, binary.LittleEndian, corpse.TreasureCount)
+	binary.Write(buf, binary.LittleEndian, corpse.LastKiller)
+	return buf.Bytes()
+}
+
+type GCCreatureDied uint32
+
+func (died GCCreatureDied) Id() packet.PacketID {
+	return PACKET_GC_CREATURE_DIED
+}
+func (died GCCreatureDied) String() string {
+	return "creature died"
+}
+func (died GCCreatureDied) Bytes() []byte {
+	ret := []byte{0, 0, 0, 0}
+	binary.LittleEndian.PutUint32(ret, uint32(died))
 	return ret
 }

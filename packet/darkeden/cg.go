@@ -100,3 +100,18 @@ func (attack CGAttackPacket) Bytes() []byte {
 	ret[6] = attack.Dir
 	return ret
 }
+
+type CGBloodDrainPacket struct {
+	ObjectID uint32
+}
+
+func (bloodDrain CGBloodDrainPacket) Id() packet.PacketID {
+	return PACKET_CG_BLOOD_DRAIN
+}
+func (bloodDrain CGBloodDrainPacket) String() string {
+	return "blood drain"
+}
+func readBloodDrain(buf []byte) (packet.Packet, error) {
+	id := binary.LittleEndian.Uint32(buf)
+	return CGBloodDrainPacket{id}, nil
+}
