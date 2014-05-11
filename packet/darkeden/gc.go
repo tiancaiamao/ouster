@@ -559,16 +559,30 @@ func (corpse *GCAddMonsterCorpse) Bytes() []byte {
 	return buf.Bytes()
 }
 
-type GCCreatureDied uint32
+type GCCreatureDiedPacket uint32
 
-func (died GCCreatureDied) Id() packet.PacketID {
+func (died GCCreatureDiedPacket) Id() packet.PacketID {
 	return PACKET_GC_CREATURE_DIED
 }
-func (died GCCreatureDied) String() string {
+func (died GCCreatureDiedPacket) String() string {
 	return "creature died"
 }
-func (died GCCreatureDied) Bytes() []byte {
+func (died GCCreatureDiedPacket) Bytes() []byte {
 	ret := []byte{0, 0, 0, 0}
 	binary.LittleEndian.PutUint32(ret, uint32(died))
+	return ret
+}
+
+type GCDeleteObjectPacket uint32
+
+func (obj GCDeleteObjectPacket) Id() packet.PacketID {
+	return PACKET_GC_DELETE_OBJECT
+}
+func (obj GCDeleteObjectPacket) String() string {
+	return "delete object"
+}
+func (obj GCDeleteObjectPacket) Bytes() []byte {
+	ret := []byte{0, 0, 0, 0}
+	binary.LittleEndian.PutUint32(ret, uint32(obj))
 	return ret
 }
