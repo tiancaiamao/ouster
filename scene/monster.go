@@ -2,7 +2,7 @@ package scene
 
 import (
 	"github.com/tiancaiamao/ouster"
-	"github.com/tiancaiamao/ouster/data"
+	// "github.com/tiancaiamao/ouster/data"
 	"math"
 )
 
@@ -47,12 +47,12 @@ type Monster struct {
 
 func (m *Monster) Init(meta interface{}) {
 	switch meta.(type) {
-	case data.Enemy:
-		e := meta.(data.Enemy)
-		m.pos.X = float32(e.Location.X)
-		m.pos.Y = float32(e.Location.Y)
-	case data.EnemyGroup:
-
+	// case data.Enemy:
+	// 	e := meta.(data.Enemy)
+	// 	m.pos.X = float32(e.Location.X)
+	// 	m.pos.Y = float32(e.Location.Y)
+	// case data.EnemyGroup:
+	//
 	}
 
 	m.meta = meta

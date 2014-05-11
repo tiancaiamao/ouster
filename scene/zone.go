@@ -3,7 +3,7 @@ package scene
 import (
 	"github.com/tiancaiamao/ouster"
 	"github.com/tiancaiamao/ouster/aoi"
-	"github.com/tiancaiamao/ouster/data/darkeden"
+	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/player"
 	// "log"
 	"math"
@@ -30,7 +30,7 @@ type Handle struct {
 // id 110xxxx
 
 type Zone struct {
-	darkeden.Map
+	data.Map
 
 	// used to control monster's reborn
 	enemyGroup []uint8
@@ -46,7 +46,7 @@ type Zone struct {
 
 const maskNPC uint32 = 1 << 31
 
-func New(m *darkeden.Map) *Zone {
+func New(m *data.Map) *Zone {
 	ret := new(Zone)
 	ret.players = make([]Handle, 0, 200)
 	ret.monsters = make([]Monster, 0, 200)
