@@ -11,18 +11,18 @@ import (
 	"time"
 )
 
-type Handle struct {
-	// Player don't expose public field, but provide getter
-	// so we can read but not write in this package
-	pc *Player
+// type Handle struct {
+// Player don't expose public field, but provide getter
+// so we can read but not write in this package
+// pc *Player
 
-	aoi   chan<- uint32
-	write chan<- interface{}
-	read  <-chan interface{}
+// aoi   chan<- uint32
+// write chan<- interface{}
+// read  <-chan interface{}
 
-	pos ouster.FPoint
-	to  ouster.FPoint
-}
+// pos ouster.FPoint
+// to  ouster.FPoint
+// }
 
 // id 0xxxxxx player
 // id 1xxxxxx non-player
@@ -33,7 +33,7 @@ type Handle struct {
 type Zone struct {
 	*data.Map
 
-	players  []Handle
+	players  []*Player
 	monsters []Monster
 	aoi      *aoi.CellAoi
 
@@ -48,7 +48,7 @@ func New(m *data.Map) *Zone {
 	ret := new(Zone)
 	ret.Map = m
 	aoi := aoi.NewCellAoi(m.Width, m.Height, 32, 32)
-	players := make([]Handle, 0, 200)
+	players := make([]*Player, 0, 200)
 
 	num := 0
 	for _, mi := range m.MonsterInfo {
@@ -92,27 +92,11 @@ func (m *Zone) Blocked(x, y uint16) bool {
 	return false
 }
 
-func (m *Zone) Player(playerId uint32) *Handle {
+func (m *Zone) Player(playerId uint32) *Player {
 	if playerId >= uint32(len(m.players)) {
 		return nil
 	}
-	return &m.players[playerId]
-}
-
-func (m *Zone) Pos(playerId uint32) (ouster.FPoint, error) {
-	handle := m.Player(playerId)
-	if handle == nil {
-		return ouster.FPoint{}, ouster.NewError("query a non-exist id")
-	}
-	return handle.pos, nil
-}
-
-func (m *Zone) To(playerId uint32) (ouster.FPoint, error) {
-	handle := m.Player(playerId)
-	if handle == nil {
-		return ouster.FPoint{}, ouster.NewError("query a non-exist id")
-	}
-	return handle.to, nil
+	return m.players[playerId]
 }
 
 func (m *Zone) Monster(idx uint32) *Monster {
@@ -123,73 +107,12 @@ func (m *Zone) Monster(idx uint32) *Monster {
 }
 
 func (m *Zone) Creature(id uint32) ouster.Creature {
-	handle := m.Player(id)
-	return handle.pc
+	ret := m.Player(id)
+	return ret
 }
 
 func (m *Zone) String() string {
 	return m.Map.Name
-}
-
-func (m *Zone) movePC() {
-	for id := 0; id < len(m.players); id++ {
-		handle := &m.players[id]
-		if handle.pc == nil {
-			continue
-		}
-
-		// pc := handle.pc
-		// if pc.State == player.MOVE {
-		// 	v := pc.Speed()
-		// 	if ouster.Distance2(handle.pos, handle.to) <= v*v {
-		// 		pc.State = player.STAND
-		// 		handle.pos.X = handle.to.X
-		// 		handle.pos.Y = handle.to.Y
-		// 		// pc.SendPosSync()
-		// 	} else {
-		// 		dx := handle.to.X - handle.pos.X
-		// 		dy := handle.to.Y - handle.pos.Y
-		// 		angle := math.Atan2(float64(dy), float64(dx))
-		// 		vx := v * float32(math.Cos(angle))
-		// 		vy := v * float32(math.Sin(angle))
-
-		// newX := uint16(handle.pos.X + vx)
-		// newY := uint16(handle.pos.Y + vy)
-
-		// idx := newX*m.Width + newY
-		// for _, layer := range m.Layers {
-		//					 if layer.Type == data.BACKGROUND {
-		//						 flag := layer.Data[idx]
-		//						 if flag != 0 {
-		//							 // encounter a obscure
-		//							 pc.State = player.STAND
-		//							 handle.pos.X = handle.to.X
-		//							 handle.pos.Y = handle.to.Y
-		//							 pc.SendPosSync()
-		//						 }
-		//					 }
-		//					 if layer.Type == data.COLLISION {
-		//						 flag := layer.Data[idx]
-		//						 if flag != 0 {
-		//							 // encounter a obscure
-		//							 pc.State = player.STAND
-		//							 handle.pos.X = handle.to.X
-		//							 handle.pos.Y = handle.to.Y
-		//							 pc.SendPosSync()
-		//						 } else {
-		//							 layer.Data[idx] = 1
-		//						 }
-		//					 }
-		//				 }
-
-		// 	handle.pos.X += vx
-		// 	handle.pos.Y += vy
-		// }
-
-		// aoi update
-		// m.aoi.Update(uint32(id), aoi.ModeWatcher|aoi.ModeMarker, aoi.FPoint(handle.pos))
-		// }
-	}
 }
 
 func (m *Zone) moveMonster() {
@@ -235,22 +158,20 @@ func (m *Zone) HeartBeat() {
 	// })
 }
 
-func (m *Zone) Login(player *Player, x uint16, y uint16, a chan<- ObjectIDType, rd <-chan interface{}, wr chan<- interface{}) error {
-	var handle Handle
-	handle.pc = player
-	handle.pos.X = float32(x)
-	handle.pos.Y = float32(y)
-	handle.to = handle.pos
-	handle.read = rd
-	handle.write = wr
+func (m *Zone) Login(player *Player, x uint16, y uint16) error {
+	// var handle Handle
+	// handle.pc = player
+	// handle.pos.X = float32(x)
+	// handle.pos.Y = float32(y)
+	// handle.to = handle.pos
+	// handle.read = rd
+	// handle.write = wr
 
 	idx := len(m.players)
-	m.players = append(m.players, handle)
+	m.players = append(m.players, player)
 
 	player.Id = uint32(idx)
 	player.zone = m
-
-	// m.aoi.Update(player.Id, aoi.ModeWatcher|aoi.ModeMarker, aoi.FPoint(pos))
 
 	return nil
 }

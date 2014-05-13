@@ -38,18 +38,14 @@ func handleClient(conn net.Conn) {
 	log.Println("accept a connection...")
 	defer conn.Close()
 
-	aoi := make(chan scene.ObjectIDType)
-	scene2player := make(chan interface{})
-	player2scene := make(chan interface{})
-
-	agent := scene.NewPlayer(conn, aoi, scene2player, player2scene)
+	agent := scene.NewPlayer(conn)
 
 	// get the map that player current in
 	m := scene.Query("limbo_lair_se")
 	if m == nil {
 		panic("what the fuck??")
 	}
-	err := m.Login(agent, 40, 50, aoi, player2scene, scene2player)
+	err := m.Login(agent, 40, 50)
 
 	if err != nil {
 		// login to scene error

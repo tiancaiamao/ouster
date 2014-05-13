@@ -12,7 +12,7 @@ func loop(m *Zone) {
 			// drain all input from the player
 			for {
 				select {
-				case msg := <-player.read:
+				case msg := <-player.agent2scene:
 					m.processPlayerInput(uint32(id), msg)
 				default:
 					break
@@ -41,16 +41,16 @@ func (m *Zone) processPlayerInput(playerId uint32, msg interface{}) {
 	switch msg.(type) {
 	case darkeden.CGMovePacket:
 		move := msg.(darkeden.CGMovePacket)
-		handle := m.Player(playerId)
+		player := m.Player(playerId)
 		m.aoi.Nearby(uint16(move.X), uint16(move.Y), func(entity *aoi.Entity) {
 			dx := int(move.X) - int(entity.X())
 			dy := int(move.Y) - int(entity.Y())
 			if dx*dx+dy*dy <= 64 {
-				handle.pc.handleAoiMessage(ObjectIDType(entity.Id()))
+				player.handleAoiMessage(ObjectIDType(entity.Id()))
 			}
 		})
 
-		handle.pc.send <- darkeden.GCMoveOKPacket{
+		player.send <- darkeden.GCMoveOKPacket{
 			X:   move.X,
 			Y:   move.Y,
 			Dir: move.Dir,

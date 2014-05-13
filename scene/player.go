@@ -68,13 +68,11 @@ type Player struct {
 	conn   net.Conn
 	client <-chan packet.Packet
 	send   chan<- packet.Packet
-	aoi    <-chan ObjectIDType
 
-	read      <-chan interface{}
-	write     chan<- interface{}
-	nearby    map[ObjectIDType]struct{}
-	heartbeat <-chan time.Time
-	ticker    uint32
+	agent2scene chan interface{}
+	nearby      map[ObjectIDType]struct{}
+	heartbeat   <-chan time.Time
+	ticker      uint32
 
 	// Own by scene...write allowed only by scene agent
 	State PlayerState
@@ -118,7 +116,7 @@ func (player *Player) Defense() int {
 	return player.strength
 }
 
-func NewPlayer(conn net.Conn, a <-chan ObjectIDType, rd <-chan interface{}, wr chan<- interface{}) *Player {
+func NewPlayer(conn net.Conn) *Player {
 	return &Player{
 		name:  "test",
 		class: 1,
@@ -127,9 +125,7 @@ func NewPlayer(conn net.Conn, a <-chan ObjectIDType, rd <-chan interface{}, wr c
 		conn:  conn,
 		speed: 0.5,
 
-		aoi:   a,
-		read:  rd,
-		write: wr,
+		agent2scene: make(chan interface{}),
 
 		nearby:    make(map[ObjectIDType]struct{}),
 		heartbeat: time.Tick(50 * time.Millisecond),
@@ -157,7 +153,7 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 			Dir: 2,
 		}
 	case darkeden.PACKET_CG_MOVE:
-		player.write <- pkt
+		player.agent2scene <- pkt
 		// move := pkt.(darkeden.CGMovePacket)
 		// moveOk := darkeden.GCMoveOKPacket{
 		// 	Dir: move.Dir,

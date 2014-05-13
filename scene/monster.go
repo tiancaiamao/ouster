@@ -78,10 +78,10 @@ func (m *Monster) HeartBeat(mp *Zone) {
 }
 
 func boardcast(nearby []uint32, msg interface{}, mp *Zone) {
-	for _, playerId := range nearby {
-		p := mp.Player(playerId)
-		if p != nil {
-			p.write <- msg
-		}
-	}
+	// for _, playerId := range nearby {
+	// p := mp.Player(playerId)
+	// if p != nil {
+	// 	p.write <- msg
+	// }
+	// }
 }
