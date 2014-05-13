@@ -1,6 +1,7 @@
 package darkeden
 
 import (
+	"encoding"
 	"encoding/binary"
 	"errors"
 	"github.com/tiancaiamao/ouster/packet"
@@ -504,10 +505,6 @@ const (
 
 type PacketSize uint32
 
-type byteser interface {
-	Bytes() []byte
-}
-
 var table [PACKET_MAX]func([]byte) (packet.Packet, error)
 
 func init() {
@@ -604,13 +601,16 @@ func (w *writer) Write(writer io.Writer, pkt packet.Packet) error {
 		return err
 	}
 
-	b, ok := pkt.(byteser)
+	b, ok := pkt.(encoding.BinaryMarshaler)
 	if !ok {
 		return errors.New("write this packet is not supported")
 	}
 
-	buf := b.Bytes()
-	// log.Println("the packet data is ", buf)
+	buf, err := b.MarshalBinary()
+	if err != nil {
+		return err
+	}
+
 	sz := PacketSize(len(buf))
 	err = binary.Write(writer, binary.LittleEndian, sz)
 	if err != nil {

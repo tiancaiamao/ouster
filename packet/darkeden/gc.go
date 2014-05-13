@@ -20,8 +20,8 @@ func (moveOk GCMoveOKPacket) Id() packet.PacketID {
 func (moveOk GCMoveOKPacket) String() string {
 	return "move ok"
 }
-func (moveOk GCMoveOKPacket) Bytes() []byte {
-	return []byte{moveOk.X, moveOk.Dir, moveOk.Y}
+func (moveOk GCMoveOKPacket) MarshalBinary() ([]byte, error) {
+	return []byte{moveOk.X, moveOk.Dir, moveOk.Y}, nil
 }
 
 type GCMovePacket struct {
@@ -37,10 +37,10 @@ func (move GCMovePacket) Id() packet.PacketID {
 func (move GCMovePacket) String() string {
 	return "move"
 }
-func (move GCMovePacket) Bytes() []byte {
+func (move GCMovePacket) MarshalBinary() ([]byte, error) {
 	ret := []byte{0, 0, 0, 0, move.X, move.Y, move.Dir}
 	binary.LittleEndian.PutUint32(ret[:], move.ObjectID)
-	return ret
+	return ret, nil
 }
 
 type NPCType struct{}
@@ -100,7 +100,7 @@ func (updateInfo *GCUpdateInfoPacket) Id() packet.PacketID {
 func (updateInfo *GCUpdateInfoPacket) String() string {
 	return "update info"
 }
-func (updateInfo *GCUpdateInfoPacket) Bytes() []byte {
+func (updateInfo *GCUpdateInfoPacket) MarshalBinary() ([]byte, error) {
 	//154 1 60 1 0 0 0 86 117 48 0 0 4 183 232 191 241 150 0 0 0 164 1 0 76 29 0 0
 	//20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 216 1 216 1 50 204 41 0 0 125 0 0
 	//0 0 0 0 0 26 1 0 0 13 15 39 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 4 0 0
@@ -109,14 +109,15 @@ func (updateInfo *GCUpdateInfoPacket) Bytes() []byte {
 	//1 0 0 0 0 0 255 255 255 255 0 8 0 0 0 0 1 121 48 0 0 32 0 0 2 53 43 232 3 0 0
 	//0 0 4 0 0 0]
 	return []byte{86, 117, 48, 0, 0, 4, 183, 232, 191, 241, 150, 0, 0, 0, 164, 1, 0, 76, 29, 0, 0,
-		20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 216, 1, 216, 1, 50, 204, 41, 0, 0, 125, 0, 0,
-		0, 0, 0, 0, 0, 26, 1, 0, 0, 13, 15, 39, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 4, 0, 0,
-		0, 0, 100, 0, 0, 0, 0, 6, 118, 48, 0, 0, 30, 0, 0, 0, 232, 3, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 119,
-		48, 0, 0, 44, 0, 0, 2, 16, 1, 136, 19, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 120, 48, 0, 0, 34, 5, 0, 0,
-		1, 0, 0, 0, 0, 0, 255, 255, 255, 255, 0, 8, 0, 0, 0, 0, 1, 121, 48, 0, 0, 32, 0, 0, 2, 53, 43, 232, 3, 0, 0,
-		0, 0, 4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 122, 48, 0, 0, 32, 1, 0, 0, 232, 3, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 3, 123, 48, 0,
-		0, 44, 0, 0, 2, 58, 38, 32, 28, 0, 0, 0, 0, 4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 4, 0, 0, 2, 146, 1, 54, 66, 109, 0, 246, 224, 0, 21, 0, 145, 237, 190, 7, 3, 19, 16,
-		10, 40, 0, 0, 13, 2, 0, 5, 9, 0, 61, 0, 62, 0, 64, 0, 163, 0, 0, 0, 17, 0, 0, 0, 0, 24, 125, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 52, 1, 5, 0, 0, 0, 1, 0, 117, 48, 0, 0}
+			20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 216, 1, 216, 1, 50, 204, 41, 0, 0, 125, 0, 0,
+			0, 0, 0, 0, 0, 26, 1, 0, 0, 13, 15, 39, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 4, 0, 0,
+			0, 0, 100, 0, 0, 0, 0, 6, 118, 48, 0, 0, 30, 0, 0, 0, 232, 3, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 119,
+			48, 0, 0, 44, 0, 0, 2, 16, 1, 136, 19, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 120, 48, 0, 0, 34, 5, 0, 0,
+			1, 0, 0, 0, 0, 0, 255, 255, 255, 255, 0, 8, 0, 0, 0, 0, 1, 121, 48, 0, 0, 32, 0, 0, 2, 53, 43, 232, 3, 0, 0,
+			0, 0, 4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 122, 48, 0, 0, 32, 1, 0, 0, 232, 3, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 3, 123, 48, 0,
+			0, 44, 0, 0, 2, 58, 38, 32, 28, 0, 0, 0, 0, 4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 4, 0, 0, 2, 146, 1, 54, 66, 109, 0, 246, 224, 0, 21, 0, 145, 237, 190, 7, 3, 19, 16,
+			10, 40, 0, 0, 13, 2, 0, 5, 9, 0, 61, 0, 62, 0, 64, 0, 163, 0, 0, 0, 17, 0, 0, 0, 0, 24, 125, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 52, 1, 5, 0, 0, 0, 1, 0, 117, 48, 0, 0},
+		nil
 }
 
 type GCSetPositionPacket struct {
@@ -131,8 +132,8 @@ func (setPosition GCSetPositionPacket) Id() packet.PacketID {
 func (setPosition GCSetPositionPacket) String() string {
 	return "set position"
 }
-func (setPosition GCSetPositionPacket) Bytes() []byte {
-	return []byte{setPosition.X, setPosition.Y, setPosition.Dir}
+func (setPosition GCSetPositionPacket) MarshalBinary() ([]byte, error) {
+	return []byte{setPosition.X, setPosition.Y, setPosition.Dir}, nil
 }
 
 type GCAddBat struct {
@@ -154,7 +155,7 @@ func (bat *GCAddBat) Id() packet.PacketID {
 func (bat *GCAddBat) String() string {
 	return "add bat"
 }
-func (bat *GCAddBat) Bytes() []byte {
+func (bat *GCAddBat) MarshalBinary() ([]byte, error) {
 
 	buf := &bytes.Buffer{}
 	binary.Write(buf, binary.LittleEndian, bat.ObjectID)
@@ -168,7 +169,7 @@ func (bat *GCAddBat) Bytes() []byte {
 	binary.Write(buf, binary.LittleEndian, bat.MaxHP)
 	binary.Write(buf, binary.LittleEndian, bat.GuildID)
 	binary.Write(buf, binary.LittleEndian, bat.Color)
-	return buf.Bytes()
+	return buf.Bytes(), nil
 }
 
 type GCAddMonsterFromBurrowing struct {
@@ -191,9 +192,9 @@ func (monster *GCAddMonsterFromBurrowing) Id() packet.PacketID {
 func (monster *GCAddMonsterFromBurrowing) String() string {
 	return "add monster from burrowing"
 }
-func (monster *GCAddMonsterFromBurrowing) Bytes() []byte {
+func (monster *GCAddMonsterFromBurrowing) MarshalBinary() ([]byte, error) {
 
-	return []byte{62, 48, 0, 0, 213, 0, 8, 185, 197, 181, 194, 203, 185, 182, 161, 53, 0, 0, 0, 137, 238, 0, 0, 54, 1, 54, 1}
+	return []byte{62, 48, 0, 0, 213, 0, 8, 185, 197, 181, 194, 203, 185, 182, 161, 53, 0, 0, 0, 137, 238, 0, 0, 54, 1, 54, 1}, nil
 }
 
 type GCAddMonster struct {
@@ -217,7 +218,7 @@ func (monster *GCAddMonster) Id() packet.PacketID {
 func (monster *GCAddMonster) String() string {
 	return "add monster"
 }
-func (monster *GCAddMonster) Bytes() []byte {
+func (monster *GCAddMonster) MarshalBinary() ([]byte, error) {
 	//[218 47 0 0 223 0 6 196 218 185 254 203 185 7 0 174 0 102 79 5 0 133 0 133 0 0]
 	//[166 47 0 0 72 0 4 192 188 197 181 5 137 133 0 164 214 6 0 156 0 156 0 0]
 	//[24 47 0 0 8 0 10 203 185 196 170 191 203 206 172 198 230 53 48 48 58 137 192 6 0 156 0 156 0 0]
@@ -235,7 +236,7 @@ func (monster *GCAddMonster) Bytes() []byte {
 	binary.Write(buf, binary.LittleEndian, monster.CurrentHP)
 	binary.Write(buf, binary.LittleEndian, monster.MaxHP)
 	binary.Write(buf, binary.LittleEndian, monster.FromFlag)
-	return buf.Bytes()
+	return buf.Bytes(), nil
 }
 
 type GCStatusCurrentHP struct {
@@ -249,11 +250,11 @@ func (status GCStatusCurrentHP) Id() packet.PacketID {
 func (status GCStatusCurrentHP) String() string {
 	return "status current HP"
 }
-func (status GCStatusCurrentHP) Bytes() []byte {
+func (status GCStatusCurrentHP) MarshalBinary() ([]byte, error) {
 	buf := &bytes.Buffer{}
 	binary.Write(buf, binary.LittleEndian, status.ObjectID)
 	binary.Write(buf, binary.LittleEndian, status.CurrentHP)
-	return buf.Bytes()
+	return buf.Bytes(), nil
 }
 
 type GCAttackMeleeOK1 uint32
@@ -265,11 +266,11 @@ func (attackOk GCAttackMeleeOK1) Id() packet.PacketID {
 func (attackOk GCAttackMeleeOK1) String() string {
 	return "attack melee ok 1"
 }
-func (attackOk GCAttackMeleeOK1) Bytes() []byte {
+func (attackOk GCAttackMeleeOK1) MarshalBinary() ([]byte, error) {
 
 	ret := []byte{0, 0, 0, 0, 0, 0}
 	binary.LittleEndian.PutUint32(ret, uint32(attackOk))
-	return ret
+	return ret, nil
 }
 
 type GCCannotUsePacket uint32
@@ -280,10 +281,10 @@ func (cannot GCCannotUsePacket) Id() packet.PacketID {
 func (cannot GCCannotUsePacket) String() string {
 	return "cannot use"
 }
-func (cannot GCCannotUsePacket) Bytes() []byte {
+func (cannot GCCannotUsePacket) MarshalBinary() ([]byte, error) {
 	ret := []byte{0, 0, 0, 0}
 	binary.LittleEndian.PutUint32(ret, uint32(cannot))
-	return ret
+	return ret, nil
 }
 
 type ModifyType byte
@@ -474,12 +475,12 @@ func (bdo *GCBloodDrainOK1) Id() packet.PacketID {
 func (bdo *GCBloodDrainOK1) String() string {
 	return "blood drain ok 1"
 }
-func (bdo *GCBloodDrainOK1) Bytes() []byte {
+func (bdo *GCBloodDrainOK1) MarshalBinary() ([]byte, error) {
 	// 237, 53, 0, 0, 2, 51, 0, 0, 12, 216, 1, 0}
 	buf := &bytes.Buffer{}
 	binary.Write(buf, binary.LittleEndian, bdo.ObjectID)
 	bdo.Modify.Dump(buf)
-	return buf.Bytes()
+	return buf.Bytes(), nil
 }
 
 type GCModifyInformationPacket ModifyInfo
@@ -490,11 +491,11 @@ func (modify *GCModifyInformationPacket) Id() packet.PacketID {
 func (modify *GCModifyInformationPacket) String() string {
 	return "modify information"
 }
-func (modify *GCModifyInformationPacket) Bytes() []byte {
+func (modify *GCModifyInformationPacket) MarshalBinary() ([]byte, error) {
 	buf := &bytes.Buffer{}
 	raw := (*ModifyInfo)(modify)
 	raw.Dump(buf)
-	return buf.Bytes()
+	return buf.Bytes(), nil
 }
 
 type GCAddEffect struct {
@@ -509,12 +510,12 @@ func (effect GCAddEffect) Id() packet.PacketID {
 func (effect GCAddEffect) String() string {
 	return "add effect"
 }
-func (effect GCAddEffect) Bytes() []byte {
+func (effect GCAddEffect) MarshalBinary() ([]byte, error) {
 	ret := make([]byte, 8)
 	binary.LittleEndian.PutUint32(ret, effect.ObjectID)
 	binary.LittleEndian.PutUint16(ret[4:], effect.EffectID)
 	binary.LittleEndian.PutUint16(ret[6:], effect.Duration)
-	return ret
+	return ret, nil
 }
 
 type GCAddMonsterCorpse struct {
@@ -537,7 +538,7 @@ func (corpse *GCAddMonsterCorpse) Id() packet.PacketID {
 func (corpse *GCAddMonsterCorpse) String() string {
 	return "add monster corpse"
 }
-func (corpse *GCAddMonsterCorpse) Bytes() []byte {
+func (corpse *GCAddMonsterCorpse) MarshalBinary() ([]byte, error) {
 	buf := &bytes.Buffer{}
 	binary.Write(buf, binary.LittleEndian, corpse.ObjectID)
 	binary.Write(buf, binary.LittleEndian, corpse.MonsterType)
@@ -556,7 +557,7 @@ func (corpse *GCAddMonsterCorpse) Bytes() []byte {
 
 	binary.Write(buf, binary.LittleEndian, corpse.TreasureCount)
 	binary.Write(buf, binary.LittleEndian, corpse.LastKiller)
-	return buf.Bytes()
+	return buf.Bytes(), nil
 }
 
 type GCCreatureDiedPacket uint32
@@ -567,10 +568,10 @@ func (died GCCreatureDiedPacket) Id() packet.PacketID {
 func (died GCCreatureDiedPacket) String() string {
 	return "creature died"
 }
-func (died GCCreatureDiedPacket) Bytes() []byte {
+func (died GCCreatureDiedPacket) MarshalBinary() ([]byte, error) {
 	ret := []byte{0, 0, 0, 0}
 	binary.LittleEndian.PutUint32(ret, uint32(died))
-	return ret
+	return ret, nil
 }
 
 type GCDeleteObjectPacket uint32
@@ -581,8 +582,8 @@ func (obj GCDeleteObjectPacket) Id() packet.PacketID {
 func (obj GCDeleteObjectPacket) String() string {
 	return "delete object"
 }
-func (obj GCDeleteObjectPacket) Bytes() []byte {
+func (obj GCDeleteObjectPacket) MarshalBinary() ([]byte, error) {
 	ret := []byte{0, 0, 0, 0}
 	binary.LittleEndian.PutUint32(ret, uint32(obj))
-	return ret
+	return ret, nil
 }
