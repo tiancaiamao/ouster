@@ -4,16 +4,17 @@ import (
 	"github.com/tiancaiamao/ouster"
 	"github.com/tiancaiamao/ouster/aoi"
 	"github.com/tiancaiamao/ouster/data"
-	"github.com/tiancaiamao/ouster/player"
+	// "github.com/tiancaiamao/ouster/player"
 	// "log"
-	"math"
+	// "math"
+	"math/rand"
 	"time"
 )
 
 type Handle struct {
 	// Player don't expose public field, but provide getter
 	// so we can read but not write in this package
-	pc *player.Player
+	pc *Player
 
 	aoi   chan<- uint32
 	write chan<- interface{}
@@ -30,10 +31,7 @@ type Handle struct {
 // id 110xxxx
 
 type Zone struct {
-	data.Map
-
-	// used to control monster's reborn
-	enemyGroup []uint8
+	*data.Map
 
 	players  []Handle
 	monsters []Monster
@@ -48,19 +46,50 @@ const maskNPC uint32 = 1 << 31
 
 func New(m *data.Map) *Zone {
 	ret := new(Zone)
-	ret.players = make([]Handle, 0, 200)
-	ret.monsters = make([]Monster, 0, 200)
-	// for , v := range m.Enemies {
-	// 	ret.monsters[i].Init(v)
-	// }
+	ret.Map = m
+	aoi := aoi.NewCellAoi(m.Width, m.Height, 32, 32)
+	players := make([]Handle, 0, 200)
 
-	ret.aoi = aoi.NewCellAoi(m.Width, m.Height, 32, 32)
+	num := 0
+	for _, mi := range m.MonsterInfo {
+		num += int(mi.Count)
+	}
+	monsters := make([]Monster, num)
 
+	idx := 0
+	for _, mi := range m.MonsterInfo {
+		for i := 0; i < int(mi.Count); i++ {
+			var x, y int
+			// set monster's position and so on
+			for {
+				x = rand.Intn(int(m.Width))
+				y = rand.Intn(int(m.Height))
+
+				flag := m.Data[x*int(m.Width)+y]
+				if flag == 0x0 && !ret.Blocked(uint16(x), uint16(y)) {
+					break
+				}
+			}
+
+			monster := &monsters[idx]
+			monster.aoi = aoi.Add(uint16(x), uint16(y), uint32(idx)|ObjectIDMaskNPC)
+			monster.MonsterType = mi.MonsterType
+			idx++
+		}
+	}
+
+	ret.aoi = aoi
+	ret.players = players
+	ret.monsters = monsters
 	ret.quit = make(chan struct{})
 	ret.event = make(chan interface{})
 	ret.heartbeat = time.Tick(50 * time.Millisecond)
 
 	return ret
+}
+
+func (m *Zone) Blocked(x, y uint16) bool {
+	return false
 }
 
 func (m *Zone) Player(playerId uint32) *Handle {
@@ -86,6 +115,13 @@ func (m *Zone) To(playerId uint32) (ouster.FPoint, error) {
 	return handle.to, nil
 }
 
+func (m *Zone) Monster(id uint32) *Monster {
+	if id >= uint32(len(m.monsters)) {
+		return nil
+	}
+	return &m.monsters[id]
+}
+
 func (m *Zone) Creature(id uint32) ouster.Creature {
 	handle := m.Player(id)
 	return handle.pc
@@ -102,73 +138,73 @@ func (m *Zone) movePC() {
 			continue
 		}
 
-		pc := handle.pc
-		if pc.State == player.MOVE {
-			v := pc.Speed()
-			if ouster.Distance2(handle.pos, handle.to) <= v*v {
-				pc.State = player.STAND
-				handle.pos.X = handle.to.X
-				handle.pos.Y = handle.to.Y
-				// pc.SendPosSync()
-			} else {
-				dx := handle.to.X - handle.pos.X
-				dy := handle.to.Y - handle.pos.Y
-				angle := math.Atan2(float64(dy), float64(dx))
-				vx := v * float32(math.Cos(angle))
-				vy := v * float32(math.Sin(angle))
+		// pc := handle.pc
+		// if pc.State == player.MOVE {
+		// 	v := pc.Speed()
+		// 	if ouster.Distance2(handle.pos, handle.to) <= v*v {
+		// 		pc.State = player.STAND
+		// 		handle.pos.X = handle.to.X
+		// 		handle.pos.Y = handle.to.Y
+		// 		// pc.SendPosSync()
+		// 	} else {
+		// 		dx := handle.to.X - handle.pos.X
+		// 		dy := handle.to.Y - handle.pos.Y
+		// 		angle := math.Atan2(float64(dy), float64(dx))
+		// 		vx := v * float32(math.Cos(angle))
+		// 		vy := v * float32(math.Sin(angle))
 
-				// newX := uint16(handle.pos.X + vx)
-				// newY := uint16(handle.pos.Y + vy)
+		// newX := uint16(handle.pos.X + vx)
+		// newY := uint16(handle.pos.Y + vy)
 
-				// idx := newX*m.Width + newY
-				// for _, layer := range m.Layers {
-				//					 if layer.Type == data.BACKGROUND {
-				//						 flag := layer.Data[idx]
-				//						 if flag != 0 {
-				//							 // encounter a obscure
-				//							 pc.State = player.STAND
-				//							 handle.pos.X = handle.to.X
-				//							 handle.pos.Y = handle.to.Y
-				//							 pc.SendPosSync()
-				//						 }
-				//					 }
-				//					 if layer.Type == data.COLLISION {
-				//						 flag := layer.Data[idx]
-				//						 if flag != 0 {
-				//							 // encounter a obscure
-				//							 pc.State = player.STAND
-				//							 handle.pos.X = handle.to.X
-				//							 handle.pos.Y = handle.to.Y
-				//							 pc.SendPosSync()
-				//						 } else {
-				//							 layer.Data[idx] = 1
-				//						 }
-				//					 }
-				//				 }
+		// idx := newX*m.Width + newY
+		// for _, layer := range m.Layers {
+		//					 if layer.Type == data.BACKGROUND {
+		//						 flag := layer.Data[idx]
+		//						 if flag != 0 {
+		//							 // encounter a obscure
+		//							 pc.State = player.STAND
+		//							 handle.pos.X = handle.to.X
+		//							 handle.pos.Y = handle.to.Y
+		//							 pc.SendPosSync()
+		//						 }
+		//					 }
+		//					 if layer.Type == data.COLLISION {
+		//						 flag := layer.Data[idx]
+		//						 if flag != 0 {
+		//							 // encounter a obscure
+		//							 pc.State = player.STAND
+		//							 handle.pos.X = handle.to.X
+		//							 handle.pos.Y = handle.to.Y
+		//							 pc.SendPosSync()
+		//						 } else {
+		//							 layer.Data[idx] = 1
+		//						 }
+		//					 }
+		//				 }
 
-				handle.pos.X += vx
-				handle.pos.Y += vy
-			}
+		// 	handle.pos.X += vx
+		// 	handle.pos.Y += vy
+		// }
 
-			// aoi update
-			// m.aoi.Update(uint32(id), aoi.ModeWatcher|aoi.ModeMarker, aoi.FPoint(handle.pos))
-		}
+		// aoi update
+		// m.aoi.Update(uint32(id), aoi.ModeWatcher|aoi.ModeMarker, aoi.FPoint(handle.pos))
+		// }
 	}
 }
 
 func (m *Zone) moveMonster() {
 	for _, monster := range m.monsters {
-		if (monster.flag & flagDead) != 0 {
-			monster.reborn++
-			if monster.reborn >= 100 {
-				monster.flag = monster.flag &^ flagDead
-			}
-			continue
-		}
-
-		if (monster.flag & flagActive) == 0 {
-			continue
-		}
+		// if (monster.flag & flagDead) != 0 {
+		// 	monster.reborn++
+		// 	if monster.reborn >= 100 {
+		// 		monster.flag = monster.flag &^ flagDead
+		// 	}
+		// 	continue
+		// }
+		//
+		// if (monster.flag & flagActive) == 0 {
+		// 	continue
+		// }
 
 		monster.HeartBeat(m)
 	}
@@ -199,7 +235,7 @@ func (m *Zone) HeartBeat() {
 	// })
 }
 
-func (m *Zone) Login(player *player.Player, x uint16, y uint16, a chan<- uint32, rd <-chan interface{}, wr chan<- interface{}) error {
+func (m *Zone) Login(player *Player, x uint16, y uint16, a chan<- ObjectIDType, rd <-chan interface{}, wr chan<- interface{}) error {
 	var handle Handle
 	handle.pc = player
 	handle.pos.X = float32(x)
@@ -212,7 +248,7 @@ func (m *Zone) Login(player *player.Player, x uint16, y uint16, a chan<- uint32,
 	m.players = append(m.players, handle)
 
 	player.Id = uint32(idx)
-	player.Scene = m
+	// player.Scene = m
 
 	// m.aoi.Update(player.Id, aoi.ModeWatcher|aoi.ModeMarker, aoi.FPoint(pos))
 

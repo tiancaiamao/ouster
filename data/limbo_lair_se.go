@@ -1,6 +1,6 @@
 package data
 
-var LimboLairSE *Map = &Map{
+var LimboLairSE Map = Map{
 	Name:      "",
 	Desc:      "",
 	ZoneType:  0x80,

@@ -1,8 +1,9 @@
-package player
+package scene
 
 import (
 	"github.com/tiancaiamao/ouster"
 	// "github.com/tiancaiamao/ouster/data"
+	"bytes"
 	"github.com/tiancaiamao/ouster/packet"
 	"github.com/tiancaiamao/ouster/packet/darkeden"
 	// "github.com/tiancaiamao/ouster/skill"
@@ -31,6 +32,7 @@ type scene interface {
 	Pos(uint32) (ouster.FPoint, error)
 	To(uint32) (ouster.FPoint, error)
 	Creature(uint32) ouster.Creature
+	Monster(uint32)
 	String() string
 }
 
@@ -66,11 +68,11 @@ type Player struct {
 	conn   net.Conn
 	client <-chan packet.Packet
 	send   chan<- packet.Packet
-	aoi    <-chan uint32
+	aoi    <-chan ObjectIDType
 
 	read      <-chan interface{}
 	write     chan<- interface{}
-	nearby    []uint32
+	nearby    map[ObjectIDType]struct{}
 	heartbeat <-chan time.Time
 	ticker    uint32
 
@@ -116,7 +118,7 @@ func (player *Player) Defense() int {
 	return player.strength
 }
 
-func New(conn net.Conn, a <-chan uint32, rd <-chan interface{}, wr chan<- interface{}) *Player {
+func NewPlayer(conn net.Conn, a <-chan ObjectIDType, rd <-chan interface{}, wr chan<- interface{}) *Player {
 	return &Player{
 		name:  "test",
 		class: 1,
@@ -133,12 +135,11 @@ func New(conn net.Conn, a <-chan uint32, rd <-chan interface{}, wr chan<- interf
 	}
 }
 
-func (player *Player) NearBy() []uint32 {
+func (player *Player) NearBy() map[ObjectIDType]struct{} {
 	return player.nearby
 }
 
 func (player *Player) handleClientMessage(pkt packet.Packet) {
-	var flag bool
 	hp := darkeden.GCStatusCurrentHP{
 		ObjectID:  2351,
 		CurrentHP: 133,
@@ -156,41 +157,24 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 		}
 	case darkeden.PACKET_CG_MOVE:
 		player.write <- pkt
-		move := pkt.(darkeden.CGMovePacket)
-		moveOk := darkeden.GCMoveOKPacket{
-			Dir: move.Dir,
-			X:   move.X,
-			Y:   move.Y,
-		}
-		player.send <- moveOk
+		// move := pkt.(darkeden.CGMovePacket)
+		// moveOk := darkeden.GCMoveOKPacket{
+		// 	Dir: move.Dir,
+		// 	X:   move.X,
+		// 	Y:   move.Y,
+		// }
+		// player.send <- moveOk
 
-		if !flag {
-			flag = true
-			addMonster := &darkeden.GCAddMonster{
-				ObjectID:    hp.ObjectID,
-				MonsterType: 223,
-				MonsterName: "test",
-				MainColor:   7,
-				SubColor:    174,
-				X:           146,
-				Y:           238,
-				Dir:         2,
-				CurrentHP:   133,
-				MaxHP:       133,
-			}
-			addBat := &darkeden.GCAddBat{
-				ObjectID:    2352,
-				MonsterName: "bat",
-				X:           149,
-				Y:           242,
-				Dir:         1,
-				CurrentHP:   111,
-				MaxHP:       133,
-				GuildID:     1,
-			}
-			player.send <- addBat
-			player.send <- addMonster
-		}
+		// addBat := &darkeden.GCAddBat{
+		// 	ObjectID:    2352,
+		// 	MonsterName: "bat",
+		// 	X:           149,
+		// 	Y:           242,
+		// 	Dir:         1,
+		// 	CurrentHP:   111,
+		// 	MaxHP:       133,
+		// 	GuildID:     1,
+		// }
 
 	case darkeden.PACKET_CG_ATTACK:
 		if hp.CurrentHP > 0 {
@@ -242,6 +226,93 @@ type CMovePacketAck struct{}
 func (this *Player) handleSceneMessage(msg interface{}) {
 }
 
+func (this *Player) handleAoiMessage(id ObjectIDType) {
+	if _, ok := this.nearby[id]; !ok {
+		this.nearby[id] = struct{}{}
+		if id.Monster() {
+			addMonster := &darkeden.GCAddMonster{
+				ObjectID:    uint32(id),
+				MonsterType: 223,
+				MonsterName: "test",
+				MainColor:   7,
+				SubColor:    174,
+				X:           146,
+				Y:           238,
+				Dir:         2,
+				CurrentHP:   133,
+				MaxHP:       133,
+			}
+			this.send <- addMonster
+		}
+	}
+
+}
+
 func (this *Player) heartBeat() {
 	this.ticker++
+}
+
+func (this *Player) loop() {
+	var msg interface{}
+	for {
+		select {
+		case msg, ok := <-this.client:
+			if !ok {
+				// kick the player off...
+				return
+			} else {
+				this.handleClientMessage(msg)
+			}
+		case msg = <-this.read:
+			this.handleSceneMessage(msg)
+		case id := <-this.aoi:
+			this.handleAoiMessage(id)
+		case <-this.heartbeat:
+			this.heartBeat()
+		}
+	}
+}
+
+func (player *Player) Go() {
+	read := make(chan packet.Packet, 1)
+	write := make(chan packet.Packet, 1)
+	player.send = write
+	player.client = read
+
+	// open a goroutine to read from conn
+	go func() {
+		reader := darkeden.NewReader()
+		for {
+			data, err := reader.Read(player.conn)
+			if err != nil {
+				log.Println(err)
+				player.conn.Close()
+				close(read)
+				return
+			}
+			// log.Println("packet before send to chan", data)
+			read <- data
+			// log.Println("packet after send to chan", data)
+		}
+	}()
+
+	// open a goroutine to write to conn
+	go func() {
+		writer := darkeden.NewWriter()
+		for {
+			pkt := <-write
+			log.Println("write channel get a pkt ", pkt.String())
+			err := writer.Write(player.conn, pkt)
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+
+			buf := &bytes.Buffer{}
+			writer.Write(buf, pkt)
+			log.Println("send packet to client: ", buf.Bytes())
+		}
+	}()
+
+	player.loop()
 }

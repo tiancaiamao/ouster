@@ -10,7 +10,7 @@ var (
 
 func Initialize() {
 	maps = make(map[string]*Zone)
-	maps["limbo_lair_se"] = New(data.LimboLairSE)
+	maps["limbo_lair_se"] = New(&data.LimboLairSE)
 
 	for _, m := range maps {
 		m.Go()

@@ -4,7 +4,7 @@ import (
 	// "github.com/tiancaiamao/ouster"
 	// "github.com/tiancaiamao/ouster"
 	"github.com/tiancaiamao/ouster/config"
-	"github.com/tiancaiamao/ouster/player"
+	// "github.com/tiancaiamao/ouster/player"
 	"github.com/tiancaiamao/ouster/scene"
 	"log"
 	"net"
@@ -38,11 +38,11 @@ func handleClient(conn net.Conn) {
 	log.Println("accept a connection...")
 	defer conn.Close()
 
-	aoi := make(chan uint32)
+	aoi := make(chan scene.ObjectIDType)
 	scene2player := make(chan interface{})
 	player2scene := make(chan interface{})
 
-	agent := player.New(conn, aoi, scene2player, player2scene)
+	agent := scene.NewPlayer(conn, aoi, scene2player, player2scene)
 
 	// get the map that player current in
 	m := scene.Query("limbo_lair_se")

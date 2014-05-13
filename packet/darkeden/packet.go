@@ -635,3 +635,15 @@ func (w *writer) Write(writer io.Writer, pkt packet.Packet) error {
 
 	return nil
 }
+
+type opaque struct {
+	packet.PacketReader
+	packet.PacketWriter
+}
+
+func New() opaque {
+	return opaque{
+		PacketReader: NewReader(),
+		PacketWriter: NewWriter(),
+	}
+}

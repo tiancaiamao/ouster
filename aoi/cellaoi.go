@@ -6,8 +6,21 @@ type Entity struct {
 	next *Entity
 	prev *Entity
 
-	x uint16
-	y uint16
+	x  uint16
+	y  uint16
+	id uint32
+}
+
+func (e *Entity) X() uint16 {
+	return e.x
+}
+
+func (e *Entity) Y() uint16 {
+	return e.y
+}
+
+func (e *Entity) Id() uint32 {
+	return e.id
 }
 
 func (e *Entity) remove() {
@@ -98,7 +111,7 @@ func (aoi *CellAoi) getCell(x uint16, y uint16) *Sector {
 	return &aoi.cells[xIndex][yIndex]
 }
 
-func (aoi *CellAoi) Add(x uint16, y uint16) *Entity {
+func (aoi *CellAoi) Add(x uint16, y uint16, id uint32) *Entity {
 	sector := aoi.getCell(x, y)
 	if sector == nil {
 		return nil
@@ -108,6 +121,7 @@ func (aoi *CellAoi) Add(x uint16, y uint16) *Entity {
 	ret := new(Entity)
 	ret.x = x
 	ret.y = y
+	ret.id = id
 	sector.insert(ret)
 	return ret
 }
