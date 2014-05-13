@@ -115,11 +115,11 @@ func (m *Zone) To(playerId uint32) (ouster.FPoint, error) {
 	return handle.to, nil
 }
 
-func (m *Zone) Monster(id uint32) *Monster {
-	if id >= uint32(len(m.monsters)) {
+func (m *Zone) Monster(idx uint32) *Monster {
+	if idx >= uint32(len(m.monsters)) {
 		return nil
 	}
-	return &m.monsters[id]
+	return &m.monsters[idx]
 }
 
 func (m *Zone) Creature(id uint32) ouster.Creature {
@@ -211,8 +211,8 @@ func (m *Zone) moveMonster() {
 }
 
 func (m *Zone) HeartBeat() {
-	m.movePC()
-	m.moveMonster()
+	// m.movePC()
+	// m.moveMonster()
 
 	// m.aoi.Message(func(watcher uint32, marker uint32) {
 	// 	// watcher is a player
@@ -248,7 +248,7 @@ func (m *Zone) Login(player *Player, x uint16, y uint16, a chan<- ObjectIDType, 
 	m.players = append(m.players, handle)
 
 	player.Id = uint32(idx)
-	// player.Scene = m
+	player.zone = m
 
 	// m.aoi.Update(player.Id, aoi.ModeWatcher|aoi.ModeMarker, aoi.FPoint(pos))
 

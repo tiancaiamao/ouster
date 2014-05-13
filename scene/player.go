@@ -1,9 +1,9 @@
 package scene
 
 import (
-	"github.com/tiancaiamao/ouster"
-	// "github.com/tiancaiamao/ouster/data"
 	"bytes"
+	"github.com/tiancaiamao/ouster"
+	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/packet"
 	"github.com/tiancaiamao/ouster/packet/darkeden"
 	// "github.com/tiancaiamao/ouster/skill"
@@ -49,8 +49,8 @@ const (
 
 // mostly the same as data.Player, but this is in memory instead.
 type Player struct {
-	Id    uint32 // set by scene.Login
-	Scene scene  // set by scene.Login
+	Id   uint32 // set by scene.Login
+	zone *Zone  // set by scene.Login
 
 	name  string
 	class PlayerClass
@@ -131,6 +131,7 @@ func NewPlayer(conn net.Conn, a <-chan ObjectIDType, rd <-chan interface{}, wr c
 		read:  rd,
 		write: wr,
 
+		nearby:    make(map[ObjectIDType]struct{}),
 		heartbeat: time.Tick(50 * time.Millisecond),
 	}
 }
@@ -224,23 +225,35 @@ type SkillEffect struct {
 type CMovePacketAck struct{}
 
 func (this *Player) handleSceneMessage(msg interface{}) {
+	switch msg.(type) {
+	case darkeden.GCMoveOKPacket:
+		raw := msg.(darkeden.GCMoveOKPacket)
+		this.send <- raw
+	default:
+		log.Println("handleSceneMessage receive a unknown msg")
+	}
 }
 
 func (this *Player) handleAoiMessage(id ObjectIDType) {
 	if _, ok := this.nearby[id]; !ok {
+		log.Println(id, "enter aoi...")
 		this.nearby[id] = struct{}{}
 		if id.Monster() {
+			log.Println("it's a monster...send message")
+			monster := this.zone.Monster(id.Index())
+			info := data.MonsterType2MonsterInfo[monster.MonsterType]
+			hp := info.STR*5 + uint16(info.Level)
 			addMonster := &darkeden.GCAddMonster{
 				ObjectID:    uint32(id),
-				MonsterType: 223,
-				MonsterName: "test",
+				MonsterType: monster.MonsterType,
+				MonsterName: info.Name,
 				MainColor:   7,
 				SubColor:    174,
-				X:           146,
-				Y:           238,
+				X:           uint8(monster.aoi.X()),
+				Y:           uint8(monster.aoi.Y()),
 				Dir:         2,
-				CurrentHP:   133,
-				MaxHP:       133,
+				CurrentHP:   monster.HP,
+				MaxHP:       hp,
 			}
 			this.send <- addMonster
 		}
@@ -253,7 +266,7 @@ func (this *Player) heartBeat() {
 }
 
 func (this *Player) loop() {
-	var msg interface{}
+	// var msg interface{}
 	for {
 		select {
 		case msg, ok := <-this.client:
@@ -261,12 +274,17 @@ func (this *Player) loop() {
 				// kick the player off...
 				return
 			} else {
+				// log.Println("before handleClientMessage...")
 				this.handleClientMessage(msg)
+				// log.Println("after handleClientMessage...")
 			}
-		case msg = <-this.read:
-			this.handleSceneMessage(msg)
-		case id := <-this.aoi:
-			this.handleAoiMessage(id)
+		// case msg = <-this.read:
+		// log.Println("before handleSceneMessage...")
+		// this.handleSceneMessage(msg)
+		// log.Println("after handleSceneMessage...")
+		// case id := <-this.aoi:
+		// log.Println("before handleAoiMessage...")
+		// log.Println("after handleAoiMessage...")
 		case <-this.heartbeat:
 			this.heartBeat()
 		}

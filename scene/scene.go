@@ -9,11 +9,14 @@ import (
 func loop(m *Zone) {
 	for {
 		for id, player := range m.players {
-			select {
-			case msg := <-player.read:
-				m.processPlayerInput(uint32(id), msg)
-			default:
-				break
+			// drain all input from the player
+			for {
+				select {
+				case msg := <-player.read:
+					m.processPlayerInput(uint32(id), msg)
+				default:
+					break
+				}
 			}
 		}
 
@@ -37,15 +40,21 @@ func (m *Zone) Go() {
 func (m *Zone) processPlayerInput(playerId uint32, msg interface{}) {
 	switch msg.(type) {
 	case darkeden.CGMovePacket:
-		move := msg.(darkeden.GCMovePacket)
+		move := msg.(darkeden.CGMovePacket)
 		handle := m.Player(playerId)
 		m.aoi.Nearby(uint16(move.X), uint16(move.Y), func(entity *aoi.Entity) {
-			dx := uint16(move.X) - entity.X()
-			dy := uint16(move.Y) - entity.Y()
-			if dx*dx+dy*dy <= 225 {
-				handle.aoi <- entity.Id()
+			dx := int(move.X) - int(entity.X())
+			dy := int(move.Y) - int(entity.Y())
+			if dx*dx+dy*dy <= 64 {
+				handle.pc.handleAoiMessage(ObjectIDType(entity.Id()))
 			}
 		})
+
+		handle.pc.send <- darkeden.GCMoveOKPacket{
+			X:   move.X,
+			Y:   move.Y,
+			Dir: move.Dir,
+		}
 		// case packet.CMovePacket:
 		// 	log.Println("scene receive and process a CMovePacket")
 		// 	raw := msg.(packet.CMovePacket)

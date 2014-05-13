@@ -10,6 +10,6 @@ func (id ObjectIDType) Monster() bool {
 	return (id & ObjectIDMaskNPC) != 0
 }
 
-func (id ObjectIDType) Index() int {
-	return int(id &^ ObjectIDMaskNPC)
+func (id ObjectIDType) Index() uint32 {
+	return uint32(id &^ ObjectIDMaskNPC)
 }
