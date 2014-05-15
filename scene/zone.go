@@ -58,6 +58,7 @@ func New(m *data.Map) *Zone {
 
 	idx := 0
 	for _, mi := range m.MonsterInfo {
+		tp := data.MonsterType2MonsterInfo[mi.MonsterType]
 		for i := 0; i < int(mi.Count); i++ {
 			var x, y int
 			// set monster's position and so on
@@ -74,6 +75,10 @@ func New(m *data.Map) *Zone {
 			monster := &monsters[idx]
 			monster.aoi = aoi.Add(uint16(x), uint16(y), uint32(idx)|ObjectIDMaskNPC)
 			monster.MonsterType = mi.MonsterType
+			monster.STR = tp.STR
+			monster.DEX = tp.DEX
+			monster.INT = tp.INTE
+			monster.HP = tp.STR*4 + uint16(tp.Level)
 			idx++
 		}
 	}
@@ -115,50 +120,16 @@ func (m *Zone) String() string {
 	return m.Map.Name
 }
 
-func (m *Zone) moveMonster() {
-	for _, monster := range m.monsters {
-		// if (monster.flag & flagDead) != 0 {
-		// 	monster.reborn++
-		// 	if monster.reborn >= 100 {
-		// 		monster.flag = monster.flag &^ flagDead
-		// 	}
-		// 	continue
-		// }
-		//
-		// if (monster.flag & flagActive) == 0 {
-		// 	continue
-		// }
-
-		monster.HeartBeat(m)
+func (m *Zone) HeartBeat() {
+	for i := 0; i < len(m.monsters); i++ {
+		monster := &m.monsters[i]
+		if (monster.flag & flagActive) != 0 {
+			monster.HeartBeat(m)
+		}
 	}
 }
 
-func (m *Zone) HeartBeat() {
-	// m.movePC()
-	// m.moveMonster()
-
-	// m.aoi.Message(func(watcher uint32, marker uint32) {
-	// 	// watcher is a player
-	// 	if (watcher & maskNPC) == 0 {
-	// 		handle := &m.players[watcher]
-	// 		if handle.pc != nil {
-	// 			handle.aoi <- marker
-	// 		}
-	// 	}
-	//
-	// 	// marker is a monster
-	// 	if (marker & maskNPC) != 0 {
-	// 		id := marker &^ maskNPC
-	// 		monster := &m.monsters[id]
-	// 		if (monster.flag & flagActive) == 0 {
-	// 			monster.flag |= flagActive
-	// 			monster.target = watcher
-	// 		}
-	// 	}
-	// })
-}
-
-func (m *Zone) Login(player *Player, x uint16, y uint16) error {
+func (m *Zone) Login(player *Player) error {
 	// var handle Handle
 	// handle.pc = player
 	// handle.pos.X = float32(x)
@@ -170,7 +141,7 @@ func (m *Zone) Login(player *Player, x uint16, y uint16) error {
 	idx := len(m.players)
 	m.players = append(m.players, player)
 
-	player.Id = uint32(idx)
+	player.Entity = m.aoi.Add(145, 237, uint32(idx))
 	player.zone = m
 
 	return nil

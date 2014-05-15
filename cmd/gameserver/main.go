@@ -45,7 +45,7 @@ func handleClient(conn net.Conn) {
 	if m == nil {
 		panic("what the fuck??")
 	}
-	err := m.Login(agent, 40, 50)
+	err := m.Login(agent)
 
 	if err != nil {
 		// login to scene error

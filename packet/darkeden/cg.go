@@ -53,9 +53,9 @@ func (move CGMovePacket) String() string {
 }
 func readMove(buf []byte) (packet.Packet, error) {
 	ret := CGMovePacket{
-		X:   buf[0],
-		Dir: buf[1],
-		Y:   buf[2],
+		Dir: buf[0] - 49,
+		X:   buf[1] ^ 53,
+		Y:   buf[2] ^ 53,
 	}
 	return ret, nil
 }

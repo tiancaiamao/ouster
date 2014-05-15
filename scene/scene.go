@@ -9,14 +9,11 @@ import (
 func loop(m *Zone) {
 	for {
 		for id, player := range m.players {
-			// drain all input from the player
-			for {
-				select {
-				case msg := <-player.agent2scene:
-					m.processPlayerInput(uint32(id), msg)
-				default:
-					break
-				}
+			select {
+			case msg := <-player.agent2scene:
+				m.processPlayerInput(uint32(id), msg)
+			default:
+				break
 			}
 		}
 
@@ -42,6 +39,11 @@ func (m *Zone) processPlayerInput(playerId uint32, msg interface{}) {
 	case darkeden.CGMovePacket:
 		move := msg.(darkeden.CGMovePacket)
 		player := m.Player(playerId)
+		player.send <- darkeden.GCMoveOKPacket{
+			X:   move.X,
+			Y:   move.Y,
+			Dir: move.Dir,
+		}
 		m.aoi.Nearby(uint16(move.X), uint16(move.Y), func(entity *aoi.Entity) {
 			dx := int(move.X) - int(entity.X())
 			dy := int(move.Y) - int(entity.Y())
@@ -50,37 +52,6 @@ func (m *Zone) processPlayerInput(playerId uint32, msg interface{}) {
 			}
 		})
 
-		player.send <- darkeden.GCMoveOKPacket{
-			X:   move.X,
-			Y:   move.Y,
-			Dir: move.Dir,
-		}
-		// case packet.CMovePacket:
-		// 	log.Println("scene receive and process a CMovePacket")
-		// 	raw := msg.(packet.CMovePacket)
-		// 	handle := m.Player(playerId)
-		// 	pc := handle.pc
-		// 	switch pc.State {
-		// 	case player.STAND, player.MOVE:
-		// 		pc.State = player.MOVE
-		// 		handle.to.X = raw.X
-		// 		handle.to.Y = raw.Y
-		//
-		// 		// boardcast to it's nearby players
-		// 		smove := packet.SMovePacket{
-		// 			Id:  playerId,
-		// 			Cur: handle.pos,
-		// 			To:  handle.to,
-		// 		}
-		// 		nearby := pc.NearBy()
-		// 		for _, playerId := range nearby {
-		// 			p := m.Player(playerId)
-		// 			if p != nil {
-		// 				p.write <- smove
-		// 			}
-		// 		}
-		// 	}
-		// 	handle.write <- player.CMovePacketAck{}
 		// case player.SkillEffect:
 		// 	log.Println("scene receive and process a SkillEffect")
 		// 	// raw := msg.(player.SkillEffect)

@@ -3,38 +3,15 @@ package scene
 import (
 	"bytes"
 	"github.com/tiancaiamao/ouster"
-	"github.com/tiancaiamao/ouster/data"
+	"github.com/tiancaiamao/ouster/aoi"
+	// "github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/packet"
 	"github.com/tiancaiamao/ouster/packet/darkeden"
-	// "github.com/tiancaiamao/ouster/skill"
 	"log"
+	// "math/rand"
 	"net"
 	"time"
 )
-
-type PlayerClass uint8
-
-const (
-	_     = iota
-	BRUTE = iota
-)
-
-type PlayerState uint8
-
-const (
-	STAND PlayerState = iota
-	MOVE
-)
-
-// package scene have import player, if player import scene it would be a circle
-// so use a interface to avoid direct use of scene.
-type scene interface {
-	Pos(uint32) (ouster.FPoint, error)
-	To(uint32) (ouster.FPoint, error)
-	Creature(uint32) ouster.Creature
-	Monster(uint32)
-	String() string
-}
 
 const (
 	LEFT      = 53
@@ -49,11 +26,10 @@ const (
 
 // mostly the same as data.Player, but this is in memory instead.
 type Player struct {
-	Id   uint32 // set by scene.Login
-	zone *Zone  // set by scene.Login
+	*aoi.Entity
+	zone *Zone
 
 	name  string
-	class PlayerClass
 	hp    int
 	mp    int
 	speed float32
@@ -73,9 +49,6 @@ type Player struct {
 	nearby      map[ObjectIDType]struct{}
 	heartbeat   <-chan time.Time
 	ticker      uint32
-
-	// Own by scene...write allowed only by scene agent
-	State PlayerState
 }
 
 // implement Create
@@ -119,7 +92,6 @@ func (player *Player) Defense() int {
 func NewPlayer(conn net.Conn) *Player {
 	return &Player{
 		name:  "test",
-		class: 1,
 		hp:    110,
 		mp:    110,
 		conn:  conn,
@@ -145,6 +117,7 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 	switch pkt.Id() {
 	case darkeden.PACKET_CG_CONNECT:
 		player.send <- &darkeden.GCUpdateInfoPacket{}
+		player.send <- &darkeden.GCPetInfoPacket{}
 	case darkeden.PACKET_CG_READY:
 		log.Println("get a CG Ready Packet!!!")
 		player.send <- &darkeden.GCSetPositionPacket{
@@ -153,14 +126,20 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 			Dir: 2,
 		}
 	case darkeden.PACKET_CG_MOVE:
-		player.agent2scene <- pkt
-		// move := pkt.(darkeden.CGMovePacket)
-		// moveOk := darkeden.GCMoveOKPacket{
-		// 	Dir: move.Dir,
-		// 	X:   move.X,
-		// 	Y:   move.Y,
+		// addMonster := &darkeden.GCAddMonster{
+		// 	ObjectID:    33,
+		// 	MonsterType: 46,
+		// 	MonsterName: "test",
+		// 	MainColor:   7,
+		// 	SubColor:    174,
+		// 	X:           uint8(146),
+		// 	Y:           uint8(239),
+		// 	Dir:         2,
+		// 	CurrentHP:   77,
+		// 	MaxHP:       77,
 		// }
-		// player.send <- moveOk
+		// player.send <- addMonster
+		player.agent2scene <- pkt
 
 		// addBat := &darkeden.GCAddBat{
 		// 	ObjectID:    2352,
@@ -230,31 +209,35 @@ func (this *Player) handleSceneMessage(msg interface{}) {
 	}
 }
 
+// called in scene
 func (this *Player) handleAoiMessage(id ObjectIDType) {
-	if _, ok := this.nearby[id]; !ok {
-		log.Println(id, "enter aoi...")
-		this.nearby[id] = struct{}{}
-		if id.Monster() {
-			log.Println("it's a monster...send message")
-			monster := this.zone.Monster(id.Index())
-			info := data.MonsterType2MonsterInfo[monster.MonsterType]
-			hp := info.STR*5 + uint16(info.Level)
+	if id.Monster() {
+		log.Println("it's a monster...send message")
+		monster := this.zone.Monster(id.Index())
+		if _, ok := this.nearby[id]; !ok {
+			this.nearby[id] = struct{}{}
+
+			// info := data.MonsterType2MonsterInfo[monster.MonsterType]
+			// hp := info.STR*4 + uint16(info.Level)
 			addMonster := &darkeden.GCAddMonster{
 				ObjectID:    uint32(id),
 				MonsterType: monster.MonsterType,
-				MonsterName: info.Name,
+				MonsterName: "test",
 				MainColor:   7,
 				SubColor:    174,
 				X:           uint8(monster.aoi.X()),
 				Y:           uint8(monster.aoi.Y()),
 				Dir:         2,
-				CurrentHP:   monster.HP,
-				MaxHP:       hp,
+				CurrentHP:   77,
+				MaxHP:       77,
 			}
 			this.send <- addMonster
+			monster.flag |= flagActive
+			log.Println("monster ", id.Index(), "set to active", monster.flag)
+			monster.Enemies = append(monster.Enemies, ObjectIDType(this.Id()))
+		} else {
 		}
 	}
-
 }
 
 func (this *Player) heartBeat() {
@@ -271,6 +254,7 @@ func (this *Player) loop() {
 				return
 			} else {
 				// log.Println("before handleClientMessage...")
+
 				this.handleClientMessage(msg)
 				// log.Println("after handleClientMessage...")
 			}
