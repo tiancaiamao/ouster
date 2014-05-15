@@ -1,34 +1,11 @@
-package scene
+package main
 
 import (
-	"github.com/tiancaiamao/ouster"
 	"github.com/tiancaiamao/ouster/aoi"
 	"github.com/tiancaiamao/ouster/data"
-	// "github.com/tiancaiamao/ouster/player"
-	// "log"
-	// "math"
 	"math/rand"
 	"time"
 )
-
-// type Handle struct {
-// Player don't expose public field, but provide getter
-// so we can read but not write in this package
-// pc *Player
-
-// aoi   chan<- uint32
-// write chan<- interface{}
-// read  <-chan interface{}
-
-// pos ouster.FPoint
-// to  ouster.FPoint
-// }
-
-// id 0xxxxxx player
-// id 1xxxxxx non-player
-// id 10xxxxx npc
-// id 11xxxxx monster
-// id 110xxxx
 
 type Zone struct {
 	*data.Map
@@ -111,11 +88,6 @@ func (m *Zone) Monster(idx uint32) *Monster {
 	return &m.monsters[idx]
 }
 
-func (m *Zone) Creature(id uint32) ouster.Creature {
-	ret := m.Player(id)
-	return ret
-}
-
 func (m *Zone) String() string {
 	return m.Map.Name
 }
@@ -130,14 +102,6 @@ func (m *Zone) HeartBeat() {
 }
 
 func (m *Zone) Login(player *Player) error {
-	// var handle Handle
-	// handle.pc = player
-	// handle.pos.X = float32(x)
-	// handle.pos.Y = float32(y)
-	// handle.to = handle.pos
-	// handle.read = rd
-	// handle.write = wr
-
 	idx := len(m.players)
 	m.players = append(m.players, player)
 

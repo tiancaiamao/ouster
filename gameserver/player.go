@@ -1,14 +1,12 @@
-package scene
+package main
 
 import (
 	"bytes"
 	"github.com/tiancaiamao/ouster"
 	"github.com/tiancaiamao/ouster/aoi"
-	// "github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/packet"
 	"github.com/tiancaiamao/ouster/packet/darkeden"
 	"log"
-	// "math/rand"
 	"net"
 	"time"
 )
@@ -24,7 +22,6 @@ const (
 	RIGHTDOWN = 54
 )
 
-// mostly the same as data.Player, but this is in memory instead.
 type Player struct {
 	*aoi.Entity
 	zone *Zone
@@ -49,44 +46,6 @@ type Player struct {
 	nearby      map[ObjectIDType]struct{}
 	heartbeat   <-chan time.Time
 	ticker      uint32
-}
-
-// implement Create
-func (player *Player) Agility() int {
-	return player.agility
-}
-
-func (player *Player) Strength() int {
-	return player.strength
-}
-
-func (player *Player) Intelligence() int {
-	return player.intelligence
-}
-
-func (player *Player) Damage() int {
-	return player.strength
-}
-
-func (player *Player) Dodge() int {
-	return player.agility
-}
-
-func (player *Player) ToHit() int {
-	return player.agility
-}
-
-func (player *Player) HP() int {
-	return 4*player.strength + player.level
-}
-
-// provide for scene to use
-func (player *Player) Speed() float32 {
-	return player.speed
-}
-
-func (player *Player) Defense() int {
-	return player.strength
 }
 
 func NewPlayer(conn net.Conn) *Player {
@@ -126,32 +85,7 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 			Dir: 2,
 		}
 	case darkeden.PACKET_CG_MOVE:
-		// addMonster := &darkeden.GCAddMonster{
-		// 	ObjectID:    33,
-		// 	MonsterType: 46,
-		// 	MonsterName: "test",
-		// 	MainColor:   7,
-		// 	SubColor:    174,
-		// 	X:           uint8(146),
-		// 	Y:           uint8(239),
-		// 	Dir:         2,
-		// 	CurrentHP:   77,
-		// 	MaxHP:       77,
-		// }
-		// player.send <- addMonster
 		player.agent2scene <- pkt
-
-		// addBat := &darkeden.GCAddBat{
-		// 	ObjectID:    2352,
-		// 	MonsterName: "bat",
-		// 	X:           149,
-		// 	Y:           242,
-		// 	Dir:         1,
-		// 	CurrentHP:   111,
-		// 	MaxHP:       133,
-		// 	GuildID:     1,
-		// }
-
 	case darkeden.PACKET_CG_ATTACK:
 		if hp.CurrentHP > 0 {
 			hp.CurrentHP -= 5
@@ -177,28 +111,6 @@ type SkillEffect struct {
 	Hurt int
 }
 
-// func (player *Player) execute(pkt packet.SkillPacket) {
-// 	skl := skill.Query(pkt.Id)
-// 	switch skl.(type) {
-// 	case skill.SelfSkill:
-//
-// 	case skill.TargetSkill:
-// 		skill := skl.(skill.TargetSkill)
-// 		target := player.Scene.Creature(pkt.Target)
-// 		hurt, ok := skill.ExecuteTarget(player, target)
-//
-// 		player.write <- SkillEffect{
-// 			Id:   pkt.Id,
-// 			To:   pkt.Target,
-// 			Succ: ok,
-// 			Hurt: hurt,
-// 		}
-// 	case skill.RegionSkill:
-// 	}
-// }
-
-type CMovePacketAck struct{}
-
 func (this *Player) handleSceneMessage(msg interface{}) {
 	switch msg.(type) {
 	case darkeden.GCMoveOKPacket:
@@ -217,8 +129,6 @@ func (this *Player) handleAoiMessage(id ObjectIDType) {
 		if _, ok := this.nearby[id]; !ok {
 			this.nearby[id] = struct{}{}
 
-			// info := data.MonsterType2MonsterInfo[monster.MonsterType]
-			// hp := info.STR*4 + uint16(info.Level)
 			addMonster := &darkeden.GCAddMonster{
 				ObjectID:    uint32(id),
 				MonsterType: monster.MonsterType,
@@ -253,18 +163,8 @@ func (this *Player) loop() {
 				// kick the player off...
 				return
 			} else {
-				// log.Println("before handleClientMessage...")
-
 				this.handleClientMessage(msg)
-				// log.Println("after handleClientMessage...")
 			}
-		// case msg = <-this.read:
-		// log.Println("before handleSceneMessage...")
-		// this.handleSceneMessage(msg)
-		// log.Println("after handleSceneMessage...")
-		// case id := <-this.aoi:
-		// log.Println("before handleAoiMessage...")
-		// log.Println("after handleAoiMessage...")
 		case <-this.heartbeat:
 			this.heartBeat()
 		}
@@ -288,9 +188,7 @@ func (player *Player) Go() {
 				close(read)
 				return
 			}
-			// log.Println("packet before send to chan", data)
 			read <- data
-			// log.Println("packet after send to chan", data)
 		}
 	}()
 

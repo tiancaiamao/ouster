@@ -1,10 +1,9 @@
-package scene
+package main
 
 import (
 	"github.com/tiancaiamao/ouster/aoi"
 	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/packet/darkeden"
-	// "math"
 )
 
 const (
@@ -85,35 +84,4 @@ func (m *Monster) HeartBeat(mp *Zone) {
 			}
 		}
 	}
-	// // pc := handle.pc
-	// d := ouster.Distance2(m.pos, handle.pos)
-	// if d < 10 {
-	// 	// msg := packet.SkillTargetEffectPacket{
-	// 	// 	Skill: 1,
-	// 	// 	From:  m.Id,
-	// 	// 	To:    m.target,
-	// 	// 	Hurt:  1,
-	// 	// 	Succ:  true,
-	// 	// }
-	// 	// nearby := pc.NearBy()
-	// 	// boardcast(nearby, msg, mp)
-	// } else {
-	// 	dx := handle.pos.X - m.pos.X
-	// 	dy := handle.pos.Y - m.pos.Y
-	// 	angle := math.Atan2(float64(dy), float64(dx))
-	// 	vx := m.speed * float32(math.Cos(angle))
-	// 	vy := m.speed * float32(math.Sin(angle))
-	//
-	// 	m.pos.X += vx
-	// 	m.pos.Y += vy
-	// }
-}
-
-func boardcast(nearby []uint32, msg interface{}, mp *Zone) {
-	// for _, playerId := range nearby {
-	// p := mp.Player(playerId)
-	// if p != nil {
-	// 	p.write <- msg
-	// }
-	// }
 }

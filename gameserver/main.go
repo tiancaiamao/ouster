@@ -1,11 +1,7 @@
 package main
 
 import (
-	// "github.com/tiancaiamao/ouster"
-	// "github.com/tiancaiamao/ouster"
 	"github.com/tiancaiamao/ouster/config"
-	// "github.com/tiancaiamao/ouster/player"
-	"github.com/tiancaiamao/ouster/scene"
 	"log"
 	"net"
 )
@@ -13,7 +9,7 @@ import (
 func main() {
 	log.Println("Starting the server.")
 
-	scene.Initialize()
+	Initialize()
 
 	listener, err := net.Listen("tcp", config.GameServerPort)
 	checkError(err)
@@ -38,10 +34,10 @@ func handleClient(conn net.Conn) {
 	log.Println("accept a connection...")
 	defer conn.Close()
 
-	agent := scene.NewPlayer(conn)
+	agent := NewPlayer(conn)
 
 	// get the map that player current in
-	m := scene.Query("limbo_lair_se")
+	m := Query("limbo_lair_se")
 	if m == nil {
 		panic("what the fuck??")
 	}

@@ -1,4 +1,4 @@
-package scene
+package main
 
 type ObjectIDType uint32
 
