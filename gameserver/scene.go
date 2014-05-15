@@ -2,6 +2,7 @@ package scene
 
 import (
 	"github.com/tiancaiamao/ouster/aoi"
+	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/packet/darkeden"
 	// "log"
 )
@@ -72,4 +73,21 @@ func (m *Zone) processPlayerInput(playerId uint32, msg interface{}) {
 		// 		}
 		// 	}
 	}
+}
+
+var (
+	maps map[string]*Zone
+)
+
+func Initialize() {
+	maps = make(map[string]*Zone)
+	maps["limbo_lair_se"] = New(&data.LimboLairSE)
+
+	for _, m := range maps {
+		m.Go()
+	}
+}
+
+func Query(mapName string) *Zone {
+	return maps[mapName]
 }
