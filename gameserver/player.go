@@ -24,7 +24,7 @@ const (
 
 type Player struct {
 	*aoi.Entity
-	zone *Zone
+	Scene *Scene
 
 	name  string
 	hp    int
@@ -125,7 +125,7 @@ func (this *Player) handleSceneMessage(msg interface{}) {
 func (this *Player) handleAoiMessage(id ObjectIDType) {
 	if id.Monster() {
 		log.Println("it's a monster...send message")
-		monster := this.zone.Monster(id.Index())
+		monster := this.Scene.Monster(id.Index())
 		if _, ok := this.nearby[id]; !ok {
 			this.nearby[id] = struct{}{}
 

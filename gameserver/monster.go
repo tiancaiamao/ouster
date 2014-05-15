@@ -45,7 +45,7 @@ type Monster struct {
 }
 
 // a state machine
-func (m *Monster) HeartBeat(mp *Zone) {
+func (m *Monster) HeartBeat(mp *Scene) {
 	m.ticker++
 	if m.ticker == 10 {
 		m.ticker = 0
