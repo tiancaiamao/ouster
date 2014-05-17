@@ -12,7 +12,7 @@ const (
 )
 
 type Monster struct {
-	aoi *aoi.Entity
+	aoi.Entity
 
 	// mask the monster's current status, flagDead means it's dead.
 	// flagActive means it's active by player...
@@ -53,8 +53,8 @@ func (m *Monster) HeartBeat(mp *Scene) {
 		mi := data.MonsterType2MonsterInfo[m.MonsterType]
 		if targetID.Player() {
 			pc := mp.Player(targetID.Index())
-			x := m.aoi.X()
-			y := m.aoi.Y()
+			x := m.X()
+			y := m.Y()
 			dx := pc.X() - x
 			dy := pc.Y() - y
 			if int(dx*dx+dy*dy) <= mi.MeleeRange*mi.MeleeRange {
@@ -72,11 +72,11 @@ func (m *Monster) HeartBeat(mp *Scene) {
 				case dy < 0:
 					y++
 				}
-				mp.aoi.Update(m.aoi, x, y)
+				mp.Update(m, x, y)
 				// boardcast to nearby players
 
 				pc.send <- darkeden.GCMovePacket{
-					ObjectID: m.aoi.Id(),
+					ObjectID: m.Id(),
 					X:        uint8(x),
 					Y:        uint8(y),
 					Dir:      3,

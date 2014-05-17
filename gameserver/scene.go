@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/tiancaiamao/ouster/aoi"
+	"github.com/tiancaiamao/ouster/aoi/cell"
 	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/packet/darkeden"
 	"math/rand"
@@ -13,7 +14,7 @@ type Scene struct {
 
 	players  []*Player
 	monsters []Monster
-	aoi      *aoi.CellAoi
+	aoi.Aoi
 
 	quit      chan struct{}
 	event     chan interface{}
@@ -22,10 +23,10 @@ type Scene struct {
 
 const maskNPC uint32 = 1 << 31
 
-func New(m *data.Map) *Scene {
+func NewScene(m *data.Map) *Scene {
 	ret := new(Scene)
 	ret.Map = m
-	aoi := aoi.NewCellAoi(m.Width, m.Height, 32, 32)
+	aoi := cell.New(m.Width, m.Height, 32, 32)
 	players := make([]*Player, 0, 200)
 
 	num := 0
@@ -51,7 +52,7 @@ func New(m *data.Map) *Scene {
 			}
 
 			monster := &monsters[idx]
-			monster.aoi = aoi.Add(uint16(x), uint16(y), uint32(idx)|ObjectIDMaskNPC)
+			monster.Entity = aoi.Add(uint8(x), uint8(y), uint32(idx)|ObjectIDMaskNPC)
 			monster.MonsterType = mi.MonsterType
 			monster.STR = tp.STR
 			monster.DEX = tp.DEX
@@ -61,7 +62,7 @@ func New(m *data.Map) *Scene {
 		}
 	}
 
-	ret.aoi = aoi
+	ret.Aoi = aoi
 	ret.players = players
 	ret.monsters = monsters
 	ret.quit = make(chan struct{})
@@ -106,7 +107,7 @@ func (m *Scene) Login(player *Player) error {
 	idx := len(m.players)
 	m.players = append(m.players, player)
 
-	player.Entity = m.aoi.Add(145, 237, uint32(idx))
+	player.Entity = m.Add(145, 237, uint32(idx))
 	player.Scene = m
 
 	return nil
@@ -146,13 +147,13 @@ func (m *Scene) processPlayerInput(playerId uint32, msg interface{}) {
 			Y:   move.Y,
 			Dir: move.Dir,
 		}
-		m.aoi.Nearby(uint16(move.X), uint16(move.Y), func(entity *aoi.Entity) {
-			dx := int(move.X) - int(entity.X())
-			dy := int(move.Y) - int(entity.Y())
-			if dx*dx+dy*dy <= 64 {
-				player.handleAoiMessage(ObjectIDType(entity.Id()))
-			}
-		})
+//		aoi.Nearby(uint16(move.X), uint16(move.Y), func(entity *aoi.Entity) {
+//			dx := int(move.X) - int(entity.X())
+//			dy := int(move.Y) - int(entity.Y())
+//			if dx*dx+dy*dy <= 64 {
+//				player.handleAoiMessage(ObjectIDType(entity.Id()))
+//			}
+//		})
 	}
 }
 
@@ -162,7 +163,7 @@ var (
 
 func Initialize() {
 	maps = make(map[string]*Scene)
-	maps["limbo_lair_se"] = New(&data.LimboLairSE)
+	maps["limbo_lair_se"] = NewScene(&data.LimboLairSE)
 
 	for _, m := range maps {
 		m.Go()

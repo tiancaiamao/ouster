@@ -23,7 +23,7 @@ const (
 )
 
 type Player struct {
-	*aoi.Entity
+	aoi.Entity
 	Scene *Scene
 
 	name  string
@@ -135,8 +135,8 @@ func (this *Player) handleAoiMessage(id ObjectIDType) {
 				MonsterName: "test",
 				MainColor:   7,
 				SubColor:    174,
-				X:           uint8(monster.aoi.X()),
-				Y:           uint8(monster.aoi.Y()),
+				X:           monster.X(),
+				Y:           monster.Y(),
 				Dir:         2,
 				CurrentHP:   77,
 				MaxHP:       77,

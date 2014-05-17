@@ -1,21 +1,22 @@
-package aoi
+package cell
 
-import ()
+import "github.com/tiancaiamao/ouster/aoi"
 
 type Entity struct {
 	next *Entity
 	prev *Entity
 
-	x  uint16
-	y  uint16
-	id uint32
+	id      uint32
+	x       uint8
+	y       uint8
+	version uint8
 }
 
-func (e *Entity) X() uint16 {
+func (e *Entity) X() uint8 {
 	return e.x
 }
 
-func (e *Entity) Y() uint16 {
+func (e *Entity) Y() uint8 {
 	return e.y
 }
 
@@ -47,8 +48,8 @@ func (s *Sector) insert(e *Entity) {
 type CellAoi struct {
 	mapWidth   uint16
 	mapHeight  uint16
-	cellWidth  uint16
-	cellHeight uint16
+	cellWidth  uint8
+	cellHeight uint8
 	cells      [][]Sector
 }
 
@@ -63,7 +64,7 @@ var idx2dir [8][2]int = [8][2]int{
 	[2]int{-1, 0},
 }
 
-func NewCellAoi(mapWidth, mapHeight, cellWidth, cellHeight uint16) *CellAoi {
+func New(mapWidth, mapHeight uint16, cellWidth, cellHeight uint8) *CellAoi {
 	ret := &CellAoi{
 		mapWidth:   mapWidth,
 		mapHeight:  mapHeight,
@@ -71,8 +72,8 @@ func NewCellAoi(mapWidth, mapHeight, cellWidth, cellHeight uint16) *CellAoi {
 		cellHeight: cellHeight,
 	}
 
-	width := (mapWidth+cellWidth)/cellWidth - 1
-	height := (mapHeight+cellHeight)/cellHeight - 1
+	width := (mapWidth+uint16(cellWidth))/uint16(cellWidth) - 1
+	height := (mapHeight+uint16(cellHeight))/uint16(cellHeight) - 1
 	ret.cells = make([][]Sector, width)
 	for i := 0; i < int(width); i++ {
 		ret.cells[i] = make([]Sector, height)
@@ -94,24 +95,17 @@ func NewCellAoi(mapWidth, mapHeight, cellWidth, cellHeight uint16) *CellAoi {
 		}
 	}
 
-	// for
-
-	// ret.id2Pos = make(map[uint32]Point)
 	return ret
 }
 
-func (aoi *CellAoi) getCell(x uint16, y uint16) *Sector {
-	if x >= aoi.mapWidth || y >= aoi.mapHeight {
-		return nil
-	}
-
+func (aoi *CellAoi) getCell(x uint8, y uint8) *Sector {
 	xIndex := x / aoi.cellWidth
 	yIndex := y / aoi.cellHeight
 
 	return &aoi.cells[xIndex][yIndex]
 }
 
-func (aoi *CellAoi) Add(x uint16, y uint16, id uint32) *Entity {
+func (aoi *CellAoi) Add(x uint8, y uint8, id uint32) aoi.Entity {
 	sector := aoi.getCell(x, y)
 	if sector == nil {
 		return nil
@@ -126,7 +120,16 @@ func (aoi *CellAoi) Add(x uint16, y uint16, id uint32) *Entity {
 	return ret
 }
 
-func (aoi *CellAoi) Update(e *Entity, x uint16, y uint16) {
+func (aoi *CellAoi) Del(entity aoi.Entity) {
+	e := entity.(*Entity)
+	e.remove()
+}
+
+func (aoi *CellAoi) Message(cb aoi.Callback) {
+}
+
+func (aoi *CellAoi) Update(entity aoi.Entity, x uint8, y uint8) {
+	e := entity.(*Entity)
 	oldSector := aoi.getCell(e.x, e.y)
 	newSector := aoi.getCell(x, y)
 
@@ -140,12 +143,10 @@ func (aoi *CellAoi) Update(e *Entity, x uint16, y uint16) {
 	e.y = y
 }
 
-type Callback func(*Entity)
-
-func (aoi *CellAoi) Nearby(x uint16, y uint16, cb Callback) {
+func (aoi *CellAoi) Nearby(x uint8, y uint8, cb aoi.Callback) {
 	sector := aoi.getCell(x, y)
 
 	for e := sector.head.next; e != nil; e = e.next {
-		cb(e)
+		cb(nil, e)
 	}
 }

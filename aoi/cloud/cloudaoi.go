@@ -1,9 +1,14 @@
 // 解决的根本问题就是，哪个点，周围有哪些东西。啊个点有哪些东西，最好由player维护。
 // 这个接口是只能由Map调的，不能用Player直接掉。
 // 间接的思路是，不维护东西链表。
-package aoi
+package cloud
 
 // import "fmt"
+
+type FPoint struct {
+	X float32
+	Y float32
+}
 
 type object struct {
 	// id uint32
@@ -46,7 +51,7 @@ func New() *Aoi {
 }
 
 func (aoi *Aoi) Update(id uint32, mode AoiMode, pos FPoint) {
-	if (mode & ModeDroprop) != 0 {
+	if (mode & ModeDrop) != 0 {
 		delete(aoi.all, id)
 		return
 	}
@@ -89,6 +94,8 @@ func (aoi *Aoi) addHotPair(id1 uint32, obj1 *object, id2 uint32, obj2 *object) {
 		aoi.hotpair[key{id2, id1}] = value{obj2, obj1}
 	}
 }
+
+type AoiCallback func(uint32, uint32)
 
 func send(id1 uint32, obj1 *object, id2 uint32, obj2 *object, cb AoiCallback) {
 	if (obj1.mode&ModeWatcher) != 0 && (obj2.mode&ModeMarker) != 0 {
