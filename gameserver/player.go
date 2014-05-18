@@ -12,15 +12,33 @@ import (
 )
 
 const (
-	LEFT      = 53
-	RIGHT     = 49
-	UP        = 34
-	DOWN      = 55
-	LEFTUP    = 50
-	RIGHTUP   = 48
-	LEFTDOWN  = 52
-	RIGHTDOWN = 54
+	LEFT      = 0
+	RIGHT     = 4
+	UP        = 6
+	DOWN      = 2
+	LEFTUP    = 7
+	RIGHTUP   = 5
+	LEFTDOWN  = 1
+	RIGHTDOWN = 3
 )
+
+type Point struct {
+	X int
+	Y int
+}
+
+var dirMoveMask [8]Point
+
+func init() {
+	dirMoveMask[RIGHTUP] = Point{1, -1}
+	dirMoveMask[LEFT] = Point{-1, 0}
+	dirMoveMask[RIGHT] = Point{1, 0}
+	dirMoveMask[LEFTDOWN] = Point{-1, 1}
+	dirMoveMask[DOWN] = Point{0, 1}
+	dirMoveMask[RIGHTDOWN] = Point{1, 1}
+	dirMoveMask[UP] = Point{0, -1}
+	dirMoveMask[LEFTUP] = Point{-1, -1}
+}
 
 type Player struct {
 	aoi.Entity
@@ -84,6 +102,17 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 			Y:   237,
 			Dir: 2,
 		}
+
+		player.send <- &darkeden.GCAddMonster{
+			ObjectID:    9999,
+			MonsterType: 7,
+			MonsterName: "test",
+			X:           150,
+			Y:           240,
+			Dir:         DOWN,
+			CurrentHP:   77,
+			MaxHP:       170,
+		}
 	case darkeden.PACKET_CG_MOVE:
 		player.agent2scene <- pkt
 	case darkeden.PACKET_CG_ATTACK:
@@ -129,23 +158,23 @@ func (this *Player) handleAoiMessage(id ObjectIDType) {
 		if _, ok := this.nearby[id]; !ok {
 			this.nearby[id] = struct{}{}
 
-			addMonster := &darkeden.GCAddMonster{
-				ObjectID:    uint32(id),
-				MonsterType: monster.MonsterType,
-				MonsterName: "test",
-				MainColor:   7,
-				SubColor:    174,
-				X:           monster.X(),
-				Y:           monster.Y(),
-				Dir:         2,
-				CurrentHP:   77,
-				MaxHP:       77,
-			}
-			this.send <- addMonster
+//			addMonster := &darkeden.GCAddMonster{
+//				ObjectID:    uint32(id),
+//				MonsterType: monster.MonsterType,
+//				MonsterName: "test",
+//				X:           monster.X(),
+//				Y:           monster.Y(),
+//				Dir:         2,
+//				CurrentHP:   77,
+//				MaxHP:       77,
+//			}
+
+		//	this.send <- addMonster
 			monster.flag |= flagActive
 			log.Println("monster ", id.Index(), "set to active", monster.flag)
 			monster.Enemies = append(monster.Enemies, ObjectIDType(this.Id()))
 		} else {
+
 		}
 	}
 }

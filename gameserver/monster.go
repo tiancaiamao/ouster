@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/tiancaiamao/ouster/aoi"
 	"github.com/tiancaiamao/ouster/data"
-	"github.com/tiancaiamao/ouster/packet/darkeden"
+//	"github.com/tiancaiamao/ouster/packet/darkeden"
 )
 
 const (
@@ -47,7 +47,7 @@ type Monster struct {
 // a state machine
 func (m *Monster) HeartBeat(mp *Scene) {
 	m.ticker++
-	if m.ticker == 10 {
+	if m.ticker == 200 {
 		m.ticker = 0
 		targetID := m.Enemies[0]
 		mi := data.MonsterType2MonsterInfo[m.MonsterType]
@@ -55,9 +55,9 @@ func (m *Monster) HeartBeat(mp *Scene) {
 			pc := mp.Player(targetID.Index())
 			x := m.X()
 			y := m.Y()
-			dx := pc.X() - x
-			dy := pc.Y() - y
-			if int(dx*dx+dy*dy) <= mi.MeleeRange*mi.MeleeRange {
+			dx := int(pc.X()) - int(x)
+			dy := int(pc.Y()) - int(y)
+			if dx*dx+dy*dy <= mi.MeleeRange*mi.MeleeRange {
 				// attack player
 			} else {
 				switch {
@@ -68,20 +68,42 @@ func (m *Monster) HeartBeat(mp *Scene) {
 				}
 				switch {
 				case dy > 0:
-					y--
-				case dy < 0:
 					y++
+				case dy < 0:
+					y--
 				}
-				mp.Update(m, x, y)
-				// boardcast to nearby players
+				mp.Update(m.Entity, x, y)
 
-				pc.send <- darkeden.GCMovePacket{
-					ObjectID: m.Id(),
-					X:        uint8(x),
-					Y:        uint8(y),
-					Dir:      3,
-				}
+//				pc.send <- darkeden.GCMovePacket{
+//					ObjectID: m.Id(),
+//					X:        uint8(x),
+//					Y:        uint8(y),
+//					Dir:      dir(dx, dy),
+//				}
 			}
 		}
 	}
+}
+
+func dir(dx int, dy int) uint8 {
+	var ret uint8
+	switch {
+	case dx > 0 && dy > 0:
+		ret = RIGHTDOWN
+	case dx > 0 && dy == 0:
+		ret = RIGHT
+	case dx > 0 && dy < 0:
+		ret = RIGHTUP
+	case dx < 0 && dy > 0:
+		ret = LEFTDOWN
+	case dx < 0 && dy == 0:
+		ret = LEFT
+	case dx < 0 && dy > 0:
+		ret = LEFTUP
+	case dx == 0 && dy > 0:
+		ret = DOWN
+	case dx == 0 && dy < 0:
+		ret = UP
+	}
+	return ret
 }

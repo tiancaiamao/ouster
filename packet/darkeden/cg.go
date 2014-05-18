@@ -2,6 +2,7 @@ package darkeden
 
 import (
 	"encoding/binary"
+	"errors"
 	"github.com/tiancaiamao/ouster/packet"
 )
 
@@ -51,9 +52,42 @@ func (move CGMovePacket) Id() packet.PacketID {
 func (move CGMovePacket) String() string {
 	return "move"
 }
+
+const (
+	dirLEFT      = 0
+	dirRIGHT     = 4
+	dirUP        = 6
+	dirDOWN      = 2
+	dirLEFTUP    = 7
+	dirRIGHTUP   = 5
+	dirLEFTDOWN  = 1
+	dirRIGHTDOWN = 3
+)
+
 func readMove(buf []byte) (packet.Packet, error) {
+	var dir uint8
+	switch buf[0] {
+	case 53:
+		dir = dirLEFT
+	case 49:
+		dir = dirRIGHT
+	case 51:
+		dir = dirUP
+	case 55:
+		dir = dirDOWN
+	case 50:
+		dir = dirLEFTUP
+	case 48:
+		dir = dirRIGHTUP
+	case 52:
+		dir = dirLEFTDOWN
+	case 54:
+		dir = dirRIGHTDOWN
+	default:
+		return nil, errors.New("unknow dir")
+	}
 	ret := CGMovePacket{
-		Dir: buf[0] - 49,
+		Dir: dir,
 		X:   buf[1] ^ 53,
 		Y:   buf[2] ^ 53,
 	}

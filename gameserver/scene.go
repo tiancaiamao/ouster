@@ -5,6 +5,7 @@ import (
 	"github.com/tiancaiamao/ouster/aoi/cell"
 	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/packet/darkeden"
+	"log"
 	"math/rand"
 	"time"
 )
@@ -95,6 +96,30 @@ func (m *Scene) String() string {
 }
 
 func (m *Scene) HeartBeat() {
+	m.Message(func(watcher aoi.Entity, marker aoi.Entity) {
+		wId := ObjectIDType(watcher.Id())
+		mId := ObjectIDType(marker.Id())
+
+		if wId.Player() {
+			switch {
+			case mId.Monster():
+				// monster active by player
+				monster := &m.monsters[mId.Index()]
+
+				monster.flag |= flagActive
+				monster.Enemies = append(monster.Enemies, wId)
+			case mId.Player():
+				player := m.players[mId.Index()]
+				player.handleAoiMessage(wId)
+			}
+		}
+
+		if wId.Monster() && mId.Player() {
+			player := m.players[mId.Index()]
+			player.handleAoiMessage(wId)
+		}
+	})
+
 	for i := 0; i < len(m.monsters); i++ {
 		monster := &m.monsters[i]
 		if (monster.flag & flagActive) != 0 {
@@ -141,19 +166,26 @@ func (m *Scene) processPlayerInput(playerId uint32, msg interface{}) {
 	switch msg.(type) {
 	case darkeden.CGMovePacket:
 		move := msg.(darkeden.CGMovePacket)
+		log.Println("scene receive a CGMovePacket:", move.X, move.Y, move.Dir)
 		player := m.Player(playerId)
+
+		if move.Dir >= 8 {
+			moveErr := darkeden.GCMoveErrorPacket{
+				player.X(),
+				player.Y(),
+			}
+			player.send <- moveErr
+		}
+
+		move.X = uint8(int(move.X) + dirMoveMask[move.Dir].X)
+		move.Y = uint8(int(move.Y) + dirMoveMask[move.Dir].Y)
+
+		m.Update(player.Entity, move.X, move.Y)
 		player.send <- darkeden.GCMoveOKPacket{
 			X:   move.X,
 			Y:   move.Y,
 			Dir: move.Dir,
 		}
-//		aoi.Nearby(uint16(move.X), uint16(move.Y), func(entity *aoi.Entity) {
-//			dx := int(move.X) - int(entity.X())
-//			dy := int(move.Y) - int(entity.Y())
-//			if dx*dx+dy*dy <= 64 {
-//				player.handleAoiMessage(ObjectIDType(entity.Id()))
-//			}
-//		})
 	}
 }
 

@@ -21,7 +21,41 @@ func (moveOk GCMoveOKPacket) String() string {
 	return "move ok"
 }
 func (moveOk GCMoveOKPacket) MarshalBinary() ([]byte, error) {
-	return []byte{moveOk.X ^ 53, moveOk.Dir + 49, moveOk.Y ^ 53}, nil
+	var dir uint8
+	switch moveOk.Dir {
+	case dirLEFT:
+		dir = 53
+	case dirRIGHT:
+		dir = 49
+	case dirUP:
+		dir = 51
+	case dirDOWN:
+		dir = 55
+	case dirLEFTUP:
+		dir = 50
+	case dirRIGHTUP:
+		dir = 48
+	case dirLEFTDOWN:
+		dir = 52
+	case dirRIGHTDOWN:
+		dir = 54
+	}
+	return []byte{moveOk.X ^ 53, dir, moveOk.Y ^ 53}, nil
+}
+
+type GCMoveErrorPacket struct {
+	X uint8
+	Y uint8
+}
+
+func (moveError GCMoveErrorPacket) Id() packet.PacketID {
+	return PACKET_GC_MOVE_ERROR
+}
+func (moveError GCMoveErrorPacket) String() string {
+	return "move error"
+}
+func (moveError GCMoveErrorPacket) MarshalBinary() ([]byte, error) {
+	return []byte{moveError.X ^ 53, moveError.Y ^ 53}, nil
 }
 
 type GCMovePacket struct {
