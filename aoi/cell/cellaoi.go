@@ -51,6 +51,7 @@ type CellAoi struct {
 	cellWidth  uint8
 	cellHeight uint8
 	cells      [][]Sector
+	version    uint8
 }
 
 var idx2dir [8][2]int = [8][2]int{
@@ -126,10 +127,32 @@ func (aoi *CellAoi) Del(entity aoi.Entity) {
 }
 
 func (aoi *CellAoi) Message(cb aoi.Callback) {
+	aoi.version++
+
+	width := (aoi.mapWidth+uint16(aoi.cellWidth))/uint16(aoi.cellWidth) - 1
+	height := (aoi.mapHeight+uint16(aoi.cellHeight))/uint16(aoi.cellHeight) - 1
+	for x := 0; x < int(width); x++ {
+		for y := 0; y < int(height); y++ {
+			sector := &aoi.cells[x][y]
+
+			for e := sector.head.next; e != nil; e = e.next {
+				if e.version == aoi.version {
+					for ee := sector.head.next; ee != nil; ee = ee.next {
+						if e != ee {
+							cb(e, ee)
+						}
+					}
+				} else {
+					e.version = aoi.version
+				}
+			}
+		}
+	}
 }
 
 func (aoi *CellAoi) Update(entity aoi.Entity, x uint8, y uint8) {
 	e := entity.(*Entity)
+	e.version++
 	oldSector := aoi.getCell(e.x, e.y)
 	newSector := aoi.getCell(x, y)
 
