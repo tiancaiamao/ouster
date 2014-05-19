@@ -167,8 +167,8 @@ func readLearnSkill(buf []byte) (packet.Packet, error) {
   skillType := binary.LittleEndian.Uint16(buf)
   return CGLearnSkillPacket {
     SkillType: skillType,
-    SkillDomainType: uint8(buf[2])
-  }
+    SkillDomainType: uint8(buf[2]),
+  }, nil
 }
 
 type CGSkillToObjectPacket struct {
@@ -232,7 +232,7 @@ func (skill CGSkillToTilePacket) String() string {
 
 func readSkillToTile(buf []byte) (packet.Packet, error) {
   // encrypt!!!
-  var ret CGSkillToSelfPacket
+  var ret CGSkillToTilePacket
   ret.SkillType = binary.LittleEndian.Uint16(buf)
   ret.CEffectID = binary.LittleEndian.Uint16(buf[2:])
   ret.X = buf[4]
