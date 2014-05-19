@@ -7,6 +7,7 @@ import (
 	"github.com/tiancaiamao/ouster/packet"
 	"github.com/tiancaiamao/ouster/packet/darkeden"
 	"log"
+	"math/rand"
 	"net"
 	"time"
 )
@@ -50,9 +51,13 @@ type Player struct {
 	speed float32
 	level int
 
-	strength     int
-	agility      int
-	intelligence int
+	STR        uint16
+	DEX        uint16
+	INT        uint16
+	Defense    uint16
+	Protection uint16
+	ToHit      uint16
+	Damage     uint16
 
 	carried []int
 
@@ -61,36 +66,51 @@ type Player struct {
 	send   chan<- packet.Packet
 
 	agent2scene chan interface{}
-	nearby      map[ObjectIDType]struct{}
+	nearby      map[uint32]struct{}
 	heartbeat   <-chan time.Time
 	ticker      uint32
 }
 
 func NewPlayer(conn net.Conn) *Player {
 	return &Player{
-		name:  "test",
-		hp:    110,
-		mp:    110,
-		conn:  conn,
-		speed: 0.5,
+		name:       "test",
+		hp:         110,
+		mp:         110,
+		conn:       conn,
+		speed:      0.5,
+		STR:        20,
+		DEX:        20,
+		INT:        20,
+		Defense:    10,
+		Protection: 20,
+		ToHit:      30,
+		Damage:     25,
 
 		agent2scene: make(chan interface{}),
-
-		nearby:    make(map[ObjectIDType]struct{}),
-		heartbeat: time.Tick(50 * time.Millisecond),
+		nearby:      make(map[uint32]struct{}),
+		heartbeat:   time.Tick(50 * time.Millisecond),
 	}
 }
 
-func (player *Player) NearBy() map[ObjectIDType]struct{} {
+func (player *Player) NearBy() map[uint32]struct{} {
 	return player.nearby
 }
 
-func (player *Player) handleClientMessage(pkt packet.Packet) {
-	hp := darkeden.GCStatusCurrentHP{
-		ObjectID:  2351,
-		CurrentHP: 133,
+// if tohit == dodge, the default formula is 0.85
+// if tohit < dodge, then tohit / dodge should be primary factor, also take other factor into consideration
+// if tohit > dodge, then the differential should be important, also dodge.
+func HitTest(tohit uint16, dodge uint16) bool {
+	var prob float32
+	if tohit < dodge {
+		prob = 0.85*float32(tohit)/float32(dodge) - 0.15*float32(dodge-tohit)/float32(tohit)
+	} else {
+		prob = 0.85 + 0.15*float32(tohit-dodge)/float32(dodge)
 	}
 
+	return rand.Float32() < prob
+}
+
+func (player *Player) handleClientMessage(pkt packet.Packet) {
 	switch pkt.Id() {
 	case darkeden.PACKET_CG_CONNECT:
 		player.send <- &darkeden.GCUpdateInfoPacket{}
@@ -102,26 +122,35 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 			Y:   237,
 			Dir: 2,
 		}
-
-		player.send <- &darkeden.GCAddMonster{
-			ObjectID:    9999,
-			MonsterType: 7,
-			MonsterName: "test",
-			X:           150,
-			Y:           240,
-			Dir:         DOWN,
-			CurrentHP:   77,
-			MaxHP:       170,
-		}
 	case darkeden.PACKET_CG_MOVE:
 		player.agent2scene <- pkt
 	case darkeden.PACKET_CG_ATTACK:
-		if hp.CurrentHP > 0 {
-			hp.CurrentHP -= 5
-			player.send <- hp
-			player.send <- darkeden.GCAttackMeleeOK1(hp.ObjectID)
-		}
+		attack := pkt.(darkeden.CGAttackPacket)
+		target := player.Scene.objects[attack.ObjectID]
+		if monster, ok := target.(*Monster); ok {
+			hit := HitTest(player.ToHit, monster.Defense)
+			if hit {
+				player.send <- darkeden.GCAttackMeleeOK1(monster.Id())
+				damage := uint16(1)
+				if player.Damage > monster.Protection {
+					damage = player.Damage - monster.Protection
+				}
 
+				if monster.HP > damage {
+					monster.HP -= damage
+					player.send <- darkeden.GCStatusCurrentHP{
+						ObjectID:  monster.Id(),
+						CurrentHP: monster.HP,
+					}
+				} else {
+					//					monster.HP = 0
+					//					player.send <-
+					log.Println("...monster...id hp damage protection:", monster.Id(), monster.HP, player.Damage, monster.Protection)
+				}
+
+			} else {
+			}
+		}
 	case darkeden.PACKET_CG_BLOOD_DRAIN:
 	case darkeden.PACKET_CG_VERIFY_TIME:
 	}
@@ -140,39 +169,30 @@ type SkillEffect struct {
 	Hurt int
 }
 
-func (this *Player) handleSceneMessage(msg interface{}) {
-	switch msg.(type) {
-	case darkeden.GCMoveOKPacket:
-		raw := msg.(darkeden.GCMoveOKPacket)
-		this.send <- raw
-	default:
-		log.Println("handleSceneMessage receive a unknown msg")
-	}
-}
-
 // called in scene
-func (this *Player) handleAoiMessage(id ObjectIDType) {
-	if id.Monster() {
+func (this *Player) handleAoiMessage(id uint32) {
+	obj := this.Scene.objects[id]
+	if _, ok := obj.(*Monster); ok {
 		log.Println("it's a monster...send message")
-		monster := this.Scene.Monster(id.Index())
+		monster := obj.(*Monster)
 		if _, ok := this.nearby[id]; !ok {
 			this.nearby[id] = struct{}{}
 
-//			addMonster := &darkeden.GCAddMonster{
-//				ObjectID:    uint32(id),
-//				MonsterType: monster.MonsterType,
-//				MonsterName: "test",
-//				X:           monster.X(),
-//				Y:           monster.Y(),
-//				Dir:         2,
-//				CurrentHP:   77,
-//				MaxHP:       77,
-//			}
+			addMonster := &darkeden.GCAddMonster{
+				ObjectID:    uint32(id),
+				MonsterType: monster.MonsterType,
+				MonsterName: "test",
+				X:           monster.X(),
+				Y:           monster.Y(),
+				Dir:         2,
+				CurrentHP:   monster.HP,
+				MaxHP:       monster.MaxHP(),
+			}
 
-		//	this.send <- addMonster
+			this.send <- addMonster
 			monster.flag |= flagActive
-			log.Println("monster ", id.Index(), "set to active", monster.flag)
-			monster.Enemies = append(monster.Enemies, ObjectIDType(this.Id()))
+			log.Println("monster ", id, "set to active", monster.flag)
+			monster.Enemies = append(monster.Enemies, this.Id())
 		} else {
 
 		}

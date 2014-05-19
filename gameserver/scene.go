@@ -10,9 +10,13 @@ import (
 	"time"
 )
 
+type Object interface {
+	Id() uint32
+}
+
 type Scene struct {
 	*data.Map
-
+	objects  []Object
 	players  []*Player
 	monsters []Monster
 	aoi.Aoi
@@ -22,7 +26,14 @@ type Scene struct {
 	heartbeat <-chan time.Time
 }
 
-const maskNPC uint32 = 1 << 31
+func (scene *Scene) AddObject(obj Object) uint32 {
+	idx := len(scene.objects)
+	if idx < 10000 {
+		scene.objects = append(scene.objects, obj)
+	} else {
+	}
+	return uint32(idx)
+}
 
 func NewScene(m *data.Map) *Scene {
 	ret := new(Scene)
@@ -35,6 +46,7 @@ func NewScene(m *data.Map) *Scene {
 		num += int(mi.Count)
 	}
 	monsters := make([]Monster, num)
+	ret.objects = make([]Object, 0, num+200)
 
 	idx := 0
 	for _, mi := range m.MonsterInfo {
@@ -53,11 +65,14 @@ func NewScene(m *data.Map) *Scene {
 			}
 
 			monster := &monsters[idx]
-			monster.Entity = aoi.Add(uint8(x), uint8(y), uint32(idx)|ObjectIDMaskNPC)
+			id := ret.AddObject(monster)
+			monster.Entity = aoi.Add(uint8(x), uint8(y), id)
 			monster.MonsterType = mi.MonsterType
 			monster.STR = tp.STR
 			monster.DEX = tp.DEX
 			monster.INT = tp.INTE
+			monster.Defense = monster.DEX / 2
+			monster.Protection = monster.STR
 			monster.HP = tp.STR*4 + uint16(tp.Level)
 			idx++
 		}
@@ -77,62 +92,53 @@ func (m *Scene) Blocked(x, y uint16) bool {
 	return false
 }
 
-func (m *Scene) Player(playerId uint32) *Player {
-	if playerId >= uint32(len(m.players)) {
-		return nil
-	}
-	return m.players[playerId]
-}
-
-func (m *Scene) Monster(idx uint32) *Monster {
-	if idx >= uint32(len(m.monsters)) {
-		return nil
-	}
-	return &m.monsters[idx]
-}
-
 func (m *Scene) String() string {
 	return m.Map.Name
 }
 
 func (m *Scene) HeartBeat() {
 	m.Message(func(watcher aoi.Entity, marker aoi.Entity) {
-		wId := ObjectIDType(watcher.Id())
-		mId := ObjectIDType(marker.Id())
+		wId := watcher.Id()
+		mId := marker.Id()
 
-		if wId.Player() {
-			switch {
-			case mId.Monster():
+		wObj := m.objects[wId]
+		mObj := m.objects[mId]
+
+		if _, ok := wObj.(*Player); ok {
+			switch mObj.(type) {
+			case *Monster:
 				// monster active by player
-				monster := &m.monsters[mId.Index()]
-
+				monster := mObj.(*Monster)
 				monster.flag |= flagActive
 				monster.Enemies = append(monster.Enemies, wId)
-			case mId.Player():
-				player := m.players[mId.Index()]
+			case *Player:
+				player := mObj.(*Player)
 				player.handleAoiMessage(wId)
 			}
 		}
 
-		if wId.Monster() && mId.Player() {
-			player := m.players[mId.Index()]
-			player.handleAoiMessage(wId)
+		if _, ok := wObj.(*Monster); ok {
+			if _, ok2 := mObj.(*Player); ok2 {
+				player := mObj.(*Player)
+				player.handleAoiMessage(wId)
+			}
 		}
-	})
 
-	for i := 0; i < len(m.monsters); i++ {
-		monster := &m.monsters[i]
-		if (monster.flag & flagActive) != 0 {
-			monster.HeartBeat(m)
+		for i := 0; i < len(m.monsters); i++ {
+			monster := &m.monsters[i]
+			if (monster.flag & flagActive) != 0 {
+				monster.HeartBeat(m)
+			}
 		}
-	}
+		return
+	})
 }
 
 func (m *Scene) Login(player *Player) error {
-	idx := len(m.players)
 	m.players = append(m.players, player)
 
-	player.Entity = m.Add(145, 237, uint32(idx))
+	id := m.AddObject(player)
+	player.Entity = m.Add(145, 237, id)
 	player.Scene = m
 
 	return nil
@@ -140,10 +146,10 @@ func (m *Scene) Login(player *Player) error {
 
 func loop(m *Scene) {
 	for {
-		for id, player := range m.players {
+		for _, player := range m.players {
 			select {
 			case msg := <-player.agent2scene:
-				m.processPlayerInput(uint32(id), msg)
+				m.processPlayerInput(player.Id(), msg)
 			default:
 				break
 			}
@@ -167,7 +173,8 @@ func (m *Scene) processPlayerInput(playerId uint32, msg interface{}) {
 	case darkeden.CGMovePacket:
 		move := msg.(darkeden.CGMovePacket)
 		log.Println("scene receive a CGMovePacket:", move.X, move.Y, move.Dir)
-		player := m.Player(playerId)
+		obj := m.objects[playerId]
+		player := obj.(*Player)
 
 		if move.Dir >= 8 {
 			moveErr := darkeden.GCMoveErrorPacket{
