@@ -342,6 +342,25 @@ func (attackOk GCAttackMeleeOK1) MarshalBinary() ([]byte, error) {
 	return ret, nil
 }
 
+type GCAttackMeleeOK2 struct {
+  ObjectID uint32
+  Modify ModifyInfo
+}
+
+func (attackOk GCAttackMeleeOK2) Id() packet.PacketID {
+	return PACKET_GC_ATTACK_MELEE_OK_2
+}
+
+func (attackOk GCAttackMeleeOK2) String() string {
+	return "attack melee ok 2"
+}
+func (attackOk GCAttackMeleeOK2) MarshalBinary() ([]byte, error) {
+  buf := bytes.Buffer{}
+  binary.LittleEndian.Write(buf, attackOk.ObjectID)
+  attackOk.Modify.Dump(binary)
+	return buf.Bytes(), nil
+}
+
 type GCCannotUsePacket uint32
 
 func (cannot GCCannotUsePacket) Id() packet.PacketID {
@@ -655,4 +674,227 @@ func (obj GCDeleteObjectPacket) MarshalBinary() ([]byte, error) {
 	ret := []byte{0, 0, 0, 0}
 	binary.LittleEndian.PutUint32(ret, uint32(obj))
 	return ret, nil
+}
+
+type GCAddEffectPacket struct {
+  ObjectID uint32
+  EffectID uint16
+  Duration uint16
+}
+func (obj GCAddEffectPacket) Id() packet.PacketID {
+	return PACKET_GC_ADD_EFFECT
+}
+func (obj GCAddEffectPacket) String() string {
+	return "add effect"
+}
+func (obj GCAddEffectPacket) MarshalBinary() ([]byte, error) {
+  buf := &bytes.Buffer{}
+  binary.Write(buf, binary.LittleEndian, obj.ObjectID)
+  binary.Write(buf, binary.LittleEndian, obj.EffectID)
+   binary.Write(buf, binary.LittleEndian, obj.Duration)
+	return buf.Bytes(), nil
+}
+
+type GCFastMovePacket struct {
+  ObjectID uint32
+  FromX uint8
+  FromY uint8
+  ToX uint8
+  ToY uint8
+  SkillType uint32
+}
+func (fastMove *GCFastMovePacket) Id() packet.PacketID {
+  return PACKET_GC_FAST_MOVE
+}
+func (fastMove *GCFastMovePacket) String() string {
+  return "fast move"
+}
+func (fastMove *GCFastMovePacket) MarshalBinary() ([]byte, error) {
+  buf := &bytes.Buffer{}
+  binary.Write(buf, binary.LittleEndian, fastMove.ObjectID)
+  binary.Write(buf, binary.LittleEndian, fastMove.FromX)
+  binary.Write(buf, binary.LittleEndian, fastMove.FromY)
+  binary.Write(buf, binary.LittleEndian, fastMove.ToX)
+  binary.Write(buf, binary.LittleEndian, fastMove.ToY)
+  binary.Write(buf, binary.LittleEndian, fastMove.SkillType)
+  return buf.Bytes(), nil
+}
+
+type GCLearnSkillOK struct {
+  SkillType uint16
+  SkillDomainType uint8
+}
+func (ok *GCLearnSkillOK) Id() packet.PacketID {
+  return PACKET_GC_LEARN_SKILL_OK
+}
+func (ok *GCLearnSkillOK) String() string {
+  return "learn skill ok"
+}
+func (ok *GCLearnSkillOK) MarshalBinary() ([]byte, error) {
+  ret := []byte{0, 0, ok.SkillDomainType}
+  binary.LittleEndian.PutUint16(ret, ok.SkillType)
+  return ret, nil
+}
+
+type GCRemoveEffect struct {
+   ObjectID uint32
+   EffectList []uint16
+}
+func (remove GCRemoveEffect) Id() packet.PacketID {
+  return PACKET_GC_REMOVE_EFFECT
+}
+func (remove GCRemoveEffect) String() string {
+  return "remove effect"
+}
+func (remove GCRemoveEffect) MarshalBinary() ([]byte, error) {
+  buf := &bytes.Buffer{}
+  binary.Write(buf, binary.LittleEndian, remove.ObjectID)
+  binary.Write(buf, binary.LittleEndian, uint8(len(remove.EffectList)))
+               for _, v := range remove.EffectList {
+                   binary.Write(buf, binary.LittleEndian, v)
+               }
+}
+
+type GCSkillFailed1 struct {
+   SkillType uint16
+    Grade uint8
+   ModifyInfo
+}
+func (failed *GCSkillFailed1) Id() packet.PacketID {
+  return PACKET_GC_SKILL_FAILED1
+}
+func (failed *GCSkillFailed1) String() string {
+  return "skill failed1"
+}
+func (failed *GCSkillFailed1) MarshalBinary() ([]byte, error) {
+  buf := &bytes.Buffer{}
+  binary.Write(buf, binary.LittleEndian, failed.SkillType)
+  binary.Write(buf, binary.LittleEndian, failed.Grade)
+  failed.Dump(buf)
+  return buf.Bytes(), nil
+}
+
+type GCSkillFailed2 struct {
+  ObjectID uint32
+  TargetObjectID uint32
+  SkillType uint16
+   Grade uint8
+}
+func (failed GCSkillFailed2) Id() packet.PacketID {
+  return PACKET_GC_SKILL_FAILED2
+}
+func (failed GCSkillFailed2) String() string {
+  return "skill failed1"
+}
+func (failed GCSkillFailed2) MarshalBinary() ([]byte, error) {
+  buf := &bytes.Buffer{}
+  binary.Write(buf, binary.LittleEndian, failed.ObjectID)
+  binary.Write(buf, binary.LittleEndian, failed.TargetObjectID)
+    binary.Write(buf, binary.LittleEndian, failed.SkillType)
+ binary.Write(buf, binary.LittleEndian, failed.Grade)
+  return buf.Bytes(), nil
+}
+
+type GCSkillToObjectOK1 struct {
+  SkillType uint16
+  CEffectID uint16
+  TargetObjectID uint32
+  Duration uint16
+  Grade uint8
+  ModifyInfo
+}
+func (ok *GCSkillToObjectOK1) Id() packet.PacketID {
+  return PACKET_GC_SKILL_TO_OBJECT_OK_1
+}
+func (ok *GCSkillToObjectOK1) String() string {
+  return "skill to object ok 1"
+}
+func (ok *GCSkillToObjectOK1) MarshalBinary() ([]byte, error) {
+  buf := &bytes.Buffer{}
+  binary.Write(buf, binary.LittleEndian, ok.SkillType)
+  binary.Write(buf, binary.LittleEndian, ok.CEffectID)
+  binary.Write(buf, binary.LittleEndian, ok.TargetObjectID)
+  binary.Write(buf, binary.LittleEndian, ok.Duration)
+  binary.Write(buf, binary.LittleEndian, ok.Grade)
+  ok.Dump(buf)
+  return buf.Bytes(), nil
+}
+
+type GCSkillToObjectOK4 struct {
+  ObjectID uint32
+  SkillType uint16
+  Duration uint16
+  Grade uint8
+}
+func (ok GCSkillToObjectOK4) Id() packet.PacketID {
+  return PACKET_GC_SKILL_TO_OBJECT_OK_4
+}
+func (ok GCSkillToObjectOK4) String() string {
+  return "skill to object ok 4"
+}
+func (ok GCSkillToObjectOK1) MarshalBinary() ([]byte, error) {
+  buf := &bytes.Buffer{}
+  binary.Write(buf, binary.LittleEndian, ok.ObjectID)
+  binary.Write(buf, binary.LittleEndian, ok.SkillType)
+  binary.Write(buf, binary.LittleEndian, ok.Duration)
+  binary.Write(buf, binary.LittleEndian, ok.Grade)
+  return buf.Bytes(), nil
+}
+
+type GCSkillToSelfOK1 struct {
+  SkillType uint16
+  CEffectID uint16
+  Duration uint8
+  Grade uint8
+  ModifyInfo
+}
+func (ok *GCSkillToSelfOK1) Id() packet.PacketID {
+  return PACKET_GC_SKILL_TO_SELF_OK_1
+}
+func (ok *GCSkillToSelfOK1) String() string {
+  return "skill to self ok 1"
+}
+func (ok *GCSkillToSelfOK1) MarshalBinary() ([]byte, error) {
+  buf := &bytes.Buffer{}
+  binary.Write(buf, binary.LittleEndian, ok.SkillType)
+  binary.Write(buf, binary.LittleEndian, ok.CEffectID)
+  binary.Write(buf, binary.LittleEndian, ok.Duration)
+  binary.Write(buf, binary.LittleEndian, ok.Grade)
+  ok.Dump(buf)
+  return buf.Bytes(), nil
+}
+
+type GCSkillToTileOK1 struct {
+  SkillType uint16
+  CEffectID uint16
+  Duration uint16
+  Range uint8
+  X uint8
+  Y uint8
+  CreatureList []uint32
+  Grade uint8
+  ModifyInfo
+}
+func (ok *GCSkillToTileOK1) Id() packet.PacketID {
+  return PACKET_GC_SKILL_TO_TILE_OK_1
+}
+func (ok *GCSkillToTileOK1) String() string {
+  return "skill to tile ok 1"
+}
+func (ok *GCSkillToTileOK1) MarshalBinary() ([]byte, error) {
+  buf := &bytes.Buffer{}
+  binary.Write(buf, binary.LittleEndian, ok.SkillType)
+  binary.Write(buf, binary.LittleEndian, ok.CEffectID)
+  binary.Write(buf, binary.LittleEndian, ok.X)
+  binary.Write(buf, binary.LittleEndian, ok.Y)
+  binary.Write(buf, binary.LittleEndian, ok.Duration)
+  binary.Write(buf, binary.LittleEndian, ok.Range)
+  binary.Write(buf, binary.LittleEndian, ok.Grade)
+  binary.Write(buf, binary.LittleEndian, uint8(len(ok.CreatureList)))
+  for _, v := range ok.CreatureList {
+    binary.Write(buf, binary.LittleEndian, v)
+  }
+  ok.Dump(buf)
+
+  return buf.Bytes(), nil
 }
