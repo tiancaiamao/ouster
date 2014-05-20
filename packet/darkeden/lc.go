@@ -60,7 +60,6 @@ func (sl *LCServerListPacket) MarshalBinary() ([]byte, error) {
 	return []byte{1, 2, 0, 6, 183, 226, 178, 226, 199, 248, 0, 1, 8, 185, 237, 247, 200, 193, 182, 211, 252, 0}, nil
 }
 
-type PCInfo struct{}
 type LCPCListPacket struct {
 	list []PCInfo
 }

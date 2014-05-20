@@ -58,7 +58,7 @@ func serve(conn net.Conn) {
 			Debug(writer, darkeden.LCVersionCheckOKPacket{})
 		case darkeden.PACKET_CL_SELECT_PC:
 			reconnect := &darkeden.LCReconnectPacket{
-				Ip:   "192.168.128.128",
+				Ip:   config.GameServerIP,
 				Port: 9998,
 				Key:  []byte{0, 0, 0, 32, 6, 11},
 			}

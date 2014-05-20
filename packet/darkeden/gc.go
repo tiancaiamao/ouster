@@ -5,7 +5,6 @@ import (
 	"encoding/binary"
 	"github.com/tiancaiamao/ouster/packet"
 	"io"
-	"time"
 )
 
 type GCMoveOKPacket struct {
@@ -77,19 +76,193 @@ func (move GCMovePacket) MarshalBinary() ([]byte, error) {
 	return ret, nil
 }
 
-type NPCType struct{}
+type NPCType uint16
 type InventoryInfo struct{}
+
+func (info InventoryInfo) Dump(writer io.Writer) {
+	binary.Write(writer, binary.LittleEndian, uint8(0))
+}
+
 type GearInfo struct{}
+
+func (info GearInfo) Dump(writer io.Writer) {
+	// TODO
+	binary.Write(writer, binary.LittleEndian, uint8(0))
+}
+
 type ExtraInfo struct{}
+
+func (info ExtraInfo) Dump(writer io.Writer) {
+	// TODO
+	binary.Write(writer, binary.LittleEndian, uint8(0))
+}
+
 type EffectInfo struct{}
+
+func (info EffectInfo) Dump(writer io.Writer) {
+	// TODO
+	binary.Write(writer, binary.LittleEndian, uint8(0))
+}
+
 type RideMotorcycleInfo struct{}
+
+func (info RideMotorcycleInfo) Dump(writer io.Writer) {
+	// TODO
+	binary.Write(writer, binary.LittleEndian, uint8(0))
+}
+
 type Weather struct{}
-type MonsterType struct{}
+type MonsterType uint16
 type NPCInfo struct{}
+
+func (info NPCInfo) Dump(writer io.Writer) {
+	// TODO
+}
+
 type BloodBibleSignInfo struct{}
-type NicknameInfo struct{}
+
+func (info BloodBibleSignInfo) Dump(writer io.Writer) {
+	// TODO
+	binary.Write(writer, binary.LittleEndian, uint8(0))
+	binary.Write(writer, binary.LittleEndian, uint8(0))
+	return
+}
+
+type NicknameInfo struct {
+	NicknameID    uint16
+	NicknameType  uint8
+	Nickname      string
+	NicknameIndex uint16
+}
+
+func (info NicknameInfo) Dump(writer io.Writer) {
+	binary.Write(writer, binary.LittleEndian, info.NicknameID)
+	binary.Write(writer, binary.LittleEndian, uint8(0))
+	return
+}
+
+type GameTimeType struct {
+	Year  uint16
+	Month uint8
+	Day   uint8
+
+	Hour   uint8
+	Minute uint8
+	Second uint8
+}
+
+func (time GameTimeType) Dump(writer io.Writer) {
+	binary.Write(writer, binary.LittleEndian, time.Year)
+	binary.Write(writer, binary.LittleEndian, time.Month)
+	binary.Write(writer, binary.LittleEndian, time.Day)
+	binary.Write(writer, binary.LittleEndian, time.Hour)
+	binary.Write(writer, binary.LittleEndian, time.Minute)
+	binary.Write(writer, binary.LittleEndian, time.Second)
+	return
+}
+
+const (
+	ATTR_CURRENT = iota
+	ATTR_MAX
+	ATTR_BASIC
+)
+
+type PCInfo struct {
+	ObjectID uint32
+	Name     string
+	Level    uint8
+	Sex      uint8
+
+	BatColor          uint16
+	SkinColor         uint16
+	MasterEffectColor uint8
+
+	Alignment uint32
+	STR       [3]uint16
+	DEX       [3]uint16
+	INT       [3]uint16
+
+	HP [2]uint16
+
+	Rank    uint8
+	RankExp uint32
+
+	Exp          uint32
+	Fame         uint32
+	Gold         uint32
+	Sight        uint8
+	Bonus        uint16
+	HotKey       [8]uint16
+	SilverDamage uint16
+
+	Competence uint8
+	GuildID    uint16
+	GuildName  string
+
+	GuildMemberRank uint8
+	UnionID         uint32
+
+	AdvancementLevel   uint8
+	AdvancementGoalExp uint32
+}
+
+func (info *PCInfo) Dump(writer io.Writer) {
+	binary.Write(writer, binary.LittleEndian, info.ObjectID)
+	binary.Write(writer, binary.LittleEndian, uint8(len(info.Name)))
+	io.WriteString(writer, info.Name)
+	binary.Write(writer, binary.LittleEndian, info.Level)
+	binary.Write(writer, binary.LittleEndian, info.Sex)
+
+	binary.Write(writer, binary.LittleEndian, info.BatColor)
+	binary.Write(writer, binary.LittleEndian, info.SkinColor)
+	binary.Write(writer, binary.LittleEndian, info.MasterEffectColor)
+
+	binary.Write(writer, binary.LittleEndian, info.Alignment)
+
+	binary.Write(writer, binary.LittleEndian, info.STR[ATTR_CURRENT])
+	binary.Write(writer, binary.LittleEndian, info.STR[ATTR_MAX])
+	binary.Write(writer, binary.LittleEndian, info.STR[ATTR_BASIC])
+	binary.Write(writer, binary.LittleEndian, info.DEX[ATTR_CURRENT])
+	binary.Write(writer, binary.LittleEndian, info.DEX[ATTR_MAX])
+	binary.Write(writer, binary.LittleEndian, info.DEX[ATTR_BASIC])
+	binary.Write(writer, binary.LittleEndian, info.INT[ATTR_CURRENT])
+	binary.Write(writer, binary.LittleEndian, info.INT[ATTR_MAX])
+	binary.Write(writer, binary.LittleEndian, info.INT[ATTR_BASIC])
+
+	binary.Write(writer, binary.LittleEndian, info.HP[ATTR_CURRENT])
+	binary.Write(writer, binary.LittleEndian, info.HP[ATTR_MAX])
+
+	binary.Write(writer, binary.LittleEndian, info.Rank)
+	binary.Write(writer, binary.LittleEndian, info.RankExp)
+
+	binary.Write(writer, binary.LittleEndian, info.Exp)
+	binary.Write(writer, binary.LittleEndian, info.Gold)
+
+	binary.Write(writer, binary.LittleEndian, info.Fame)
+	binary.Write(writer, binary.LittleEndian, info.Sight)
+	binary.Write(writer, binary.LittleEndian, info.Bonus)
+
+	for i := 0; i < 8; i++ {
+		binary.Write(writer, binary.LittleEndian, info.HotKey[i])
+	}
+
+	binary.Write(writer, binary.LittleEndian, info.SilverDamage)
+	binary.Write(writer, binary.LittleEndian, info.Competence)
+	binary.Write(writer, binary.LittleEndian, info.GuildID)
+
+	binary.Write(writer, binary.LittleEndian, uint8(len(info.GuildName)))
+	io.WriteString(writer, info.GuildName)
+
+	binary.Write(writer, binary.LittleEndian, info.GuildMemberRank)
+	binary.Write(writer, binary.LittleEndian, info.UnionID)
+	binary.Write(writer, binary.LittleEndian, info.AdvancementLevel)
+	binary.Write(writer, binary.LittleEndian, info.AdvancementGoalExp)
+
+	return
+}
 
 type GCUpdateInfoPacket struct {
+	PCType             byte
 	PCInfo             PCInfo
 	InventoryInfo      InventoryInfo
 	GearInfo           GearInfo
@@ -97,12 +270,13 @@ type GCUpdateInfoPacket struct {
 	EffectInfo         EffectInfo
 	hasMotorcycle      bool
 	RideMotorcycleInfo RideMotorcycleInfo
-	ZoneID_t           uint16
-	ZoneX              uint8
-	ZoneY              uint8
-	GameTime           time.Time
 
-	Weather      Weather
+	ZoneID   uint16
+	ZoneX    uint8
+	ZoneY    uint8
+	GameTime GameTimeType
+
+	Weather      uint8
 	WeatherLevel uint8
 
 	DarkLevel  uint8
@@ -122,26 +296,91 @@ type GCUpdateInfoPacket struct {
 	NicknameInfo NicknameInfo
 
 	NonPK              bool
-	GuildUnionID       uint
+	GuildUnionID       uint32
 	GuildUnionUserType uint8
 	BloodBibleSignInfo BloodBibleSignInfo
 	PowerPoint         int
 }
 
-func (updateInfo *GCUpdateInfoPacket) Id() packet.PacketID {
+func (info *GCUpdateInfoPacket) Id() packet.PacketID {
 	return PACKET_GC_UPDATE_INFO
 }
-func (updateInfo *GCUpdateInfoPacket) String() string {
+func (info *GCUpdateInfoPacket) String() string {
 	return "update info"
 }
-func (updateInfo *GCUpdateInfoPacket) MarshalBinary() ([]byte, error) {
-	//154 1 60 1 0 0 0 86 117 48 0 0 4 183 232 191 241 150 0 0 0 164 1 0 76 29 0 0
-	//20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 216 1 216 1 50 204 41 0 0 125 0 0
-	//0 0 0 0 0 26 1 0 0 13 15 39 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 4 0 0
-	//0 0 100 0 0 0 0 6 118 48 0 0 30 0 0 0 232 3 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 119
-	//48 0 0 44 0 0 2 16 1 136 19 0 0 0 0 3 0 0 0 0 1 0 0 0 1 0 120 48 0 0 34 5 0 0
-	//1 0 0 0 0 0 255 255 255 255 0 8 0 0 0 0 1 121 48 0 0 32 0 0 2 53 43 232 3 0 0
-	//0 0 4 0 0 0]
+func (info *GCUpdateInfoPacket) MarshalBinary() ([]byte, error) {
+	buf := &bytes.Buffer{}
+	buf.WriteByte(info.PCType)
+	info.PCInfo.Dump(buf)
+
+	// info.InventoryInfo.Dump(buf)
+	// 	info.GearInfo.Dump(buf)
+	// 	info.ExtraInfo.Dump(buf)
+	// 	info.EffectInfo.Dump(buf)
+	// 	if info.hasMotorcycle {
+	// 		buf.WriteByte(1)
+	// 		info.RideMotorcycleInfo.Dump(buf)
+	// 	} else {
+	// 		buf.WriteByte(0)
+	// 	}
+
+	buf.Write([]byte{6, 118, 48, 0, 0, 30, 0, 0, 0, 232, 3, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 119,
+		48, 0, 0, 44, 0, 0, 2, 16, 1, 136, 19, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 120, 48, 0, 0, 34, 5, 0, 0,
+		1, 0, 0, 0, 0, 0, 255, 255, 255, 255, 0, 8, 0, 0, 0, 0, 1, 121, 48, 0, 0, 32, 0, 0, 2, 53, 43, 232, 3, 0, 0,
+		0, 0, 4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 122, 48, 0, 0, 32, 1, 0, 0, 232, 3, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 3, 123, 48, 0,
+		0, 44, 0, 0, 2, 58, 38, 32, 28, 0, 0, 0, 0, 4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 4, 0, 0, 2, 146, 1, 54, 66, 109, 0, 246, 224, 0})
+
+	// // 21, 0, 145, 237
+	// write zone info
+	binary.Write(buf, binary.LittleEndian, info.ZoneID)
+	binary.Write(buf, binary.LittleEndian, info.ZoneX)
+	binary.Write(buf, binary.LittleEndian, info.ZoneY)
+
+	// info.GameTime.Dump(buf)
+	// 	binary.Write(buf, binary.LittleEndian, info.Weather)
+	// 	binary.Write(buf, binary.LittleEndian, info.WeatherLevel)
+	// 	binary.Write(buf, binary.LittleEndian, info.DarkLevel)
+	// 	binary.Write(buf, binary.LittleEndian, info.LightLevel)
+	//
+	// 	binary.Write(buf, binary.LittleEndian, info.NPCNum)
+	// 	for i:=0; i<int(info.NPCNum); i++ {
+	// 		binary.Write(buf, binary.LittleEndian, info.NPCTypes[i])
+	// 	}
+	//
+	// 	binary.Write(buf, binary.LittleEndian, info.MonsterNum)
+	// 	for i:=0; i<int(info.MonsterNum); i++ {
+	// 		binary.Write(buf, binary.LittleEndian, info.MonsterTypes[i])
+	// 	}
+	//
+	// 	binary.Write(buf, binary.LittleEndian, uint8(len(info.NPCInfos)))
+	// 	for i:=0; i<len(info.NPCInfos); i++ {
+	// 		info.NPCInfos[i].Dump(buf)
+	// 	}
+	//
+	// 	binary.Write(buf, binary.LittleEndian, info.ServerStat)
+	// 	binary.Write(buf, binary.LittleEndian, info.Premium)
+	// 	binary.Write(buf, binary.LittleEndian, info.SMSCharge)
+	//
+	// 	info.NicknameInfo.Dump(buf)
+	//
+	// 	if info.NonPK {
+	// 		binary.Write(buf, binary.LittleEndian, uint8(1))
+	// 	} else {
+	// 		binary.Write(buf, binary.LittleEndian, uint8(0))
+	// 	}
+	//
+	// 	binary.Write(buf, binary.LittleEndian, info.GuildUnionID)
+	// 	binary.Write(buf, binary.LittleEndian, info.GuildUnionUserType)
+	//
+	// 	info.BloodBibleSignInfo.Dump(buf)
+	//
+	// 	binary.Write(buf, binary.LittleEndian, info.PowerPoint)
+	//
+	// 	return buf.Bytes(), nil
+
+	buf.Write([]byte{190, 7, 3, 19, 16,
+		10, 40, 0, 0, 13, 2, 0, 5, 9, 0, 61, 0, 62, 0, 64, 0, 163, 0, 0, 0, 17, 0, 0, 0, 0, 24, 125, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0})
+	return buf.Bytes(), nil
 
 	// return []byte{86, 117, 48, 0, 0, 4, 183, 232, 191, 241, 150, 0, 0, 0, 164, 1, 0, 76, 29, 0, 0,
 	// 		20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 216, 1, 216, 1, 50, 204, 41, 0, 0, 125, 0, 0,
@@ -151,26 +390,8 @@ func (updateInfo *GCUpdateInfoPacket) MarshalBinary() ([]byte, error) {
 	// 		1, 0, 0, 0, 0, 0, 255, 255, 255, 255, 0, 8, 0, 0, 0, 0, 1, 121, 48, 0, 0, 32, 0, 0, 2, 53, 43, 232, 3, 0, 0,
 	// 		0, 0, 4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 122, 48, 0, 0, 32, 1, 0, 0, 232, 3, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 3, 123, 48, 0,
 	// 		0, 44, 0, 0, 2, 58, 38, 32, 28, 0, 0, 0, 0, 4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 4, 0, 0, 2, 146, 1, 54, 66, 109, 0, 246, 224, 0, 21, 0, 145, 237, 190, 7, 3, 19, 16,
-	// 		10, 40, 0, 0, 13, 2, 0, 5, 9, 0, 61, 0, 62, 0, 64, 0, 163, 0, 0, 0, 17, 0, 0, 0, 0, 24, 125, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 52, 1, 5, 0, 0, 0, 1, 0, 117, 48, 0, 0},
-	// nil
-
-	// return []byte{86, 117, 48, 0, 0, 4, 183, 232, 191, 241, 150, 0, 0, 0, 164, 1, 0, 76, 29, 0, 0,
-	// 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 216, 1, 216, 1, 50, 204, 41, 0, 0, 125, 0, 0,
-	// 0, 0, 0, 0, 0, 26, 1, 0, 0, 13, 15, 39, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 4, 0, 0,
-	// 0, 0, 100, 0, 0, 0, 0, 6, 118, 48, 0, 0, 30, 0, 0, 0, 232, 3, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 119,
-	// 48, 0, 0, 44, 0, 0, 2, 16, 1, 136, 19, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 120, 48, 0, 0, 34, 5, 0, 0,
-	// 1, 0, 0, 0, 0, 0, 255, 255, 255, 255, 0, 8, 0, 0, 0, 0, 1, 121, 48, 0, 0, 32, 0, 0, 2, 53, 43, 232, 3, 0, 0,
-	// 0, 0, 4, 0, 0, 0}, nil
-	return []byte{86, 117, 48, 0, 0, 4, 183, 232, 191, 241, 150, 0, 0, 0, 164, 1, 0, 76, 29, 0, 0,
-			20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 216, 1, 216, 1, 50, 204, 41, 0, 0, 125, 0, 0,
-			0, 0, 0, 0, 0, 26, 1, 0, 0, 13, 15, 39, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 4, 0, 0,
-			0, 0, 100, 0, 0, 0, 0, 6, 118, 48, 0, 0, 30, 0, 0, 0, 232, 3, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 119,
-			48, 0, 0, 44, 0, 0, 2, 16, 1, 136, 19, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 120, 48, 0, 0, 34, 5, 0, 0,
-			1, 0, 0, 0, 0, 0, 255, 255, 255, 255, 0, 8, 0, 0, 0, 0, 1, 121, 48, 0, 0, 32, 0, 0, 2, 53, 43, 232, 3, 0, 0,
-			0, 0, 4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 122, 48, 0, 0, 32, 1, 0, 0, 232, 3, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 3, 123, 48, 0,
-			0, 44, 0, 0, 2, 58, 38, 32, 28, 0, 0, 0, 0, 4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 4, 0, 0, 2, 146, 1, 54, 66, 109, 0, 246, 224, 0, 21, 0, 145, 237, 190, 7, 3, 19, 16,
-			10, 40, 0, 0, 13, 2, 0, 5, 9, 0, 61, 0, 62, 0, 64, 0, 163, 0, 0, 0, 17, 0, 0, 0, 0, 24, 125, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-		nil
+	// 		10, 40, 0, 0, 13, 2, 0, 5, 9, 0, 61, 0, 62, 0, 64, 0, 163, 0, 0, 0, 17, 0, 0, 0, 0, 24, 125, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+	// 	nil
 }
 
 type GCPetInfoPacket struct {
@@ -911,5 +1132,37 @@ func (ok *GCSkillToTileOK1) MarshalBinary() ([]byte, error) {
 	}
 	ok.Dump(buf)
 
+	return buf.Bytes(), nil
+}
+
+const (
+	SYSTEM_MESSAGE_NORMAL = iota
+	SYSTEM_MESSAGE_OPERATOR
+	SYSTEM_MESSAGE_MASTER_LAIR
+	SYSTEM_MESSAGE_COMBAT
+	SYSTEM_MESSAGE_INFO
+	SYSTEM_MESSAGE_HOLY_LAND
+	SYSTEM_MESSAGE_RANGER_SAY
+	SYSTEM_MESSAGE_MAX
+)
+
+type GCSystemMessagePacket struct {
+	Message string
+	Color   uint32
+	Type    uint8
+}
+
+func (msg *GCSystemMessagePacket) Id() packet.PacketID {
+	return PACKET_GC_SYSTEM_MESSAGE
+}
+func (msg *GCSystemMessagePacket) String() string {
+	return "system message"
+}
+func (msg *GCSystemMessagePacket) MarshalBinary() ([]byte, error) {
+	buf := &bytes.Buffer{}
+	binary.Write(buf, binary.LittleEndian, uint8(len(msg.Message)))
+	io.WriteString(buf, msg.Message)
+	binary.Write(buf, binary.LittleEndian, msg.Color)
+	binary.Write(buf, binary.LittleEndian, msg.Type)
 	return buf.Bytes(), nil
 }

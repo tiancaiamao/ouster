@@ -113,8 +113,39 @@ func HitTest(tohit uint16, dodge uint16) bool {
 func (player *Player) handleClientMessage(pkt packet.Packet) {
 	switch pkt.Id() {
 	case darkeden.PACKET_CG_CONNECT:
-		player.send <- &darkeden.GCUpdateInfoPacket{}
+		info := &darkeden.GCUpdateInfoPacket{
+			PCType: 'V',
+			PCInfo: darkeden.PCInfo{
+				ObjectID:         player.Id(),
+				Name:             player.name,
+				Level:            150,
+				Sex:              0,
+				SkinColor:        420,
+				Alignment:        7500,
+				STR:              [3]uint16{20, 20, 20},
+				DEX:              [3]uint16{20, 20, 20},
+				INT:              [3]uint16{20, 20, 20},
+				HP:               [2]uint16{472, 472},
+				Rank:             50,
+				RankExp:          10700,
+				Exp:              125,
+				Fame:             282,
+				Sight:            13,
+				Bonus:            9999,
+				Competence:       1,
+				GuildMemberRank:  4,
+				AdvancementLevel: 100,
+			},
+			ZoneID: 21,
+			ZoneX:  145,
+			ZoneY:  237,
+		}
+		player.send <- info
 		player.send <- &darkeden.GCPetInfoPacket{}
+		// player.send <- darkeden.GCRemoveEffect{
+	// 		ObjectID: 12405,
+	// 		EffectList: []uint16{109},
+	// 	}
 	case darkeden.PACKET_CG_READY:
 		log.Println("get a CG Ready Packet!!!")
 		player.send <- &darkeden.GCSetPositionPacket{
