@@ -313,24 +313,17 @@ func (info *GCUpdateInfoPacket) MarshalBinary() ([]byte, error) {
 	buf.WriteByte(info.PCType)
 	info.PCInfo.Dump(buf)
 
-	// info.InventoryInfo.Dump(buf)
-	// 	info.GearInfo.Dump(buf)
-	// 	info.ExtraInfo.Dump(buf)
-	// 	info.EffectInfo.Dump(buf)
-	// 	if info.hasMotorcycle {
-	// 		buf.WriteByte(1)
-	// 		info.RideMotorcycleInfo.Dump(buf)
-	// 	} else {
-	// 		buf.WriteByte(0)
-	// 	}
+	info.InventoryInfo.Dump(buf)
+	info.GearInfo.Dump(buf)
+	info.ExtraInfo.Dump(buf)
+	info.EffectInfo.Dump(buf)
+	if info.hasMotorcycle {
+		buf.WriteByte(1)
+		info.RideMotorcycleInfo.Dump(buf)
+	} else {
+		buf.WriteByte(0)
+	}
 
-	buf.Write([]byte{6, 118, 48, 0, 0, 30, 0, 0, 0, 232, 3, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 119,
-		48, 0, 0, 44, 0, 0, 2, 16, 1, 136, 19, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 120, 48, 0, 0, 34, 5, 0, 0,
-		1, 0, 0, 0, 0, 0, 255, 255, 255, 255, 0, 8, 0, 0, 0, 0, 1, 121, 48, 0, 0, 32, 0, 0, 2, 53, 43, 232, 3, 0, 0,
-		0, 0, 4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 122, 48, 0, 0, 32, 1, 0, 0, 232, 3, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 3, 123, 48, 0,
-		0, 44, 0, 0, 2, 58, 38, 32, 28, 0, 0, 0, 0, 4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 4, 0, 0, 2, 146, 1, 54, 66, 109, 0, 246, 224, 0})
-
-	// // 21, 0, 145, 237
 	// write zone info
 	binary.Write(buf, binary.LittleEndian, info.ZoneID)
 	binary.Write(buf, binary.LittleEndian, info.ZoneX)
