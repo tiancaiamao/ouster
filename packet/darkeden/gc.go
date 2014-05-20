@@ -326,7 +326,10 @@ func (status GCStatusCurrentHP) MarshalBinary() ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-type GCAttackMeleeOK1 uint32
+type GCAttackMeleeOK1 struct {
+	ObjectID uint32
+	ModifyInfo
+}
 
 func (attackOk GCAttackMeleeOK1) Id() packet.PacketID {
 	return PACKET_GC_ATTACK_MELEE_OK_1
@@ -336,10 +339,10 @@ func (attackOk GCAttackMeleeOK1) String() string {
 	return "attack melee ok 1"
 }
 func (attackOk GCAttackMeleeOK1) MarshalBinary() ([]byte, error) {
-
-	ret := []byte{0, 0, 0, 0, 0, 0}
-	binary.LittleEndian.PutUint32(ret, uint32(attackOk))
-	return ret, nil
+	buf := &bytes.Buffer{}
+	binary.Write(buf, binary.LittleEndian, attackOk.ObjectID)
+	attackOk.Dump(buf)
+	return buf.Bytes(), nil
 }
 
 type GCAttackMeleeOK2 struct {

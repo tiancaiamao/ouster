@@ -122,6 +122,17 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 			Y:   237,
 			Dir: 2,
 		}
+
+		//		player.send <- &darkeden.GCAddMonster {
+		//			ObjectID: 127,
+		//			MonsterType: 7,
+		//			MonsterName: "test",
+		//			X: 150,
+		//			Y: 240,
+		//			Dir: 3,
+		//			CurrentHP: 77,
+		//			MaxHP: 120,
+		//		}
 	case darkeden.PACKET_CG_MOVE:
 		player.agent2scene <- pkt
 	case darkeden.PACKET_CG_SAY:
@@ -129,11 +140,14 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 		log.Println("say:", say.Message)
 	case darkeden.PACKET_CG_ATTACK:
 		attack := pkt.(darkeden.CGAttackPacket)
+		log.Println(" attack monster ", attack.ObjectID)
 		target := player.Scene.objects[attack.ObjectID]
 		if monster, ok := target.(*Monster); ok {
 			hit := HitTest(player.ToHit, monster.Defense)
 			if hit {
-				player.send <- darkeden.GCAttackMeleeOK1(monster.Id())
+				player.send <- darkeden.GCAttackMeleeOK1{
+					ObjectID: monster.Id(),
+				}
 				damage := uint16(1)
 				if player.Damage > monster.Protection {
 					damage = player.Damage - monster.Protection
@@ -146,11 +160,17 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 						CurrentHP: monster.HP,
 					}
 				} else {
-					//					monster.HP = 0
-					//					player.send <-
-					log.Println("...monster...id hp damage protection:", monster.Id(), monster.HP, player.Damage, monster.Protection)
+					player.send <- &darkeden.GCAddMonsterCorpse{
+						ObjectID:    monster.Id(),
+						MonsterType: monster.MonsterType,
+						MonsterName: monster.Name,
+						X:           monster.X(),
+						Y:           monster.Y(),
+						Dir:         2,
+						LastKiller:  player.Id(),
+					}
+					player.send <- darkeden.GCCreatureDiedPacket(monster.Id())
 				}
-
 			} else {
 			}
 		}

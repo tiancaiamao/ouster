@@ -64,9 +64,9 @@ const (
 	dirRIGHTDOWN = 3
 )
 
-func readMove(buf []byte) (packet.Packet, error) {
-	var dir uint8
-	switch buf[0] {
+func encryptDir(dir byte) (uint8, error) {
+	var ret uint8
+	switch dir {
 	case 53:
 		dir = dirLEFT
 	case 49:
@@ -84,7 +84,15 @@ func readMove(buf []byte) (packet.Packet, error) {
 	case 54:
 		dir = dirRIGHTDOWN
 	default:
-		return nil, errors.New("unknow dir")
+		return ret, errors.New("unknow dir")
+	}
+	return ret, nil
+}
+
+func readMove(buf []byte) (packet.Packet, error) {
+	dir, err := encryptDir(buf[0])
+	if err != nil {
+		return nil, err
 	}
 	ret := CGMovePacket{
 		Dir: dir,
@@ -119,20 +127,15 @@ func (attack CGAttackPacket) String() string {
 func readAttack(buf []byte) (packet.Packet, error) {
 	// [188 251 55 82 48 0 0]
 	var ret CGAttackPacket
-	ret.X = buf[0]
-	ret.Y = buf[1]
-	ret.Dir = buf[2]
-	ret.ObjectID = binary.LittleEndian.Uint32(buf[3:])
+	ret.X = buf[0] ^ 53
+	ret.Y = buf[1] ^ 53
+	dir, err := encryptDir(buf[2])
+	if err != nil {
+		return nil, err
+	}
+	ret.Dir = dir
+	ret.ObjectID = binary.LittleEndian.Uint32(buf[3:]) ^ 53
 	return ret, nil
-}
-func (attack CGAttackPacket) Bytes() []byte {
-	// [55 218 53 0 0 39 189]
-	ret := make([]byte, 7)
-	binary.LittleEndian.PutUint32(ret, attack.ObjectID)
-	ret[4] = attack.X
-	ret[5] = attack.Y
-	ret[6] = attack.Dir
-	return ret
 }
 
 type CGBloodDrainPacket struct {
