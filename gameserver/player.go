@@ -124,6 +124,9 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 		}
 	case darkeden.PACKET_CG_MOVE:
 		player.agent2scene <- pkt
+	case darkeden.PACKET_CG_SAY:
+		say := pkt.(*darkeden.CGSayPacket)
+		log.Println("say:", say.Message)
 	case darkeden.PACKET_CG_ATTACK:
 		attack := pkt.(darkeden.CGAttackPacket)
 		target := player.Scene.objects[attack.ObjectID]

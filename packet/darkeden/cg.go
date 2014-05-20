@@ -151,91 +151,110 @@ func readBloodDrain(buf []byte) (packet.Packet, error) {
 }
 
 type CGLearnSkillPacket struct {
-    SkillType uint16
-   SkillDomainType uint8
+	SkillType       uint16
+	SkillDomainType uint8
 }
 
 func (learnSkill CGLearnSkillPacket) Id() packet.PacketID {
-  return PACKET_CG_LEARN_SKILL
+	return PACKET_CG_LEARN_SKILL
 }
 
 func (learnSkill CGLearnSkillPacket) String() string {
-  return "learn skill"
+	return "learn skill"
 }
 
 func readLearnSkill(buf []byte) (packet.Packet, error) {
-  skillType := binary.LittleEndian.Uint16(buf)
-  return CGLearnSkillPacket {
-    SkillType: skillType,
-    SkillDomainType: uint8(buf[2]),
-  }, nil
+	skillType := binary.LittleEndian.Uint16(buf)
+	return CGLearnSkillPacket{
+		SkillType:       skillType,
+		SkillDomainType: uint8(buf[2]),
+	}, nil
 }
 
 type CGSkillToObjectPacket struct {
-  SkillType uint16
-  CEffectID uint16
-  TargetObjectID uint32
+	SkillType      uint16
+	CEffectID      uint16
+	TargetObjectID uint32
 }
 
 func (skill CGSkillToObjectPacket) Id() packet.PacketID {
-  return PACKET_CG_SKILL_TO_OBJECT
+	return PACKET_CG_SKILL_TO_OBJECT
 }
 
 func (skill CGSkillToObjectPacket) String() string {
-  return "skill to object"
+	return "skill to object"
 }
 
 func readSkillToObject(buf []byte) (packet.Packet, error) {
-  // encrypt!!!
-  var ret CGSkillToObjectPacket
-  ret.SkillType = binary.LittleEndian.Uint16(buf)
-  ret.CEffectID = binary.LittleEndian.Uint16(buf[2:])
-  ret.TargetObjectID = binary.LittleEndian.Uint32(buf[4:])
-  return ret, nil
+	// encrypt!!!
+	var ret CGSkillToObjectPacket
+	ret.SkillType = binary.LittleEndian.Uint16(buf)
+	ret.CEffectID = binary.LittleEndian.Uint16(buf[2:])
+	ret.TargetObjectID = binary.LittleEndian.Uint32(buf[4:])
+	return ret, nil
 }
 
 type CGSkillToSelfPacket struct {
-  SkillType uint16
-  CEffectID uint16
+	SkillType uint16
+	CEffectID uint16
 }
 
 func (skill CGSkillToSelfPacket) Id() packet.PacketID {
-  return PACKET_CG_SKILL_TO_SELF
+	return PACKET_CG_SKILL_TO_SELF
 }
 
 func (skill CGSkillToSelfPacket) String() string {
-  return "skill to self"
+	return "skill to self"
 }
 
 func readSkillToSelf(buf []byte) (packet.Packet, error) {
-  // encrypt!!!
-  var ret CGSkillToSelfPacket
-  ret.SkillType = binary.LittleEndian.Uint16(buf)
-  ret.CEffectID = binary.LittleEndian.Uint16(buf[2:])
-  return ret, nil
+	// encrypt!!!
+	var ret CGSkillToSelfPacket
+	ret.SkillType = binary.LittleEndian.Uint16(buf)
+	ret.CEffectID = binary.LittleEndian.Uint16(buf[2:])
+	return ret, nil
 }
 
 type CGSkillToTilePacket struct {
-  SkillType uint16
-  CEffectID uint16
-  X uint8
-  Y uint8
+	SkillType uint16
+	CEffectID uint16
+	X         uint8
+	Y         uint8
 }
 
 func (skill CGSkillToTilePacket) Id() packet.PacketID {
-  return PACKET_CG_SKILL_TO_TILE
+	return PACKET_CG_SKILL_TO_TILE
 }
 
 func (skill CGSkillToTilePacket) String() string {
-  return "skill to tile"
+	return "skill to tile"
 }
 
 func readSkillToTile(buf []byte) (packet.Packet, error) {
-  // encrypt!!!
-  var ret CGSkillToTilePacket
-  ret.SkillType = binary.LittleEndian.Uint16(buf)
-  ret.CEffectID = binary.LittleEndian.Uint16(buf[2:])
-  ret.X = buf[4]
-  ret.Y = buf[5]
-  return ret, nil
+	// encrypt!!!
+	var ret CGSkillToTilePacket
+	ret.SkillType = binary.LittleEndian.Uint16(buf)
+	ret.CEffectID = binary.LittleEndian.Uint16(buf[2:])
+	ret.X = buf[4]
+	ret.Y = buf[5]
+	return ret, nil
+}
+
+type CGSayPacket struct {
+	Color   uint32
+	Message string
+}
+
+func (say *CGSayPacket) Id() packet.PacketID {
+	return PACKET_CG_SAY
+}
+func (say *CGSayPacket) String() string {
+	return "say"
+}
+func readSay(buf []byte) (packet.Packet, error) {
+	ret := new(CGSayPacket)
+	ret.Color = binary.LittleEndian.Uint32(buf)
+	sz := buf[2]
+	ret.Message = string(buf[3 : 3+sz])
+	return ret, nil
 }

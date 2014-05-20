@@ -757,7 +757,7 @@ func (remove GCRemoveEffect) MarshalBinary() ([]byte, error) {
 	for _, v := range remove.EffectList {
 		binary.Write(buf, binary.LittleEndian, v)
 	}
-	
+
 	return buf.Bytes(), nil
 }
 
