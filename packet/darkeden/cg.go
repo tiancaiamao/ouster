@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"github.com/tiancaiamao/ouster/packet"
+	// "log"
 )
 
 type CGConnectPacket struct {
@@ -213,10 +214,18 @@ func (skill CGSkillToSelfPacket) String() string {
 func readSkillToSelf(buf []byte) (packet.Packet, error) {
 	// encrypt!!!
 	var ret CGSkillToSelfPacket
-	ret.SkillType = binary.LittleEndian.Uint16(buf)
-	ret.CEffectID = binary.LittleEndian.Uint16(buf[2:])
+	ret.CEffectID = binary.LittleEndian.Uint16(buf) ^ 53
+	ret.SkillType = binary.LittleEndian.Uint16(buf[2:]) ^ 53
 	return ret, nil
 }
+
+const (
+	SKILL_RAPID_GLIDING uint16 = 203
+	SKILL_METEOR_STRIKE uint16 = 180
+	SKILL_INVISIBILITY  uint16 = 100
+	SKILL_PARALYZE      uint16 = 89
+	SKILL_BLOOD_SPEAR   uint16 = 97
+)
 
 type CGSkillToTilePacket struct {
 	SkillType uint16
@@ -236,10 +245,14 @@ func (skill CGSkillToTilePacket) String() string {
 func readSkillToTile(buf []byte) (packet.Packet, error) {
 	// encrypt!!!
 	var ret CGSkillToTilePacket
-	ret.SkillType = binary.LittleEndian.Uint16(buf)
+	skillType := binary.LittleEndian.Uint16(buf)
+	switch skillType {
+	case 168:
+		ret.SkillType = SKILL_INVISIBILITY
+	}
 	ret.CEffectID = binary.LittleEndian.Uint16(buf[2:])
-	ret.X = buf[4]
-	ret.Y = buf[5]
+	ret.X = buf[4] ^ 53
+	ret.Y = buf[5] ^ 53
 	return ret, nil
 }
 

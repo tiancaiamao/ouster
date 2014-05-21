@@ -1071,7 +1071,7 @@ func (ok GCSkillToObjectOK4) MarshalBinary() ([]byte, error) {
 type GCSkillToSelfOK1 struct {
 	SkillType uint16
 	CEffectID uint16
-	Duration  uint8
+	Duration  uint16
 	Grade     uint8
 	ModifyInfo
 }
@@ -1158,4 +1158,65 @@ func (msg *GCSystemMessagePacket) MarshalBinary() ([]byte, error) {
 	binary.Write(buf, binary.LittleEndian, msg.Color)
 	binary.Write(buf, binary.LittleEndian, msg.Type)
 	return buf.Bytes(), nil
+}
+
+const (
+	PC_SLAYER PCType = iota
+	PC_VAMPIRE
+	PC_OUSTER
+)
+
+type GCSkillInfoPacket struct {
+	PCType          PCType
+	PCSkillInfoList []SkillInfo
+}
+
+func (info *GCSkillInfoPacket) Id() packet.PacketID {
+	return PACKET_GC_SKILL_INFO
+}
+func (info *GCSkillInfoPacket) String() string {
+	return "skill info"
+}
+func (info *GCSkillInfoPacket) MarshalBinary() ([]byte, error) {
+	buf := &bytes.Buffer{}
+	binary.Write(buf, binary.LittleEndian, uint8(info.PCType))
+	binary.Write(buf, binary.LittleEndian, uint8(len(info.PCSkillInfoList)))
+	for _, v := range info.PCSkillInfoList {
+		v.Dump(buf)
+	}
+	return buf.Bytes(), nil
+}
+
+type SkillInfo interface {
+	Dump(io.Writer)
+}
+type VampireSkillInfo struct {
+	LearnNewSkill           bool
+	SubVampireSkillInfoList []SubVampireSkillInfo
+}
+
+func (info VampireSkillInfo) Dump(writer io.Writer) {
+	if info.LearnNewSkill {
+		binary.Write(writer, binary.LittleEndian, uint8(1))
+	} else {
+		binary.Write(writer, binary.LittleEndian, uint8(0))
+	}
+
+	binary.Write(writer, binary.LittleEndian, uint8(len(info.SubVampireSkillInfoList)))
+	for _, v := range info.SubVampireSkillInfoList {
+		v.Dump(writer)
+	}
+}
+
+type SubVampireSkillInfo struct {
+	SkillType   uint16
+	Interval    uint32
+	CastingTime uint32
+}
+
+func (info SubVampireSkillInfo) Dump(writer io.Writer) {
+	binary.Write(writer, binary.LittleEndian, info.SkillType)
+	binary.Write(writer, binary.LittleEndian, info.Interval)
+	binary.Write(writer, binary.LittleEndian, info.CastingTime)
+	return
 }

@@ -142,10 +142,6 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 		}
 		player.send <- info
 		player.send <- &darkeden.GCPetInfoPacket{}
-		// player.send <- darkeden.GCRemoveEffect{
-	// 		ObjectID: 12405,
-	// 		EffectList: []uint16{109},
-	// 	}
 	case darkeden.PACKET_CG_READY:
 		log.Println("get a CG Ready Packet!!!")
 		player.send <- &darkeden.GCSetPositionPacket{
@@ -153,17 +149,41 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 			Y:   237,
 			Dir: 2,
 		}
-
-		//		player.send <- &darkeden.GCAddMonster {
-		//			ObjectID: 127,
-		//			MonsterType: 7,
-		//			MonsterName: "test",
-		//			X: 150,
-		//			Y: 240,
-		//			Dir: 3,
-		//			CurrentHP: 77,
-		//			MaxHP: 120,
-		//		}
+		player.send <- &darkeden.GCSkillInfoPacket{
+			PCType: darkeden.PC_VAMPIRE,
+			PCSkillInfoList: []darkeden.SkillInfo{
+				darkeden.VampireSkillInfo{
+					LearnNewSkill: false,
+					SubVampireSkillInfoList: []darkeden.SubVampireSkillInfo{
+						darkeden.SubVampireSkillInfo{
+							SkillType:   darkeden.SKILL_RAPID_GLIDING,
+							Interval:    50,
+							CastingTime: 31,
+						},
+						darkeden.SubVampireSkillInfo{
+							SkillType:   darkeden.SKILL_METEOR_STRIKE,
+							Interval:    10,
+							CastingTime: 4160749567,
+						},
+						darkeden.SubVampireSkillInfo{
+							SkillType:   darkeden.SKILL_INVISIBILITY,
+							Interval:    30,
+							CastingTime: 11,
+						},
+						darkeden.SubVampireSkillInfo{
+							SkillType:   darkeden.SKILL_PARALYZE,
+							Interval:    60,
+							CastingTime: 41,
+						},
+						darkeden.SubVampireSkillInfo{
+							SkillType:   darkeden.SKILL_BLOOD_SPEAR,
+							Interval:    60,
+							CastingTime: 41,
+						},
+					},
+				},
+			},
+		}
 	case darkeden.PACKET_CG_MOVE:
 		player.agent2scene <- pkt
 	case darkeden.PACKET_CG_SAY:
@@ -204,6 +224,21 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 				}
 			} else {
 			}
+		}
+	case darkeden.PACKET_CG_SKILL_TO_SELF:
+		skill := pkt.(darkeden.CGSkillToSelfPacket)
+		switch skill.SkillType {
+		case darkeden.SKILL_INVISIBILITY:
+			ok := &darkeden.GCSkillToSelfOK1{
+				SkillType: darkeden.SKILL_INVISIBILITY,
+				CEffectID: 181,
+				Duration:  0,
+				Grade:     0,
+			}
+			ok.Short = make(map[darkeden.ModifyType]uint16)
+			ok.Short[12] = 180 + 256
+			player.send <- ok
+
 		}
 	case darkeden.PACKET_CG_BLOOD_DRAIN:
 	case darkeden.PACKET_CG_VERIFY_TIME:
