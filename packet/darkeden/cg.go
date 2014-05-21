@@ -245,14 +245,10 @@ func (skill CGSkillToTilePacket) String() string {
 func readSkillToTile(buf []byte) (packet.Packet, error) {
 	// encrypt!!!
 	var ret CGSkillToTilePacket
-	skillType := binary.LittleEndian.Uint16(buf)
-	switch skillType {
-	case 168:
-		ret.SkillType = SKILL_INVISIBILITY
-	}
-	ret.CEffectID = binary.LittleEndian.Uint16(buf[2:])
-	ret.X = buf[4] ^ 53
-	ret.Y = buf[5] ^ 53
+	ret.CEffectID = binary.LittleEndian.Uint16(buf) ^ 53
+	ret.X = buf[2] ^ 53
+	ret.Y = buf[3] ^ 53
+	ret.SkillType = binary.LittleEndian.Uint16(buf[4:]) ^ 53
 	return ret, nil
 }
 

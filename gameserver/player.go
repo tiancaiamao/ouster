@@ -253,6 +253,20 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 			}
 			player.send <- ok
 		}
+	case darkeden.PACKET_CG_SKILL_TO_TILE:
+		skill := pkt.(darkeden.CGSkillToTilePacket)
+		switch skill.SkillType {
+		case darkeden.SKILL_RAPID_GLIDING:
+			ok := &darkeden.GCSkillToTileOK1{
+				SkillType: skill.SkillType,
+				CEffectID: skill.CEffectID,
+				Duration:  10,
+				Range:     1,
+				X:         skill.X,
+				Y:         skill.Y,
+			}
+			player.send <- ok
+		}
 
 	case darkeden.PACKET_CG_BLOOD_DRAIN:
 	case darkeden.PACKET_CG_VERIFY_TIME:
