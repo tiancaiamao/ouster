@@ -238,8 +238,22 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 			ok.Short = make(map[darkeden.ModifyType]uint16)
 			ok.Short[12] = 180 + 256
 			player.send <- ok
-
 		}
+	case darkeden.PACKET_CG_SKILL_TO_OBJECT:
+		skill := pkt.(darkeden.CGSkillToObjectPacket)
+		switch skill.SkillType {
+		case darkeden.SKILL_BLOOD_SPEAR:
+			log.Println("objectId=", skill.TargetObjectID, skill.SkillType, skill.CEffectID)
+		case darkeden.SKILL_PARALYZE:
+			ok := &darkeden.GCSkillToObjectOK1{
+				SkillType:      darkeden.SKILL_PARALYZE,
+				CEffectID:      skill.CEffectID,
+				TargetObjectID: skill.TargetObjectID,
+				Duration:       40,
+			}
+			player.send <- ok
+		}
+
 	case darkeden.PACKET_CG_BLOOD_DRAIN:
 	case darkeden.PACKET_CG_VERIFY_TIME:
 	}

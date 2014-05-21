@@ -192,9 +192,9 @@ func (skill CGSkillToObjectPacket) String() string {
 func readSkillToObject(buf []byte) (packet.Packet, error) {
 	// encrypt!!!
 	var ret CGSkillToObjectPacket
-	ret.SkillType = binary.LittleEndian.Uint16(buf)
-	ret.CEffectID = binary.LittleEndian.Uint16(buf[2:])
-	ret.TargetObjectID = binary.LittleEndian.Uint32(buf[4:])
+	ret.TargetObjectID = binary.LittleEndian.Uint32(buf[:]) ^ 53
+	ret.SkillType = binary.LittleEndian.Uint16(buf[4:]) ^ 53
+	ret.CEffectID = binary.LittleEndian.Uint16(buf[6:]) ^ 53
 	return ret, nil
 }
 
