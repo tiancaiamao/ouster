@@ -257,6 +257,15 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 		skill := pkt.(darkeden.CGSkillToTilePacket)
 		switch skill.SkillType {
 		case darkeden.SKILL_RAPID_GLIDING:
+			fastMove := &darkeden.GCFastMovePacket{
+				ObjectID:  player.Id(),
+				FromX:     player.X(),
+				FromY:     player.Y(),
+				ToX:       skill.X,
+				ToY:       skill.Y,
+				SkillType: skill.SkillType,
+			}
+			player.send <- fastMove
 			ok := &darkeden.GCSkillToTileOK1{
 				SkillType: skill.SkillType,
 				CEffectID: skill.CEffectID,

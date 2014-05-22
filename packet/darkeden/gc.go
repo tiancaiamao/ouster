@@ -919,7 +919,7 @@ type GCFastMovePacket struct {
 	FromY     uint8
 	ToX       uint8
 	ToY       uint8
-	SkillType uint32
+	SkillType uint16
 }
 
 func (fastMove *GCFastMovePacket) Id() packet.PacketID {
