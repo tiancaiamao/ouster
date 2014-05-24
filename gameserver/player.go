@@ -2,16 +2,17 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"github.com/tiancaiamao/ouster"
 	"github.com/tiancaiamao/ouster/aoi"
+	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/packet"
 	"github.com/tiancaiamao/ouster/packet/darkeden"
 	"log"
 	"math/rand"
 	"net"
-	"time"
 	"os"
-	"encoding/json"
+	"time"
 )
 
 const (
@@ -43,23 +44,55 @@ func init() {
 	dirMoveMask[LEFTUP] = Point{-1, -1}
 }
 
-type Player struct {
-	aoi.Entity
-	Scene *Scene
+const (
+	ATTR_CURRENT = iota
+	ATTR_MAX
+	ATTR_BASE
+)
 
-	name  string
-	hp    int
-	mp    int
-	speed float32
-	level uint8
-
-	STR        uint16
-	DEX        uint16
-	INT        uint16
+type Creature struct {
+	Level      uint8
+	STR        [3]uint16
+	DEX        [3]uint16
+	INT        [3]uint16
+	HP         [2]uint16
+	MP         [2]uint16
 	Defense    uint16
 	Protection uint16
 	ToHit      uint16
 	Damage     uint16
+}
+
+type Player struct {
+	aoi.Entity
+	Creature
+
+	PCType byte
+	// field from data.PCInfo
+	Name               string
+	Sex                uint8
+	BatColor           uint16
+	SkinColor          uint16
+	MasterEffectColor  uint8
+	Alignment          uint32
+	Rank               uint8
+	RankExp            uint32
+	Exp                uint32
+	Fame               uint32
+	Gold               uint32
+	Sight              uint8
+	Bonus              uint16
+	HotKey             [8]uint16
+	SilverDamage       uint16
+	Competence         uint8
+	GuildID            uint16
+	GuildName          string
+	GuildMemberRank    uint8
+	UnionID            uint32
+	AdvancementLevel   uint8
+	AdvancementGoalExp uint32
+
+	Scene *Scene
 
 	carried []int
 
@@ -71,25 +104,13 @@ type Player struct {
 	nearby      map[uint32]struct{}
 	heartbeat   <-chan time.Time
 	ticker      uint32
-	
+
 	computation chan func()
 }
 
 func NewPlayer(conn net.Conn) *Player {
 	return &Player{
-		name:       "test",
-		hp:         110,
-		mp:         110,
-		conn:       conn,
-		speed:      0.5,
-		STR:        20,
-		DEX:        20,
-		INT:        20,
-		Defense:    10,
-		Protection: 20,
-		ToHit:      30,
-		Damage:     25,
-
+		conn:        conn,
 		agent2scene: make(chan interface{}),
 		nearby:      make(map[uint32]struct{}),
 		computation: make(chan func()),
@@ -115,55 +136,136 @@ func HitTest(tohit uint16, dodge uint16) bool {
 	return rand.Float32() < prob
 }
 
-func LoadPlayer(name string) *darkeden.GCUpdateInfoPacket {	
-	info := &darkeden.GCUpdateInfoPacket{
-		PCType: 'V',
-		PCInfo: darkeden.PCInfo{
-			Name:             name,
-			Level:            150,
-			Sex:              0,
-			SkinColor:        420,
-			Alignment:        7500,
-			STR:              [3]uint16{20, 20, 20},
-			DEX:              [3]uint16{20, 20, 20},
-			INT:              [3]uint16{20, 20, 20},
-			HP:               [2]uint16{472, 472},
-			Rank:             50,
-			RankExp:          10700,
-			Exp:              125,
-			Fame:             282,
-			Sight:            13,
-			Bonus:            9999,
-			Competence:       1,
-			GuildMemberRank:  4,
-			AdvancementLevel: 100,
-		},
-		ZoneID: 21,
-		ZoneX:  145,
-		ZoneY:  237,
+func (player *Player) Load(name string) error {
+	info := data.PCInfo{
+		PCType:           'V',
+		Name:             name,
+		Level:            150,
+		Sex:              0,
+		SkinColor:        420,
+		Alignment:        7500,
+		STR:              [3]uint16{20, 20, 20},
+		DEX:              [3]uint16{20, 20, 20},
+		INT:              [3]uint16{20, 20, 20},
+		HP:               [2]uint16{472, 472},
+		Rank:             50,
+		RankExp:          10700,
+		Exp:              125,
+		Fame:             282,
+		Sight:            13,
+		Bonus:            9999,
+		Competence:       1,
+		GuildMemberRank:  4,
+		AdvancementLevel: 100,
+		ZoneID:           23,
+		ZoneX:            145,
+		ZoneY:            237,
 	}
-	
-	f, err := os.Open(os.Getenv("HOME")+"/.ouster/player/"+name)
+
+	var pcInfo data.PCInfo
+	f, err := os.Open(os.Getenv("HOME") + "/.ouster/player/" + name)
 	if err != nil {
-		return info
+		pcInfo = info
 	}
-	
+
 	decoder := json.NewDecoder(f)
-	var ret darkeden.GCUpdateInfoPacket
-	err = decoder.Decode(&ret)
+	err = decoder.Decode(&pcInfo)
 	if err != nil {
-		return info
+		pcInfo = info
 	}
-	
-	return &ret
+	f.Close()
+
+	player.PCType = pcInfo.PCType
+	player.Name = pcInfo.Name
+	player.Level = pcInfo.Level
+	player.Sex = pcInfo.Sex
+	player.SkinColor = pcInfo.SkinColor
+	player.Alignment = pcInfo.Alignment
+	player.STR = pcInfo.STR
+	player.DEX = pcInfo.DEX
+	player.INT = pcInfo.INT
+	player.HP = pcInfo.HP
+	player.Rank = pcInfo.Rank
+	player.RankExp = pcInfo.RankExp
+	player.Exp = pcInfo.Exp
+	player.Fame = pcInfo.Fame
+	player.Sight = pcInfo.Sight
+	player.Bonus = pcInfo.Bonus
+	player.Competence = pcInfo.Competence
+	player.GuildMemberRank = pcInfo.GuildMemberRank
+	player.AdvancementLevel = pcInfo.AdvancementLevel
+
+	scene := zoneTable[pcInfo.ZoneID]
+	scene.Login(player)
+	scene.Update(player.Entity, pcInfo.ZoneX, pcInfo.ZoneY)
+	return err
+}
+
+func (player *Player) Save() {
+	info := player.PCInfo()
+	f, err := os.Create(os.Getenv("HOME") + "/.ouster/player/" + player.Name)
+	if err != nil {
+		return
+	}
+
+	encoder := json.NewEncoder(f)
+	err = encoder.Encode(info)
+	f.Close()
+}
+
+func (player *Player) PCInfo() *data.PCInfo {
+	return &data.PCInfo{
+		ObjectID: player.Id(),
+		Name:     player.Name,
+		Level:    player.Level,
+		Sex:      player.Sex,
+
+		BatColor:          player.BatColor,
+		SkinColor:         player.SkinColor,
+		MasterEffectColor: player.MasterEffectColor,
+
+		Alignment: player.Alignment,
+		STR:       player.STR,
+		DEX:       player.DEX,
+		INT:       player.INT,
+
+		HP: player.HP,
+
+		Rank:    player.Rank,
+		RankExp: player.RankExp,
+
+		Exp:          player.Exp,
+		Fame:         player.Fame,
+		Gold:         player.Gold,
+		Sight:        player.Sight,
+		Bonus:        player.Bonus,
+		HotKey:       player.HotKey,
+		SilverDamage: player.SilverDamage,
+
+		Competence: player.Competence,
+		GuildID:    player.GuildID,
+
+		GuildMemberRank: player.GuildMemberRank,
+		UnionID:         player.UnionID,
+
+		AdvancementLevel:   player.AdvancementLevel,
+		AdvancementGoalExp: player.AdvancementGoalExp,
+	}
 }
 
 func (player *Player) handleClientMessage(pkt packet.Packet) {
 	switch pkt.Id() {
 	case darkeden.PACKET_CG_CONNECT:
 		raw := pkt.(*darkeden.CGConnectPacket)
-		info := LoadPlayer(raw.PCName)
-		info.PCInfo.ObjectID = player.Id()
+		player.Load(raw.PCName)
+
+		info := &darkeden.GCUpdateInfoPacket{
+			PCType: player.PCType,
+			PCInfo: *player.PCInfo(),
+			ZoneID: player.Scene.ZoneID,
+			ZoneX:  player.X(),
+			ZoneY:  player.Y(),
+		}
 		player.send <- info
 		player.send <- &darkeden.GCPetInfoPacket{}
 	case darkeden.PACKET_CG_READY:
@@ -228,11 +330,11 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 					damage = player.Damage - monster.Protection
 				}
 
-				if monster.HP > damage {
-					monster.HP -= damage
+				if monster.HP[ATTR_CURRENT] > damage {
+					monster.HP[ATTR_CURRENT] -= damage
 					player.send <- darkeden.GCStatusCurrentHP{
 						ObjectID:  monster.Id(),
-						CurrentHP: monster.HP,
+						CurrentHP: monster.HP[ATTR_CURRENT],
 					}
 				} else {
 					player.send <- &darkeden.GCAddMonsterCorpse{
@@ -293,17 +395,7 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 	case darkeden.PACKET_CG_BLOOD_DRAIN:
 	case darkeden.PACKET_CG_VERIFY_TIME:
 	case darkeden.PACKET_CG_LOGOUT:
-		info := LoadPlayer(player.name)
-		info.PCInfo.Level = player.level
-		info.PCInfo.HP[0] = uint16(player.hp)	
-		f, err := os.Create(os.Getenv("HOME")+"/.ouster/player/"+player.name)
-		if err != nil {
-			return
-		}
-		
-		encoder := json.NewEncoder(f)
-		err = encoder.Encode(info)
-		f.Close()
+		player.Save()
 		return
 	}
 }
@@ -315,15 +407,15 @@ func (player *Player) SkillToObject(packet darkeden.CGSkillToObjectPacket) {
 			if monster.Owner == player || monster.Owner == nil {
 				skillExecutable(player, monster)
 			} else {
-					monster.Owner.computation <- func() {
-						skillExecutable(player, monster)
-					}
-			}	
+				monster.Owner.computation <- func() {
+					skillExecutable(player, monster)
+				}
+			}
 		} else {
 			log.Println("can't execute skill ", packet.SkillType)
 		}
 	} else {
-		
+
 	}
 }
 
@@ -356,7 +448,7 @@ func (this *Player) handleAoiMessage(id uint32) {
 				X:           monster.X(),
 				Y:           monster.Y(),
 				Dir:         2,
-				CurrentHP:   monster.HP,
+				CurrentHP:   monster.HP[ATTR_CURRENT],
 				MaxHP:       monster.MaxHP(),
 			}
 
@@ -387,7 +479,7 @@ func (this *Player) loop() {
 			}
 		case <-this.heartbeat:
 			this.heartBeat()
-		case f, _:= <-this.computation:
+		case f, _ := <-this.computation:
 			f()
 		}
 	}

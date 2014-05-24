@@ -68,12 +68,13 @@ func NewScene(m *data.Map) *Scene {
 			id := ret.AddObject(monster)
 			monster.Entity = aoi.Add(uint8(x), uint8(y), id)
 			monster.MonsterType = mi.MonsterType
-			monster.STR = tp.STR
-			monster.DEX = tp.DEX
-			monster.INT = tp.INTE
-			monster.Defense = monster.DEX / 2
-			monster.Protection = monster.STR
-			monster.HP = tp.STR*4 + uint16(tp.Level)
+			monster.STR[ATTR_CURRENT], monster.STR[ATTR_BASE] = tp.STR, tp.STR
+			monster.DEX[ATTR_CURRENT], monster.DEX[ATTR_BASE] = tp.DEX, tp.DEX
+			monster.INT[ATTR_CURRENT], monster.DEX[ATTR_BASE] = tp.INTE, tp.INTE
+			monster.Defense = monster.DEX[ATTR_CURRENT] / 2
+			monster.Protection = monster.STR[ATTR_CURRENT]
+			monster.HP[ATTR_MAX] = tp.STR*4 + uint16(tp.Level)
+			monster.HP[ATTR_CURRENT] = monster.HP[ATTR_MAX]
 			idx++
 		}
 	}
@@ -198,14 +199,17 @@ func (m *Scene) processPlayerInput(playerId uint32, msg interface{}) {
 }
 
 var (
-	maps map[string]*Scene
+	maps      map[string]*Scene
+	zoneTable map[uint16]*Scene
 )
 
 func Initialize() {
 	maps = make(map[string]*Scene)
 	maps["limbo_lair_se"] = NewScene(&data.LimboLairSE)
 
+	zoneTable = make(map[uint16]*Scene)
 	for _, m := range maps {
+		zoneTable[m.ZoneID] = m
 		m.Go()
 	}
 }

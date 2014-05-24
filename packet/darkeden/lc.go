@@ -2,6 +2,7 @@ package darkeden
 
 import (
 	"encoding/binary"
+	"github.com/tiancaiamao/ouster/data"
 	"github.com/tiancaiamao/ouster/packet"
 )
 
@@ -61,7 +62,7 @@ func (sl *LCServerListPacket) MarshalBinary() ([]byte, error) {
 }
 
 type LCPCListPacket struct {
-	list []PCInfo
+	list []data.PCInfo
 }
 
 func (pl *LCPCListPacket) Id() packet.PacketID {

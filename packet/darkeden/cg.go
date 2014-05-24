@@ -91,14 +91,14 @@ func encryptDir(dir byte) (uint8, error) {
 }
 
 func readMove(buf []byte) (packet.Packet, error) {
-	dir, err := encryptDir(buf[0])
+	dir, err := encryptDir(buf[1])
 	if err != nil {
 		return nil, err
 	}
 	ret := CGMovePacket{
 		Dir: dir,
-		X:   buf[1] ^ 53,
-		Y:   buf[2] ^ 53,
+		X:   buf[2] ^ 53,
+		Y:   buf[0] ^ 53,
 	}
 	return ret, nil
 }
@@ -271,7 +271,8 @@ func readSay(buf []byte) (packet.Packet, error) {
 	return ret, nil
 }
 
-type CGLogoutPacket struct {}
+type CGLogoutPacket struct{}
+
 func (_ CGLogoutPacket) Id() packet.PacketID {
 	return PACKET_CG_LOGOUT
 }

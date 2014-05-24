@@ -13,6 +13,7 @@ const (
 
 type Monster struct {
 	aoi.Entity
+	Creature
 
 	// mask the monster's current status, flagDead means it's dead.
 	// flagActive means it's active by player...
@@ -23,19 +24,11 @@ type Monster struct {
 	MonsterType uint16
 	Name        string
 
-	STR          uint16
-	DEX          uint16
-	INT          uint16
-	HP           uint16
-	Defense      uint16
-	Protection   uint16
-	ToHit        uint16
-	Damage       uint16
 	MeleeRange   int
 	MissileRange int
 
 	Enemies []uint32
-	Owner *Player
+	Owner   *Player
 
 	isEventMonster bool
 	isChief        bool
@@ -47,7 +40,7 @@ type Monster struct {
 
 func (m *Monster) MaxHP() uint16 {
 	mi := data.MonsterType2MonsterInfo[m.MonsterType]
-	return m.STR*4 + uint16(mi.Level)
+	return m.STR[ATTR_BASE]*4 + uint16(mi.Level)
 }
 
 // a state machine
