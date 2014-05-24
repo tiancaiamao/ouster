@@ -532,6 +532,9 @@ func init() {
 	table[PACKET_CG_SKILL_TO_SELF] = readSkillToSelf
 	table[PACKET_CG_SKILL_TO_TILE] = readSkillToTile
 	table[PACKET_CG_SAY] = readSay
+	table[PACKET_CG_LOGOUT] = func([]byte) (packet.Packet, error) {
+		return CGLogoutPacket{}, nil
+	}
 }
 
 type reader struct {

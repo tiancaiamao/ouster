@@ -270,3 +270,11 @@ func readSay(buf []byte) (packet.Packet, error) {
 	ret.Message = string(buf[3 : 3+sz])
 	return ret, nil
 }
+
+type CGLogoutPacket struct {}
+func (_ CGLogoutPacket) Id() packet.PacketID {
+	return PACKET_CG_LOGOUT
+}
+func (_ CGLogoutPacket) String() string {
+	return "logout"
+}

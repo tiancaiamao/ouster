@@ -10,6 +10,8 @@ import (
 	"math/rand"
 	"net"
 	"time"
+	"os"
+	"encoding/json"
 )
 
 const (
@@ -49,7 +51,7 @@ type Player struct {
 	hp    int
 	mp    int
 	speed float32
-	level int
+	level uint8
 
 	STR        uint16
 	DEX        uint16
@@ -113,36 +115,55 @@ func HitTest(tohit uint16, dodge uint16) bool {
 	return rand.Float32() < prob
 }
 
+func LoadPlayer(name string) *darkeden.GCUpdateInfoPacket {	
+	info := &darkeden.GCUpdateInfoPacket{
+		PCType: 'V',
+		PCInfo: darkeden.PCInfo{
+			Name:             name,
+			Level:            150,
+			Sex:              0,
+			SkinColor:        420,
+			Alignment:        7500,
+			STR:              [3]uint16{20, 20, 20},
+			DEX:              [3]uint16{20, 20, 20},
+			INT:              [3]uint16{20, 20, 20},
+			HP:               [2]uint16{472, 472},
+			Rank:             50,
+			RankExp:          10700,
+			Exp:              125,
+			Fame:             282,
+			Sight:            13,
+			Bonus:            9999,
+			Competence:       1,
+			GuildMemberRank:  4,
+			AdvancementLevel: 100,
+		},
+		ZoneID: 21,
+		ZoneX:  145,
+		ZoneY:  237,
+	}
+	
+	f, err := os.Open(os.Getenv("HOME")+"/.ouster/player/"+name)
+	if err != nil {
+		return info
+	}
+	
+	decoder := json.NewDecoder(f)
+	var ret darkeden.GCUpdateInfoPacket
+	err = decoder.Decode(&ret)
+	if err != nil {
+		return info
+	}
+	
+	return &ret
+}
+
 func (player *Player) handleClientMessage(pkt packet.Packet) {
 	switch pkt.Id() {
 	case darkeden.PACKET_CG_CONNECT:
-		info := &darkeden.GCUpdateInfoPacket{
-			PCType: 'V',
-			PCInfo: darkeden.PCInfo{
-				ObjectID:         player.Id(),
-				Name:             player.name,
-				Level:            150,
-				Sex:              0,
-				SkinColor:        420,
-				Alignment:        7500,
-				STR:              [3]uint16{20, 20, 20},
-				DEX:              [3]uint16{20, 20, 20},
-				INT:              [3]uint16{20, 20, 20},
-				HP:               [2]uint16{472, 472},
-				Rank:             50,
-				RankExp:          10700,
-				Exp:              125,
-				Fame:             282,
-				Sight:            13,
-				Bonus:            9999,
-				Competence:       1,
-				GuildMemberRank:  4,
-				AdvancementLevel: 100,
-			},
-			ZoneID: 21,
-			ZoneX:  145,
-			ZoneY:  237,
-		}
+		raw := pkt.(*darkeden.CGConnectPacket)
+		info := LoadPlayer(raw.PCName)
+		info.PCInfo.ObjectID = player.Id()
 		player.send <- info
 		player.send <- &darkeden.GCPetInfoPacket{}
 	case darkeden.PACKET_CG_READY:
@@ -271,6 +292,19 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 
 	case darkeden.PACKET_CG_BLOOD_DRAIN:
 	case darkeden.PACKET_CG_VERIFY_TIME:
+	case darkeden.PACKET_CG_LOGOUT:
+		info := LoadPlayer(player.name)
+		info.PCInfo.Level = player.level
+		info.PCInfo.HP[0] = uint16(player.hp)	
+		f, err := os.Create(os.Getenv("HOME")+"/.ouster/player/"+player.name)
+		if err != nil {
+			return
+		}
+		
+		encoder := json.NewEncoder(f)
+		err = encoder.Encode(info)
+		f.Close()
+		return
 	}
 }
 
