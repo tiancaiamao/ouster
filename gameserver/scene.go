@@ -104,12 +104,13 @@ func (m *Scene) HeartBeat() {
 		wObj := m.objects[wId]
 		mObj := m.objects[mId]
 
-		if _, ok := wObj.(*Player); ok {
+		if wp, ok := wObj.(*Player); ok {
 			switch mObj.(type) {
 			case *Monster:
 				// monster active by player
 				monster := mObj.(*Monster)
 				monster.flag |= flagActive
+				monster.Owner = wp
 				monster.Enemies = append(monster.Enemies, wId)
 			case *Player:
 				player := mObj.(*Player)

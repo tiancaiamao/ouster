@@ -69,6 +69,8 @@ type Player struct {
 	nearby      map[uint32]struct{}
 	heartbeat   <-chan time.Time
 	ticker      uint32
+	
+	computation chan func()
 }
 
 func NewPlayer(conn net.Conn) *Player {
@@ -88,6 +90,7 @@ func NewPlayer(conn net.Conn) *Player {
 
 		agent2scene: make(chan interface{}),
 		nearby:      make(map[uint32]struct{}),
+		computation: make(chan func()),
 		heartbeat:   time.Tick(50 * time.Millisecond),
 	}
 }
@@ -241,18 +244,7 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 		}
 	case darkeden.PACKET_CG_SKILL_TO_OBJECT:
 		skill := pkt.(darkeden.CGSkillToObjectPacket)
-		switch skill.SkillType {
-		case darkeden.SKILL_BLOOD_SPEAR:
-			log.Println("objectId=", skill.TargetObjectID, skill.SkillType, skill.CEffectID)
-		case darkeden.SKILL_PARALYZE:
-			ok := &darkeden.GCSkillToObjectOK1{
-				SkillType:      darkeden.SKILL_PARALYZE,
-				CEffectID:      skill.CEffectID,
-				TargetObjectID: skill.TargetObjectID,
-				Duration:       40,
-			}
-			player.send <- ok
-		}
+		player.SkillToObject(skill)
 	case darkeden.PACKET_CG_SKILL_TO_TILE:
 		skill := pkt.(darkeden.CGSkillToTilePacket)
 		switch skill.SkillType {
@@ -279,6 +271,25 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 
 	case darkeden.PACKET_CG_BLOOD_DRAIN:
 	case darkeden.PACKET_CG_VERIFY_TIME:
+	}
+}
+
+func (player *Player) SkillToObject(packet darkeden.CGSkillToObjectPacket) {
+	target := player.Scene.objects[packet.TargetObjectID]
+	if monster, ok := target.(*Monster); ok {
+		if skillExecutable, ok := skillP2M[packet.SkillType]; ok {
+			if monster.Owner == player || monster.Owner == nil {
+				skillExecutable(player, monster)
+			} else {
+					monster.Owner.computation <- func() {
+						skillExecutable(player, monster)
+					}
+			}	
+		} else {
+			log.Println("can't execute skill ", packet.SkillType)
+		}
+	} else {
+		
 	}
 }
 
@@ -342,6 +353,8 @@ func (this *Player) loop() {
 			}
 		case <-this.heartbeat:
 			this.heartBeat()
+		case f, _:= <-this.computation:
+			f()
 		}
 	}
 }

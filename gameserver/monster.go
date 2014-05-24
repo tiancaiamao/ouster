@@ -35,6 +35,7 @@ type Monster struct {
 	MissileRange int
 
 	Enemies []uint32
+	Owner *Player
 
 	isEventMonster bool
 	isChief        bool
