@@ -58,3 +58,7 @@ func NewError(str string) *Error {
 
 	return err
 }
+
+func Encrypt(ZoneID uint16, ServerID uint16) uint8 {
+	return uint8(((ZoneID >> 8) ^ ZoneID) ^ ((ServerID+1) << 4))
+}

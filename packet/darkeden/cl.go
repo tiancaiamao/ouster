@@ -17,7 +17,7 @@ func (login *CLLoginPacket) String() string {
 	return "Login"
 }
 
-func readLogin(buf []byte) (packet.Packet, error) {
+func readLogin(buf []byte, code uint8) (packet.Packet, error) {
 	szUsername := int(buf[0])
 	szPassword := int(buf[1+szUsername])
 	return &CLLoginPacket{
@@ -43,7 +43,7 @@ func (worldList CLGetWorldListPacket) Id() packet.PacketID {
 func (w CLGetWorldListPacket) String() string {
 	return "get world list"
 }
-func readGetWorldList(buf []byte) (packet.Packet, error) {
+func readGetWorldList(buf []byte, code uint8) (packet.Packet, error) {
 	return CLGetWorldListPacket{}, nil
 }
 
@@ -56,7 +56,7 @@ func (sw CLSelectWorldPacket) String() string {
 	return "select world"
 }
 
-func readSelectWorld(buf []byte) (packet.Packet, error) {
+func readSelectWorld(buf []byte, code uint8) (packet.Packet, error) {
 	return CLSelectWorldPacket(buf[0]), nil
 }
 
@@ -68,7 +68,7 @@ func (ss CLSelectServerPacket) Id() packet.PacketID {
 func (ss CLSelectServerPacket) String() string {
 	return "select server"
 }
-func readSelectServer(buf []byte) (packet.Packet, error) {
+func readSelectServer(buf []byte, code uint8) (packet.Packet, error) {
 	return CLSelectServerPacket(buf[0]), nil
 }
 
@@ -84,7 +84,7 @@ func (sp *CLSelectPcPacket) Id() packet.PacketID {
 func (sp *CLSelectPcPacket) String() string {
 	return "select pc"
 }
-func readSelectPc(buf []byte) (packet.Packet, error) {
+func readSelectPc(buf []byte, code uint8) (packet.Packet, error) {
 	//	[8 178 187 212 217 209 218 202 206 0]
 	sz := buf[0]
 	return &CLSelectPcPacket{
