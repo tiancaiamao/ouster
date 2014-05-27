@@ -148,6 +148,7 @@ func SHUFFLE_STATEMENT_4(code uint8, A func()(), B func()(), C func()(), D func(
 
 func readMove(buf []byte, code uint8) (packet.Packet, error) {
 	var ret CGMovePacket
+	var err error
 	offset := 0
 	A := func() {
 		ret.X = buf[offset] ^ code
@@ -158,12 +159,15 @@ func readMove(buf []byte, code uint8) (packet.Packet, error) {
 		offset++
 	}
 	C := func() {
-		ret.Dir = buf[offset]
+		ret.Dir = buf[offset] ^ code
 		offset++
 	}
 	// encryption...fuck
 	SHUFFLE_STATEMENT_3(code, A, B, C)
-	return ret, nil
+	if ret.Dir >= 8 {
+		err = errors.New("Dir out of range")
+	}
+	return ret, err
 }
 
 type CGVerifyTimePacket struct{}
@@ -205,7 +209,7 @@ func readAttack(buf []byte, code uint8) (packet.Packet, error) {
 		offset++
 	}
 	D := func() {
-		ret.Dir = buf[offset]
+		ret.Dir = buf[offset] ^ code
 		offset++
 	}
 	SHUFFLE_STATEMENT_4(code, A, B, C, D)

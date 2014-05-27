@@ -16,7 +16,7 @@ func (loginOk LCLoginOKPacket) String() string {
 	return "loginOK"
 }
 
-func (loginOk LCLoginOKPacket) MarshalBinary() ([]byte, error) {
+func (loginOk LCLoginOKPacket) MarshalBinary(code uint8) ([]byte, error) {
 	return []byte{0, 0, 231, 254, 255}, nil
 }
 
@@ -29,7 +29,7 @@ func (v LCVersionCheckOKPacket) Id() packet.PacketID {
 func (v LCVersionCheckOKPacket) String() string {
 	return "version check ok"
 }
-func (v LCVersionCheckOKPacket) MarshalBinary() ([]byte, error) {
+func (v LCVersionCheckOKPacket) MarshalBinary(code uint8) ([]byte, error) {
 	return []byte{}, nil
 }
 
@@ -41,7 +41,7 @@ func (wl LCWorldListPacket) Id() packet.PacketID {
 func (wl LCWorldListPacket) String() string {
 	return "world list"
 }
-func (wl LCWorldListPacket) MarshalBinary() ([]byte, error) {
+func (wl LCWorldListPacket) MarshalBinary(code uint8) ([]byte, error) {
 	return []byte{1, 1, 1, 8, 185, 237, 247, 200, 193, 182, 211, 252, 0}, nil
 }
 
@@ -57,7 +57,7 @@ func (sl *LCServerListPacket) Id() packet.PacketID {
 func (sl *LCServerListPacket) String() string {
 	return "server list"
 }
-func (sl *LCServerListPacket) MarshalBinary() ([]byte, error) {
+func (sl *LCServerListPacket) MarshalBinary(code uint8) ([]byte, error) {
 	return []byte{1, 2, 0, 6, 183, 226, 178, 226, 199, 248, 0, 1, 8, 185, 237, 247, 200, 193, 182, 211, 252, 0}, nil
 }
 
@@ -71,7 +71,7 @@ func (pl *LCPCListPacket) Id() packet.PacketID {
 func (pl *LCPCListPacket) String() string {
 	return "pc list"
 }
-func (pl *LCPCListPacket) MarshalBinary() ([]byte, error) {
+func (pl *LCPCListPacket) MarshalBinary(code uint8) ([]byte, error) {
 	// ret := make([]byte, 164)
 
 	return []byte{
@@ -93,7 +93,7 @@ func (rc *LCReconnectPacket) Id() packet.PacketID {
 func (rc *LCReconnectPacket) String() string {
 	return "reconnect"
 }
-func (rc *LCReconnectPacket) MarshalBinary() ([]byte, error) {
+func (rc *LCReconnectPacket) MarshalBinary(code uint8) ([]byte, error) {
 	//[13 49 57 50 46 49 54 56 46 49 46 49 50 51 14 39 0 0 0 32 6 11]
 	sz := 1 + len(rc.Ip) + 2 + 6
 	ret := make([]byte, sz)
