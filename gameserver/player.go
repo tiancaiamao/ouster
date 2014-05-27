@@ -97,6 +97,9 @@ type Player struct {
 	carried []int
 
 	conn   net.Conn
+	packetReader *darkeden.Reader
+	packetWriter *darkeden.Writer
+	
 	client <-chan packet.Packet
 	send   chan<- packet.Packet
 
@@ -253,6 +256,10 @@ func (player *Player) PCInfo() *data.PCInfo {
 	}
 }
 
+func Encrypt(ZoneID uint16, ServerID uint16) uint8 {
+	return uint8(((ZoneID >> 8) ^ ZoneID) ^ ((ServerID+1) << 4))
+}
+
 func (player *Player) handleClientMessage(pkt packet.Packet) {
 	switch pkt.Id() {
 	case darkeden.PACKET_CG_CONNECT:
@@ -266,6 +273,11 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 			ZoneX:  player.X(),
 			ZoneY:  player.Y(),
 		}
+		
+		code := Encrypt(player.Scene.ZoneID, 1)
+		player.packetReader.Code = code
+		player.packetWriter.Code = code
+		
 		player.send <- info
 		player.send <- &darkeden.GCPetInfoPacket{}
 	case darkeden.PACKET_CG_READY:
@@ -494,6 +506,7 @@ func (player *Player) Go() {
 	// open a goroutine to read from conn
 	go func() {
 		reader := darkeden.NewReader()
+		player.packetReader = reader
 		for {
 			data, err := reader.Read(player.conn)
 			if err != nil {
@@ -509,6 +522,7 @@ func (player *Player) Go() {
 	// open a goroutine to write to conn
 	go func() {
 		writer := darkeden.NewWriter()
+		player.packetWriter = writer
 		for {
 			pkt := <-write
 			log.Println("write channel get a pkt ", pkt.String())

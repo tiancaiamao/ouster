@@ -1,7 +1,6 @@
 package darkeden
 
 import (
-	"encoding"
 	"encoding/binary"
 	"errors"
 	"github.com/tiancaiamao/ouster/packet"
@@ -537,16 +536,16 @@ func init() {
 	}
 }
 
-type reader struct {
+type Reader struct {
 	Seq uint8
 	Code uint8
 }
 
-func NewReader() *reader {
-	return &reader{}
+func NewReader() *Reader {
+	return &Reader{}
 }
 
-func (r *reader) Read(reader io.Reader) (ret packet.Packet, err error) {
+func (r *Reader) Read(reader io.Reader) (ret packet.Packet, err error) {
 	var id packet.PacketID
 	var sz PacketSize
 	var buf [300]byte
@@ -595,27 +594,32 @@ func (r *reader) Read(reader io.Reader) (ret packet.Packet, err error) {
 	return
 }
 
-type writer struct {
+type Writer struct {
 	Seq uint8
+	Code uint8
 }
 
-func NewWriter() *writer {
-	return &writer{}
+func NewWriter() *Writer {
+	return &Writer{}
 }
 
-func (w *writer) Write(writer io.Writer, pkt packet.Packet) error {
+type BinaryMarshaler interface {
+	MarshalBinary(code uint8) ([]byte, error)
+}
+
+func (w *Writer) Write(writer io.Writer, pkt packet.Packet) error {
 	id := pkt.Id()
 	err := binary.Write(writer, binary.LittleEndian, id)
 	if err != nil {
 		return err
 	}
 
-	b, ok := pkt.(encoding.BinaryMarshaler)
+	b, ok := pkt.(BinaryMarshaler)
 	if !ok {
 		return errors.New("write this packet is not supported")
 	}
 
-	buf, err := b.MarshalBinary()
+	buf, err := b.MarshalBinary(w.Code)
 	if err != nil {
 		return err
 	}

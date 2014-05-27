@@ -90,16 +90,79 @@ func encryptDir(dir byte) (uint8, error) {
 	return ret, nil
 }
 
+func SHUFFLE_STATEMENT_3(code uint8, A func()(), B func()(), C func()()) {
+	switch code % 3 {
+	case 0:
+		A()
+		B()
+		C()
+	case 1:
+		B()
+		C()
+		A()
+	case 2:
+		C()
+		A()
+		B()
+	}
+	return
+}
+
+func SHUFFLE_STATEMENT_2(code uint8, A func()(), B func()()) {
+	switch code %2 {
+	case 0:
+		A()
+		B()
+	case 1:
+		B()
+		A()
+	}
+	return
+}
+
+func SHUFFLE_STATEMENT_4(code uint8, A func()(), B func()(), C func()(), D func()()) {
+	switch code %2 {
+	case 0:
+		A()
+		B()
+		C()
+		D()
+	case 1:
+		B()
+		C()
+		D()
+		A()
+	case 2:
+		C()
+		D()
+		A()
+		B()
+	case 3:
+		D()
+		A()
+		C()
+		B()
+	}
+	return
+}
+
 func readMove(buf []byte, code uint8) (packet.Packet, error) {
-	dir, err := encryptDir(buf[1])
-	if err != nil {
-		return nil, err
+	var ret CGMovePacket
+	offset := 0
+	A := func() {
+		ret.X = buf[offset] ^ code
+		offset++
 	}
-	ret := CGMovePacket{
-		Dir: dir,
-		X:   buf[2] ^ 53,
-		Y:   buf[0] ^ 53,
+	B := func() {
+		ret.Y = buf[offset] ^ code
+		offset++
 	}
+	C := func() {
+		ret.Dir = buf[offset]
+		offset++
+	}
+	// encryption...fuck
+	SHUFFLE_STATEMENT_3(code, A, B, C)
 	return ret, nil
 }
 
@@ -128,14 +191,24 @@ func (attack CGAttackPacket) String() string {
 func readAttack(buf []byte, code uint8) (packet.Packet, error) {
 	// [188 251 55 82 48 0 0]
 	var ret CGAttackPacket
-	ret.X = buf[0] ^ 53
-	ret.Y = buf[1] ^ 53
-	dir, err := encryptDir(buf[2])
-	if err != nil {
-		return nil, err
+	offset := 0
+	A := func() {
+		ret.ObjectID = binary.LittleEndian.Uint32(buf[offset:]) ^ uint32(code)
+		offset += 4
 	}
-	ret.Dir = dir
-	ret.ObjectID = binary.LittleEndian.Uint32(buf[3:]) ^ 53
+	B := func() {
+		ret.X = buf[offset] ^ code
+		offset++
+	}
+	C := func() {
+		ret.Y = buf[offset] ^ code
+		offset++
+	}
+	D := func() {
+		ret.Dir = buf[offset]
+		offset++
+	}
+	SHUFFLE_STATEMENT_4(code, A, B, C, D)
 	return ret, nil
 }
 
@@ -192,9 +265,20 @@ func (skill CGSkillToObjectPacket) String() string {
 func readSkillToObject(buf []byte, code uint8) (packet.Packet, error) {
 	// encrypt!!!
 	var ret CGSkillToObjectPacket
-	ret.TargetObjectID = binary.LittleEndian.Uint32(buf[:]) ^ 53
-	ret.SkillType = binary.LittleEndian.Uint16(buf[4:]) ^ 53
-	ret.CEffectID = binary.LittleEndian.Uint16(buf[6:]) ^ 53
+	offset := 0
+	A := func() {
+		ret.SkillType = binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code)
+		offset += 2
+	}
+	B := func() {
+		ret.CEffectID = binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code)
+		offset += 2
+	}
+	C := func() {
+		ret.TargetObjectID = binary.LittleEndian.Uint32(buf[offset:]) ^ uint32(code)
+		offset += 4
+	}
+	SHUFFLE_STATEMENT_3(code, A, B, C)
 	return ret, nil
 }
 
@@ -214,8 +298,16 @@ func (skill CGSkillToSelfPacket) String() string {
 func readSkillToSelf(buf []byte, code uint8) (packet.Packet, error) {
 	// encrypt!!!
 	var ret CGSkillToSelfPacket
-	ret.CEffectID = binary.LittleEndian.Uint16(buf) ^ 53
-	ret.SkillType = binary.LittleEndian.Uint16(buf[2:]) ^ 53
+	offset := 0
+	A := func() {
+		ret.CEffectID = binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code)
+		offset += 2
+	}
+	B := func() {
+		ret.SkillType = binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code)
+		offset += 2
+	}
+	SHUFFLE_STATEMENT_2(code, A, B)
 	return ret, nil
 }
 
@@ -245,10 +337,24 @@ func (skill CGSkillToTilePacket) String() string {
 func readSkillToTile(buf []byte, code uint8) (packet.Packet, error) {
 	// encrypt!!!
 	var ret CGSkillToTilePacket
-	ret.CEffectID = binary.LittleEndian.Uint16(buf) ^ 53
-	ret.X = buf[2] ^ 53
-	ret.Y = buf[3] ^ 53
-	ret.SkillType = binary.LittleEndian.Uint16(buf[4:]) ^ 53
+	offset := 0
+	A := func() {
+		ret.SkillType = binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code)
+		offset += 2
+	}
+	B := func() {
+		ret.CEffectID = binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code)
+		offset += 2
+	}
+	C := func() {
+		ret.X = buf[offset] ^ code
+		offset++
+	}
+	D := func() {
+		ret.Y = buf[offset] ^ code
+		offset++
+	}
+	SHUFFLE_STATEMENT_4(code, A, B, C, D)
 	return ret, nil
 }
 
