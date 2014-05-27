@@ -537,7 +537,7 @@ func init() {
 }
 
 type Reader struct {
-	Seq uint8
+	Seq  uint8
 	Code uint8
 }
 
@@ -595,7 +595,7 @@ func (r *Reader) Read(reader io.Reader) (ret packet.Packet, err error) {
 }
 
 type Writer struct {
-	Seq uint8
+	Seq  uint8
 	Code uint8
 }
 

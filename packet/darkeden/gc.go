@@ -886,19 +886,19 @@ func (remove GCRemoveEffect) MarshalBinary(code uint8) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-type GCSkillFailed1 struct {
+type GCSkillFailed1Packet struct {
 	SkillType uint16
 	Grade     uint8
 	ModifyInfo
 }
 
-func (failed *GCSkillFailed1) Id() packet.PacketID {
+func (failed *GCSkillFailed1Packet) Id() packet.PacketID {
 	return PACKET_GC_SKILL_FAILED_1
 }
-func (failed *GCSkillFailed1) String() string {
+func (failed *GCSkillFailed1Packet) String() string {
 	return "skill failed1"
 }
-func (failed *GCSkillFailed1) MarshalBinary(code uint8) ([]byte, error) {
+func (failed *GCSkillFailed1Packet) MarshalBinary(code uint8) ([]byte, error) {
 	buf := &bytes.Buffer{}
 	binary.Write(buf, binary.LittleEndian, failed.SkillType)
 	binary.Write(buf, binary.LittleEndian, failed.Grade)

@@ -96,10 +96,10 @@ type Player struct {
 
 	carried []int
 
-	conn   net.Conn
+	conn         net.Conn
 	packetReader *darkeden.Reader
 	packetWriter *darkeden.Writer
-	
+
 	client <-chan packet.Packet
 	send   chan<- packet.Packet
 
@@ -257,7 +257,7 @@ func (player *Player) PCInfo() *data.PCInfo {
 }
 
 func Encrypt(ZoneID uint16, ServerID uint16) uint8 {
-	return uint8(((ZoneID >> 8) ^ ZoneID) ^ ((ServerID+1) << 4))
+	return uint8(((ZoneID >> 8) ^ ZoneID) ^ ((ServerID + 1) << 4))
 }
 
 func (player *Player) handleClientMessage(pkt packet.Packet) {
@@ -273,11 +273,11 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 			ZoneX:  player.X(),
 			ZoneY:  player.Y(),
 		}
-		
+
 		code := Encrypt(player.Scene.ZoneID, 1)
 		player.packetReader.Code = code
 		player.packetWriter.Code = code
-		
+
 		player.send <- info
 		player.send <- &darkeden.GCPetInfoPacket{}
 	case darkeden.PACKET_CG_READY:
@@ -294,27 +294,27 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 					LearnNewSkill: false,
 					SubVampireSkillInfoList: []darkeden.SubVampireSkillInfo{
 						darkeden.SubVampireSkillInfo{
-							SkillType:   darkeden.SKILL_RAPID_GLIDING,
+							SkillType:   SKILL_RAPID_GLIDING,
 							Interval:    50,
 							CastingTime: 31,
 						},
 						darkeden.SubVampireSkillInfo{
-							SkillType:   darkeden.SKILL_METEOR_STRIKE,
+							SkillType:   SKILL_METEOR_STRIKE,
 							Interval:    10,
 							CastingTime: 4160749567,
 						},
 						darkeden.SubVampireSkillInfo{
-							SkillType:   darkeden.SKILL_INVISIBILITY,
+							SkillType:   SKILL_INVISIBILITY,
 							Interval:    30,
 							CastingTime: 11,
 						},
 						darkeden.SubVampireSkillInfo{
-							SkillType:   darkeden.SKILL_PARALYZE,
+							SkillType:   SKILL_PARALYZE,
 							Interval:    60,
 							CastingTime: 41,
 						},
 						darkeden.SubVampireSkillInfo{
-							SkillType:   darkeden.SKILL_BLOOD_SPEAR,
+							SkillType:   SKILL_BLOOD_SPEAR,
 							Interval:    60,
 							CastingTime: 41,
 						},
@@ -337,38 +337,48 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 				player.send <- darkeden.GCAttackMeleeOK1{
 					ObjectID: monster.Id(),
 				}
-				damage := uint16(1)
-				if player.Damage > monster.Protection {
-					damage = player.Damage - monster.Protection
+
+				f := func() {
+					damage := uint16(1)
+					if player.Damage > monster.Protection {
+						damage = player.Damage - monster.Protection
+					}
+
+					if monster.HP[ATTR_CURRENT] > damage {
+						monster.HP[ATTR_CURRENT] -= damage
+						player.send <- darkeden.GCStatusCurrentHP{
+							ObjectID:  monster.Id(),
+							CurrentHP: monster.HP[ATTR_CURRENT],
+						}
+					} else {
+						player.send <- &darkeden.GCAddMonsterCorpse{
+							ObjectID:    monster.Id(),
+							MonsterType: monster.MonsterType,
+							MonsterName: monster.Name,
+							X:           monster.X(),
+							Y:           monster.Y(),
+							Dir:         2,
+							LastKiller:  player.Id(),
+						}
+						player.send <- darkeden.GCCreatureDiedPacket(monster.Id())
+					}
 				}
 
-				if monster.HP[ATTR_CURRENT] > damage {
-					monster.HP[ATTR_CURRENT] -= damage
-					player.send <- darkeden.GCStatusCurrentHP{
-						ObjectID:  monster.Id(),
-						CurrentHP: monster.HP[ATTR_CURRENT],
-					}
+				if monster.Owner == player || monster.Owner == nil {
+					f()
 				} else {
-					player.send <- &darkeden.GCAddMonsterCorpse{
-						ObjectID:    monster.Id(),
-						MonsterType: monster.MonsterType,
-						MonsterName: monster.Name,
-						X:           monster.X(),
-						Y:           monster.Y(),
-						Dir:         2,
-						LastKiller:  player.Id(),
-					}
-					player.send <- darkeden.GCCreatureDiedPacket(monster.Id())
+					monster.Owner.computation <- f
 				}
 			} else {
+				player.send <- &darkeden.GCSkillFailed1Packet{}
 			}
 		}
 	case darkeden.PACKET_CG_SKILL_TO_SELF:
 		skill := pkt.(darkeden.CGSkillToSelfPacket)
 		switch skill.SkillType {
-		case darkeden.SKILL_INVISIBILITY:
+		case SKILL_INVISIBILITY:
 			ok := &darkeden.GCSkillToSelfOK1{
-				SkillType: darkeden.SKILL_INVISIBILITY,
+				SkillType: SKILL_INVISIBILITY,
 				CEffectID: 181,
 				Duration:  0,
 				Grade:     0,
@@ -376,6 +386,8 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 			ok.Short = make(map[darkeden.ModifyType]uint16)
 			ok.Short[12] = 180 + 256
 			player.send <- ok
+		default:
+			log.Println("unknown SkillToSelf type:", skill.SkillType)
 		}
 	case darkeden.PACKET_CG_SKILL_TO_OBJECT:
 		skill := pkt.(darkeden.CGSkillToObjectPacket)
@@ -383,7 +395,7 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 	case darkeden.PACKET_CG_SKILL_TO_TILE:
 		skill := pkt.(darkeden.CGSkillToTilePacket)
 		switch skill.SkillType {
-		case darkeden.SKILL_RAPID_GLIDING:
+		case SKILL_RAPID_GLIDING:
 			fastMove := &darkeden.GCFastMovePacket{
 				ObjectID:  player.Id(),
 				FromX:     player.X(),
@@ -402,6 +414,8 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 				Y:         skill.Y,
 			}
 			player.send <- ok
+		default:
+			log.Println("unknown SkillToTie type:", skill.SkillType)
 		}
 
 	case darkeden.PACKET_CG_BLOOD_DRAIN:
@@ -415,12 +429,12 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 func (player *Player) SkillToObject(packet darkeden.CGSkillToObjectPacket) {
 	target := player.Scene.objects[packet.TargetObjectID]
 	if monster, ok := target.(*Monster); ok {
-		if skillExecutable, ok := skillP2M[packet.SkillType]; ok {
+		if skillInfo, ok := skillTable[packet.SkillType]; ok {
 			if monster.Owner == player || monster.Owner == nil {
-				skillExecutable(player, monster)
+				skillInfo.P2M(player, monster)
 			} else {
 				monster.Owner.computation <- func() {
-					skillExecutable(player, monster)
+					skillInfo.P2M(player, monster)
 				}
 			}
 		} else {

@@ -90,7 +90,7 @@ func encryptDir(dir byte) (uint8, error) {
 	return ret, nil
 }
 
-func SHUFFLE_STATEMENT_3(code uint8, A func()(), B func()(), C func()()) {
+func SHUFFLE_STATEMENT_3(code uint8, A func(), B func(), C func()) {
 	switch code % 3 {
 	case 0:
 		A()
@@ -108,8 +108,8 @@ func SHUFFLE_STATEMENT_3(code uint8, A func()(), B func()(), C func()()) {
 	return
 }
 
-func SHUFFLE_STATEMENT_2(code uint8, A func()(), B func()()) {
-	switch code %2 {
+func SHUFFLE_STATEMENT_2(code uint8, A func(), B func()) {
+	switch code % 2 {
 	case 0:
 		A()
 		B()
@@ -120,8 +120,8 @@ func SHUFFLE_STATEMENT_2(code uint8, A func()(), B func()()) {
 	return
 }
 
-func SHUFFLE_STATEMENT_4(code uint8, A func()(), B func()(), C func()(), D func()()) {
-	switch code %2 {
+func SHUFFLE_STATEMENT_4(code uint8, A func(), B func(), C func(), D func()) {
+	switch code % 2 {
 	case 0:
 		A()
 		B()
@@ -314,14 +314,6 @@ func readSkillToSelf(buf []byte, code uint8) (packet.Packet, error) {
 	SHUFFLE_STATEMENT_2(code, A, B)
 	return ret, nil
 }
-
-const (
-	SKILL_RAPID_GLIDING uint16 = 203
-	SKILL_METEOR_STRIKE uint16 = 180
-	SKILL_INVISIBILITY  uint16 = 100
-	SKILL_PARALYZE      uint16 = 89
-	SKILL_BLOOD_SPEAR   uint16 = 97
-)
 
 type CGSkillToTilePacket struct {
 	SkillType uint16
