@@ -4,6 +4,7 @@ import (
 	"github.com/tiancaiamao/ouster/aoi"
 	"github.com/tiancaiamao/ouster/aoi/cell"
 	"github.com/tiancaiamao/ouster/data"
+	"github.com/tiancaiamao/ouster/packet"
 	"github.com/tiancaiamao/ouster/packet/darkeden"
 	"log"
 	"math/rand"
@@ -97,7 +98,7 @@ func (m *Scene) String() string {
 	return m.Map.Name
 }
 
-func (m *Scene) HeartBeat() {
+func (m *Scene) heartBeat() {
 	m.Message(func(watcher aoi.Entity, marker aoi.Entity) {
 		wId := watcher.Id()
 		mId := marker.Id()
@@ -161,7 +162,7 @@ func loop(m *Scene) {
 		case <-m.quit:
 		case <-m.event:
 		case <-m.heartbeat:
-			m.HeartBeat()
+			m.heartBeat()
 		}
 	}
 }
@@ -196,6 +197,16 @@ func (m *Scene) processPlayerInput(playerId uint32, msg interface{}) {
 			Dir: move.Dir,
 		}
 	}
+}
+
+func (m *Scene) BroadcastPacket(x uint8, y uint8, pkt packet.Packet) {
+	m.Nearby(x, y, func(watcher aoi.Entity, marker aoi.Entity) {
+		id := marker.Id()
+		object := m.objects[id]
+		if player, ok := object.(*Player); ok {
+			player.send <- pkt
+		}
+	})
 }
 
 var (

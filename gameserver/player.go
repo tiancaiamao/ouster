@@ -63,6 +63,22 @@ type Creature struct {
 	Damage     uint16
 }
 
+func (c *Creature) BaseToHit() uint16 {
+	return c.DEX[ATTR_BASE]
+}
+func (c *Creature) BaseHP() uint16 {
+	return c.STR[ATTR_BASE]*4 + uint16(c.Level)
+}
+func (c *Creature) BaseDefense() uint16 {
+	return c.DEX[ATTR_BASE] / 2
+}
+func (c *Creature) BaseProtection() uint16 {
+	return c.STR[ATTR_BASE]
+}
+func (c *Creature) BaseDamage() uint16 {
+	return c.STR[ATTR_BASE]
+}
+
 type Player struct {
 	aoi.Entity
 	Creature
@@ -197,6 +213,11 @@ func (player *Player) Load(name string) error {
 	player.Competence = pcInfo.Competence
 	player.GuildMemberRank = pcInfo.GuildMemberRank
 	player.AdvancementLevel = pcInfo.AdvancementLevel
+
+	player.ToHit = player.BaseToHit()
+	player.Defense = player.BaseDefense()
+	player.Protection = player.BaseProtection()
+	player.Damage = player.BaseDamage()
 
 	scene := zoneTable[pcInfo.ZoneID]
 	scene.Login(player)

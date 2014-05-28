@@ -928,6 +928,7 @@ func (failed GCSkillFailed2) MarshalBinary(code uint8) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
+// send to player
 type GCSkillToObjectOK1 struct {
 	SkillType      uint16
 	CEffectID      uint16
@@ -954,6 +955,31 @@ func (ok *GCSkillToObjectOK1) MarshalBinary(code uint8) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
+type GCSkillToObjectOK3 struct {
+	ObjectID  uint32
+	SkillType uint16
+	TargetX   uint8
+	TargetY   uint8
+	Grade     uint8
+}
+
+func (ok *GCSkillToObjectOK3) Id() packet.PacketID {
+	return PACKET_GC_SKILL_TO_OBJECT_OK_3
+}
+func (ok *GCSkillToObjectOK3) String() string {
+	return "skill to object ok 3"
+}
+func (ok *GCSkillToObjectOK3) MarshalBinary(code uint8) ([]byte, error) {
+	buf := &bytes.Buffer{}
+	binary.Write(buf, binary.LittleEndian, ok.ObjectID)
+	binary.Write(buf, binary.LittleEndian, ok.SkillType)
+	binary.Write(buf, binary.LittleEndian, ok.TargetX)
+	binary.Write(buf, binary.LittleEndian, ok.TargetY)
+	binary.Write(buf, binary.LittleEndian, ok.Grade)
+	return buf.Bytes(), nil
+}
+
+// send to passive
 type GCSkillToObjectOK4 struct {
 	ObjectID  uint32
 	SkillType uint16

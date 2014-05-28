@@ -4,7 +4,6 @@ import (
 	"encoding/binary"
 	"errors"
 	"github.com/tiancaiamao/ouster/packet"
-	"log"
 )
 
 type CGConnectPacket struct {

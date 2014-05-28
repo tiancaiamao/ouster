@@ -57,17 +57,36 @@ func init() {
 }
 
 func BloodSpearP2M(player *Player, monster *Monster) {
-	fail := &darkeden.GCSkillFailed1Packet{
-		SkillType: SKILL_BLOOD_SPEAR,
+	// fail := &darkeden.GCSkillFailed1Packet{
+	// 	SkillType: SKILL_BLOOD_SPEAR,
+	// }
+	damage := player.STR[ATTR_CURRENT]/6 + player.INT[ATTR_CURRENT]/2 + player.DEX[ATTR_CURRENT]/12
+	if damage >= 180 {
+		damage = 180
 	}
-	player.send <- fail
+
+	player.send <- &darkeden.GCSkillToObjectOK1{
+		SkillType:      SKILL_BLOOD_SPEAR,
+		CEffectID:      0,
+		TargetObjectID: monster.Id(),
+	}
+	player.Scene.BroadcastPacket(player.X(), player.Y(), &darkeden.GCSkillToObjectOK3{
+		ObjectID:  player.Id(),
+		SkillType: SKILL_BLOOD_SPEAR,
+		TargetX:   monster.X(),
+		TargetY:   monster.Y(),
+	})
+	player.Scene.BroadcastPacket(monster.X(), monster.Y(), &darkeden.GCSkillToObjectOK4{
+		ObjectID:  player.Id(),
+		SkillType: SKILL_BLOOD_SPEAR,
+	})
 }
 
 func ParalyzeP2M(player *Player, monster *Monster) {
 	ok := &darkeden.GCSkillToObjectOK1{
 		SkillType:      SKILL_PARALYZE,
 		TargetObjectID: monster.Id(),
-		Duration:       40,
+		Duration:       (3 + player.INT[ATTR_CURRENT]/15) * 10,
 	}
 	player.send <- ok
 }
