@@ -35,6 +35,8 @@ type SkillInfo struct {
 	P2M func(*Player, *Monster)
 	M2P func(*Monster, *Player)
 	P2P func(*Player, *Player)
+
+	P2Z func(*Player, *Scene, uint, uint)
 }
 
 var skillTable map[uint16]*SkillInfo
@@ -57,14 +59,6 @@ func init() {
 }
 
 func BloodSpearP2M(player *Player, monster *Monster) {
-	// fail := &darkeden.GCSkillFailed1Packet{
-	// 	SkillType: SKILL_BLOOD_SPEAR,
-	// }
-	damage := player.STR[ATTR_CURRENT]/6 + player.INT[ATTR_CURRENT]/2 + player.DEX[ATTR_CURRENT]/12
-	if damage >= 180 {
-		damage = 180
-	}
-
 	player.send <- &darkeden.GCSkillToObjectOK1{
 		SkillType:      SKILL_BLOOD_SPEAR,
 		CEffectID:      0,
@@ -80,6 +74,11 @@ func BloodSpearP2M(player *Player, monster *Monster) {
 		ObjectID:  player.Id(),
 		SkillType: SKILL_BLOOD_SPEAR,
 	})
+	
+	damage := player.STR[ATTR_CURRENT]/6 + player.INT[ATTR_CURRENT]/2 + player.DEX[ATTR_CURRENT]/12
+	if damage >= 180 {
+		damage = 180
+	}
 }
 
 func ParalyzeP2M(player *Player, monster *Monster) {
@@ -89,4 +88,10 @@ func ParalyzeP2M(player *Player, monster *Monster) {
 		Duration:       (3 + player.INT[ATTR_CURRENT]/15) * 10,
 	}
 	player.send <- ok
+}
+
+type SkillOutput struct {
+	MonsterID uint32
+	Damage    int
+	Duration  int
 }

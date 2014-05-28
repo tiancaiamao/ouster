@@ -119,18 +119,16 @@ type Player struct {
 	client <-chan packet.Packet
 	send   chan<- packet.Packet
 
-	agent2scene chan interface{}
-	nearby      map[uint32]struct{}
-	heartbeat   <-chan time.Time
-	ticker      uint32
+	nearby    map[uint32]struct{}
+	heartbeat <-chan time.Time
+	ticker    uint32
 
 	computation chan func()
 }
 
 func NewPlayer(conn net.Conn) *Player {
 	return &Player{
-		conn:        conn,
-		agent2scene: make(chan interface{}),
+		conn: conn,
 		nearby:      make(map[uint32]struct{}),
 		computation: make(chan func()),
 		heartbeat:   time.Tick(50 * time.Millisecond),
@@ -344,7 +342,10 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 			},
 		}
 	case darkeden.PACKET_CG_MOVE:
-		player.agent2scene <- pkt
+		player.Scene.agent <- AgentMessage{
+			Player: player,
+			Msg:    pkt,
+		}
 	case darkeden.PACKET_CG_SAY:
 		say := pkt.(*darkeden.CGSayPacket)
 		log.Println("say:", say.Message)
@@ -359,36 +360,16 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 					ObjectID: monster.Id(),
 				}
 
-				f := func() {
-					damage := uint16(1)
-					if player.Damage > monster.Protection {
-						damage = player.Damage - monster.Protection
-					}
-
-					if monster.HP[ATTR_CURRENT] > damage {
-						monster.HP[ATTR_CURRENT] -= damage
-						player.send <- darkeden.GCStatusCurrentHP{
-							ObjectID:  monster.Id(),
-							CurrentHP: monster.HP[ATTR_CURRENT],
-						}
-					} else {
-						player.send <- &darkeden.GCAddMonsterCorpse{
-							ObjectID:    monster.Id(),
-							MonsterType: monster.MonsterType,
-							MonsterName: monster.Name,
-							X:           monster.X(),
-							Y:           monster.Y(),
-							Dir:         2,
-							LastKiller:  player.Id(),
-						}
-						player.send <- darkeden.GCCreatureDiedPacket(monster.Id())
-					}
+				damage := uint16(1)
+				if player.Damage > monster.Protection {
+					damage = player.Damage - monster.Protection
 				}
 
-				if monster.Owner == player || monster.Owner == nil {
-					f()
-				} else {
-					monster.Owner.computation <- f
+				player.Scene.agent <- AgentMessage{
+					Player: player,
+					Msg: SkillOutput{
+						Damage: int(damage),
+					},
 				}
 			} else {
 				player.send <- &darkeden.GCSkillFailed1Packet{}
@@ -415,30 +396,7 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 		player.SkillToObject(skill)
 	case darkeden.PACKET_CG_SKILL_TO_TILE:
 		skill := pkt.(darkeden.CGSkillToTilePacket)
-		switch skill.SkillType {
-		case SKILL_RAPID_GLIDING:
-			fastMove := &darkeden.GCFastMovePacket{
-				ObjectID:  player.Id(),
-				FromX:     player.X(),
-				FromY:     player.Y(),
-				ToX:       skill.X,
-				ToY:       skill.Y,
-				SkillType: skill.SkillType,
-			}
-			player.send <- fastMove
-			ok := &darkeden.GCSkillToTileOK1{
-				SkillType: skill.SkillType,
-				CEffectID: skill.CEffectID,
-				Duration:  10,
-				Range:     1,
-				X:         skill.X,
-				Y:         skill.Y,
-			}
-			player.send <- ok
-		default:
-			log.Println("unknown SkillToTie type:", skill.SkillType, skill.X, skill.Y, skill.CEffectID)
-		}
-
+		player.SkillToTile(skill)
 	case darkeden.PACKET_CG_BLOOD_DRAIN:
 	case darkeden.PACKET_CG_VERIFY_TIME:
 	case darkeden.PACKET_CG_LOGOUT:
@@ -447,17 +405,68 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 	}
 }
 
+func (player *Player) SkillToTile(skill darkeden.CGSkillToTilePacket) {
+	switch skill.SkillType {
+	case SKILL_RAPID_GLIDING:
+		fastMove := &darkeden.GCFastMovePacket{
+			ObjectID:  player.Id(),
+			FromX:     player.X(),
+			FromY:     player.Y(),
+			ToX:       skill.X,
+			ToY:       skill.Y,
+			SkillType: skill.SkillType,
+		}
+		player.send <- fastMove
+		ok := &darkeden.GCSkillToTileOK1{
+			SkillType: skill.SkillType,
+			CEffectID: skill.CEffectID,
+			Duration:  10,
+			Range:     1,
+			X:         skill.X,
+			Y:         skill.Y,
+		}
+		player.send <- ok
+	case SKILL_METEOR_STRIKE:
+		player.Scene.Nearby(skill.X, skill.Y, func(watcher aoi.Entity, marker aoi.Entity) {
+			if skill.X >= marker.X()-1 &&
+				skill.X <= marker.X()+1 &&
+				skill.Y >= marker.Y()-1 &&
+				skill.Y <= marker.Y()+1 {
+				id := marker.Id()
+				obj := player.Scene.objects[id]
+				switch obj.(type) {
+				case *Monster:
+					damage := int(float32(player.Level)*0.8) + int(player.STR[ATTR_CURRENT]+player.DEX[ATTR_CURRENT])/6
+					player.Scene.agent <- AgentMessage{
+						Player: player,
+						Msg: SkillOutput{
+							Damage: damage,
+						},
+					}
+				case *Player:
+
+				}
+			}
+		})
+		ok := &darkeden.GCSkillToTileOK1{
+			SkillType: skill.SkillType,
+			CEffectID: skill.CEffectID,
+			Duration:  10,
+			Range:     3,
+			X:         skill.X,
+			Y:         skill.Y,
+		}
+		player.send <- ok
+	default:
+		log.Println("unknown SkillToTie type:", skill.SkillType, skill.X, skill.Y, skill.CEffectID)
+	}
+}
+
 func (player *Player) SkillToObject(packet darkeden.CGSkillToObjectPacket) {
 	target := player.Scene.objects[packet.TargetObjectID]
 	if monster, ok := target.(*Monster); ok {
 		if skillInfo, ok := skillTable[packet.SkillType]; ok {
-			if monster.Owner == player || monster.Owner == nil {
-				skillInfo.P2M(player, monster)
-			} else {
-				monster.Owner.computation <- func() {
-					skillInfo.P2M(player, monster)
-				}
-			}
+			skillInfo.P2M(player, monster)
 		} else {
 			log.Println("can't execute skill ", packet.SkillType)
 		}

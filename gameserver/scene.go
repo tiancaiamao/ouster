@@ -15,6 +15,11 @@ type Object interface {
 	Id() uint32
 }
 
+type AgentMessage struct {
+	Player *Player
+	Msg    interface{}
+}
+
 type Scene struct {
 	*data.Map
 	objects  []Object
@@ -25,6 +30,7 @@ type Scene struct {
 	quit      chan struct{}
 	event     chan interface{}
 	heartbeat <-chan time.Time
+	agent     chan AgentMessage
 }
 
 func (scene *Scene) AddObject(obj Object) uint32 {
@@ -85,6 +91,7 @@ func NewScene(m *data.Map) *Scene {
 	ret.monsters = monsters
 	ret.quit = make(chan struct{})
 	ret.event = make(chan interface{})
+	ret.agent = make(chan AgentMessage, 200)
 	ret.heartbeat = time.Tick(50 * time.Millisecond)
 
 	return ret
@@ -106,13 +113,12 @@ func (m *Scene) heartBeat() {
 		wObj := m.objects[wId]
 		mObj := m.objects[mId]
 
-		if wp, ok := wObj.(*Player); ok {
+		if _, ok := wObj.(*Player); ok {
 			switch mObj.(type) {
 			case *Monster:
 				// monster active by player
 				monster := mObj.(*Monster)
 				monster.flag |= flagActive
-				monster.Owner = wp
 				monster.Enemies = append(monster.Enemies, wId)
 			case *Player:
 				player := mObj.(*Player)
@@ -149,16 +155,9 @@ func (m *Scene) Login(player *Player) error {
 
 func loop(m *Scene) {
 	for {
-		for _, player := range m.players {
-			select {
-			case msg := <-player.agent2scene:
-				m.processPlayerInput(player.Id(), msg)
-			default:
-				break
-			}
-		}
-
 		select {
+		case data := <-m.agent:
+			m.processPlayerInput(data.Player.Id(), data.Msg)
 		case <-m.quit:
 		case <-m.event:
 		case <-m.heartbeat:
@@ -195,6 +194,29 @@ func (m *Scene) processPlayerInput(playerId uint32, msg interface{}) {
 			X:   move.X,
 			Y:   move.Y,
 			Dir: move.Dir,
+		}
+	case SkillOutput:
+		skillOutput := msg.(SkillOutput)
+		id := skillOutput.MonsterID
+		obj := m.objects[id]
+		monster, _ := obj.(*Monster)
+		if monster.HP[ATTR_CURRENT] > uint16(skillOutput.Damage) {
+			monster.HP[ATTR_CURRENT] -= uint16(skillOutput.Damage)
+			m.BroadcastPacket(monster.X(), monster.Y(), darkeden.GCStatusCurrentHP{
+				ObjectID:  monster.Id(),
+				CurrentHP: monster.HP[ATTR_CURRENT],
+			})
+		} else {
+			m.BroadcastPacket(monster.X(), monster.Y(), &darkeden.GCAddMonsterCorpse{
+				ObjectID:    id,
+				MonsterType: monster.MonsterType,
+				MonsterName: monster.Name,
+				X:           monster.X(),
+				Y:           monster.Y(),
+				Dir:         2,
+				LastKiller:  playerId,
+			})
+			m.BroadcastPacket(monster.X(), monster.Y(), darkeden.GCCreatureDiedPacket(monster.Id()))
 		}
 	}
 }
