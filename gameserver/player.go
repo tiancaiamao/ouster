@@ -128,7 +128,7 @@ type Player struct {
 
 func NewPlayer(conn net.Conn) *Player {
 	return &Player{
-		conn: conn,
+		conn:        conn,
 		nearby:      make(map[uint32]struct{}),
 		computation: make(chan func()),
 		heartbeat:   time.Tick(50 * time.Millisecond),
@@ -272,6 +272,10 @@ func (player *Player) PCInfo() *data.PCInfo {
 
 		AdvancementLevel:   player.AdvancementLevel,
 		AdvancementGoalExp: player.AdvancementGoalExp,
+
+		ZoneID: player.Scene.ZoneID,
+		ZoneX:  player.X(),
+		ZoneY:  player.Y(),
 	}
 }
 
@@ -360,15 +364,16 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 					ObjectID: monster.Id(),
 				}
 
-				damage := uint16(1)
+				damage := 1
 				if player.Damage > monster.Protection {
-					damage = player.Damage - monster.Protection
+					damage = int(player.Damage - monster.Protection)
 				}
-
+				
+				log.Println("send attack SkillOutput to scene..........")
 				player.Scene.agent <- AgentMessage{
 					Player: player,
 					Msg: SkillOutput{
-						Damage: int(damage),
+						Damage: damage,
 					},
 				}
 			} else {
@@ -405,68 +410,46 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 	}
 }
 
-func (player *Player) SkillToTile(skill darkeden.CGSkillToTilePacket) {
-	switch skill.SkillType {
-	case SKILL_RAPID_GLIDING:
-		fastMove := &darkeden.GCFastMovePacket{
-			ObjectID:  player.Id(),
-			FromX:     player.X(),
-			FromY:     player.Y(),
-			ToX:       skill.X,
-			ToY:       skill.Y,
-			SkillType: skill.SkillType,
-		}
-		player.send <- fastMove
-		ok := &darkeden.GCSkillToTileOK1{
-			SkillType: skill.SkillType,
-			CEffectID: skill.CEffectID,
-			Duration:  10,
-			Range:     1,
-			X:         skill.X,
-			Y:         skill.Y,
-		}
-		player.send <- ok
-	case SKILL_METEOR_STRIKE:
-		player.Scene.Nearby(skill.X, skill.Y, func(watcher aoi.Entity, marker aoi.Entity) {
-			if skill.X >= marker.X()-1 &&
-				skill.X <= marker.X()+1 &&
-				skill.Y >= marker.Y()-1 &&
-				skill.Y <= marker.Y()+1 {
-				id := marker.Id()
-				obj := player.Scene.objects[id]
-				switch obj.(type) {
-				case *Monster:
-					damage := int(float32(player.Level)*0.8) + int(player.STR[ATTR_CURRENT]+player.DEX[ATTR_CURRENT])/6
-					player.Scene.agent <- AgentMessage{
-						Player: player,
-						Msg: SkillOutput{
-							Damage: damage,
-						},
-					}
-				case *Player:
-
-				}
+func (player *Player) BroadcastPacket(x uint8, y uint8, pkt packet.Packet) {
+	player.Scene.Nearby(x, y, func(watcher aoi.Entity, marker aoi.Entity) {
+		id := marker.Id()
+		if id != player.Id() {
+			object := player.Scene.objects[id]
+			if nearby, ok := object.(*Player); ok {
+				nearby.send <- pkt
 			}
-		})
-		ok := &darkeden.GCSkillToTileOK1{
-			SkillType: skill.SkillType,
-			CEffectID: skill.CEffectID,
-			Duration:  10,
-			Range:     3,
-			X:         skill.X,
-			Y:         skill.Y,
 		}
-		player.send <- ok
-	default:
-		log.Println("unknown SkillToTie type:", skill.SkillType, skill.X, skill.Y, skill.CEffectID)
+	})
+}
+
+func (player *Player) SkillToTile(packet darkeden.CGSkillToTilePacket) {
+	skillInfo, ok := skillTable[packet.SkillType]
+	if !ok {
+		log.Println("unknown SkillToTie type:", packet.SkillType, packet.X, packet.Y, packet.CEffectID)
+		return
 	}
+
+	handler := skillInfo.Handler
+	tileHandler, ok := handler.(SkillToTileHandler)
+	if !ok {
+		log.Println("error ", packet.SkillType, "not implement SkillTileHandler!!!")
+		return
+	}
+	tileHandler.ExecuteP2T(player, packet.X, packet.Y)
 }
 
 func (player *Player) SkillToObject(packet darkeden.CGSkillToObjectPacket) {
+	skillInfo, ok := skillTable[packet.SkillType]
+	if !ok {
+		log.Println("unknown SkillToObject type:", packet.SkillType, packet.TargetObjectID, packet.CEffectID)
+		return
+	}
+
 	target := player.Scene.objects[packet.TargetObjectID]
 	if monster, ok := target.(*Monster); ok {
-		if skillInfo, ok := skillTable[packet.SkillType]; ok {
-			skillInfo.P2M(player, monster)
+		handler := skillInfo.Handler
+		if toObjectHandler, ok := handler.(SkillToObjectHandler); ok {
+			toObjectHandler.ExecuteP2M(player, monster)
 		} else {
 			log.Println("can't execute skill ", packet.SkillType)
 		}

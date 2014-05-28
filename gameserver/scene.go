@@ -225,8 +225,8 @@ func (m *Scene) BroadcastPacket(x uint8, y uint8, pkt packet.Packet) {
 	m.Nearby(x, y, func(watcher aoi.Entity, marker aoi.Entity) {
 		id := marker.Id()
 		object := m.objects[id]
-		if player, ok := object.(*Player); ok {
-			player.send <- pkt
+		if nearby, ok := object.(*Player); ok {
+			nearby.send <- pkt
 		}
 	})
 }
