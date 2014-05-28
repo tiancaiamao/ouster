@@ -415,7 +415,7 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 			}
 			player.send <- ok
 		default:
-			log.Println("unknown SkillToTie type:", skill.SkillType)
+			log.Println("unknown SkillToTie type:", skill.SkillType, skill.X, skill.Y, skill.CEffectID)
 		}
 
 	case darkeden.PACKET_CG_BLOOD_DRAIN:

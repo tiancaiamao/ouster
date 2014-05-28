@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"github.com/tiancaiamao/ouster/packet"
-	// "log"
+	"log"
 )
 
 type CGConnectPacket struct {
@@ -121,7 +121,7 @@ func SHUFFLE_STATEMENT_2(code uint8, A func(), B func()) {
 }
 
 func SHUFFLE_STATEMENT_4(code uint8, A func(), B func(), C func(), D func()) {
-	switch code % 2 {
+	switch code % 4 {
 	case 0:
 		A()
 		B()
@@ -304,11 +304,11 @@ func readSkillToSelf(buf []byte, code uint8) (packet.Packet, error) {
 	var ret CGSkillToSelfPacket
 	offset := 0
 	A := func() {
-		ret.CEffectID = binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code)
+		ret.SkillType = binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code)
 		offset += 2
 	}
 	B := func() {
-		ret.SkillType = binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code)
+		ret.CEffectID = binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code)
 		offset += 2
 	}
 	SHUFFLE_STATEMENT_2(code, A, B)
