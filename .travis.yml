@@ -5,5 +5,5 @@ go:
   - tip
 
 install:
-  - go get github.com/ugorji/go/codec
-  - go install github.com/tiancaiamao/ouster/cmd/ouster
+  - go install github.com/tiancaiamao/ouster/gameserver
+  - go install github.com/tiancaiamao/ouster/loginserver
