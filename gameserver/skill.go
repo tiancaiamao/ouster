@@ -19,6 +19,10 @@ const (
 	SKILL_INVISIBILITY  uint16 = 100
 	SKILL_PARALYZE      uint16 = 89
 	SKILL_BLOOD_SPEAR   uint16 = 97
+
+	SKILL_ABSORB_SOUL  uint16 = 246
+	SKILL_SUMMON_SYLPH uint16 = 247
+	SKILL_FLOURISH     uint16 = 219
 )
 
 type SkillFormula interface {

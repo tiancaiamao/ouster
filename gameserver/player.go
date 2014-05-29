@@ -154,7 +154,7 @@ func HitTest(tohit uint16, dodge uint16) bool {
 	return rand.Float32() < prob
 }
 
-func (player *Player) Load(name string, typ uint8) error {
+func (player *Player) Load(name string, typ darkeden.PCType) error {
 	f, err := os.Open(os.Getenv("HOME") + "/.ouster/player/" + name)
 	if err != nil {
 		panic(err)
@@ -186,11 +186,11 @@ func (player *Player) Load(name string, typ uint8) error {
 	decoder := json.NewDecoder(f)
 
 	switch typ {
-	case 1:
+	case darkeden.PC_VAMPIRE:
 		err = loadVampire(player, decoder)
-	case 2:
+	case darkeden.PC_OUSTER:
 		err = loadOuster(player, decoder)
-	case 0:
+	case darkeden.PC_SLAYER:
 	}
 
 	player.ToHit = player.BaseToHit()
@@ -230,8 +230,7 @@ func loadOuster(player *Player, decoder *json.Decoder) error {
 	player.AdvancementLevel = pcInfo.AdvancementLevel
 
 	scene := zoneTable[pcInfo.ZoneID]
-	scene.Login(player)
-	scene.Update(player.Entity, pcInfo.ZoneX, pcInfo.ZoneY)
+	scene.Login(player, pcInfo.ZoneX, pcInfo.ZoneY)
 	return nil
 }
 
@@ -263,8 +262,7 @@ func loadVampire(player *Player, decoder *json.Decoder) error {
 	player.AdvancementLevel = pcInfo.AdvancementLevel
 
 	scene := zoneTable[pcInfo.ZoneID]
-	scene.Login(player)
-	scene.Update(player.Entity, pcInfo.ZoneX, pcInfo.ZoneY)
+	scene.Login(player, pcInfo.ZoneX, pcInfo.ZoneY)
 	return nil
 }
 
@@ -381,7 +379,7 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 	case darkeden.PACKET_CG_CONNECT:
 		raw := pkt.(*darkeden.CGConnectPacket)
 		log.Println("PCTYpe is", raw.PCType)
-		player.Load(raw.PCName, raw.PCType)
+		player.Load(raw.PCName, darkeden.PCType(raw.PCType))
 
 		info := &darkeden.GCUpdateInfoPacket{
 			PCType: player.PCType,
@@ -426,40 +424,69 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 			Y:   237,
 			Dir: 2,
 		}
-		player.send <- &darkeden.GCSkillInfoPacket{
-			PCType: darkeden.PC_VAMPIRE,
-			PCSkillInfoList: []darkeden.SkillInfo{
-				darkeden.VampireSkillInfo{
-					LearnNewSkill: false,
-					SubVampireSkillInfoList: []darkeden.SubVampireSkillInfo{
-						darkeden.SubVampireSkillInfo{
-							SkillType:   SKILL_RAPID_GLIDING,
-							Interval:    50,
-							CastingTime: 31,
-						},
-						darkeden.SubVampireSkillInfo{
-							SkillType:   SKILL_METEOR_STRIKE,
-							Interval:    10,
-							CastingTime: 4160749567,
-						},
-						darkeden.SubVampireSkillInfo{
-							SkillType:   SKILL_INVISIBILITY,
-							Interval:    30,
-							CastingTime: 11,
-						},
-						darkeden.SubVampireSkillInfo{
-							SkillType:   SKILL_PARALYZE,
-							Interval:    60,
-							CastingTime: 41,
-						},
-						darkeden.SubVampireSkillInfo{
-							SkillType:   SKILL_BLOOD_SPEAR,
-							Interval:    60,
-							CastingTime: 41,
+		if player.PCType == 'V' {
+			player.send <- &darkeden.GCSkillInfoPacket{
+				PCType: darkeden.PC_VAMPIRE,
+				PCSkillInfoList: []darkeden.SkillInfo{
+					darkeden.VampireSkillInfo{
+						LearnNewSkill: false,
+						SubVampireSkillInfoList: []darkeden.SubVampireSkillInfo{
+							darkeden.SubVampireSkillInfo{
+								SkillType:   SKILL_RAPID_GLIDING,
+								Interval:    50,
+								CastingTime: 31,
+							},
+							darkeden.SubVampireSkillInfo{
+								SkillType:   SKILL_METEOR_STRIKE,
+								Interval:    10,
+								CastingTime: 4160749567,
+							},
+							darkeden.SubVampireSkillInfo{
+								SkillType:   SKILL_INVISIBILITY,
+								Interval:    30,
+								CastingTime: 11,
+							},
+							darkeden.SubVampireSkillInfo{
+								SkillType:   SKILL_PARALYZE,
+								Interval:    60,
+								CastingTime: 41,
+							},
+							darkeden.SubVampireSkillInfo{
+								SkillType:   SKILL_BLOOD_SPEAR,
+								Interval:    60,
+								CastingTime: 41,
+							},
 						},
 					},
 				},
-			},
+			}
+		} else {
+			player.send <- &darkeden.GCSkillInfoPacket{
+				PCType: darkeden.PC_OUSTER,
+				PCSkillInfoList: []darkeden.SkillInfo{
+					darkeden.OusterSkillInfo{
+						LearnNewSkill: false,
+						SubOusterSkillInfoList: []darkeden.SubOusterSkillInfo{
+							darkeden.SubOusterSkillInfo{
+								SkillType:   SKILL_FLOURISH,
+								ExpLevel:    1,
+								Interval:    10,
+								CastingTime: 6,
+							},
+							darkeden.SubOusterSkillInfo{
+								SkillType: SKILL_ABSORB_SOUL,
+								ExpLevel:  1,
+								Interval:  5,
+							},
+							darkeden.SubOusterSkillInfo{
+								SkillType: SKILL_SUMMON_SYLPH,
+								ExpLevel:  1,
+								Interval:  5,
+							},
+						},
+					},
+				},
+			}
 		}
 	case darkeden.PACKET_CG_MOVE:
 		player.Scene.agent <- AgentMessage{

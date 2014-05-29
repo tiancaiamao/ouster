@@ -1180,3 +1180,36 @@ func (info SubVampireSkillInfo) Dump(writer io.Writer) {
 	binary.Write(writer, binary.LittleEndian, info.CastingTime)
 	return
 }
+
+type OusterSkillInfo struct {
+	LearnNewSkill          bool
+	SubOusterSkillInfoList []SubOusterSkillInfo
+}
+
+func (info OusterSkillInfo) Dump(writer io.Writer) {
+	if info.LearnNewSkill {
+		binary.Write(writer, binary.LittleEndian, uint8(1))
+	} else {
+		binary.Write(writer, binary.LittleEndian, uint8(0))
+	}
+
+	binary.Write(writer, binary.LittleEndian, uint8(len(info.SubOusterSkillInfoList)))
+	for _, v := range info.SubOusterSkillInfoList {
+		v.Dump(writer)
+	}
+}
+
+type SubOusterSkillInfo struct {
+	SkillType   uint16
+	ExpLevel    uint16
+	Interval    uint32
+	CastingTime uint32
+}
+
+func (info SubOusterSkillInfo) Dump(writer io.Writer) {
+	binary.Write(writer, binary.LittleEndian, info.SkillType)
+	binary.Write(writer, binary.LittleEndian, info.ExpLevel)
+	binary.Write(writer, binary.LittleEndian, info.Interval)
+	binary.Write(writer, binary.LittleEndian, info.CastingTime)
+	return
+}
