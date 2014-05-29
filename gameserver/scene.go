@@ -143,11 +143,11 @@ func (m *Scene) heartBeat() {
 	})
 }
 
-func (m *Scene) Login(player *Player) error {
+func (m *Scene) Login(player *Player, zoneX uint8, zoneY uint8) error {
 	m.players = append(m.players, player)
 
 	id := m.AddObject(player)
-	player.Entity = m.Add(145, 237, id)
+	player.Entity = m.Add(zoneX, zoneY, id)
 	player.Scene = m
 
 	return nil
@@ -239,6 +239,7 @@ var (
 func Initialize() {
 	maps = make(map[string]*Scene)
 	maps["limbo_lair_se"] = NewScene(&data.LimboLairSE)
+	maps["perona_nw"] = NewScene(&data.PeronaNW)
 
 	zoneTable = make(map[uint16]*Scene)
 	for _, m := range maps {

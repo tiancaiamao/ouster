@@ -230,8 +230,7 @@ func loadOuster(player *Player, decoder *json.Decoder) error {
 	player.AdvancementLevel = pcInfo.AdvancementLevel
 	
 	scene := zoneTable[pcInfo.ZoneID]
-	scene.Login(player)
-	scene.Update(player.Entity, pcInfo.ZoneX, pcInfo.ZoneY)
+	scene.Login(player, pcInfo.ZoneX, pcInfo.ZoneY)
 	return nil
 }
 
@@ -263,8 +262,7 @@ func loadVampire(player *Player, decoder *json.Decoder) error {
 	player.AdvancementLevel = pcInfo.AdvancementLevel
 	
 	scene := zoneTable[pcInfo.ZoneID]
-	scene.Login(player)
-	scene.Update(player.Entity, pcInfo.ZoneX, pcInfo.ZoneY)
+	scene.Login(player, pcInfo.ZoneX, pcInfo.ZoneY)
 	return nil
 }
 
