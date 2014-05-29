@@ -89,6 +89,7 @@ type Player struct {
 	Sex                uint8
 	BatColor           uint16
 	SkinColor          uint16
+	HairColor			uint16
 	MasterEffectColor  uint8
 	Alignment          uint32
 	Rank               uint8
@@ -153,45 +154,94 @@ func HitTest(tohit uint16, dodge uint16) bool {
 	return rand.Float32() < prob
 }
 
-func (player *Player) Load(name string) error {
-	info := data.PCInfo{
-		PCType:           'V',
-		Name:             name,
-		Level:            150,
-		Sex:              0,
-		SkinColor:        420,
-		Alignment:        7500,
-		STR:              [3]uint16{20, 20, 20},
-		DEX:              [3]uint16{20, 20, 20},
-		INT:              [3]uint16{20, 20, 20},
-		HP:               [2]uint16{472, 472},
-		Rank:             50,
-		RankExp:          10700,
-		Exp:              125,
-		Fame:             282,
-		Sight:            13,
-		Bonus:            9999,
-		Competence:       1,
-		GuildMemberRank:  4,
-		AdvancementLevel: 100,
-		ZoneID:           23,
-		ZoneX:            145,
-		ZoneY:            237,
-	}
-
-	var pcInfo data.PCInfo
+func (player *Player) Load(name string, typ uint8) error {	
 	f, err := os.Open(os.Getenv("HOME") + "/.ouster/player/" + name)
 	if err != nil {
-		pcInfo = info
+		panic(err)
+		player.PCType =           'V'
+		player.Name =             name
+		player.Level =            150
+		player.SkinColor =        420
+		player.Alignment =        7500 
+		player.STR =               [3]uint16{20, 20, 20}
+		player.DEX =              [3]uint16{20, 20, 20}
+		player.INT =              [3]uint16{20, 20, 20}
+		player.HP =               [2]uint16{472, 472}
+		player.Rank =             50
+		player.RankExp =          10700
+		player.Exp =              125
+		player.Fame =             282
+		player.Sight =            13
+		player.Bonus =            9999
+		player.Competence =       1
+		player.GuildMemberRank =  4
+		player.AdvancementLevel = 100
+		
+		// player.ZoneID =           23
+		// player.ZoneX =            145
+		// player.ZoneY =            237
+		return err
 	}
+	defer f.Close()
+	decoder := json.NewDecoder(f)	
+	
+	switch typ {
+	case 1:
+		err = loadVampire(player, decoder)
+	case 2:
+		err = loadOuster(player, decoder)
+	case 0:
+	}
+	
+	player.ToHit = player.BaseToHit()
+	player.Defense = player.BaseDefense()
+	player.Protection = player.BaseProtection()
+	player.Damage = player.BaseDamage()
+	
+	return err
+}
 
-	decoder := json.NewDecoder(f)
-	err = decoder.Decode(&pcInfo)
+func loadOuster(player *Player, decoder *json.Decoder) error {
+	var pcInfo data.PCOusterInfo
+	err := decoder.Decode(&pcInfo)
 	if err != nil {
-		pcInfo = info
+		return err
 	}
-	f.Close()
+	
+	player.PCType = pcInfo.PCType
+	player.Name = pcInfo.Name
+	player.Level = pcInfo.Level
+	player.Sex = pcInfo.Sex
+	player.HairColor = pcInfo.HairColor
+	player.MasterEffectColor = pcInfo.MasterEffectColor
+	player.Alignment = pcInfo.Alignment
+	player.STR = pcInfo.STR
+	player.DEX = pcInfo.DEX
+	player.INT = pcInfo.INT
+	player.HP = pcInfo.HP
+	player.Rank = pcInfo.Rank
+	player.RankExp = pcInfo.RankExp
+	player.Exp = pcInfo.Exp
+	player.Fame = pcInfo.Fame
+	player.Sight = pcInfo.Sight
+	player.Bonus = pcInfo.Bonus
+	player.Competence = pcInfo.Competence
+	player.GuildMemberRank = pcInfo.GuildMemberRank
+	player.AdvancementLevel = pcInfo.AdvancementLevel
+	
+	scene := zoneTable[pcInfo.ZoneID]
+	scene.Login(player)
+	scene.Update(player.Entity, pcInfo.ZoneX, pcInfo.ZoneY)
+	return nil
+}
 
+func loadVampire(player *Player, decoder *json.Decoder) error {
+	var pcInfo data.PCVampireInfo
+	err := decoder.Decode(&pcInfo)
+	if err != nil {
+		return err
+	}
+	
 	player.PCType = pcInfo.PCType
 	player.Name = pcInfo.Name
 	player.Level = pcInfo.Level
@@ -211,16 +261,11 @@ func (player *Player) Load(name string) error {
 	player.Competence = pcInfo.Competence
 	player.GuildMemberRank = pcInfo.GuildMemberRank
 	player.AdvancementLevel = pcInfo.AdvancementLevel
-
-	player.ToHit = player.BaseToHit()
-	player.Defense = player.BaseDefense()
-	player.Protection = player.BaseProtection()
-	player.Damage = player.BaseDamage()
-
+	
 	scene := zoneTable[pcInfo.ZoneID]
 	scene.Login(player)
 	scene.Update(player.Entity, pcInfo.ZoneX, pcInfo.ZoneY)
-	return err
+	return nil
 }
 
 func (player *Player) Save() {
@@ -235,48 +280,96 @@ func (player *Player) Save() {
 	f.Close()
 }
 
-func (player *Player) PCInfo() *data.PCInfo {
-	return &data.PCInfo{
-		ObjectID: player.Id(),
-		Name:     player.Name,
-		Level:    player.Level,
-		Sex:      player.Sex,
+func (player *Player) PCInfo() data.PCInfo {
+	switch player.PCType {
+	case 'V':
+		return &data.PCVampireInfo {
+			ObjectID: player.Id(),
+			Name:     player.Name,
+			Level:    player.Level,
+			Sex:      player.Sex,
 
-		BatColor:          player.BatColor,
-		SkinColor:         player.SkinColor,
-		MasterEffectColor: player.MasterEffectColor,
+			BatColor:          player.BatColor,
+			SkinColor:         player.SkinColor,
+			MasterEffectColor: player.MasterEffectColor,
 
-		Alignment: player.Alignment,
-		STR:       player.STR,
-		DEX:       player.DEX,
-		INT:       player.INT,
+			Alignment: player.Alignment,
+			STR:       player.STR,
+			DEX:       player.DEX,
+			INT:       player.INT,
 
-		HP: player.HP,
+			HP: player.HP,
 
-		Rank:    player.Rank,
-		RankExp: player.RankExp,
+			Rank:    player.Rank,
+			RankExp: player.RankExp,
 
-		Exp:          player.Exp,
-		Fame:         player.Fame,
-		Gold:         player.Gold,
-		Sight:        player.Sight,
-		Bonus:        player.Bonus,
-		HotKey:       player.HotKey,
-		SilverDamage: player.SilverDamage,
+			Exp:          player.Exp,
+			Fame:         player.Fame,
+			Gold:         player.Gold,
+			Sight:        player.Sight,
+			Bonus:        player.Bonus,
+			HotKey:       player.HotKey,
+			SilverDamage: player.SilverDamage,
 
-		Competence: player.Competence,
-		GuildID:    player.GuildID,
+			Competence: player.Competence,
+			GuildID:    player.GuildID,
 
-		GuildMemberRank: player.GuildMemberRank,
-		UnionID:         player.UnionID,
+			GuildMemberRank: player.GuildMemberRank,
+			UnionID:         player.UnionID,
 
-		AdvancementLevel:   player.AdvancementLevel,
-		AdvancementGoalExp: player.AdvancementGoalExp,
+			AdvancementLevel:   player.AdvancementLevel,
+			AdvancementGoalExp: player.AdvancementGoalExp,
 
-		ZoneID: player.Scene.ZoneID,
-		ZoneX:  player.X(),
-		ZoneY:  player.Y(),
+			ZoneID: player.Scene.ZoneID,
+			ZoneX:  player.X(),
+			ZoneY:  player.Y(),
+		}
+	case 'O':
+		return &data.PCOusterInfo {
+			ObjectID: player.Id(),
+			Name:     player.Name,
+			Level:    player.Level,
+			Sex:      player.Sex,
+
+			HairColor:         player.HairColor,
+			MasterEffectColor: player.MasterEffectColor,
+
+			Alignment: player.Alignment,
+			STR:       player.STR,
+			DEX:       player.DEX,
+			INT:       player.INT,
+
+			HP: player.HP,
+			MP: player.MP,
+
+			Rank:    player.Rank,
+			RankExp: player.RankExp,
+
+			Exp:          player.Exp,
+			Fame:         player.Fame,
+			Gold:         player.Gold,
+			Sight:        player.Sight,
+			Bonus:        player.Bonus,
+			SilverDamage: player.SilverDamage,
+
+			Competence: player.Competence,
+			GuildID:    player.GuildID,
+
+			GuildMemberRank: player.GuildMemberRank,
+			UnionID:         player.UnionID,
+
+			AdvancementLevel:   player.AdvancementLevel,
+			AdvancementGoalExp: player.AdvancementGoalExp,
+
+			ZoneID: player.Scene.ZoneID,
+			ZoneX:  player.X(),
+			ZoneY:  player.Y(),
+		}		
+	case 'S':
 	}
+
+	panic("not reached")
+	return nil
 }
 
 func Encrypt(ZoneID uint16, ServerID uint16) uint8 {
@@ -287,16 +380,39 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 	switch pkt.Id() {
 	case darkeden.PACKET_CG_CONNECT:
 		raw := pkt.(*darkeden.CGConnectPacket)
-		player.Load(raw.PCName)
+		log.Println("PCTYpe is", raw.PCType)
+		player.Load(raw.PCName, raw.PCType)
 
 		info := &darkeden.GCUpdateInfoPacket{
 			PCType: player.PCType,
-			PCInfo: *player.PCInfo(),
+			PCInfo: player.PCInfo(),
 			ZoneID: player.Scene.ZoneID,
 			ZoneX:  player.X(),
 			ZoneY:  player.Y(),
-		}
+			
+			GameTime: darkeden.GameTimeType{
+				Year: 1983,
+				Month: 8,
+				Day: 19,
+				
+				Hour:12,
+				Minute:28,
+				Second:16,
+			},
 
+			DarkLevel: 13,
+			LightLevel: 6,
+
+			MonsterTypes: []uint16{5, 6, 7, 8},
+			
+			Premium: 17,
+			NicknameInfo: darkeden.NicknameInfo{
+				NicknameID: 32560,
+			},
+
+			GuildUnionUserType:2,
+		}
+		
 		code := Encrypt(player.Scene.ZoneID, 1)
 		player.packetReader.Code = code
 		player.packetWriter.Code = code
@@ -373,6 +489,7 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 				player.Scene.agent <- AgentMessage{
 					Player: player,
 					Msg: SkillOutput{
+						MonsterID: attack.ObjectID,
 						Damage: damage,
 					},
 				}

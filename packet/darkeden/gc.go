@@ -119,8 +119,6 @@ func (info RideMotorcycleInfo) Dump(writer io.Writer) {
 	binary.Write(writer, binary.LittleEndian, uint8(0))
 }
 
-type Weather struct{}
-type MonsterType uint16
 type NPCInfo struct{}
 
 func (info NPCInfo) Dump(writer io.Writer) {
@@ -131,7 +129,7 @@ type BloodBibleSignInfo struct{}
 
 func (info BloodBibleSignInfo) Dump(writer io.Writer) {
 	// TODO
-	binary.Write(writer, binary.LittleEndian, uint8(0))
+	binary.Write(writer, binary.LittleEndian, uint32(1))
 	binary.Write(writer, binary.LittleEndian, uint8(0))
 	return
 }
@@ -190,11 +188,8 @@ type GCUpdateInfoPacket struct {
 	DarkLevel  uint8
 	LightLevel uint8
 
-	NPCNum   uint8
-	NPCTypes [256]NPCType
-
-	MonsterNum   uint8
-	MonsterTypes [256]MonsterType
+	NPCTypes []uint16
+	MonsterTypes []uint16
 
 	NPCInfos []NPCInfo
 
@@ -207,7 +202,7 @@ type GCUpdateInfoPacket struct {
 	GuildUnionID       uint32
 	GuildUnionUserType uint8
 	BloodBibleSignInfo BloodBibleSignInfo
-	PowerPoint         int
+	PowerPoint         uint32
 }
 
 func (info *GCUpdateInfoPacket) Id() packet.PacketID {
@@ -237,51 +232,82 @@ func (info *GCUpdateInfoPacket) MarshalBinary(code uint8) ([]byte, error) {
 	binary.Write(buf, binary.LittleEndian, info.ZoneX)
 	binary.Write(buf, binary.LittleEndian, info.ZoneY)
 
-	// info.GameTime.Dump(buf)
-	// 	binary.Write(buf, binary.LittleEndian, info.Weather)
-	// 	binary.Write(buf, binary.LittleEndian, info.WeatherLevel)
-	// 	binary.Write(buf, binary.LittleEndian, info.DarkLevel)
-	// 	binary.Write(buf, binary.LittleEndian, info.LightLevel)
-	//
-	// 	binary.Write(buf, binary.LittleEndian, info.NPCNum)
-	// 	for i:=0; i<int(info.NPCNum); i++ {
-	// 		binary.Write(buf, binary.LittleEndian, info.NPCTypes[i])
-	// 	}
-	//
-	// 	binary.Write(buf, binary.LittleEndian, info.MonsterNum)
-	// 	for i:=0; i<int(info.MonsterNum); i++ {
-	// 		binary.Write(buf, binary.LittleEndian, info.MonsterTypes[i])
-	// 	}
-	//
-	// 	binary.Write(buf, binary.LittleEndian, uint8(len(info.NPCInfos)))
-	// 	for i:=0; i<len(info.NPCInfos); i++ {
-	// 		info.NPCInfos[i].Dump(buf)
-	// 	}
-	//
-	// 	binary.Write(buf, binary.LittleEndian, info.ServerStat)
-	// 	binary.Write(buf, binary.LittleEndian, info.Premium)
-	// 	binary.Write(buf, binary.LittleEndian, info.SMSCharge)
-	//
-	// 	info.NicknameInfo.Dump(buf)
-	//
-	// 	if info.NonPK {
-	// 		binary.Write(buf, binary.LittleEndian, uint8(1))
-	// 	} else {
-	// 		binary.Write(buf, binary.LittleEndian, uint8(0))
-	// 	}
-	//
-	// 	binary.Write(buf, binary.LittleEndian, info.GuildUnionID)
-	// 	binary.Write(buf, binary.LittleEndian, info.GuildUnionUserType)
-	//
-	// 	info.BloodBibleSignInfo.Dump(buf)
-	//
-	// 	binary.Write(buf, binary.LittleEndian, info.PowerPoint)
-	//
-	// 	return buf.Bytes(), nil
+	info.GameTime.Dump(buf)
+	binary.Write(buf, binary.LittleEndian, info.Weather)
+	binary.Write(buf, binary.LittleEndian, info.WeatherLevel)
+ 	binary.Write(buf, binary.LittleEndian, info.DarkLevel)
+	binary.Write(buf, binary.LittleEndian, info.LightLevel)
 
-	buf.Write([]byte{190, 7, 3, 19, 16,
-		10, 40, 0, 0, 13, 2, 0, 5, 9, 0, 61, 0, 62, 0, 64, 0, 163, 0, 0, 0, 17, 0, 0, 0, 0, 24, 125, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0})
+	binary.Write(buf, binary.LittleEndian, uint8(len(info.NPCTypes)))
+	for i:=0; i<len(info.NPCTypes); i++ {
+		binary.Write(buf, binary.LittleEndian, info.NPCTypes[i])
+	}
+
+	binary.Write(buf, binary.LittleEndian, uint8(len(info.MonsterTypes)))
+	for i:=0; i<len(info.MonsterTypes); i++ {
+		binary.Write(buf, binary.LittleEndian, info.MonsterTypes[i])
+	}
+
+	binary.Write(buf, binary.LittleEndian, uint8(len(info.NPCInfos)))
+	for i:=0; i<len(info.NPCInfos); i++ {
+		info.NPCInfos[i].Dump(buf)
+	}
+
+	binary.Write(buf, binary.LittleEndian, info.ServerStat)
+	binary.Write(buf, binary.LittleEndian, info.Premium)
+	binary.Write(buf, binary.LittleEndian, info.SMSCharge)
+
+	info.NicknameInfo.Dump(buf)
+
+	if info.NonPK {
+		binary.Write(buf, binary.LittleEndian, uint8(1))
+	} else {
+		binary.Write(buf, binary.LittleEndian, uint8(0))
+	}
+
+	binary.Write(buf, binary.LittleEndian, info.GuildUnionID)
+	binary.Write(buf, binary.LittleEndian, info.GuildUnionUserType)
+
+	info.BloodBibleSignInfo.Dump(buf)
+
+	binary.Write(buf, binary.LittleEndian, info.PowerPoint)
+
 	return buf.Bytes(), nil
+
+	// buf.Write([]byte{190, 7,
+	// 	 3, 
+	// 	 19, 
+	// 	 16,
+	// 	10, 
+	// 	40, 
+	// 	
+	// 	0, Weather
+	// 	0, WeatherLevel
+	// 	13, DarkLevel
+	// 	2, LightLevel
+	// 	
+	// 	0, nNPCS
+	// 	
+	// 	5, nMonsters
+	// 	9, 0, monsterTypes
+	// 	61, 0, 
+	// 	62, 0, 
+	// 	64, 0, 
+	// 	163, 0, 
+	// 	
+	// 	0, NPCInfoCount
+	// 	0, ServerStat
+	// 	17, Premium
+	// 	0, 0, 0, 0, SMSCharge
+	// 	NickNameInfo
+	// 	24, 125, 0, 
+	// 	
+	// 	0, NonPK
+	// 	0, 0, 0, 0, GuildUnionID
+	// 	2, GuildUnionUserType
+	// 	1, 0, 0, 0, 0, 
+	//  0, 0, 0, 0})	PowerPoint
+	// return buf.Bytes(), nil
 
 	// return []byte{86, 117, 48, 0, 0, 4, 183, 232, 191, 241, 150, 0, 0, 0, 164, 1, 0, 76, 29, 0, 0,
 	// 		20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 216, 1, 216, 1, 50, 204, 41, 0, 0, 125, 0, 0,
