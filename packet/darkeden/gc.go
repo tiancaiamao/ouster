@@ -188,7 +188,7 @@ type GCUpdateInfoPacket struct {
 	DarkLevel  uint8
 	LightLevel uint8
 
-	NPCTypes []uint16
+	NPCTypes     []uint16
 	MonsterTypes []uint16
 
 	NPCInfos []NPCInfo
@@ -235,21 +235,21 @@ func (info *GCUpdateInfoPacket) MarshalBinary(code uint8) ([]byte, error) {
 	info.GameTime.Dump(buf)
 	binary.Write(buf, binary.LittleEndian, info.Weather)
 	binary.Write(buf, binary.LittleEndian, info.WeatherLevel)
- 	binary.Write(buf, binary.LittleEndian, info.DarkLevel)
+	binary.Write(buf, binary.LittleEndian, info.DarkLevel)
 	binary.Write(buf, binary.LittleEndian, info.LightLevel)
 
 	binary.Write(buf, binary.LittleEndian, uint8(len(info.NPCTypes)))
-	for i:=0; i<len(info.NPCTypes); i++ {
+	for i := 0; i < len(info.NPCTypes); i++ {
 		binary.Write(buf, binary.LittleEndian, info.NPCTypes[i])
 	}
 
 	binary.Write(buf, binary.LittleEndian, uint8(len(info.MonsterTypes)))
-	for i:=0; i<len(info.MonsterTypes); i++ {
+	for i := 0; i < len(info.MonsterTypes); i++ {
 		binary.Write(buf, binary.LittleEndian, info.MonsterTypes[i])
 	}
 
 	binary.Write(buf, binary.LittleEndian, uint8(len(info.NPCInfos)))
-	for i:=0; i<len(info.NPCInfos); i++ {
+	for i := 0; i < len(info.NPCInfos); i++ {
 		info.NPCInfos[i].Dump(buf)
 	}
 
@@ -275,37 +275,37 @@ func (info *GCUpdateInfoPacket) MarshalBinary(code uint8) ([]byte, error) {
 	return buf.Bytes(), nil
 
 	// buf.Write([]byte{190, 7,
-	// 	 3, 
-	// 	 19, 
+	// 	 3,
+	// 	 19,
 	// 	 16,
-	// 	10, 
-	// 	40, 
-	// 	
+	// 	10,
+	// 	40,
+	//
 	// 	0, Weather
 	// 	0, WeatherLevel
 	// 	13, DarkLevel
 	// 	2, LightLevel
-	// 	
+	//
 	// 	0, nNPCS
-	// 	
+	//
 	// 	5, nMonsters
 	// 	9, 0, monsterTypes
-	// 	61, 0, 
-	// 	62, 0, 
-	// 	64, 0, 
-	// 	163, 0, 
-	// 	
+	// 	61, 0,
+	// 	62, 0,
+	// 	64, 0,
+	// 	163, 0,
+	//
 	// 	0, NPCInfoCount
 	// 	0, ServerStat
 	// 	17, Premium
 	// 	0, 0, 0, 0, SMSCharge
 	// 	NickNameInfo
-	// 	24, 125, 0, 
-	// 	
+	// 	24, 125, 0,
+	//
 	// 	0, NonPK
 	// 	0, 0, 0, 0, GuildUnionID
 	// 	2, GuildUnionUserType
-	// 	1, 0, 0, 0, 0, 
+	// 	1, 0, 0, 0, 0,
 	//  0, 0, 0, 0})	PowerPoint
 	// return buf.Bytes(), nil
 

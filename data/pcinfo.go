@@ -16,40 +16,40 @@ type PCInfo interface {
 }
 
 type PCOusterInfo struct {
-	PCType byte
+	PCType   byte
 	ObjectID uint32
-	Name string
-	Level uint8
-	Sex uint8
-	
-	HairColor uint16
+	Name     string
+	Level    uint8
+	Sex      uint8
+
+	HairColor         uint16
 	MasterEffectColor uint8
-	
+
 	Alignment uint32
-	STR [3]uint16
-	DEX [3]uint16
-	INT [3]uint16
-	
+	STR       [3]uint16
+	DEX       [3]uint16
+	INT       [3]uint16
+
 	HP [2]uint16
 	MP [2]uint16
-	
-	Rank uint8
+
+	Rank    uint8
 	RankExp uint32
-	Exp uint32
-	
-	Fame uint32
-	Gold uint32
-	Sight uint8
-	Bonus uint16
+	Exp     uint32
+
+	Fame       uint32
+	Gold       uint32
+	Sight      uint8
+	Bonus      uint16
 	SkillBonus uint16
-	
-	SilverDamage uint16
-	Competence uint8
-	GuildID uint16
-	GuildName string
-	GuildMemberRank uint8
-	UnionID uint32
-	AdvancementLevel uint8
+
+	SilverDamage       uint16
+	Competence         uint8
+	GuildID            uint16
+	GuildName          string
+	GuildMemberRank    uint8
+	UnionID            uint32
+	AdvancementLevel   uint8
 	AdvancementGoalExp uint32
 
 	ZoneID uint16
@@ -81,7 +81,7 @@ func (info *PCOusterInfo) Dump(writer io.Writer) {
 
 	binary.Write(writer, binary.LittleEndian, info.HP[ATTR_CURRENT])
 	binary.Write(writer, binary.LittleEndian, info.HP[ATTR_MAX])
-	
+
 	binary.Write(writer, binary.LittleEndian, info.MP[ATTR_CURRENT])
 	binary.Write(writer, binary.LittleEndian, info.MP[ATTR_MAX])
 
