@@ -36,6 +36,18 @@ func handleClient(conn net.Conn) {
 
 	agent := NewPlayer(conn)
 
+	// get the map that player current in
+	m := Query("limbo_lair_se")
+	if m == nil {
+		panic("what the fuck??")
+	}
+	err := m.Login(agent)
+
+	if err != nil {
+		// login to scene error
+		return
+	}
+
 	// turn into a player agent
 	agent.Go()
 }
