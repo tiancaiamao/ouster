@@ -150,7 +150,11 @@ func (ignore RapidGlidingHandler) ExecuteP2T(player *Player, x uint8, y uint8) {
 		ToY:       y,
 		SkillType: SKILL_RAPID_GLIDING,
 	}
-	player.send <- fastMove
+	player.Scene.agent <- AgentMessage{
+		Player: player,
+		Msg:    fastMove,
+	}
+
 	ok := &darkeden.GCSkillToTileOK1{
 		SkillType: SKILL_RAPID_GLIDING,
 		Duration:  10,

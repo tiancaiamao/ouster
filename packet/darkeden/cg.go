@@ -1,9 +1,11 @@
 package darkeden
 
 import (
+	"bytes"
 	"encoding/binary"
 	"errors"
 	"github.com/tiancaiamao/ouster/packet"
+	"io"
 )
 
 type CGConnectPacket struct {
@@ -20,6 +22,16 @@ func (connect *CGConnectPacket) Id() packet.PacketID {
 func (connect *CGConnectPacket) String() string {
 	return "connect"
 }
+func (connect *CGConnectPacket) MarshalBinary(code uint8) ([]byte, error) {
+	buf := &bytes.Buffer{}
+	binary.Write(buf, binary.LittleEndian, connect.Key)
+	binary.Write(buf, binary.LittleEndian, connect.PCType)
+	binary.Write(buf, binary.LittleEndian, uint8(len(connect.PCName)))
+	io.WriteString(buf, connect.PCName)
+	buf.Write(connect.MacAddress[:])
+	return buf.Bytes(), nil
+}
+
 func readConnect(buf []byte, code uint8) (packet.Packet, error) {
 	// [ 0 0 0 240 1 4 183 232 191 241 0 80 86 192 0 8]
 	ret := new(CGConnectPacket)

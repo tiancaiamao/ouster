@@ -195,6 +195,19 @@ func (m *Scene) processPlayerInput(playerId uint32, msg interface{}) {
 			Y:   move.Y,
 			Dir: move.Dir,
 		}
+	case *darkeden.GCFastMovePacket:
+		fastMove := msg.(*darkeden.GCFastMovePacket)
+		obj := m.objects[playerId]
+		player := obj.(*Player)
+		m.Update(player.Entity, fastMove.ToX, fastMove.ToY)
+		player.send <- fastMove
+		player.BroadcastPacket(player.X(), player.Y(), &darkeden.GCSkillToTileOK5{
+			ObjectID:  playerId,
+			SkillType: fastMove.SkillType,
+			X:         player.X(),
+			Y:         player.Y(),
+			Duration:  10,
+		})
 	case SkillOutput:
 		skillOutput := msg.(SkillOutput)
 		id := skillOutput.MonsterID

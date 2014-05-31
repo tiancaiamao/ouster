@@ -219,6 +219,7 @@ func loadOuster(player *Player, decoder *json.Decoder) error {
 	player.DEX = pcInfo.DEX
 	player.INT = pcInfo.INT
 	player.HP = pcInfo.HP
+	player.MP = pcInfo.MP
 	player.Rank = pcInfo.Rank
 	player.RankExp = pcInfo.RankExp
 	player.Exp = pcInfo.Exp
@@ -323,7 +324,7 @@ func (player *Player) PCInfo() data.PCInfo {
 			ZoneY:  player.Y(),
 		}
 	case 'O':
-		return &data.PCOusterInfo{
+		info := &data.PCOusterInfo{
 			ObjectID: player.Id(),
 			Name:     player.Name,
 			Level:    player.Level,
@@ -363,6 +364,16 @@ func (player *Player) PCInfo() data.PCInfo {
 			ZoneX:  player.X(),
 			ZoneY:  player.Y(),
 		}
+
+		if info.SkillBonus == 0 {
+			info.SkillBonus = 9999
+			log.Println("SKillBonus =========== 0!!!")
+		}
+		if info.GuildID == 0 {
+			info.GuildID = 66
+			log.Println("GuildID =========== 0!!!")
+		}
+		return info
 	case 'S':
 	}
 
@@ -420,8 +431,8 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 	case darkeden.PACKET_CG_READY:
 		log.Println("get a CG Ready Packet!!!")
 		player.send <- &darkeden.GCSetPositionPacket{
-			X:   145,
-			Y:   237,
+			X:   player.X(),
+			Y:   player.Y(),
 			Dir: 2,
 		}
 		if player.PCType == 'V' {
