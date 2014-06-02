@@ -20,9 +20,22 @@ const (
 	SKILL_PARALYZE      uint16 = 89
 	SKILL_BLOOD_SPEAR   uint16 = 97
 
-	SKILL_ABSORB_SOUL  uint16 = 246
-	SKILL_SUMMON_SYLPH uint16 = 247
-	SKILL_FLOURISH     uint16 = 219
+	SKILL_ABSORB_SOUL       uint16 = 246
+	SKILL_SUMMON_SYLPH      uint16 = 247
+	SKILL_SHARP_HAIL        uint16 = 348 // 尖锐冰雹
+	SKILL_FLOURISH          uint16 = 219 // 活跃攻击
+	SKILL_DESTRUCTION_SPEAR uint16 = 298 //致命爆发
+	SKILL_SHARP_CHAKRAM     uint16 = 295 // 税利之轮
+	SKILL_EVADE             uint16 = 220 // 回避术
+
+	SKILL_FIRE_OF_SOUL_STONE uint16 = 227
+	SKILL_ICE_OF_SOUL_STONE  uint16 = 228
+	SKILL_SAND_OF_SOUL_STONE uint16 = 229
+
+	SKILL_TELEPORT       uint16 = 280 // 瞬间移动
+	SKILL_DUCKING_WALLOP uint16 = 302 // 光速冲击
+	SKILL_DISTANCE_BLITZ uint16 = 304 // 雷神斩
+
 )
 
 type SkillFormula interface {
@@ -131,7 +144,28 @@ func init() {
 		ConsumeMP: 53,
 		Handler:   MeteorStrikeHandler{},
 	}
+
+	skillTable[SKILL_SHARP_HAIL] = &SkillInfo{
+		Type:      SKILL_PROPERTY_TYPE_PHYSIC,
+		Name:      "Sharp Hail",
+		ConsumeMP: 20,
+		Handler:   SharpHailHandler{},
+	}
 }
+
+type SharpHailHandler struct{}
+
+func (ignore SharpHailHandler) ExecuteP2T(player *Player, x uint8, y uint8) {
+	ok := &darkeden.GCSkillToTileOK1{
+		SkillType: SKILL_SHARP_HAIL,
+		Duration:  10,
+		Range:     5,
+		X:         x,
+		Y:         y,
+	}
+	player.send <- ok
+}
+func (ignore SharpHailHandler) ExecuteM2T(monster *Monster, x uint8, y uint8) {}
 
 type InvisibilityHandler struct{}
 
