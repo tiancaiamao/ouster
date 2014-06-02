@@ -208,7 +208,7 @@ func loadOuster(player *Player, decoder *json.Decoder) error {
 		return err
 	}
 
-	player.PCType = pcInfo.PCType
+	player.PCType = 'O'
 	player.Name = pcInfo.Name
 	player.Level = pcInfo.Level
 	player.Sex = pcInfo.Sex
@@ -242,7 +242,7 @@ func loadVampire(player *Player, decoder *json.Decoder) error {
 		return err
 	}
 
-	player.PCType = pcInfo.PCType
+	player.PCType = 'V'
 	player.Name = pcInfo.Name
 	player.Level = pcInfo.Level
 	player.Sex = pcInfo.Sex
@@ -389,7 +389,6 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 	switch pkt.Id() {
 	case darkeden.PACKET_CG_CONNECT:
 		raw := pkt.(*darkeden.CGConnectPacket)
-		log.Println("PCTYpe is", raw.PCType)
 		player.Load(raw.PCName, darkeden.PCType(raw.PCType))
 
 		info := &darkeden.GCUpdateInfoPacket{
@@ -425,6 +424,23 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 		code := Encrypt(player.Scene.ZoneID, 1)
 		player.packetReader.Code = code
 		player.packetWriter.Code = code
+
+		if info.PCType == 'O' {
+			info.GearInfo = darkeden.GearInfo{
+				GearSlotInfoList: []darkeden.GearSlotInfo{
+					darkeden.GearSlotInfo{
+						ObjectID:   12494,
+						ItemClass:  59,
+						ItemType:   14,
+						Durability: 6700,
+						Grade:      4,
+						ItemNum:    1,
+
+						SlotID: 3,
+					},
+				},
+			}
+		}
 
 		player.send <- info
 		player.send <- &darkeden.GCPetInfoPacket{}

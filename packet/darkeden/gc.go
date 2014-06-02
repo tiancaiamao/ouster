@@ -91,11 +91,49 @@ func (info InventoryInfo) Dump(writer io.Writer) {
 	binary.Write(writer, binary.LittleEndian, uint8(0))
 }
 
-type GearInfo struct{}
+type GearSlotInfo struct {
+	ObjectID     uint32
+	ItemClass    uint8
+	ItemType     uint16
+	OptionList   []uint8
+	Durability   uint32
+	Silver       uint16
+	Grade        uint32
+	EnchantLevel uint8
+	ItemNum      uint8
+	MainColor    uint16
+
+	SlotID uint8
+}
+
+func (info GearSlotInfo) Dump(writer io.Writer) {
+	binary.Write(writer, binary.LittleEndian, info.ObjectID)
+	binary.Write(writer, binary.LittleEndian, info.ItemClass)
+	binary.Write(writer, binary.LittleEndian, info.ItemType)
+	binary.Write(writer, binary.LittleEndian, uint8(len(info.OptionList)))
+	for _, v := range info.OptionList {
+		binary.Write(writer, binary.LittleEndian, v)
+	}
+	binary.Write(writer, binary.LittleEndian, info.Durability)
+	binary.Write(writer, binary.LittleEndian, info.Silver)
+	binary.Write(writer, binary.LittleEndian, info.Grade)
+	binary.Write(writer, binary.LittleEndian, info.EnchantLevel)
+	binary.Write(writer, binary.LittleEndian, info.ItemNum)
+	binary.Write(writer, binary.LittleEndian, info.MainColor)
+	binary.Write(writer, binary.LittleEndian, uint8(0))
+
+	binary.Write(writer, binary.LittleEndian, info.SlotID)
+}
+
+type GearInfo struct {
+	GearSlotInfoList []GearSlotInfo
+}
 
 func (info GearInfo) Dump(writer io.Writer) {
-	// TODO
-	binary.Write(writer, binary.LittleEndian, uint8(0))
+	binary.Write(writer, binary.LittleEndian, uint8(len(info.GearSlotInfoList)))
+	for _, v := range info.GearSlotInfoList {
+		v.Dump(writer)
+	}
 }
 
 type ExtraInfo struct{}
