@@ -1163,6 +1163,61 @@ func (ok *GCSkillToTileOK5) MarshalBinary(code uint8) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
+type GCSkillToTileOK4 struct {
+	SkillType    uint16
+	X            uint8
+	Y            uint8
+	Range        uint8
+	Duration     uint16
+	CreatureList []uint32
+	Grade        uint8
+}
+
+func (ok *GCSkillToTileOK4) Id() packet.PacketID {
+	return PACKET_GC_SKILL_TO_TILE_OK_4
+}
+func (ok *GCSkillToTileOK4) String() string {
+	return "skill to tile ok 4"
+}
+func (ok *GCSkillToTileOK4) MarshalBinary(code uint8) ([]byte, error) {
+	buf := &bytes.Buffer{}
+	binary.Write(buf, binary.LittleEndian, ok.SkillType)
+	binary.Write(buf, binary.LittleEndian, ok.X)
+	binary.Write(buf, binary.LittleEndian, ok.Y)
+	binary.Write(buf, binary.LittleEndian, ok.Range)
+	binary.Write(buf, binary.LittleEndian, ok.Duration)
+	binary.Write(buf, binary.LittleEndian, ok.Grade)
+	binary.Write(buf, binary.LittleEndian, uint8(len(ok.CreatureList)))
+	for _, v := range ok.CreatureList {
+		binary.Write(buf, binary.LittleEndian, v)
+	}
+	return buf.Bytes(), nil
+}
+
+type GCSkillToTileOK3 struct {
+	ObjectID  uint32
+	SkillType uint16
+	X         uint8
+	Y         uint8
+	Grade     uint8
+}
+
+func (ok *GCSkillToTileOK3) Id() packet.PacketID {
+	return PACKET_GC_SKILL_TO_TILE_OK_3
+}
+func (ok *GCSkillToTileOK3) String() string {
+	return "skill to tile ok 3"
+}
+func (ok *GCSkillToTileOK3) MarshalBinary(code uint8) ([]byte, error) {
+	buf := &bytes.Buffer{}
+	binary.Write(buf, binary.LittleEndian, ok.ObjectID)
+	binary.Write(buf, binary.LittleEndian, ok.SkillType)
+	binary.Write(buf, binary.LittleEndian, ok.X)
+	binary.Write(buf, binary.LittleEndian, ok.Y)
+	binary.Write(buf, binary.LittleEndian, ok.Grade)
+	return buf.Bytes(), nil
+}
+
 const (
 	SYSTEM_MESSAGE_NORMAL = iota
 	SYSTEM_MESSAGE_OPERATOR

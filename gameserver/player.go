@@ -113,6 +113,8 @@ type Player struct {
 
 	carried []int
 
+	skillslot []SkillSlot
+
 	conn         net.Conn
 	packetReader *darkeden.Reader
 	packetWriter *darkeden.Writer
@@ -125,6 +127,27 @@ type Player struct {
 	ticker    uint32
 
 	computation chan func()
+}
+
+type SkillSlot struct {
+	SkillType uint16
+	ExpLevel  uint16
+
+	LastUse  time.Time
+	Cooling  uint16
+	Duration uint16
+
+	Interval    uint32
+	CastingTime uint32
+}
+
+func (player *Player) SkillSlot(SkillType uint16) *SkillSlot {
+	for i := 0; i < len(player.skillslot); i++ {
+		if player.skillslot[i].SkillType == SkillType {
+			return &player.skillslot[i]
+		}
+	}
+	return nil
 }
 
 func NewPlayer(conn net.Conn) *Player {
@@ -230,6 +253,21 @@ func loadOuster(player *Player, decoder *json.Decoder) error {
 	player.GuildMemberRank = pcInfo.GuildMemberRank
 	player.AdvancementLevel = pcInfo.AdvancementLevel
 
+	var skillInfo darkeden.OusterSkillInfo
+	err = decoder.Decode(&skillInfo)
+	if err != nil {
+		return err
+	}
+
+	player.skillslot = make([]SkillSlot, len(skillInfo.SubOusterSkillInfoList))
+	for i := 0; i < len(skillInfo.SubOusterSkillInfoList); i++ {
+		v := &skillInfo.SubOusterSkillInfoList[i]
+		player.skillslot[i].SkillType = v.SkillType
+		player.skillslot[i].ExpLevel = v.ExpLevel
+		player.skillslot[i].Interval = v.Interval
+		player.skillslot[i].CastingTime = v.CastingTime
+	}
+
 	scene := zoneTable[pcInfo.ZoneID]
 	scene.Login(player, pcInfo.ZoneX, pcInfo.ZoneY)
 	return nil
@@ -268,15 +306,53 @@ func loadVampire(player *Player, decoder *json.Decoder) error {
 }
 
 func (player *Player) Save() {
-	info := player.PCInfo()
 	f, err := os.Create(os.Getenv("HOME") + "/.ouster/player/" + player.Name)
 	if err != nil {
 		return
 	}
-
 	encoder := json.NewEncoder(f)
-	err = encoder.Encode(info)
+
+	pcInfo := player.PCInfo()
+	skillInfo := player.SkillInfo()
+
+	encoder.Encode(pcInfo)
+	encoder.Encode(skillInfo)
+
 	f.Close()
+}
+
+func (player *Player) SkillInfo() darkeden.SkillInfo {
+	switch player.PCType {
+	case 'V':
+		var ret darkeden.VampireSkillInfo
+		ret.LearnNewSkill = false
+		skillList := make([]darkeden.SubVampireSkillInfo, len(player.skillslot))
+		for i := 0; i < len(player.skillslot); i++ {
+			slot := &player.skillslot[i]
+			skillList[i].SkillType = slot.SkillType
+			skillList[i].Interval = slot.Interval
+			skillList[i].CastingTime = slot.CastingTime
+		}
+
+		ret.SubVampireSkillInfoList = skillList
+		return ret
+	case 'O':
+		var ret darkeden.OusterSkillInfo
+		ret.LearnNewSkill = false
+		skillList := make([]darkeden.SubOusterSkillInfo, len(player.skillslot))
+		for i := 0; i < len(player.skillslot); i++ {
+			slot := &player.skillslot[i]
+			skillList[i].SkillType = slot.SkillType
+			skillList[i].ExpLevel = slot.ExpLevel
+			skillList[i].Interval = slot.Interval
+			skillList[i].CastingTime = slot.CastingTime
+		}
+
+		ret.SubOusterSkillInfoList = skillList
+		return ret
+	case 'S':
+	}
+	return nil
 }
 
 func (player *Player) PCInfo() data.PCInfo {
@@ -451,128 +527,20 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 			Y:   player.Y(),
 			Dir: 2,
 		}
-		if player.PCType == 'V' {
-			player.send <- &darkeden.GCSkillInfoPacket{
-				PCType: darkeden.PC_VAMPIRE,
-				PCSkillInfoList: []darkeden.SkillInfo{
-					darkeden.VampireSkillInfo{
-						LearnNewSkill: false,
-						SubVampireSkillInfoList: []darkeden.SubVampireSkillInfo{
-							darkeden.SubVampireSkillInfo{
-								SkillType:   SKILL_RAPID_GLIDING,
-								Interval:    50,
-								CastingTime: 31,
-							},
-							darkeden.SubVampireSkillInfo{
-								SkillType:   SKILL_METEOR_STRIKE,
-								Interval:    10,
-								CastingTime: 4160749567,
-							},
-							darkeden.SubVampireSkillInfo{
-								SkillType:   SKILL_INVISIBILITY,
-								Interval:    30,
-								CastingTime: 11,
-							},
-							darkeden.SubVampireSkillInfo{
-								SkillType:   SKILL_PARALYZE,
-								Interval:    60,
-								CastingTime: 41,
-							},
-							darkeden.SubVampireSkillInfo{
-								SkillType:   SKILL_BLOOD_SPEAR,
-								Interval:    60,
-								CastingTime: 41,
-							},
-						},
-					},
-				},
-			}
-		} else {
-			player.send <- &darkeden.GCSkillInfoPacket{
-				PCType: darkeden.PC_OUSTER,
-				PCSkillInfoList: []darkeden.SkillInfo{
-					darkeden.OusterSkillInfo{
-						LearnNewSkill: false,
-						SubOusterSkillInfoList: []darkeden.SubOusterSkillInfo{
-							darkeden.SubOusterSkillInfo{
-								SkillType:   SKILL_FLOURISH,
-								ExpLevel:    1,
-								Interval:    10,
-								CastingTime: 6,
-							},
-							darkeden.SubOusterSkillInfo{
-								SkillType: SKILL_ABSORB_SOUL,
-								ExpLevel:  1,
-								Interval:  5,
-							},
-							darkeden.SubOusterSkillInfo{
-								SkillType: SKILL_SUMMON_SYLPH,
-								ExpLevel:  1,
-								Interval:  5,
-							},
-							darkeden.SubOusterSkillInfo{
-								SkillType:   SKILL_SHARP_HAIL,
-								ExpLevel:    1,
-								Interval:    112,
-								CastingTime: 107,
-							},
-							darkeden.SubOusterSkillInfo{
-								SkillType:   SKILL_DISTANCE_BLITZ,
-								ExpLevel:    1,
-								Interval:    70,
-								CastingTime: 65,
-							},
-							darkeden.SubOusterSkillInfo{
-								SkillType:   SKILL_DUCKING_WALLOP,
-								ExpLevel:    1,
-								Interval:    100,
-								CastingTime: 95,
-							},
-							darkeden.SubOusterSkillInfo{
-								SkillType:   SKILL_DESTRUCTION_SPEAR,
-								ExpLevel:    1,
-								Interval:    50,
-								CastingTime: 45,
-							},
-							darkeden.SubOusterSkillInfo{
-								SkillType:   SKILL_SHARP_CHAKRAM,
-								ExpLevel:    1,
-								Interval:    600,
-								CastingTime: 600,
-							},
-							darkeden.SubOusterSkillInfo{
-								SkillType:   SKILL_TELEPORT,
-								ExpLevel:    1,
-								Interval:    50,
-								CastingTime: 45,
-							},
-							darkeden.SubOusterSkillInfo{
-								SkillType:   SKILL_SUMMON_SYLPH,
-								ExpLevel:    1,
-								Interval:    5,
-								CastingTime: 0,
-							},
-							darkeden.SubOusterSkillInfo{
-								SkillType: SKILL_ICE_OF_SOUL_STONE,
-								ExpLevel:  1,
-								Interval:  0,
-							},
-							darkeden.SubOusterSkillInfo{
-								SkillType: SKILL_FIRE_OF_SOUL_STONE,
-								ExpLevel:  1,
-								Interval:  0,
-							},
-							darkeden.SubOusterSkillInfo{
-								SkillType:   SKILL_EVADE,
-								ExpLevel:    1,
-								Interval:    600,
-								CastingTime: 600,
-							},
-						},
-					},
-				},
-			}
+
+		var skillInfo darkeden.GCSkillInfoPacket
+		switch player.PCType {
+		case 'V':
+			skillInfo.PCType = darkeden.PC_VAMPIRE
+		case 'O':
+			skillInfo.PCType = darkeden.PC_OUSTER
+		case 'S':
+			skillInfo.PCType = darkeden.PC_SLAYER
 		}
+		skillInfo.PCSkillInfoList = []darkeden.SkillInfo{
+			player.SkillInfo(),
+		}
+		player.send <- &skillInfo
 	case darkeden.PACKET_CG_MOVE:
 		player.Scene.agent <- AgentMessage{
 			Player: player,
