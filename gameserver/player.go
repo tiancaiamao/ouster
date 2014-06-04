@@ -627,7 +627,7 @@ func (player *Player) SkillToTile(packet darkeden.CGSkillToTilePacket) {
 	}
 
 	handler := skillInfo.Handler
-	tileHandler, ok := handler.(SkillToTileHandler)
+	tileHandler, ok := handler.(PlayerSkillToTileHandler)
 	if !ok {
 		log.Println("error ", packet.SkillType, "not implement SkillTileHandler!!!")
 		return
@@ -645,7 +645,7 @@ func (player *Player) SkillToObject(packet darkeden.CGSkillToObjectPacket) {
 	target := player.Scene.objects[packet.TargetObjectID]
 	if monster, ok := target.(*Monster); ok {
 		handler := skillInfo.Handler
-		if toObjectHandler, ok := handler.(SkillToObjectHandler); ok {
+		if toObjectHandler, ok := handler.(PlayerSkillToMonsterHandler); ok {
 			toObjectHandler.ExecuteP2M(player, monster)
 		} else {
 			log.Println("can't execute skill ", packet.SkillType)
