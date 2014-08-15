@@ -22,7 +22,3 @@ ouster是一个用Go语言写的MMORPG服务端。
 	go install github.com/tiancaiamao/ouster/loginserver
 
 运行loginserver和gameserver，运行客户端。
-
-# License相关
-
-License暂时未定，三个月以内的代码你可以想拿它怎么搞就怎么搞。三个月后**有可能闭源**，也可能会按GPL协议或者MIT开源。如果有人愿意contribute，表示同意了这种处理方式。
