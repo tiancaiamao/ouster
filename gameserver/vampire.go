@@ -67,7 +67,7 @@ type Vampire struct {
     VisionHeight ZoneCoord_t
 
     SkillSlot map[SkillType_t]*VampireSkillSlot
-    WearItem [VAMPIRE_VAMPIRE_WEAR_MAX]*Item
+    WearItem  [VAMPIRE_VAMPIRE_WEAR_MAX]*Item
 
     SilverDamage Silver_t
 

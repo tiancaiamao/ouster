@@ -1,11 +1,11 @@
 package packet
 
 import (
-	"fmt"
-	"github.com/tiancaiamao/ouster"
-	"github.com/ugorji/go/codec"
-	"io"
-	"reflect"
+    "fmt"
+    "github.com/tiancaiamao/ouster"
+    "github.com/ugorji/go/codec"
+    "io"
+    "reflect"
 )
 
 var mh codec.MsgpackHandle
@@ -13,76 +13,76 @@ var mh codec.MsgpackHandle
 type PacketError string
 
 func (err PacketError) Error() string {
-	return string(err)
+    return string(err)
 }
 
 type Packet struct {
-	Id  uint16
-	Obj interface{}
+    Id  uint16
+    Obj interface{}
 }
 
 type Decoder struct {
-	*codec.Decoder
+    *codec.Decoder
 }
 
 func NewDecoder(r io.Reader) *Decoder {
-	return &Decoder{codec.NewDecoder(r, &mh)}
+    return &Decoder{codec.NewDecoder(r, &mh)}
 }
 
 func PacketNameById(id uint16) string {
-	v, ok := PacketMap[id]
-	if !ok {
-		return fmt.Sprintf("UnKnown PacketId: %d", id)
-	}
+    v, ok := PacketMap[id]
+    if !ok {
+        return fmt.Sprintf("UnKnown PacketId: %d", id)
+    }
 
-	// XXXPacket -> PXXX
-	return "P" + v.Name()[:len(v.Name())-6]
+    // XXXPacket -> PXXX
+    return "P" + v.Name()[:len(v.Name())-6]
 }
 
 func (dec *Decoder) Decode(pkt *Packet) error {
-	err := dec.Decoder.Decode(&pkt.Id)
-	if err != nil || pkt.Id >= PMax {
-		return PacketError(fmt.Sprintf("Decode: decode packet id error: %s", err.Error()))
-	}
+    err := dec.Decoder.Decode(&pkt.Id)
+    if err != nil || pkt.Id >= PMax {
+        return PacketError(fmt.Sprintf("Decode: decode packet id error: %s", err.Error()))
+    }
 
-	ti, ok := PacketMap[pkt.Id]
-	if !ok {
-		return ouster.NewError(fmt.Sprintf("Decode: invalid packet id %d", pkt.Id))
-	}
+    ti, ok := PacketMap[pkt.Id]
+    if !ok {
+        return ouster.NewError(fmt.Sprintf("Decode: invalid packet id %d", pkt.Id))
+    }
 
-	// TODO: use a object pool here to avoid frequence allocation
-	v := reflect.New(ti)
-	err = dec.Decoder.Decode(v)
-	pkt.Obj = v.Elem().Interface()
-	return err
+    // TODO: use a object pool here to avoid frequence allocation
+    v := reflect.New(ti)
+    err = dec.Decoder.Decode(v)
+    pkt.Obj = v.Elem().Interface()
+    return err
 }
 
 type Encoder struct {
-	*codec.Encoder
+    *codec.Encoder
 }
 
 func NewEncoder(w io.Writer) *Encoder {
-	return &Encoder{codec.NewEncoder(w, &mh)}
+    return &Encoder{codec.NewEncoder(w, &mh)}
 }
 
 func (enc *Encoder) Encode(id uint16, obj interface{}) error {
-	if id >= PMax {
-		return PacketError("Encode: packet id out ranged")
-	}
+    if id >= PMax {
+        return PacketError("Encode: packet id out ranged")
+    }
 
-	err := enc.Encoder.Encode(id)
-	if err != nil {
-		return ouster.NewError("Encode id error:" + err.Error())
-	}
+    err := enc.Encoder.Encode(id)
+    if err != nil {
+        return ouster.NewError("Encode id error:" + err.Error())
+    }
 
-	ti := PacketMap[id]
-	if ti != reflect.TypeOf(obj) {
-		return PacketError("Encode: inconsistent of packet's id and Obj: id is " + ti.String() + " , but obj is " + reflect.TypeOf(obj).String())
-	}
+    ti := PacketMap[id]
+    if ti != reflect.TypeOf(obj) {
+        return PacketError("Encode: inconsistent of packet's id and Obj: id is " + ti.String() + " , but obj is " + reflect.TypeOf(obj).String())
+    }
 
-	err = enc.Encoder.Encode(obj)
-	if err != nil {
-		return ouster.NewError("Encode obj error:" + err.Error())
-	}
-	return nil
+    err = enc.Encoder.Encode(obj)
+    if err != nil {
+        return ouster.NewError("Encode obj error:" + err.Error())
+    }
+    return nil
 }

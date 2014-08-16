@@ -104,7 +104,6 @@ type Monster struct {
 //		 }
 // }
 
-
 func dir(dx int, dy int) uint8 {
     var ret uint8
     switch {
