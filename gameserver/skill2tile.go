@@ -56,19 +56,19 @@ func (ignore MeteorStrikeHandler) ExecuteP2T(player *Player, x uint8, y uint8) {
 			x <= marker.X()+1 &&
 			y >= marker.Y()-1 &&
 			y <= marker.Y()+1 {
-			id := marker.Id()
-			obj := player.Scene.objects[id]
-			switch obj.(type) {
-			case *Monster:
-				monster := obj.(*Monster)
-				skillOutput := ignore.ComputeOutput(&player.Creature, &monster.Creature)
-				player.Scene.agent <- AgentMessage{
-					Player: player,
-					Msg:    skillOutput,
-				}
-			case *Player:
-
-			}
+			// id := marker.Id()
+			// obj := player.Scene.objects[id]
+			// switch obj.(type) {
+			// case *Monster:
+			// 	monster := obj.(*Monster)
+			// 	skillOutput := ignore.ComputeOutput(&player.Creature, &monster.Creature)
+			// 	player.Scene.agent <- AgentMessage{
+			// 		Player: player,
+			// 		Msg:    skillOutput,
+			// 	}
+			// case *Player:
+			//
+			// }
 		}
 	})
 	ok := &darkeden.GCSkillToTileOK1{

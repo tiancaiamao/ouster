@@ -23,15 +23,15 @@ func (blood BloodSpearHandler) ExecuteP2M(player *Player, monster *Monster) {
 		SkillType: SKILL_BLOOD_SPEAR,
 	})
 
-	damage := player.STR[ATTR_CURRENT]/6 + player.INT[ATTR_CURRENT]/2 + player.DEX[ATTR_CURRENT]/12
-	if damage >= 180 {
-		damage = 180
-	}
+	// damage := player.STR[ATTR_CURRENT]/6 + player.INT[ATTR_CURRENT]/2 + player.DEX[ATTR_CURRENT]/12
+	// if damage >= 180 {
+	// 	damage = 180
+	// }
 	player.Scene.agent <- AgentMessage{
 		Player: player,
 		Msg: SkillOutput{
 			MonsterID: monster.Id(),
-			Damage:    int(damage),
+			// Damage:    int(damage),
 			Duration:  10,
 		},
 	}
@@ -53,12 +53,12 @@ func (ignore ParalyzeHandler) ExecuteP2M(player *Player, monster *Monster) {
 		Duration:       uint16(skillOutput.Duration),
 	}
 	player.send <- ok
-	player.Scene.BroadcastPacket(player.X(), player.Y(), &darkeden.GCSkillToObjectOK3{
-		ObjectID:  player.Id(),
-		SkillType: SKILL_PARALYZE,
-		TargetX:   monster.X(),
-		TargetY:   monster.Y(),
-	})
+	// player.Scene.BroadcastPacket(player.X(), player.Y(), &darkeden.GCSkillToObjectOK3{
+	// 	ObjectID:  player.Id(),
+	// 	SkillType: SKILL_PARALYZE,
+	// 	TargetX:   monster.X(),
+	// 	TargetY:   monster.Y(),
+	// })
 	player.Scene.BroadcastPacket(monster.X(), monster.Y(), &darkeden.GCSkillToObjectOK4{
 		ObjectID:  monster.Id(),
 		SkillType: SKILL_PARALYZE,
