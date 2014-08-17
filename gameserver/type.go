@@ -79,3 +79,8 @@ type Moral_t uint8
 type SkillLevel_t uint8
 type ItemID_t uint32
 type ExpLevel_t uint16
+type ZoneID_t uint16
+type ZoneLevel_t uint8
+type DarkLevel_t uint8
+type LightLevel_t uint8
+type NPCType_t uint16

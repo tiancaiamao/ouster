@@ -31,19 +31,6 @@ type Point struct {
     Y   int
 }
 
-var dirMoveMask [8]Point
-
-func init() {
-    dirMoveMask[RIGHTUP] = Point{1, -1}
-    dirMoveMask[LEFT] = Point{-1, 0}
-    dirMoveMask[RIGHT] = Point{1, 0}
-    dirMoveMask[LEFTDOWN] = Point{-1, 1}
-    dirMoveMask[DOWN] = Point{0, 1}
-    dirMoveMask[RIGHTDOWN] = Point{1, 1}
-    dirMoveMask[UP] = Point{0, -1}
-    dirMoveMask[LEFTUP] = Point{-1, -1}
-}
-
 const (
     ATTR_CURRENT = iota
     ATTR_MAX
