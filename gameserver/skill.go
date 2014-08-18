@@ -142,7 +142,7 @@ func AOE(scene *Scene,
     scene.Nearby(middleX,
         middleY,
         func(ignore aoi.Entity, target aoi.Entity) {
-            id := target.Id()
+            // id := target.Id()
             // if id == player.Id() {
             //     return
             // }

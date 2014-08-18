@@ -5,7 +5,6 @@ import (
     "github.com/tiancaiamao/ouster/aoi/cell"
     "github.com/tiancaiamao/ouster/data"
     "github.com/tiancaiamao/ouster/packet"
-    "github.com/tiancaiamao/ouster/packet/darkeden"
     "log"
     "math/rand"
     "time"
@@ -152,7 +151,7 @@ func (m *Scene) Login(player *Player, zoneX uint8, zoneY uint8) error {
 func loop(m *Scene) {
     for {
         select {
-        case data := <-m.agent:
+        case <-m.agent:
             // m.processPlayerInput(data.Player.Id(), data.Msg)
         case <-m.quit:
         case <-m.event:
@@ -168,14 +167,14 @@ func (m *Scene) Go() {
 
 func (m *Scene) processPlayerInput(playerId uint32, msg interface{}) {
     switch msg.(type) {
-    case darkeden.CGMovePacket:
-        move := msg.(darkeden.CGMovePacket)
+    case packet.CGMovePacket:
+        move := msg.(packet.CGMovePacket)
         log.Println("scene receive a CGMovePacket:", move.X, move.Y, move.Dir)
         // obj := m.objects[playerId]
         // player := obj.(*Player)
 
         // if move.Dir >= 8 {
-        //     moveErr := darkeden.GCMoveErrorPacket{
+        //     moveErr := packet.GCMoveErrorPacket{
         //         player.X(),
         //         player.Y(),
         //     }
@@ -186,18 +185,18 @@ func (m *Scene) processPlayerInput(playerId uint32, msg interface{}) {
         move.Y = uint8(int(move.Y) + dirMoveMask[move.Dir].Y)
 
         // m.Update(player.Entity, move.X, move.Y)
-        // player.send <- darkeden.GCMoveOKPacket{
+        // player.send <- packet.GCMoveOKPacket{
         //     X:   move.X,
         //     Y:   move.Y,
         //     Dir: move.Dir,
         // }
-    case *darkeden.GCFastMovePacket:
-        // fastMove := msg.(*darkeden.GCFastMovePacket)
+    case *packet.GCFastMovePacket:
+        // fastMove := msg.(*packet.GCFastMovePacket)
         // obj := m.objects[playerId]
         // player := obj.(*Player)
         // m.Update(player.Entity, fastMove.ToX, fastMove.ToY)
         // player.send <- fastMove
-        // player.BroadcastPacket(player.X(), player.Y(), &darkeden.GCSkillToTileOK5{
+        // player.BroadcastPacket(player.X(), player.Y(), &packet.GCSkillToTileOK5{
         //     ObjectID:  playerId,
         //     SkillType: fastMove.SkillType,
         //     X:         player.X(),
@@ -211,12 +210,12 @@ func (m *Scene) processPlayerInput(playerId uint32, msg interface{}) {
         // monster, _ := obj.(*Monster)
         // if monster.HP[ATTR_CURRENT] > uint16(skillOutput.Damage) {
         //     monster.HP[ATTR_CURRENT] -= uint16(skillOutput.Damage)
-        //     m.BroadcastPacket(monster.X(), monster.Y(), darkeden.GCStatusCurrentHP{
+        //     m.BroadcastPacket(monster.X(), monster.Y(), packet.GCStatusCurrentHP{
         //         ObjectID:  monster.Id(),
         //         CurrentHP: monster.HP[ATTR_CURRENT],
         //     })
         // } else {
-        //     m.BroadcastPacket(monster.X(), monster.Y(), &darkeden.GCAddMonsterCorpse{
+        //     m.BroadcastPacket(monster.X(), monster.Y(), &packet.GCAddMonsterCorpse{
         //         ObjectID:    id,
         //         MonsterType: monster.MonsterType,
         //         MonsterName: monster.Name,
@@ -225,7 +224,7 @@ func (m *Scene) processPlayerInput(playerId uint32, msg interface{}) {
         //         Dir:         2,
         //         LastKiller:  playerId,
         //     })
-        //     m.BroadcastPacket(monster.X(), monster.Y(), darkeden.GCCreatureDiedPacket(monster.Id()))
+        //     m.BroadcastPacket(monster.X(), monster.Y(), packet.GCCreatureDiedPacket(monster.Id()))
         // }
     }
 }

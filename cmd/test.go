@@ -4,7 +4,7 @@ import (
     "encoding/json"
     // "fmt"
     "github.com/tiancaiamao/ouster/data"
-    "github.com/tiancaiamao/ouster/packet/darkeden"
+	"github.com/tiancaiamao/ouster/packet"
     "os"
 )
 
@@ -58,30 +58,30 @@ func main() {
         ZoneY:            237,
     }
 
-    skill := darkeden.VampireSkillInfo{
+    skill := packet.VampireSkillInfo{
         LearnNewSkill: false,
-        SubVampireSkillInfoList: []darkeden.SubVampireSkillInfo{
-            darkeden.SubVampireSkillInfo{
+        SubVampireSkillInfoList: []packet.SubVampireSkillInfo{
+            packet.SubVampireSkillInfo{
                 SkillType:   SKILL_RAPID_GLIDING,
                 Interval:    50,
                 CastingTime: 31,
             },
-            darkeden.SubVampireSkillInfo{
+            packet.SubVampireSkillInfo{
                 SkillType:   SKILL_METEOR_STRIKE,
                 Interval:    10,
                 CastingTime: 4160749567,
             },
-            darkeden.SubVampireSkillInfo{
+            packet.SubVampireSkillInfo{
                 SkillType:   SKILL_INVISIBILITY,
                 Interval:    30,
                 CastingTime: 11,
             },
-            darkeden.SubVampireSkillInfo{
+            packet.SubVampireSkillInfo{
                 SkillType:   SKILL_PARALYZE,
                 Interval:    60,
                 CastingTime: 41,
             },
-            darkeden.SubVampireSkillInfo{
+            packet.SubVampireSkillInfo{
                 SkillType:   SKILL_BLOOD_SPEAR,
                 Interval:    60,
                 CastingTime: 41,
@@ -118,78 +118,78 @@ func main() {
     // 		ZoneY:  58,
     // 	}
     //
-    // 	skill := darkeden.OusterSkillInfo{
+    // 	skill :=  OusterSkillInfo{
     // 		LearnNewSkill: false,
-    // 		SubOusterSkillInfoList: []darkeden.SubOusterSkillInfo{
-    // 			darkeden.SubOusterSkillInfo{
+    // 		SubOusterSkillInfoList: [] SubOusterSkillInfo{
+    // 			 SubOusterSkillInfo{
     // 				SkillType:   SKILL_FLOURISH,
     // 				ExpLevel:    1,
     // 				Interval:    10,
     // 				CastingTime: 6,
     // 			},
-    // 			darkeden.SubOusterSkillInfo{
+    // 			 SubOusterSkillInfo{
     // 				SkillType: SKILL_ABSORB_SOUL,
     // 				ExpLevel:  1,
     // 				Interval:  5,
     // 			},
-    // 			darkeden.SubOusterSkillInfo{
+    // 			 SubOusterSkillInfo{
     // 				SkillType: SKILL_SUMMON_SYLPH,
     // 				ExpLevel:  1,
     // 				Interval:  5,
     // 			},
-    // 			darkeden.SubOusterSkillInfo{
+    // 			 SubOusterSkillInfo{
     // 				SkillType:   SKILL_SHARP_HAIL,
     // 				ExpLevel:    1,
     // 				Interval:    112,
     // 				CastingTime: 107,
     // 			},
-    // 			darkeden.SubOusterSkillInfo{
+    // 			 SubOusterSkillInfo{
     // 				SkillType:   SKILL_DISTANCE_BLITZ,
     // 				ExpLevel:    1,
     // 				Interval:    70,
     // 				CastingTime: 65,
     // 			},
-    // 			darkeden.SubOusterSkillInfo{
+    // 			 SubOusterSkillInfo{
     // 				SkillType:   SKILL_DUCKING_WALLOP,
     // 				ExpLevel:    1,
     // 				Interval:    100,
     // 				CastingTime: 95,
     // 			},
-    // 			darkeden.SubOusterSkillInfo{
+    // 			 SubOusterSkillInfo{
     // 				SkillType:   SKILL_DESTRUCTION_SPEAR,
     // 				ExpLevel:    1,
     // 				Interval:    50,
     // 				CastingTime: 45,
     // 			},
-    // 			darkeden.SubOusterSkillInfo{
+    // 			 SubOusterSkillInfo{
     // 				SkillType:   SKILL_SHARP_CHAKRAM,
     // 				ExpLevel:    1,
     // 				Interval:    600,
     // 				CastingTime: 600,
     // 			},
-    // 			darkeden.SubOusterSkillInfo{
+    // 			 SubOusterSkillInfo{
     // 				SkillType:   SKILL_TELEPORT,
     // 				ExpLevel:    1,
     // 				Interval:    50,
     // 				CastingTime: 45,
     // 			},
-    // 			darkeden.SubOusterSkillInfo{
+    // 			 SubOusterSkillInfo{
     // 				SkillType:   SKILL_SUMMON_SYLPH,
     // 				ExpLevel:    1,
     // 				Interval:    5,
     // 				CastingTime: 0,
     // 			},
-    // 			darkeden.SubOusterSkillInfo{
+    // 			 SubOusterSkillInfo{
     // 				SkillType: SKILL_ICE_OF_SOUL_STONE,
     // 				ExpLevel:  1,
     // 				Interval:  0,
     // 			},
-    // 			darkeden.SubOusterSkillInfo{
+    // 			 SubOusterSkillInfo{
     // 				SkillType: SKILL_FIRE_OF_SOUL_STONE,
     // 				ExpLevel:  1,
     // 				Interval:  0,
     // 			},
-    // 			darkeden.SubOusterSkillInfo{
+    // 			 SubOusterSkillInfo{
     // 				SkillType:   SKILL_EVADE,
     // 				ExpLevel:    1,
     // 				Interval:    600,

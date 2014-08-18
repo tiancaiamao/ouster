@@ -1,7 +1,7 @@
 package main
 
 import (
-    "github.com/tiancaiamao/ouster/packet/darkeden"
+    "github.com/tiancaiamao/ouster/packet"
 )
 
 type POINT struct {
@@ -164,7 +164,7 @@ func (zone *Zone) Sector(x, y int) *Sector {
 func (zone *Zone) movePC(pcItf PlayerCreatureInterface, cx ZoneCoord_t, cy ZoneCoord_t, dir Dir_t) {
     pc := pcItf.PlayerCreatureInstance()
     if !pc.IsAbleToMove() {
-        pc.sendPacket(darkeden.GCMoveErrorPacket{
+        pc.sendPacket(packet.GCMoveErrorPacket{
             X:  uint8(pc.X),
             Y:  uint8(pc.Y),
         })
@@ -182,7 +182,7 @@ func (zone *Zone) movePC(pcItf PlayerCreatureInterface, cx ZoneCoord_t, cy ZoneC
             difY = -difY
         }
         if difX > 6 || difY > 6 {
-            pc.sendPacket(darkeden.GCMoveErrorPacket{
+            pc.sendPacket(packet.GCMoveErrorPacket{
                 X:  uint8(pc.X),
                 Y:  uint8(pc.Y),
             })
@@ -196,7 +196,7 @@ func (zone *Zone) movePC(pcItf PlayerCreatureInterface, cx ZoneCoord_t, cy ZoneC
     nx = nx + ZoneCoord_t(dirMoveMask[dir].X)
     ny = ny + ZoneCoord_t(dirMoveMask[dir].Y)
     if nx < 0 || nx >= zone.Width || ny < 0 || ny >= zone.Height {
-        pc.sendPacket(darkeden.GCMoveErrorPacket{
+        pc.sendPacket(packet.GCMoveErrorPacket{
             X:  uint8(pc.X),
             Y:  uint8(pc.Y),
         })
@@ -208,7 +208,7 @@ func (zone *Zone) movePC(pcItf PlayerCreatureInterface, cx ZoneCoord_t, cy ZoneC
 
     // Tile上有东西了则不能移动
     if newTile.IsBlocked(pc.MoveMode) || newTile.HasCreature(pc.MoveMode) {
-        pc.sendPacket(darkeden.GCMoveErrorPacket{
+        pc.sendPacket(packet.GCMoveErrorPacket{
             X:  uint8(pc.X),
             Y:  uint8(pc.Y),
         })
@@ -223,7 +223,7 @@ func (zone *Zone) movePC(pcItf PlayerCreatureInterface, cx ZoneCoord_t, cy ZoneC
     pc.X = nx
     pc.Y = ny
     pc.Dir = dir
-    pc.sendPacket(darkeden.GCMoveOK{
+    pc.sendPacket(packet.GCMoveOKPacket{
         X:   uint8(nx),
         Y:   uint8(ny),
         Dir: uint8(dir),
@@ -233,100 +233,96 @@ func (zone *Zone) movePC(pcItf PlayerCreatureInterface, cx ZoneCoord_t, cy ZoneC
 }
 
 func (zone *Zone) movePCBroadcast(pcItf PlayerCreatureInterface, x1 ZoneCoord_t, y1 ZoneCoord_t, x2 ZoneCoord_t, y2 ZoneCoord_t) {
-    pc := pcItf.PlayerCreatureInstance()
-    gcMove := darkeden.GCMovePacket{
-        ObjectID: pc.ObjectID,
-        X:        pc.X,
-        Y:        pc.Y,
-        Dir:      pc.Dir,
-    }
+    // pc := pcItf.PlayerCreatureInstance()
+    // gcMove := packet.GCMovePacket{
+    //     ObjectID: uint32(pc.ObjectID),
+    //     X:        uint8(pc.X),
+    //     Y:        uint8(pc.Y),
+    //     Dir:      uint8(pc.Dir),
+    // }
 
-    beginX := x2 - maxViewportWidth - 1
+    beginX := x2 - ZoneCoord_t(maxViewportWidth) - 1
     if beginX < 0 {
         beginX = 0
     }
-    endX := x2 + maxViewportWidth + 1
+    endX := x2 + ZoneCoord_t(maxViewportWidth) + 1
     if endX > zone.Width {
         endX = zone.Width
     }
-    beginY := y2 - maxViewportUpperHeight - 1
+    beginY := y2 - ZoneCoord_t(maxViewportUpperHeight) - 1
     if beginY < 0 {
         beginY = 0
     }
-    endY := y2 + maxViewportUpperHeight + 1
+    endY := y2 + ZoneCoord_t(maxViewportUpperHeight) + 1
     if endY > zone.Height {
         endY = zone.Height
     }
 
     for i := beginX; i < endX; i++ {
         for j := beginY; j < endY; j++ {
-            tile := zone.Tile(i, j)
+            tile := zone.Tile(int(i), int(j))
             for _, v := range tile.Objects {
-                objectClass = v.ObjectClass()
+                objectClass := v.ObjectClass()
                 if objectClass == OBJECT_CLASS_CREATURE {
                     switch v.(type) {
                     case *Monster:
                         // 怪物进入玩家视线
-                        // pc.sendPacket(darkeden.MonsterAddPackt{})
+                        // pc.sendPacket(packet.MonsterAddPackt{})
                         // 把玩家放到怪物的敌人列表中
-                    case *GamePlayer:
-                        gp := v.GamePlayer
-                        switch gp.Creature {
-                        case Slayer:
-                            pc.sendPacket(packet.GCAddSlayer{})
-                            slayer := gp.Creature.(Slayer)
-                            if canSee(slayer, pc) {
-                                slayer.sendPacket(packet.GCAddSlayer{})
+                    case Slayer:
+                        // pc.sendPacket(packet.GCAddSlayer{})
+                        slayer := v.(Slayer)
+                        if canSee(slayer, pcItf) {
+                            // slayer.sendPacket(packet.GCAddSlayer{})
+                        } else {
+                            // slayer.sendPacket(packet.GCDeleteObject{})
+                        }
+                    case Vampire:
+                        vampire := v.(Vampire)
+                        if canSee(pcItf, vampire) {
+                            if vampire.IsFlag(EFFECT_CLASS_HIDE) {
+                                // pc.sendPacket(packet.GCAddBurrowingCreaturePacket{
+                                //     ObjectID: vampire.ObjectID,
+                                //     Name:     vampire.Name,
+                                //     X:        vampire.X,
+                                //     Y:        vampire.Y,
+                                // })
                             } else {
-                                slayer.sendPacket(packet.GCDeleteObject{})
-                            }
-                        case Vampire:
-                            vampire := gp.Creature.(Vampire)
-                            if canSee(pc, vampire) {
-                                if vampire.IsFlag(EFFECT_CLASS_HIDE) {
-                                    pc.sendPacket(packet.GCAddBurrowingCreature{
-                                        ObjectID: vampire.ObjectID,
-                                        Name:     vampire.Name,
-                                        X:        vampire.X,
-                                        Y:        vampire.Y,
-                                    })
-                                } else {
-                                    pc.sendPacket(packet.GCAddVampire{})
-                                }
-                            }
-                            if canSee(vampire, pc) {
-                                // TODO:添加或者移除
-                            }
-                        case Ouster:
-                            ouster := gp.Creature.(Ouster)
-                            if canSee(pc, ouster) {
-                                pc.sendPacket(packet.GCAddOuster{})
-                            }
-                            if canSee(ouster, pc) {
-                                // TODO:添加或者移除
+                                // pc.sendPacket(packet.GCAddVampire{})
                             }
                         }
+                        if canSee(vampire, pcItf) {
+                            // TODO:添加或者移除
+                        }
+                    case Ouster:
+                        ouster := v.(Ouster)
+                        if canSee(pcItf, ouster) {
+                            // pc.sendPacket(packet.GCAddOuster{})
+                        }
+                        if canSee(ouster, pcItf) {
+                            // TODO:添加或者移除
+                        }
                     case *NPC:
-                        pc.sendPacket(packet.GCAddNPC{})
+                        // pc.sendPacket(packet.GCAddNPC{})
                     }
                 } else if objectClass == OBJECT_CLASS_ITEM {
                     item := v.(ItemInterface)
-                    itemClass = item.ItemClass()
+                    itemClass := item.ItemClass()
                     if itemClass == ITEM_CLASS_CORPSE {
                         switch v.(type) {
                         case SlayerCorpse:
-                            pc.sendPacket(darkeden.GCAddSlayerCorpse{})
+                            // pc.sendPacket(packet.GCAddSlayerCorpse{})
                         case VampireCorpse:
-                            pc.sendPacket(darkeden.GCAddVampireCorpse{})
+                            // pc.sendPacket(packet.GCAddVampireCorpse{})
                         case OusterCorpse:
-                            pc.sendPacket(darkeden.GCAddOusterCorpse{})
-                        case MonstCorpse:
-                            pc.sendPacket(darkeden.GCAddMonsterCorpse{})
+                            // pc.sendPacket(packet.GCAddOusterCorpse{})
+                        case MonsterCorpse:
+                            // pc.sendPacket(packet.GCAddMonsterCorpse{})
                         }
                     }
                 } else if objectClass == OBJECT_CLASS_EFFECT {
                     // TODO:...
-                    pc.sendPacket(packet.GCAddEffectToTile{})
+                    // pc.sendPacket(packet.GCAddEffectToTile{})
                 }
             }
         }

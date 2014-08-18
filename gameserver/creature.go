@@ -78,3 +78,7 @@ func (c Creature) IsAbleToMove() bool {
 func (c *Creature) IsFlag(effect uint) bool {
     return c.Flag.IsFlag(effect)
 }
+
+func canSee(watcher CreatureInterface, marker CreatureInterface) bool {
+    return true //TODO
+}

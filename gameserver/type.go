@@ -84,3 +84,4 @@ type ZoneLevel_t uint8
 type DarkLevel_t uint8
 type LightLevel_t uint8
 type NPCType_t uint16
+type Coord_t uint8

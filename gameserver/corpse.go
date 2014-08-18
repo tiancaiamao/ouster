@@ -21,6 +21,22 @@ type Corpse struct {
 }
 
 // Corpse继承Item对象，实现ItemInterface接口
-func (c *Corpse) ItemClass() ItemClass {
+func (c Corpse) ItemClass() ItemClass {
     return ITEM_CLASS_CORPSE
+}
+
+type SlayerCorpse struct {
+    Corpse
+}
+
+type OusterCorpse struct {
+    Corpse
+}
+
+type VampireCorpse struct {
+    Corpse
+}
+
+type MonsterCorpse struct {
+	Corpse
 }

@@ -1,9 +1,8 @@
-package darkeden
+package packet
 
 import (
     "encoding/binary"
     "errors"
-    "github.com/tiancaiamao/ouster/packet"
     "io"
     "log"
 )
@@ -504,11 +503,11 @@ const (
 
 type PacketSize uint32
 
-var table [PACKET_MAX]func([]byte, uint8) (packet.Packet, error)
+var table [PACKET_MAX]func([]byte, uint8) (Packet, error)
 
 func init() {
     table[PACKET_CL_LOGIN] = readLogin
-    table[PACKET_CL_VERSION_CHECK] = func([]byte, uint8) (packet.Packet, error) {
+    table[PACKET_CL_VERSION_CHECK] = func([]byte, uint8) (Packet, error) {
         return CLVersionCheckPacket{}, nil
     }
     table[PACKET_CL_SELECT_WORLD] = readSelectWorld
@@ -517,10 +516,10 @@ func init() {
     table[PACKET_CL_SELECT_PC] = readSelectPc
 
     table[PACKET_CG_CONNECT] = readConnect
-    table[PACKET_CG_READY] = func([]byte, uint8) (packet.Packet, error) {
+    table[PACKET_CG_READY] = func([]byte, uint8) (Packet, error) {
         return CGReadyPacket{}, nil
     }
-    table[PACKET_CG_VERIFY_TIME] = func([]byte, uint8) (packet.Packet, error) {
+    table[PACKET_CG_VERIFY_TIME] = func([]byte, uint8) (Packet, error) {
         return CGVerifyTimePacket{}, nil
     }
     table[PACKET_CG_MOVE] = readMove
@@ -531,7 +530,7 @@ func init() {
     table[PACKET_CG_SKILL_TO_SELF] = readSkillToSelf
     table[PACKET_CG_SKILL_TO_TILE] = readSkillToTile
     table[PACKET_CG_SAY] = readSay
-    table[PACKET_CG_LOGOUT] = func([]byte, uint8) (packet.Packet, error) {
+    table[PACKET_CG_LOGOUT] = func([]byte, uint8) (Packet, error) {
         return CGLogoutPacket{}, nil
     }
 }
@@ -545,8 +544,8 @@ func NewReader() *Reader {
     return &Reader{}
 }
 
-func (r *Reader) Read(reader io.Reader) (ret packet.Packet, err error) {
-    var id packet.PacketID
+func (r *Reader) Read(reader io.Reader) (ret Packet, err error) {
+    var id PacketID
     var sz PacketSize
     var buf [300]byte
 
@@ -607,7 +606,7 @@ type BinaryMarshaler interface {
     MarshalBinary(code uint8) ([]byte, error)
 }
 
-func (w *Writer) Write(writer io.Writer, pkt packet.Packet) error {
+func (w *Writer) Write(writer io.Writer, pkt Packet) error {
     id := pkt.Id()
     err := binary.Write(writer, binary.LittleEndian, id)
     if err != nil {
@@ -650,8 +649,8 @@ func (w *Writer) Write(writer io.Writer, pkt packet.Packet) error {
 }
 
 type opaque struct {
-    packet.PacketReader
-    packet.PacketWriter
+    PacketReader
+    PacketWriter
 }
 
 func New() opaque {

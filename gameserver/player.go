@@ -7,7 +7,6 @@ import (
     // "github.com/tiancaiamao/ouster/aoi"
     "github.com/tiancaiamao/ouster/data"
     "github.com/tiancaiamao/ouster/packet"
-    "github.com/tiancaiamao/ouster/packet/darkeden"
     "log"
     "math/rand"
     "net"
@@ -53,7 +52,7 @@ type Player struct {
     PlayerStatus PlayerStatus
     // aoi.Entity
     // Creature
-    
+
     PCType byte
     // field from data.PCInfo
     Name               string
@@ -87,8 +86,8 @@ type Player struct {
     skillslot []SkillSlot
 
     conn         net.Conn
-    packetReader *darkeden.Reader
-    packetWriter *darkeden.Writer
+    packetReader *packet.Reader
+    packetWriter *packet.Writer
 
     client <-chan packet.Packet
     send   chan<- packet.Packet
@@ -255,7 +254,7 @@ func HitTest(tohit uint16, dodge uint16) bool {
     return rand.Float32() < prob
 }
 
-func (player *Player) Load(name string, typ darkeden.PCType) error {
+func (player *Player) Load(name string, typ packet.PCType) error {
     f, err := os.Open(os.Getenv("HOME") + "/.ouster/player/" + name)
     if err != nil {
         panic(err)
@@ -287,11 +286,11 @@ func (player *Player) Load(name string, typ darkeden.PCType) error {
     decoder := json.NewDecoder(f)
 
     switch typ {
-    case darkeden.PC_VAMPIRE:
+    case packet.PC_VAMPIRE:
         err = loadVampire(player, decoder)
-    case darkeden.PC_OUSTER:
+    case packet.PC_OUSTER:
         err = loadOuster(player, decoder)
-    case darkeden.PC_SLAYER:
+    case packet.PC_SLAYER:
     }
 
     // player.ToHit = player.BaseToHit()
@@ -331,7 +330,7 @@ func loadOuster(player *Player, decoder *json.Decoder) error {
     player.GuildMemberRank = pcInfo.GuildMemberRank
     player.AdvancementLevel = pcInfo.AdvancementLevel
 
-    var skillInfo darkeden.OusterSkillInfo
+    var skillInfo packet.OusterSkillInfo
     err = decoder.Decode(&skillInfo)
     if err != nil {
         return err
@@ -399,12 +398,12 @@ func (player *Player) Save() {
     f.Close()
 }
 
-func (player *Player) SkillInfo() darkeden.SkillInfo {
+func (player *Player) SkillInfo() packet.SkillInfo {
     switch player.PCType {
     case 'V':
-        var ret darkeden.VampireSkillInfo
+        var ret packet.VampireSkillInfo
         ret.LearnNewSkill = false
-        skillList := make([]darkeden.SubVampireSkillInfo, len(player.skillslot))
+        skillList := make([]packet.SubVampireSkillInfo, len(player.skillslot))
         for i := 0; i < len(player.skillslot); i++ {
             slot := &player.skillslot[i]
             skillList[i].SkillType = slot.SkillType
@@ -415,9 +414,9 @@ func (player *Player) SkillInfo() darkeden.SkillInfo {
         ret.SubVampireSkillInfoList = skillList
         return ret
     case 'O':
-        var ret darkeden.OusterSkillInfo
+        var ret packet.OusterSkillInfo
         ret.LearnNewSkill = false
-        skillList := make([]darkeden.SubOusterSkillInfo, len(player.skillslot))
+        skillList := make([]packet.SubOusterSkillInfo, len(player.skillslot))
         for i := 0; i < len(player.skillslot); i++ {
             slot := &player.skillslot[i]
             skillList[i].SkillType = slot.SkillType
@@ -439,18 +438,18 @@ func Encrypt(ZoneID uint16, ServerID uint16) uint8 {
 
 func (player *Player) handleClientMessage(pkt packet.Packet) {
     switch pkt.Id() {
-    case darkeden.PACKET_CG_CONNECT:
-        raw := pkt.(*darkeden.CGConnectPacket)
-        player.Load(raw.PCName, darkeden.PCType(raw.PCType))
+    case packet.PACKET_CG_CONNECT:
+        raw := pkt.(*packet.CGConnectPacket)
+        player.Load(raw.PCName, packet.PCType(raw.PCType))
 
-        info := &darkeden.GCUpdateInfoPacket{
+        info := &packet.GCUpdateInfoPacket{
             PCType: player.PCType,
             // PCInfo: player.PCInfo(),
             ZoneID: player.Scene.ZoneID,
             // ZoneX:  player.X(),
             // ZoneY:  player.Y(),
 
-            GameTime: darkeden.GameTimeType{
+            GameTime: packet.GameTimeType{
                 Year:  1983,
                 Month: 8,
                 Day:   19,
@@ -466,7 +465,7 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
             MonsterTypes: []uint16{5, 6, 7, 8},
 
             Premium: 17,
-            NicknameInfo: darkeden.NicknameInfo{
+            NicknameInfo: packet.NicknameInfo{
                 NicknameID: 32560,
             },
 
@@ -478,9 +477,9 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
         player.packetWriter.Code = code
 
         if info.PCType == 'O' {
-            info.GearInfo = darkeden.GearInfo{
-                GearSlotInfoList: []darkeden.GearSlotInfo{
-                    darkeden.GearSlotInfo{
+            info.GearInfo = packet.GearInfo{
+                GearSlotInfoList: []packet.GearSlotInfo{
+                    packet.GearSlotInfo{
                         ObjectID:   12494,
                         ItemClass:  59,
                         ItemType:   14,
@@ -495,44 +494,44 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
         }
 
         player.send <- info
-        player.send <- &darkeden.GCPetInfoPacket{}
-    case darkeden.PACKET_CG_READY:
+        player.send <- &packet.GCPetInfoPacket{}
+    case packet.PACKET_CG_READY:
         log.Println("get a CG Ready Packet!!!")
-        player.send <- &darkeden.GCSetPositionPacket{
+        player.send <- &packet.GCSetPositionPacket{
             // X:   player.X(),
             // Y:   player.Y(),
             Dir: 2,
         }
 
-        var skillInfo darkeden.GCSkillInfoPacket
+        var skillInfo packet.GCSkillInfoPacket
         switch player.PCType {
         case 'V':
-            skillInfo.PCType = darkeden.PC_VAMPIRE
+            skillInfo.PCType = packet.PC_VAMPIRE
         case 'O':
-            skillInfo.PCType = darkeden.PC_OUSTER
+            skillInfo.PCType = packet.PC_OUSTER
         case 'S':
-            skillInfo.PCType = darkeden.PC_SLAYER
+            skillInfo.PCType = packet.PC_SLAYER
         }
-        skillInfo.PCSkillInfoList = []darkeden.SkillInfo{
+        skillInfo.PCSkillInfoList = []packet.SkillInfo{
             player.SkillInfo(),
         }
         player.send <- &skillInfo
-    case darkeden.PACKET_CG_MOVE:
+    case packet.PACKET_CG_MOVE:
         player.Scene.agent <- AgentMessage{
             Player: player,
             Msg:    pkt,
         }
-    case darkeden.PACKET_CG_SAY:
-        say := pkt.(*darkeden.CGSayPacket)
+    case packet.PACKET_CG_SAY:
+        say := pkt.(*packet.CGSayPacket)
         log.Println("say:", say.Message)
-    case darkeden.PACKET_CG_ATTACK:
-        // attack := pkt.(darkeden.CGAttackPacket)
+    case packet.PACKET_CG_ATTACK:
+        // attack := pkt.(packet.CGAttackPacket)
         //    log.Println(" attack monster ", attack.ObjectID)
         //    target := player.Scene.objects[attack.ObjectID]
         //    if monster, ok := target.(*Monster); ok {
         //        hit := HitTest(player.ToHit, monster.Defense)
         //        if hit {
-        //            player.send <- darkeden.GCAttackMeleeOK1{
+        //            player.send <- packet.GCAttackMeleeOK1{
         //                ObjectID: monster.Id(),
         //            }
         //
@@ -550,34 +549,34 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
         //                },
         //            }
         //        } else {
-        //            player.send <- &darkeden.GCSkillFailed1Packet{}
+        //            player.send <- &packet.GCSkillFailed1Packet{}
         //        }
         //    }
-    case darkeden.PACKET_CG_SKILL_TO_SELF:
-        skill := pkt.(darkeden.CGSkillToSelfPacket)
+    case packet.PACKET_CG_SKILL_TO_SELF:
+        skill := pkt.(packet.CGSkillToSelfPacket)
         switch skill.SkillType {
         case SKILL_INVISIBILITY:
-            ok := &darkeden.GCSkillToSelfOK1{
+            ok := &packet.GCSkillToSelfOK1{
                 SkillType: SKILL_INVISIBILITY,
                 CEffectID: 181,
                 Duration:  0,
                 Grade:     0,
             }
-            ok.Short = make(map[darkeden.ModifyType]uint16)
+            ok.Short = make(map[packet.ModifyType]uint16)
             ok.Short[12] = 180 + 256
             player.send <- ok
         default:
             log.Println("unknown SkillToSelf type:", skill.SkillType)
         }
-    case darkeden.PACKET_CG_SKILL_TO_OBJECT:
-        skill := pkt.(darkeden.CGSkillToObjectPacket)
+    case packet.PACKET_CG_SKILL_TO_OBJECT:
+        skill := pkt.(packet.CGSkillToObjectPacket)
         player.SkillToObject(skill)
-    case darkeden.PACKET_CG_SKILL_TO_TILE:
-        skill := pkt.(darkeden.CGSkillToTilePacket)
+    case packet.PACKET_CG_SKILL_TO_TILE:
+        skill := pkt.(packet.CGSkillToTilePacket)
         player.SkillToTile(skill)
-    case darkeden.PACKET_CG_BLOOD_DRAIN:
-    case darkeden.PACKET_CG_VERIFY_TIME:
-    case darkeden.PACKET_CG_LOGOUT:
+    case packet.PACKET_CG_BLOOD_DRAIN:
+    case packet.PACKET_CG_VERIFY_TIME:
+    case packet.PACKET_CG_LOGOUT:
         player.Save()
         return
     }
@@ -595,7 +594,7 @@ func (player *Player) BroadcastPacket(x uint8, y uint8, pkt packet.Packet) {
     //		 })
 }
 
-func (player *Player) SkillToTile(packet darkeden.CGSkillToTilePacket) {
+func (player *Player) SkillToTile(packet packet.CGSkillToTilePacket) {
     skillInfo, ok := skillTable[packet.SkillType]
     if !ok {
         log.Println("unknown SkillToTie type:", packet.SkillType, packet.X, packet.Y, packet.CEffectID)
@@ -611,7 +610,7 @@ func (player *Player) SkillToTile(packet darkeden.CGSkillToTilePacket) {
     tileHandler.ExecuteP2T(player, packet.X, packet.Y)
 }
 
-func (player *Player) SkillToObject(packet darkeden.CGSkillToObjectPacket) {
+func (player *Player) SkillToObject(packet packet.CGSkillToObjectPacket) {
     // skillInfo, ok := skillTable[packet.SkillType]
     // if !ok {
     //     log.Println("unknown SkillToObject type:", packet.SkillType, packet.TargetObjectID, packet.CEffectID)
@@ -653,7 +652,7 @@ func (this *Player) handleAoiMessage(id uint32) {
     //     if _, ok := this.nearby[id]; !ok {
     //         this.nearby[id] = struct{}{}
     //
-    //         addMonster := &darkeden.GCAddMonster{
+    //         addMonster := &packet.GCAddMonster{
     //             ObjectID:    uint32(id),
     //             MonsterType: monster.MonsterType,
     //             MonsterName: "test",
@@ -705,7 +704,7 @@ func (player *Player) Go() {
 
     // open a goroutine to read from conn
     go func() {
-        reader := darkeden.NewReader()
+        reader := packet.NewReader()
         player.packetReader = reader
         for {
             data, err := reader.Read(player.conn)
@@ -721,7 +720,7 @@ func (player *Player) Go() {
 
     // open a goroutine to write to conn
     go func() {
-        writer := darkeden.NewWriter()
+        writer := packet.NewWriter()
         player.packetWriter = writer
         for {
             pkt := <-write

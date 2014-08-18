@@ -1,10 +1,9 @@
-package darkeden
+package packet
 
 import (
     "bytes"
     "encoding/binary"
     "errors"
-    "github.com/tiancaiamao/ouster/packet"
     "io"
 )
 
@@ -16,7 +15,7 @@ type CGConnectPacket struct {
     MacAddress [4]byte
 }
 
-func (connect *CGConnectPacket) Id() packet.PacketID {
+func (connect *CGConnectPacket) Id() PacketID {
     return PACKET_CG_CONNECT
 }
 func (connect *CGConnectPacket) String() string {
@@ -32,7 +31,7 @@ func (connect *CGConnectPacket) MarshalBinary(code uint8) ([]byte, error) {
     return buf.Bytes(), nil
 }
 
-func readConnect(buf []byte, code uint8) (packet.Packet, error) {
+func readConnect(buf []byte, code uint8) (Packet, error) {
     // [ 0 0 0 240 1 4 183 232 191 241 0 80 86 192 0 8]
     ret := new(CGConnectPacket)
     ret.Key = binary.LittleEndian.Uint32(buf[:4])
@@ -45,7 +44,7 @@ func readConnect(buf []byte, code uint8) (packet.Packet, error) {
 
 type CGReadyPacket struct{}
 
-func (ready CGReadyPacket) Id() packet.PacketID {
+func (ready CGReadyPacket) Id() PacketID {
     return PACKET_CG_READY
 }
 func (ready CGReadyPacket) String() string {
@@ -58,7 +57,7 @@ type CGMovePacket struct {
     Y   uint8
 }
 
-func (move CGMovePacket) Id() packet.PacketID {
+func (move CGMovePacket) Id() PacketID {
     return PACKET_CG_MOVE
 }
 func (move CGMovePacket) String() string {
@@ -157,7 +156,7 @@ func SHUFFLE_STATEMENT_4(code uint8, A func(), B func(), C func(), D func()) {
     return
 }
 
-func readMove(buf []byte, code uint8) (packet.Packet, error) {
+func readMove(buf []byte, code uint8) (Packet, error) {
     var ret CGMovePacket
     var err error
     offset := 0
@@ -183,7 +182,7 @@ func readMove(buf []byte, code uint8) (packet.Packet, error) {
 
 type CGVerifyTimePacket struct{}
 
-func (verifyTime CGVerifyTimePacket) Id() packet.PacketID {
+func (verifyTime CGVerifyTimePacket) Id() PacketID {
     return PACKET_CG_VERIFY_TIME
 }
 func (verifyTime CGVerifyTimePacket) String() string {
@@ -197,13 +196,13 @@ type CGAttackPacket struct {
     Dir      uint8
 }
 
-func (attack CGAttackPacket) Id() packet.PacketID {
+func (attack CGAttackPacket) Id() PacketID {
     return PACKET_CG_ATTACK
 }
 func (attack CGAttackPacket) String() string {
     return "attack"
 }
-func readAttack(buf []byte, code uint8) (packet.Packet, error) {
+func readAttack(buf []byte, code uint8) (Packet, error) {
     // [188 251 55 82 48 0 0]
     var ret CGAttackPacket
     offset := 0
@@ -231,13 +230,13 @@ type CGBloodDrainPacket struct {
     ObjectID uint32
 }
 
-func (bloodDrain CGBloodDrainPacket) Id() packet.PacketID {
+func (bloodDrain CGBloodDrainPacket) Id() PacketID {
     return PACKET_CG_BLOOD_DRAIN
 }
 func (bloodDrain CGBloodDrainPacket) String() string {
     return "blood drain"
 }
-func readBloodDrain(buf []byte, code uint8) (packet.Packet, error) {
+func readBloodDrain(buf []byte, code uint8) (Packet, error) {
     id := binary.LittleEndian.Uint32(buf)
     return CGBloodDrainPacket{id}, nil
 }
@@ -247,7 +246,7 @@ type CGLearnSkillPacket struct {
     SkillDomainType uint8
 }
 
-func (learnSkill CGLearnSkillPacket) Id() packet.PacketID {
+func (learnSkill CGLearnSkillPacket) Id() PacketID {
     return PACKET_CG_LEARN_SKILL
 }
 
@@ -255,7 +254,7 @@ func (learnSkill CGLearnSkillPacket) String() string {
     return "learn skill"
 }
 
-func readLearnSkill(buf []byte, code uint8) (packet.Packet, error) {
+func readLearnSkill(buf []byte, code uint8) (Packet, error) {
     skillType := binary.LittleEndian.Uint16(buf)
     return CGLearnSkillPacket{
         SkillType:       skillType,
@@ -269,7 +268,7 @@ type CGSkillToObjectPacket struct {
     TargetObjectID uint32
 }
 
-func (skill CGSkillToObjectPacket) Id() packet.PacketID {
+func (skill CGSkillToObjectPacket) Id() PacketID {
     return PACKET_CG_SKILL_TO_OBJECT
 }
 
@@ -277,7 +276,7 @@ func (skill CGSkillToObjectPacket) String() string {
     return "skill to object"
 }
 
-func readSkillToObject(buf []byte, code uint8) (packet.Packet, error) {
+func readSkillToObject(buf []byte, code uint8) (Packet, error) {
     // encrypt!!!
     var ret CGSkillToObjectPacket
     offset := 0
@@ -302,7 +301,7 @@ type CGSkillToSelfPacket struct {
     CEffectID uint16
 }
 
-func (skill CGSkillToSelfPacket) Id() packet.PacketID {
+func (skill CGSkillToSelfPacket) Id() PacketID {
     return PACKET_CG_SKILL_TO_SELF
 }
 
@@ -310,7 +309,7 @@ func (skill CGSkillToSelfPacket) String() string {
     return "skill to self"
 }
 
-func readSkillToSelf(buf []byte, code uint8) (packet.Packet, error) {
+func readSkillToSelf(buf []byte, code uint8) (Packet, error) {
     // encrypt!!!
     var ret CGSkillToSelfPacket
     offset := 0
@@ -333,7 +332,7 @@ type CGSkillToTilePacket struct {
     Y         uint8
 }
 
-func (skill CGSkillToTilePacket) Id() packet.PacketID {
+func (skill CGSkillToTilePacket) Id() PacketID {
     return PACKET_CG_SKILL_TO_TILE
 }
 
@@ -341,7 +340,7 @@ func (skill CGSkillToTilePacket) String() string {
     return "skill to tile"
 }
 
-func readSkillToTile(buf []byte, code uint8) (packet.Packet, error) {
+func readSkillToTile(buf []byte, code uint8) (Packet, error) {
     // encrypt!!!
     var ret CGSkillToTilePacket
     offset := 0
@@ -370,13 +369,13 @@ type CGSayPacket struct {
     Message string
 }
 
-func (say *CGSayPacket) Id() packet.PacketID {
+func (say *CGSayPacket) Id() PacketID {
     return PACKET_CG_SAY
 }
 func (say *CGSayPacket) String() string {
     return "say"
 }
-func readSay(buf []byte, code uint8) (packet.Packet, error) {
+func readSay(buf []byte, code uint8) (Packet, error) {
     ret := new(CGSayPacket)
     ret.Color = binary.LittleEndian.Uint32(buf)
     sz := buf[2]
@@ -386,7 +385,7 @@ func readSay(buf []byte, code uint8) (packet.Packet, error) {
 
 type CGLogoutPacket struct{}
 
-func (_ CGLogoutPacket) Id() packet.PacketID {
+func (_ CGLogoutPacket) Id() PacketID {
     return PACKET_CG_LOGOUT
 }
 func (_ CGLogoutPacket) String() string {
