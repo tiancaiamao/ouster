@@ -80,3 +80,7 @@ type Vampire struct {
     Luck        Luck_t
     HPRegenTime time.Time
 }
+
+func (vampire Vampire) CreatureClass() CreatureClass {
+    return CREATURE_CLASS_VAMPIRE
+}

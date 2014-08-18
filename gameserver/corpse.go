@@ -19,3 +19,8 @@ type Corpse struct {
     X   ZoneCoord_t
     Y   ZoneCoord_t
 }
+
+// Corpse继承Item对象，实现ItemInterface接口
+func (c *Corpse) ItemClass() ItemClass {
+    return ITEM_CLASS_CORPSE
+}

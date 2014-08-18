@@ -1,13 +1,13 @@
 package main
 
-type CreatureClass uint8
+type CreatureClass int
 
 const (
-    CREATURE_CLASS_SLAYER  = iota // PC Slayer
-    CREATURE_CLASS_VAMPIRE        // PC Vampire
-    CREATURE_CLASS_NPC            // NPC
-    CREATURE_CLASS_MONSTER        // NPC Slayer, NPC Vampire
-    CREATURE_CLASS_OUSTERS        // PC Ousters
+    CREATURE_CLASS_SLAYER  CreatureClass = iota // PC Slayer
+    CREATURE_CLASS_VAMPIRE                      // PC Vampire
+    CREATURE_CLASS_NPC                          // NPC
+    CREATURE_CLASS_MONSTER                      // NPC Slayer, NPC Vampire
+    CREATURE_CLASS_OUSTER                       // PC Ousters
     CREATURE_CLASS_MAX
 )
 
@@ -20,14 +20,61 @@ const (
     MOVE_MODE_MAX
 )
 
+type CreatureInterface interface {
+    ObjectInterface
+    CreatureClass() CreatureClass
+    CreatureInstance() *Creature
+    IsAbleToMove() bool
+}
+
 type Creature struct {
     Object
+    MoveMode MoveMode
+    X        ZoneCoord_t
+    Y        ZoneCoord_t
+    Dir      Dir_t
 
     ViewportWidth       ZoneCoord_t
     ViewportUpperHeight ZoneCoord_t
     ViewportLowerHeight ZoneCoord_t
     Resist              [MAGIC_DOMAIN_MAX]Resist_t
-    Dir                 Dir_t
-    Sight               Sight_t
-    CClass              CreatureClass
+
+    Flag BitSet
+
+    Sight Sight_t
+}
+
+func (c Creature) ObjectClass() ObjectClass {
+    return OBJECT_CLASS_CREATURE
+}
+
+func (c Creature) CreatureInstance() *Creature {
+    return &c
+}
+
+// TODO
+func (c Creature) IsAbleToMove() bool {
+    if c.Flag.IsFlag(EFFECT_CLASS_COMA) ||
+        c.Flag.IsFlag(EFFECT_CLASS_PARALYZE) ||
+        c.Flag.IsFlag(EFFECT_CLASS_ETERNITY_PAUSE) ||
+        c.Flag.IsFlag(EFFECT_CLASS_CASKET) ||
+        c.Flag.IsFlag(EFFECT_CLASS_CAUSE_CRITICAL_WOUNDS) ||
+        c.Flag.IsFlag(EFFECT_CLASS_SOUL_CHAIN) ||
+        c.Flag.IsFlag(EFFECT_CLASS_LOVE_CHAIN) ||
+        c.Flag.IsFlag(EFFECT_CLASS_GUN_SHOT_GUIDANCE_AIM) ||
+        c.Flag.IsFlag(EFFECT_CLASS_SLEEP) ||
+        c.Flag.IsFlag(EFFECT_CLASS_ARMAGEDDON) ||
+        c.Flag.IsFlag(EFFECT_CLASS_POISON_MESH) ||
+        c.Flag.IsFlag(EFFECT_CLASS_TENDRIL) ||
+        c.Flag.IsFlag(EFFECT_CLASS_TRAPPED) ||
+        c.Flag.IsFlag(EFFECT_CLASS_INSTALL_TURRET) ||
+        c.Flag.IsFlag(EFFECT_CLASS_EXPLOSION_WATER) {
+        return false
+    }
+
+    return true
+}
+
+func (c *Creature) IsFlag(effect uint) bool {
+    return c.Flag.IsFlag(effect)
 }

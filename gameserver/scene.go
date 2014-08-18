@@ -153,7 +153,7 @@ func loop(m *Scene) {
     for {
         select {
         case data := <-m.agent:
-            m.processPlayerInput(data.Player.Id(), data.Msg)
+            // m.processPlayerInput(data.Player.Id(), data.Msg)
         case <-m.quit:
         case <-m.event:
         case <-m.heartbeat:

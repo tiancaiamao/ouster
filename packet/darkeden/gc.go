@@ -1343,3 +1343,9 @@ func (info SubOusterSkillInfo) Dump(writer io.Writer) {
     binary.Write(writer, binary.LittleEndian, info.CastingTime)
     return
 }
+
+type GCMoveOK struct {
+    X   uint8
+    Y   uint8
+    Dir uint8
+}

@@ -63,6 +63,10 @@ type Monster struct {
     NextRegenTime time.Time
 }
 
+func (m *Monster) CreatureClass() CreatureClass {
+    return CREATURE_CLASS_MONSTER
+}
+
 // func (m *Monster) MaxHP() uint16 {
 // mi := data.MonsterType2MonsterInfo[m.MonsterType]
 // return m.STR[ATTR_BASE]*4 + uint16(mi.Level)

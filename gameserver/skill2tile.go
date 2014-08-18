@@ -26,9 +26,9 @@ type RapidGlidingHandler struct{}
 
 func (ignore RapidGlidingHandler) ExecuteP2T(player *Player, x uint8, y uint8) {
     fastMove := &darkeden.GCFastMovePacket{
-        ObjectID:  player.Id(),
-        FromX:     player.X(),
-        FromY:     player.Y(),
+ //       ObjectID:  player.Id(),
+ //       FromX:     player.X(),
+ //       FromY:     player.Y(),
         ToX:       x,
         ToY:       y,
         SkillType: SKILL_RAPID_GLIDING,

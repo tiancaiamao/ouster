@@ -33,8 +33,8 @@ const (
 )
 
 type Ouster struct {
-    Creature //继承自Creature，实现了PlayerCreature
-
+    PlayerCreature //继承自PlayerCreature
+    
     Name            string
     Competence      byte
     CompetenceShape byte
@@ -104,4 +104,8 @@ type Ouster struct {
     AlignmentSaveCount uint16
 
     MPRegenTime time.Time
+}
+
+func (ouster Ouster) CreatureClass() CreatureClass {
+	return CREATURE_CLASS_OUSTER
 }

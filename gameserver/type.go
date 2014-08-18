@@ -1,7 +1,7 @@
 package main
 
 type ObjectID_t uint32
-type ZoneCoord_t uint16
+type ZoneCoord_t int16
 type Dir_t uint8
 type Sight_t uint8
 type Resist_t uint16
@@ -10,7 +10,7 @@ type GuildID_t uint16
 type MagicDomain int
 
 const (
-    MAGIC_DOMAIN_NO_DOMAIN = iota
+    MAGIC_DOMAIN_NO_DOMAIN MagicDomain = iota
     MAGIC_DOMAIN_POISON
     MAGIC_DOMAIN_ACID
     MAGIC_DOMAIN_CURSE

@@ -4,7 +4,7 @@ import (
     "time"
 )
 
-type EffectClass uint8
+type EffectClass int
 
 const (
     EFFECT_CLASS_LIGHT                       = iota // 0

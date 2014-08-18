@@ -88,3 +88,7 @@ type Slayer struct {
 
     MPRegenTime time.Time
 }
+
+func (slayer Slayer) CreatureClass() CreatureClass {
+    return CREATURE_CLASS_SLAYER
+}

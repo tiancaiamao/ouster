@@ -136,16 +136,16 @@ func AOE(scene *Scene,
     skill *SkillInfo,
     slot *SkillSlot,
 ) {
-    middleX := uint8((int(player.X()) + int(tileX)) / 2)
-    middleY := uint8((int(player.Y()) + int(tileY)) / 2)
-
+    // middleX := uint8((int(player.X) + int(tileX)) / 2)
+    // middleY := uint8((int(player.Y) + int(tileY)) / 2)
+    var middleX, middleY uint8
     scene.Nearby(middleX,
         middleY,
         func(ignore aoi.Entity, target aoi.Entity) {
             id := target.Id()
-            if id == player.Id() {
-                return
-            }
+            // if id == player.Id() {
+            //     return
+            // }
 
             // obj := scene.objects[id]
 

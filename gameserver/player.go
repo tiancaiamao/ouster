@@ -4,7 +4,7 @@ import (
     "bytes"
     "encoding/json"
     "github.com/tiancaiamao/ouster"
-    "github.com/tiancaiamao/ouster/aoi"
+    // "github.com/tiancaiamao/ouster/aoi"
     "github.com/tiancaiamao/ouster/data"
     "github.com/tiancaiamao/ouster/packet"
     "github.com/tiancaiamao/ouster/packet/darkeden"
@@ -37,10 +37,23 @@ const (
     ATTR_BASE
 )
 
-type Player struct {
-    aoi.Entity
-    Creature
+type PlayerStatus uint8
 
+const (
+    GPS_NONE = iota
+    GPS_BEGIN_SESSION
+    GPS_WAITING_FOR_CG_READY
+    GPS_NORMAL
+    GPS_IGNORE_ALL
+    GPS_AFTER_SENDING_GL_INCOMING_CONNECTION
+    GPS_END_SESSION
+)
+
+type Player struct {
+    PlayerStatus PlayerStatus
+    // aoi.Entity
+    // Creature
+    
     PCType byte
     // field from data.PCInfo
     Name               string
@@ -87,6 +100,108 @@ type Player struct {
     computation chan func()
 }
 
+// func (player *GamePlayer) PCInfo() data.PCInfo {
+//		 switch player.PCType {
+//		 case 'V':
+//				 return &data.PCVampireInfo{
+//						 ObjectID: player.Creature.ObjectID(),
+//						 Name:		 player.Name,
+//						 // Level:		player.Level,
+//						 Sex: player.Sex,
+//
+//						 BatColor:					player.BatColor,
+//						 SkinColor:				 player.SkinColor,
+//						 MasterEffectColor: player.MasterEffectColor,
+//
+//						 Alignment: player.Alignment,
+//						 // STR:			 player.STR,
+//						 // DEX:			 player.DEX,
+//						 // INT:			 player.INT,
+//
+//						 // HP: player.HP,
+//
+//						 Rank:		player.Rank,
+//						 RankExp: player.RankExp,
+//
+//						 Exp:					player.Exp,
+//						 Fame:				 player.Fame,
+//						 Gold:				 player.Gold,
+//						 Sight:				player.Sight,
+//						 Bonus:				player.Bonus,
+//						 HotKey:			 player.HotKey,
+//						 SilverDamage: player.SilverDamage,
+//
+//						 Competence: player.Competence,
+//						 GuildID:		player.GuildID,
+//
+//						 GuildMemberRank: player.GuildMemberRank,
+//						 UnionID:				 player.UnionID,
+//
+//						 AdvancementLevel:	 player.AdvancementLevel,
+//						 AdvancementGoalExp: player.AdvancementGoalExp,
+//
+//						 ZoneID: player.Scene.ZoneID,
+//						 ZoneX:	player.X,
+//						 ZoneY:	player.Y,
+//				 }
+//		 case 'O':
+//				 info := &data.PCOusterInfo{
+//						 ObjectID: player.Id(),
+//						 Name:		 player.Name,
+//						 // Level:		player.Level,
+//						 Sex: player.Sex,
+//
+//						 HairColor:				 player.HairColor,
+//						 MasterEffectColor: player.MasterEffectColor,
+//
+//						 Alignment: player.Alignment,
+//						 // STR:			 player.STR,
+//						 // DEX:			 player.DEX,
+//						 // INT:			 player.INT,
+//
+//						 // HP: player.HP,
+//						 // MP: player.MP,
+//
+//						 Rank:		player.Rank,
+//						 RankExp: player.RankExp,
+//
+//						 Exp:					player.Exp,
+//						 Fame:				 player.Fame,
+//						 Gold:				 player.Gold,
+//						 Sight:				player.Sight,
+//						 Bonus:				player.Bonus,
+//						 SilverDamage: player.SilverDamage,
+//
+//						 Competence: player.Competence,
+//						 GuildID:		player.GuildID,
+//
+//						 GuildMemberRank: player.GuildMemberRank,
+//						 UnionID:				 player.UnionID,
+//
+//						 AdvancementLevel:	 player.AdvancementLevel,
+//						 AdvancementGoalExp: player.AdvancementGoalExp,
+//
+//						 ZoneID: player.Scene.ZoneID,
+//						 ZoneX:	player.X(),
+//						 ZoneY:	player.Y(),
+//				 }
+//
+//				 if info.SkillBonus == 0 {
+//						 info.SkillBonus = 9999
+//						 log.Println("SKillBonus =========== 0!!!")
+//				 }
+//				 if info.GuildID == 0 {
+//						 info.GuildID = 66
+//						 log.Println("GuildID =========== 0!!!")
+//				 }
+//				 return info
+//		 case 'S':
+//		 }
+//
+//		 panic("not reached")
+//		 return nil
+// }
+
 type SkillSlot struct {
     SkillType uint16
     ExpLevel  uint16
@@ -121,6 +236,11 @@ func (player *Player) NearBy() map[uint32]struct{} {
     return player.nearby
 }
 
+// TODO
+func (player *Player) sendPacket(pkt packet.Packet) {
+
+}
+
 // if tohit == dodge, the default formula is 0.85
 // if tohit < dodge, then tohit / dodge should be primary factor, also take other factor into consideration
 // if tohit > dodge, then the differential should be important, also dodge.
@@ -148,7 +268,7 @@ func (player *Player) Load(name string, typ darkeden.PCType) error {
         // player.DEX = [3]uint16{20, 20, 20}
         // player.INT = [3]uint16{20, 20, 20}
         // player.HP = [2]uint16{472, 472}
-        player.Rank = 50
+        // player.Rank = 50
         player.RankExp = 10700
         player.Exp = 125
         player.Fame = 282
@@ -270,10 +390,10 @@ func (player *Player) Save() {
     }
     encoder := json.NewEncoder(f)
 
-    pcInfo := player.PCInfo()
+    // pcInfo := player.PCInfo()
     skillInfo := player.SkillInfo()
 
-    encoder.Encode(pcInfo)
+    // encoder.Encode(pcInfo)
     encoder.Encode(skillInfo)
 
     f.Close()
@@ -313,108 +433,6 @@ func (player *Player) SkillInfo() darkeden.SkillInfo {
     return nil
 }
 
-func (player *Player) PCInfo() data.PCInfo {
-    switch player.PCType {
-    case 'V':
-        return &data.PCVampireInfo{
-            ObjectID: player.Id(),
-            Name:     player.Name,
-            // Level:    player.Level,
-            Sex: player.Sex,
-
-            BatColor:          player.BatColor,
-            SkinColor:         player.SkinColor,
-            MasterEffectColor: player.MasterEffectColor,
-
-            Alignment: player.Alignment,
-            // STR:       player.STR,
-            // DEX:       player.DEX,
-            // INT:			 player.INT,
-
-            // HP: player.HP,
-
-            Rank:    player.Rank,
-            RankExp: player.RankExp,
-
-            Exp:          player.Exp,
-            Fame:         player.Fame,
-            Gold:         player.Gold,
-            Sight:        player.Sight,
-            Bonus:        player.Bonus,
-            HotKey:       player.HotKey,
-            SilverDamage: player.SilverDamage,
-
-            Competence: player.Competence,
-            GuildID:    player.GuildID,
-
-            GuildMemberRank: player.GuildMemberRank,
-            UnionID:         player.UnionID,
-
-            AdvancementLevel:   player.AdvancementLevel,
-            AdvancementGoalExp: player.AdvancementGoalExp,
-
-            ZoneID: player.Scene.ZoneID,
-            ZoneX:  player.X(),
-            ZoneY:  player.Y(),
-        }
-    case 'O':
-        info := &data.PCOusterInfo{
-            ObjectID: player.Id(),
-            Name:     player.Name,
-            // Level:    player.Level,
-            Sex: player.Sex,
-
-            HairColor:         player.HairColor,
-            MasterEffectColor: player.MasterEffectColor,
-
-            Alignment: player.Alignment,
-            // STR:       player.STR,
-            // DEX:       player.DEX,
-            // INT:       player.INT,
-
-            // HP: player.HP,
-            // MP: player.MP,
-
-            Rank:    player.Rank,
-            RankExp: player.RankExp,
-
-            Exp:          player.Exp,
-            Fame:         player.Fame,
-            Gold:         player.Gold,
-            Sight:        player.Sight,
-            Bonus:        player.Bonus,
-            SilverDamage: player.SilverDamage,
-
-            Competence: player.Competence,
-            GuildID:    player.GuildID,
-
-            GuildMemberRank: player.GuildMemberRank,
-            UnionID:         player.UnionID,
-
-            AdvancementLevel:   player.AdvancementLevel,
-            AdvancementGoalExp: player.AdvancementGoalExp,
-
-            ZoneID: player.Scene.ZoneID,
-            ZoneX:  player.X(),
-            ZoneY:  player.Y(),
-        }
-
-        if info.SkillBonus == 0 {
-            info.SkillBonus = 9999
-            log.Println("SKillBonus =========== 0!!!")
-        }
-        if info.GuildID == 0 {
-            info.GuildID = 66
-            log.Println("GuildID =========== 0!!!")
-        }
-        return info
-    case 'S':
-    }
-
-    panic("not reached")
-    return nil
-}
-
 func Encrypt(ZoneID uint16, ServerID uint16) uint8 {
     return uint8(((ZoneID >> 8) ^ ZoneID) ^ ((ServerID + 1) << 4))
 }
@@ -427,10 +445,10 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
 
         info := &darkeden.GCUpdateInfoPacket{
             PCType: player.PCType,
-            PCInfo: player.PCInfo(),
+            // PCInfo: player.PCInfo(),
             ZoneID: player.Scene.ZoneID,
-            ZoneX:  player.X(),
-            ZoneY:  player.Y(),
+            // ZoneX:  player.X(),
+            // ZoneY:  player.Y(),
 
             GameTime: darkeden.GameTimeType{
                 Year:  1983,
@@ -481,8 +499,8 @@ func (player *Player) handleClientMessage(pkt packet.Packet) {
     case darkeden.PACKET_CG_READY:
         log.Println("get a CG Ready Packet!!!")
         player.send <- &darkeden.GCSetPositionPacket{
-            X:   player.X(),
-            Y:   player.Y(),
+            // X:   player.X(),
+            // Y:   player.Y(),
             Dir: 2,
         }
 
