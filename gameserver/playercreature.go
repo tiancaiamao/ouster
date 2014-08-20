@@ -15,6 +15,15 @@ type PlayerCreature struct {
     // 钱
     GuildID GuildID_t
     // 阶级
+    Rank    Rank_t
+    RankExp RankExp_t
+
+    Exp Exp_t
+
+    GuildMemberRank    GuildMemberRank_t
+    UnionID            uint32
+    AdvancementLevel   uint8
+    AdvancementGoalExp uint32
     // 任务管理
 
     MagicBonusDamage  Damage_t

@@ -85,3 +85,6 @@ type DarkLevel_t uint8
 type LightLevel_t uint8
 type NPCType_t uint16
 type Coord_t uint8
+type Rank_t uint8
+type RankExp_t uint32
+type GuildMemberRank_t uint8

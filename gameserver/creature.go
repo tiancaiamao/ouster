@@ -52,6 +52,10 @@ func (c Creature) CreatureInstance() *Creature {
     return &c
 }
 
+func (c Creature) heartbeat() {
+	
+}
+
 // TODO
 func (c Creature) IsAbleToMove() bool {
     if c.Flag.IsFlag(EFFECT_CLASS_COMA) ||

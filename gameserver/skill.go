@@ -1,8 +1,6 @@
 package main
 
-import (
-    "github.com/tiancaiamao/ouster/aoi"
-)
+import ()
 
 type SkillPropertyType uint8
 
@@ -138,69 +136,69 @@ func AOE(scene *Scene,
 ) {
     // middleX := uint8((int(player.X) + int(tileX)) / 2)
     // middleY := uint8((int(player.Y) + int(tileY)) / 2)
-    var middleX, middleY uint8
-    scene.Nearby(middleX,
-        middleY,
-        func(ignore aoi.Entity, target aoi.Entity) {
-            // id := target.Id()
-            // if id == player.Id() {
-            //     return
-            // }
+    // var middleX, middleY uint8
+    // scene.Nearby(middleX,
+    // middleY,
+    // func(ignore aoi.Entity, target aoi.Entity) {
+    // id := target.Id()
+    // if id == player.Id() {
+    //     return
+    // }
 
-            // obj := scene.objects[id]
+    // obj := scene.objects[id]
 
-            // broadcast skill to nearby player
-            // if player, ok := obj.(*Player); ok {
-            // 	if Distance2(target.X(), target.Y(), middleX, middleY) <= 144 {
-            // 		player.send <- &darkeden.GCSkillToTileOK5{
-            // 			ObjectID:  player.Id(),
-            // 			SkillType: slot.SkillType,
-            // 			X:         player.X(),
-            // 			Y:         player.Y(),
-            // 			Range:     skill.Range,
-            // 			Duration:  slot.Duration,
-            // 			// CreatureList []uint32
-            // 		}
-            // 	}
-            //
-            // 	if Distance2(target.X(), target.Y(), player.X(), player.Y()) <= 64 {
-            // 		player.send <- &darkeden.GCSkillToTileOK4{
-            // 			SkillType: slot.SkillType,
-            // 			X:         player.X(),
-            // 			Y:         player.Y(),
-            // 			Range:     skill.Range,
-            // 			Duration:  slot.Duration,
-            // 			// CreatureList []uint32
-            // 		}
-            // 	}
-            //
-            // 	if Distance2(target.X(), target.Y(), tileX, tileY) <= 64 {
-            // 		player.send <- &darkeden.GCSkillToTileOK3{
-            // 			ObjectID:  target.Id(),
-            // 			SkillType: slot.SkillType,
-            // 			X:         player.X(),
-            // 			Y:         player.Y(),
-            // 		}
-            // 	}
-            // }
+    // broadcast skill to nearby player
+    // if player, ok := obj.(*Player); ok {
+    // 	if Distance2(target.X(), target.Y(), middleX, middleY) <= 144 {
+    // 		player.send <- &darkeden.GCSkillToTileOK5{
+    // 			ObjectID:  player.Id(),
+    // 			SkillType: slot.SkillType,
+    // 			X:         player.X(),
+    // 			Y:         player.Y(),
+    // 			Range:     skill.Range,
+    // 			Duration:  slot.Duration,
+    // 			// CreatureList []uint32
+    // 		}
+    // 	}
+    //
+    // 	if Distance2(target.X(), target.Y(), player.X(), player.Y()) <= 64 {
+    // 		player.send <- &darkeden.GCSkillToTileOK4{
+    // 			SkillType: slot.SkillType,
+    // 			X:         player.X(),
+    // 			Y:         player.Y(),
+    // 			Range:     skill.Range,
+    // 			Duration:  slot.Duration,
+    // 			// CreatureList []uint32
+    // 		}
+    // 	}
+    //
+    // 	if Distance2(target.X(), target.Y(), tileX, tileY) <= 64 {
+    // 		player.send <- &darkeden.GCSkillToTileOK3{
+    // 			ObjectID:  target.Id(),
+    // 			SkillType: slot.SkillType,
+    // 			X:         player.X(),
+    // 			Y:         player.Y(),
+    // 		}
+    // 	}
+    // }
 
-            // attack nearby enemy
-            if inRange(skill.Range, target.X(), target.Y(), tileX, tileY) {
-                // switch obj.(type) {
-                // case *Monster:
-                //     monster := obj.(*Monster)
-                //     handler := skill.Handler.(SkillFormula)
-                //     output := handler.ComputeOutput(&player.Creature, &monster.Creature)
-                //     // scene is the owner of monster
-                //     scene.agent <- AgentMessage{
-                //         Player: player,
-                //         Msg:    output,
-                //     }
-                // case *Player:
-                //
-                // }
-            }
-        })
+    // attack nearby enemy
+    // if inRange(skill.Range, target.X(), target.Y(), tileX, tileY) {
+    // switch obj.(type) {
+    // case *Monster:
+    //     monster := obj.(*Monster)
+    //     handler := skill.Handler.(SkillFormula)
+    //     output := handler.ComputeOutput(&player.Creature, &monster.Creature)
+    //     // scene is the owner of monster
+    //     scene.agent <- AgentMessage{
+    //         Player: player,
+    //         Msg:    output,
+    //     }
+    // case *Player:
+    //
+    // }
+    // }
+    // })
 }
 
 func Distance2(x1, y1, x2, y2 uint8) int {

@@ -328,3 +328,19 @@ func (zone *Zone) movePCBroadcast(pcItf PlayerCreatureInterface, x1 ZoneCoord_t,
         }
     }
 }
+
+func (zone *Zone) heartbeat() {
+	zone.processMonsters()
+	zone.processNPCs()
+	
+	zone.processEffects()
+}
+
+func (zone *Zone) processMonsters() {
+}
+
+func (zone *Zone) processNPCs() {
+}
+
+func (zone *Zone) processEffects() {
+}

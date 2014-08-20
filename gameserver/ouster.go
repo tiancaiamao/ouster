@@ -1,6 +1,8 @@
 package main
 
 import (
+    "github.com/tiancaiamao/ouster/data"
+    "log"
     "time"
 )
 
@@ -34,7 +36,7 @@ const (
 
 type Ouster struct {
     PlayerCreature //继承自PlayerCreature
-    
+
     Name            string
     Competence      byte
     CompetenceShape byte
@@ -107,5 +109,58 @@ type Ouster struct {
 }
 
 func (ouster Ouster) CreatureClass() CreatureClass {
-	return CREATURE_CLASS_OUSTER
+    return CREATURE_CLASS_OUSTER
+}
+
+func (ouster Ouster) PCInfo() data.PCInfo {
+    info := &data.PCOusterInfo{
+        ObjectID: uint32(ouster.ObjectID),
+        Name:     ouster.Name,
+        // Level:		player.Level,
+        // Sex: player.Sex,
+
+        HairColor:         uint16(ouster.HairColor),
+        MasterEffectColor: uint8(ouster.MasterEffectColor),
+
+        Alignment: uint32(ouster.Alignment),
+        // STR:			 player.STR,
+        // DEX:			 player.DEX,
+        // INT:			 player.INT,
+
+        // HP: player.HP,
+        // MP: player.MP,
+
+        Rank:    uint8(ouster.Rank),
+        RankExp: uint32(ouster.RankExp),
+
+        Exp:          uint32(ouster.Exp),
+        Fame:         uint32(ouster.Fame),
+        Gold:         uint32(ouster.Gold),
+        Sight:        uint8(ouster.Sight),
+        Bonus:        uint16(ouster.Bonus),
+        SilverDamage: uint16(ouster.SilverDamage),
+
+        Competence: ouster.Competence,
+        GuildID:    uint16(ouster.GuildID),
+
+        GuildMemberRank: uint8(ouster.GuildMemberRank),
+        UnionID:         ouster.UnionID,
+
+        AdvancementLevel:   ouster.AdvancementLevel,
+        AdvancementGoalExp: ouster.AdvancementGoalExp,
+
+        // ZoneID: player.Scene.ZoneID,
+        ZoneX: uint8(ouster.X),
+        ZoneY: uint8(ouster.Y),
+    }
+
+    if info.SkillBonus == 0 {
+        info.SkillBonus = 9999
+        log.Println("SKillBonus =========== 0!!!")
+    }
+    if info.GuildID == 0 {
+        info.GuildID = 66
+        log.Println("GuildID =========== 0!!!")
+    }
+    return info
 }

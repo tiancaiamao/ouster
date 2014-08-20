@@ -1,14 +1,13 @@
 package main
 
 import (
-    "github.com/tiancaiamao/ouster/aoi"
     "github.com/tiancaiamao/ouster/packet"
 )
 
 type SharpHailHandler struct{}
 
 func (ignore SharpHailHandler) ExecuteP2T(player *Player, x uint8, y uint8) {
-    slot := player.SkillSlot(SKILL_SHARP_HAIL)
+    // slot := player.SkillSlot(SKILL_SHARP_HAIL)
 
     ok := &packet.GCSkillToTileOK1{
         SkillType: SKILL_SHARP_HAIL,
@@ -19,24 +18,24 @@ func (ignore SharpHailHandler) ExecuteP2T(player *Player, x uint8, y uint8) {
     }
     player.send <- ok
 
-    AOE(player.Scene, player, x, y, skillTable[SKILL_SHARP_HAIL], slot)
+    // AOE(player.Scene, player, x, y, skillTable[SKILL_SHARP_HAIL], slot)
 }
 
 type RapidGlidingHandler struct{}
 
 func (ignore RapidGlidingHandler) ExecuteP2T(player *Player, x uint8, y uint8) {
-    fastMove := &packet.GCFastMovePacket{
- //       ObjectID:  player.Id(),
- //       FromX:     player.X(),
- //       FromY:     player.Y(),
-        ToX:       x,
-        ToY:       y,
-        SkillType: SKILL_RAPID_GLIDING,
-    }
-    player.Scene.agent <- AgentMessage{
-        Player: player,
-        Msg:    fastMove,
-    }
+    // fastMove := &packet.GCFastMovePacket{
+    //       ObjectID:  player.Id(),
+    //       FromX:     player.X(),
+    //       FromY:     player.Y(),
+    //     ToX:       x,
+    //     ToY:       y,
+    //     SkillType: SKILL_RAPID_GLIDING,
+    // }
+    // player.Scene.agent <- AgentMessage{
+    //		 Player: player,
+    //		 Msg:		fastMove,
+    // }
 
     ok := &packet.GCSkillToTileOK1{
         SkillType: SKILL_RAPID_GLIDING,
@@ -51,26 +50,26 @@ func (ignore RapidGlidingHandler) ExecuteP2T(player *Player, x uint8, y uint8) {
 type MeteorStrikeHandler struct{}
 
 func (ignore MeteorStrikeHandler) ExecuteP2T(player *Player, x uint8, y uint8) {
-    player.Scene.Nearby(x, y, func(watcher aoi.Entity, marker aoi.Entity) {
-        if x >= marker.X()-1 &&
-            x <= marker.X()+1 &&
-            y >= marker.Y()-1 &&
-            y <= marker.Y()+1 {
-            // id := marker.Id()
-            // obj := player.Scene.objects[id]
-            // switch obj.(type) {
-            // case *Monster:
-            // 	monster := obj.(*Monster)
-            // 	skillOutput := ignore.ComputeOutput(&player.Creature, &monster.Creature)
-            // 	player.Scene.agent <- AgentMessage{
-            // 		Player: player,
-            // 		Msg:    skillOutput,
-            // 	}
-            // case *Player:
-            //
-            // }
-        }
-    })
+    // player.Scene.Nearby(x, y, func(watcher aoi.Entity, marker aoi.Entity) {
+    //     if x >= marker.X()-1 &&
+    //         x <= marker.X()+1 &&
+    //         y >= marker.Y()-1 &&
+    //         y <= marker.Y()+1 {
+    // id := marker.Id()
+    // obj := player.Scene.objects[id]
+    // switch obj.(type) {
+    // case *Monster:
+    // 	monster := obj.(*Monster)
+    // 	skillOutput := ignore.ComputeOutput(&player.Creature, &monster.Creature)
+    // 	player.Scene.agent <- AgentMessage{
+    // 		Player: player,
+    // 		Msg:    skillOutput,
+    // 	}
+    // case *Player:
+    //
+    // }
+    // }
+    // })
     ok := &packet.GCSkillToTileOK1{
         SkillType: SKILL_METEOR_STRIKE,
         Duration:  10,

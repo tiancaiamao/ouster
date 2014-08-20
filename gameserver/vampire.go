@@ -84,3 +84,47 @@ type Vampire struct {
 func (vampire Vampire) CreatureClass() CreatureClass {
     return CREATURE_CLASS_VAMPIRE
 }
+
+// func (vampire Vampire) PCInfo() data.PCInfo {
+//		 return &data.PCVampireInfo{
+//				 ObjectID: player.Creature.ObjectID(),
+//				 Name:		 player.Name,
+//				 // Level:		player.Level,
+//				 Sex: player.Sex,
+//
+//				 BatColor:					player.BatColor,
+//				 SkinColor:				 player.SkinColor,
+//				 MasterEffectColor: player.MasterEffectColor,
+//
+//				 Alignment: player.Alignment,
+//				 // STR:			 player.STR,
+//				 // DEX:			 player.DEX,
+//				 // INT:			 player.INT,
+//
+//				 // HP: player.HP,
+//
+//				 Rank:		player.Rank,
+//				 RankExp: player.RankExp,
+//
+//				 Exp:					player.Exp,
+//				 Fame:				 player.Fame,
+//				 Gold:				 player.Gold,
+//				 Sight:				player.Sight,
+//				 Bonus:				player.Bonus,
+//				 HotKey:			 player.HotKey,
+//				 SilverDamage: player.SilverDamage,
+//
+//				 Competence: player.Competence,
+//				 GuildID:		player.GuildID,
+//
+//				 GuildMemberRank: player.GuildMemberRank,
+//				 UnionID:				 player.UnionID,
+//
+//				 AdvancementLevel:	 player.AdvancementLevel,
+//				 AdvancementGoalExp: player.AdvancementGoalExp,
+//
+//				 ZoneID: player.Scene.ZoneID,
+//				 ZoneX:	player.X,
+//				 ZoneY:	player.Y,
+//		 }
+// }

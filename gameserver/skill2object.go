@@ -27,14 +27,14 @@ func (blood BloodSpearHandler) ExecuteP2M(player *Player, monster *Monster) {
     // if damage >= 180 {
     // 	damage = 180
     // }
-    player.Scene.agent <- AgentMessage{
-        Player: player,
-        Msg: SkillOutput{
-            MonsterID: monster.Id(),
-            // Damage:    int(damage),
-            Duration: 10,
-        },
-    }
+    // player.Scene.agent <- AgentMessage{
+    //     Player: player,
+    //     Msg: SkillOutput{
+    //         MonsterID: monster.Id(),
+    //         // Damage:    int(damage),
+    //         Duration: 10,
+    //     },
+    // }
 }
 func (blood BloodSpearHandler) ExecuteM2P(monster *Monster, player *Player) {
     // TODO

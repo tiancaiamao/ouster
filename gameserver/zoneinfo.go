@@ -9,6 +9,7 @@ type ZoneInfo struct {
     SMIFileName    string `json:"smiFileName"`
 }
 
+// 用于维护一个从ZoneID到ZoneInfo的映射关系
 var gZoneInfoManager ZoneInfoManager
 
 type ZoneInfoManager map[ZoneID_t]*ZoneInfo
