@@ -2,7 +2,7 @@ package main
 
 import (
     "github.com/tiancaiamao/ouster/packet"
-    "log"
+    // "log"
 )
 
 func CGAttackHandler(pkt packet.Packet, agent *Agent) {
@@ -48,24 +48,18 @@ func CGMoveHandler(pkt packet.Packet, agent *Agent) {
 }
 
 func CGSkillToSelfHandler(pkt packet.Packet, agent *Agent) {
-    pcItf := agent.pc
-    pc := pcItf.PlayerCreatureInstance()
-    player := pc.Player
+    // pcItf := agent.pc
+    // pc := pcItf.PlayerCreatureInstance()
+    // player := pc.Player
 
-    skill := pkt.(packet.CGSkillToSelfPacket)
-    switch skill.SkillType {
-    case SKILL_INVISIBILITY:
-        ok := &packet.GCSkillToSelfOK1{
-            SkillType: SKILL_INVISIBILITY,
-            CEffectID: 181,
-            Duration:  0,
-            Grade:     0,
-        }
-        ok.Short = make(map[packet.ModifyType]uint16)
-        ok.Short[12] = 180 + 256
-        player.send <- ok
-    default:
-        log.Println("unknown SkillToSelf type:", skill.SkillType)
+    skillPacket := pkt.(packet.CGSkillToSelfPacket)
+    skillHandler, ok := skillTable[skillPacket.SkillType]
+    if !ok {
+
+    }
+
+    if handler, ok := skillHandler.(SkillToSelfInterface); ok {
+        handler.ExecuteToSelf(skillPacket, agent)
     }
 }
 

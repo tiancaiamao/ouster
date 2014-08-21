@@ -54,13 +54,13 @@ func (agent *Agent) handleClientMessage(pkt packet.Packet) {
     pc := pcItf.PlayerCreatureInstance()
     player := pc.Player
 
-    handler, ok := packetHandlers[pkt.Id()]
+    handler, ok := packetHandlers[pkt.PacketID()]
     if !ok {
 
     }
 
     handler(pkt, agent)
-    switch pkt.Id() {
+    switch pkt.PacketID() {
     case packet.PACKET_CG_CONNECT:
 
     case packet.PACKET_CG_READY:
@@ -83,7 +83,7 @@ func (agent *Agent) handleClientMessage(pkt packet.Packet) {
         // skillInfo.PCSkillInfoList = []packet.SkillInfo{
         // player.SkillInfo(),
         // }
-        player.send <- &skillInfo
+        player.sendPacket(&skillInfo)
         return
     }
 }
@@ -111,7 +111,7 @@ func (this *Player) handleAoiMessage(id uint32) {
     //         this.send <- addMonster
     //         monster.flag |= flagActive
     //         log.Println("monster ", id, "set to active", monster.flag)
-    //         monster.Enemies = append(monster.Enemies, this.Id())
+    //         monster.Enemies = append(monster.Enemies, this.PacketID())
     //     } else {
     //
     //     }

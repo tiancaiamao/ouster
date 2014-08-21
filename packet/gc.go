@@ -13,7 +13,7 @@ type GCMoveOKPacket struct {
     Y   uint8
 }
 
-func (moveOk GCMoveOKPacket) Id() PacketID {
+func (moveOk GCMoveOKPacket) PacketID() PacketID {
     return PACKET_GC_MOVE_OK
 }
 func (moveOk GCMoveOKPacket) String() string {
@@ -43,7 +43,7 @@ type GCMoveErrorPacket struct {
     Y   uint8
 }
 
-func (moveError GCMoveErrorPacket) Id() PacketID {
+func (moveError GCMoveErrorPacket) PacketID() PacketID {
     return PACKET_GC_MOVE_ERROR
 }
 func (moveError GCMoveErrorPacket) String() string {
@@ -71,7 +71,7 @@ type GCMovePacket struct {
     Dir      uint8
 }
 
-func (move GCMovePacket) Id() PacketID {
+func (move GCMovePacket) PacketID() PacketID {
     return PACKET_GC_MOVE
 }
 func (move GCMovePacket) String() string {
@@ -242,7 +242,7 @@ type GCUpdateInfoPacket struct {
     PowerPoint         uint32
 }
 
-func (info *GCUpdateInfoPacket) Id() PacketID {
+func (info *GCUpdateInfoPacket) PacketID() PacketID {
     return PACKET_GC_UPDATE_INFO
 }
 func (info *GCUpdateInfoPacket) String() string {
@@ -368,7 +368,7 @@ type GCPetInfoPacket struct {
     SummonInfo uint8
 }
 
-func (pet *GCPetInfoPacket) Id() PacketID {
+func (pet *GCPetInfoPacket) PacketID() PacketID {
     return PACKET_GC_PET_INFO
 }
 func (pet *GCPetInfoPacket) String() string {
@@ -384,7 +384,7 @@ type GCSetPositionPacket struct {
     Dir uint8
 }
 
-func (setPosition GCSetPositionPacket) Id() PacketID {
+func (setPosition GCSetPositionPacket) PacketID() PacketID {
     return PACKET_GC_SET_POSITION
 }
 func (setPosition GCSetPositionPacket) String() string {
@@ -407,7 +407,7 @@ type GCAddBat struct {
     Color       uint16
 }
 
-func (bat *GCAddBat) Id() PacketID {
+func (bat *GCAddBat) PacketID() PacketID {
     return PACKET_GC_ADD_BAT
 }
 func (bat *GCAddBat) String() string {
@@ -444,7 +444,7 @@ type GCAddMonsterFromBurrowing struct {
     MaxHP       uint16
 }
 
-func (monster *GCAddMonsterFromBurrowing) Id() PacketID {
+func (monster *GCAddMonsterFromBurrowing) PacketID() PacketID {
     return PACKET_GC_ADD_MONSTER_FROM_BURROWING
 }
 func (monster *GCAddMonsterFromBurrowing) String() string {
@@ -470,7 +470,7 @@ type GCAddMonster struct {
     FromFlag    byte
 }
 
-func (monster *GCAddMonster) Id() PacketID {
+func (monster *GCAddMonster) PacketID() PacketID {
     return PACKET_GC_ADD_MONSTER
 }
 func (monster *GCAddMonster) String() string {
@@ -502,7 +502,7 @@ type GCStatusCurrentHP struct {
     CurrentHP uint16
 }
 
-func (status GCStatusCurrentHP) Id() PacketID {
+func (status GCStatusCurrentHP) PacketID() PacketID {
     return PACKET_GC_STATUS_CURRENT_HP
 }
 func (status GCStatusCurrentHP) String() string {
@@ -520,7 +520,7 @@ type GCAttackMeleeOK1 struct {
     ModifyInfo
 }
 
-func (attackOk GCAttackMeleeOK1) Id() PacketID {
+func (attackOk GCAttackMeleeOK1) PacketID() PacketID {
     return PACKET_GC_ATTACK_MELEE_OK_1
 }
 
@@ -539,7 +539,7 @@ type GCAttackMeleeOK2 struct {
     ModifyInfo
 }
 
-func (attackOk GCAttackMeleeOK2) Id() PacketID {
+func (attackOk GCAttackMeleeOK2) PacketID() PacketID {
     return PACKET_GC_ATTACK_MELEE_OK_2
 }
 
@@ -555,7 +555,7 @@ func (attackOk GCAttackMeleeOK2) MarshalBinary(code uint8) ([]byte, error) {
 
 type GCCannotUsePacket uint32
 
-func (cannot GCCannotUsePacket) Id() PacketID {
+func (cannot GCCannotUsePacket) PacketID() PacketID {
     return PACKET_GC_CANNOT_USE
 }
 func (cannot GCCannotUsePacket) String() string {
@@ -749,7 +749,7 @@ type GCBloodDrainOK1 struct {
     ObjectID uint32
 }
 
-func (bdo *GCBloodDrainOK1) Id() PacketID {
+func (bdo *GCBloodDrainOK1) PacketID() PacketID {
     return PACKET_GC_BLOOD_DRAIN_OK_1
 }
 func (bdo *GCBloodDrainOK1) String() string {
@@ -765,7 +765,7 @@ func (bdo *GCBloodDrainOK1) MarshalBinary(code uint8) ([]byte, error) {
 
 type GCModifyInformationPacket ModifyInfo
 
-func (modify *GCModifyInformationPacket) Id() PacketID {
+func (modify *GCModifyInformationPacket) PacketID() PacketID {
     return PACKET_GC_MODIFY_INFORMATION
 }
 func (modify *GCModifyInformationPacket) String() string {
@@ -784,7 +784,7 @@ type GCAddEffect struct {
     Duration uint16
 }
 
-func (effect GCAddEffect) Id() PacketID {
+func (effect GCAddEffect) PacketID() PacketID {
     return PACKET_GC_ADD_EFFECT
 }
 func (effect GCAddEffect) String() string {
@@ -812,7 +812,7 @@ type GCAddMonsterCorpse struct {
     LastKiller    uint32
 }
 
-func (corpse *GCAddMonsterCorpse) Id() PacketID {
+func (corpse *GCAddMonsterCorpse) PacketID() PacketID {
     return PACKET_GC_ADD_MONSTER_CORPSE
 }
 func (corpse *GCAddMonsterCorpse) String() string {
@@ -842,7 +842,7 @@ func (corpse *GCAddMonsterCorpse) MarshalBinary(code uint8) ([]byte, error) {
 
 type GCCreatureDiedPacket uint32
 
-func (died GCCreatureDiedPacket) Id() PacketID {
+func (died GCCreatureDiedPacket) PacketID() PacketID {
     return PACKET_GC_CREATURE_DIED
 }
 func (died GCCreatureDiedPacket) String() string {
@@ -856,7 +856,7 @@ func (died GCCreatureDiedPacket) MarshalBinary(code uint8) ([]byte, error) {
 
 type GCDeleteObjectPacket uint32
 
-func (obj GCDeleteObjectPacket) Id() PacketID {
+func (obj GCDeleteObjectPacket) PacketID() PacketID {
     return PACKET_GC_DELETE_OBJECT
 }
 func (obj GCDeleteObjectPacket) String() string {
@@ -874,7 +874,7 @@ type GCAddEffectPacket struct {
     Duration uint16
 }
 
-func (obj GCAddEffectPacket) Id() PacketID {
+func (obj GCAddEffectPacket) PacketID() PacketID {
     return PACKET_GC_ADD_EFFECT
 }
 func (obj GCAddEffectPacket) String() string {
@@ -897,7 +897,7 @@ type GCFastMovePacket struct {
     SkillType uint16
 }
 
-func (fastMove *GCFastMovePacket) Id() PacketID {
+func (fastMove *GCFastMovePacket) PacketID() PacketID {
     return PACKET_GC_FAST_MOVE
 }
 func (fastMove *GCFastMovePacket) String() string {
@@ -919,7 +919,7 @@ type GCLearnSkillOK struct {
     SkillDomainType uint8
 }
 
-func (ok *GCLearnSkillOK) Id() PacketID {
+func (ok *GCLearnSkillOK) PacketID() PacketID {
     return PACKET_GC_LEARN_SKILL_OK
 }
 func (ok *GCLearnSkillOK) String() string {
@@ -936,7 +936,7 @@ type GCRemoveEffect struct {
     EffectList []uint16
 }
 
-func (remove GCRemoveEffect) Id() PacketID {
+func (remove GCRemoveEffect) PacketID() PacketID {
     return PACKET_GC_REMOVE_EFFECT
 }
 func (remove GCRemoveEffect) String() string {
@@ -959,7 +959,7 @@ type GCSkillFailed1Packet struct {
     ModifyInfo
 }
 
-func (failed *GCSkillFailed1Packet) Id() PacketID {
+func (failed *GCSkillFailed1Packet) PacketID() PacketID {
     return PACKET_GC_SKILL_FAILED_1
 }
 func (failed *GCSkillFailed1Packet) String() string {
@@ -980,7 +980,7 @@ type GCSkillFailed2 struct {
     Grade          uint8
 }
 
-func (failed GCSkillFailed2) Id() PacketID {
+func (failed GCSkillFailed2) PacketID() PacketID {
     return PACKET_GC_SKILL_FAILED_2
 }
 func (failed GCSkillFailed2) String() string {
@@ -1005,7 +1005,7 @@ type GCSkillToObjectOK1 struct {
     ModifyInfo
 }
 
-func (ok *GCSkillToObjectOK1) Id() PacketID {
+func (ok *GCSkillToObjectOK1) PacketID() PacketID {
     return PACKET_GC_SKILL_TO_OBJECT_OK_1
 }
 func (ok *GCSkillToObjectOK1) String() string {
@@ -1030,7 +1030,7 @@ type GCSkillToObjectOK3 struct {
     Grade     uint8
 }
 
-func (ok *GCSkillToObjectOK3) Id() PacketID {
+func (ok *GCSkillToObjectOK3) PacketID() PacketID {
     return PACKET_GC_SKILL_TO_OBJECT_OK_3
 }
 func (ok *GCSkillToObjectOK3) String() string {
@@ -1054,7 +1054,7 @@ type GCSkillToObjectOK4 struct {
     Grade     uint8
 }
 
-func (ok GCSkillToObjectOK4) Id() PacketID {
+func (ok GCSkillToObjectOK4) PacketID() PacketID {
     return PACKET_GC_SKILL_TO_OBJECT_OK_4
 }
 func (ok GCSkillToObjectOK4) String() string {
@@ -1077,7 +1077,7 @@ type GCSkillToSelfOK1 struct {
     ModifyInfo
 }
 
-func (ok *GCSkillToSelfOK1) Id() PacketID {
+func (ok *GCSkillToSelfOK1) PacketID() PacketID {
     return PACKET_GC_SKILL_TO_SELF_OK_1
 }
 func (ok *GCSkillToSelfOK1) String() string {
@@ -1105,7 +1105,7 @@ type GCSkillToTileOK1 struct {
     ModifyInfo
 }
 
-func (ok *GCSkillToTileOK1) Id() PacketID {
+func (ok *GCSkillToTileOK1) PacketID() PacketID {
     return PACKET_GC_SKILL_TO_TILE_OK_1
 }
 func (ok *GCSkillToTileOK1) String() string {
@@ -1140,7 +1140,7 @@ type GCSkillToTileOK5 struct {
     Grade        uint8
 }
 
-func (ok *GCSkillToTileOK5) Id() PacketID {
+func (ok *GCSkillToTileOK5) PacketID() PacketID {
     return PACKET_GC_SKILL_TO_TILE_OK_5
 }
 func (ok *GCSkillToTileOK5) String() string {
@@ -1172,7 +1172,7 @@ type GCSkillToTileOK4 struct {
     Grade        uint8
 }
 
-func (ok *GCSkillToTileOK4) Id() PacketID {
+func (ok *GCSkillToTileOK4) PacketID() PacketID {
     return PACKET_GC_SKILL_TO_TILE_OK_4
 }
 func (ok *GCSkillToTileOK4) String() string {
@@ -1201,7 +1201,7 @@ type GCSkillToTileOK3 struct {
     Grade     uint8
 }
 
-func (ok *GCSkillToTileOK3) Id() PacketID {
+func (ok *GCSkillToTileOK3) PacketID() PacketID {
     return PACKET_GC_SKILL_TO_TILE_OK_3
 }
 func (ok *GCSkillToTileOK3) String() string {
@@ -1234,7 +1234,7 @@ type GCSystemMessagePacket struct {
     Type    uint8
 }
 
-func (msg *GCSystemMessagePacket) Id() PacketID {
+func (msg *GCSystemMessagePacket) PacketID() PacketID {
     return PACKET_GC_SYSTEM_MESSAGE
 }
 func (msg *GCSystemMessagePacket) String() string {
@@ -1260,7 +1260,7 @@ type GCSkillInfoPacket struct {
     PCSkillInfoList []SkillInfo
 }
 
-func (info *GCSkillInfoPacket) Id() PacketID {
+func (info *GCSkillInfoPacket) PacketID() PacketID {
     return PACKET_GC_SKILL_INFO
 }
 func (info *GCSkillInfoPacket) String() string {

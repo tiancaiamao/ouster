@@ -15,7 +15,7 @@ type CGConnectPacket struct {
     MacAddress [4]byte
 }
 
-func (connect *CGConnectPacket) Id() PacketID {
+func (connect *CGConnectPacket) PacketID() PacketID {
     return PACKET_CG_CONNECT
 }
 func (connect *CGConnectPacket) String() string {
@@ -44,7 +44,7 @@ func readConnect(buf []byte, code uint8) (Packet, error) {
 
 type CGReadyPacket struct{}
 
-func (ready CGReadyPacket) Id() PacketID {
+func (ready CGReadyPacket) PacketID() PacketID {
     return PACKET_CG_READY
 }
 func (ready CGReadyPacket) String() string {
@@ -57,7 +57,7 @@ type CGMovePacket struct {
     Y   uint8
 }
 
-func (move CGMovePacket) Id() PacketID {
+func (move CGMovePacket) PacketID() PacketID {
     return PACKET_CG_MOVE
 }
 func (move CGMovePacket) String() string {
@@ -182,7 +182,7 @@ func readMove(buf []byte, code uint8) (Packet, error) {
 
 type CGVerifyTimePacket struct{}
 
-func (verifyTime CGVerifyTimePacket) Id() PacketID {
+func (verifyTime CGVerifyTimePacket) PacketID() PacketID {
     return PACKET_CG_VERIFY_TIME
 }
 func (verifyTime CGVerifyTimePacket) String() string {
@@ -196,7 +196,7 @@ type CGAttackPacket struct {
     Dir      uint8
 }
 
-func (attack CGAttackPacket) Id() PacketID {
+func (attack CGAttackPacket) PacketID() PacketID {
     return PACKET_CG_ATTACK
 }
 func (attack CGAttackPacket) String() string {
@@ -230,7 +230,7 @@ type CGBloodDrainPacket struct {
     ObjectID uint32
 }
 
-func (bloodDrain CGBloodDrainPacket) Id() PacketID {
+func (bloodDrain CGBloodDrainPacket) PacketID() PacketID {
     return PACKET_CG_BLOOD_DRAIN
 }
 func (bloodDrain CGBloodDrainPacket) String() string {
@@ -246,7 +246,7 @@ type CGLearnSkillPacket struct {
     SkillDomainType uint8
 }
 
-func (learnSkill CGLearnSkillPacket) Id() PacketID {
+func (learnSkill CGLearnSkillPacket) PacketID() PacketID {
     return PACKET_CG_LEARN_SKILL
 }
 
@@ -268,7 +268,7 @@ type CGSkillToObjectPacket struct {
     TargetObjectID uint32
 }
 
-func (skill CGSkillToObjectPacket) Id() PacketID {
+func (skill CGSkillToObjectPacket) PacketID() PacketID {
     return PACKET_CG_SKILL_TO_OBJECT
 }
 
@@ -301,7 +301,7 @@ type CGSkillToSelfPacket struct {
     CEffectID uint16
 }
 
-func (skill CGSkillToSelfPacket) Id() PacketID {
+func (skill CGSkillToSelfPacket) PacketID() PacketID {
     return PACKET_CG_SKILL_TO_SELF
 }
 
@@ -332,7 +332,7 @@ type CGSkillToTilePacket struct {
     Y         uint8
 }
 
-func (skill CGSkillToTilePacket) Id() PacketID {
+func (skill CGSkillToTilePacket) PacketID() PacketID {
     return PACKET_CG_SKILL_TO_TILE
 }
 
@@ -369,7 +369,7 @@ type CGSayPacket struct {
     Message string
 }
 
-func (say *CGSayPacket) Id() PacketID {
+func (say *CGSayPacket) PacketID() PacketID {
     return PACKET_CG_SAY
 }
 func (say *CGSayPacket) String() string {
@@ -385,7 +385,7 @@ func readSay(buf []byte, code uint8) (Packet, error) {
 
 type CGLogoutPacket struct{}
 
-func (_ CGLogoutPacket) Id() PacketID {
+func (_ CGLogoutPacket) PacketID() PacketID {
     return PACKET_CG_LOGOUT
 }
 func (_ CGLogoutPacket) String() string {

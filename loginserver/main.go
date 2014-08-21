@@ -37,9 +37,9 @@ func serve(conn net.Conn) {
             return
         }
 
-        // log.Println("read a packet: ", pkt.Id())
+        // log.Println("read a packet: ", pkt.PacketID())
 
-        switch pkt.Id() {
+        switch pkt.PacketID() {
         case packet.PACKET_CL_GET_WORLD_LIST:
             writer.Write(conn, packet.LCWorldListPacket{})
             Debug(writer, packet.LCWorldListPacket{})
@@ -65,7 +65,7 @@ func serve(conn net.Conn) {
             Debug(writer, reconnect)
             return
         default:
-            log.Printf("get a unknow packet: %d\n", pkt.Id())
+            log.Printf("get a unknow packet: %d\n", pkt.PacketID())
         }
     }
 }

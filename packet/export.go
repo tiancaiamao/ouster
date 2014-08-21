@@ -7,8 +7,7 @@ import (
 type PacketID uint16
 
 type Packet interface {
-    Id() PacketID
-    String() string
+    PacketID() PacketID
 }
 
 type PacketWriter interface {

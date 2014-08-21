@@ -7,7 +7,7 @@ import (
 
 type LCLoginOKPacket struct{}
 
-func (loginOk LCLoginOKPacket) Id() PacketID {
+func (loginOk LCLoginOKPacket) PacketID() PacketID {
     return PACKET_LC_LOGIN_OK
 }
 
@@ -21,7 +21,7 @@ func (loginOk LCLoginOKPacket) MarshalBinary(code uint8) ([]byte, error) {
 
 type LCVersionCheckOKPacket struct{}
 
-func (v LCVersionCheckOKPacket) Id() PacketID {
+func (v LCVersionCheckOKPacket) PacketID() PacketID {
     return PACKET_LC_VERSION_CHECK_OK
 }
 
@@ -34,7 +34,7 @@ func (v LCVersionCheckOKPacket) MarshalBinary(code uint8) ([]byte, error) {
 
 type LCWorldListPacket struct{}
 
-func (wl LCWorldListPacket) Id() PacketID {
+func (wl LCWorldListPacket) PacketID() PacketID {
     return PACKET_LC_WORLD_LIST
 }
 func (wl LCWorldListPacket) String() string {
@@ -50,7 +50,7 @@ type LCServerListPacket struct {
     list         []string
 }
 
-func (sl *LCServerListPacket) Id() PacketID {
+func (sl *LCServerListPacket) PacketID() PacketID {
     return PACKET_LC_SERVER_LIST
 }
 func (sl *LCServerListPacket) String() string {
@@ -64,7 +64,7 @@ type LCPCListPacket struct {
     list []data.PCInfo
 }
 
-func (pl *LCPCListPacket) Id() PacketID {
+func (pl *LCPCListPacket) PacketID() PacketID {
     return PACKET_LC_PC_LIST
 }
 func (pl *LCPCListPacket) String() string {
@@ -86,7 +86,7 @@ type LCReconnectPacket struct {
     Key  []byte
 }
 
-func (rc *LCReconnectPacket) Id() PacketID {
+func (rc *LCReconnectPacket) PacketID() PacketID {
     return PACKET_LC_RECONNECT
 }
 func (rc *LCReconnectPacket) String() string {

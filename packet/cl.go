@@ -7,7 +7,7 @@ type CLLoginPacket struct {
     Password string
 }
 
-func (login *CLLoginPacket) Id() PacketID {
+func (login *CLLoginPacket) PacketID() PacketID {
     return PACKET_CL_LOGIN
 }
 
@@ -26,7 +26,7 @@ func readLogin(buf []byte, code uint8) (Packet, error) {
 
 type CLVersionCheckPacket struct{}
 
-func (v CLVersionCheckPacket) Id() PacketID {
+func (v CLVersionCheckPacket) PacketID() PacketID {
     return PACKET_CL_VERSION_CHECK
 }
 func (v CLVersionCheckPacket) String() string {
@@ -35,7 +35,7 @@ func (v CLVersionCheckPacket) String() string {
 
 type CLGetWorldListPacket struct{}
 
-func (worldList CLGetWorldListPacket) Id() PacketID {
+func (worldList CLGetWorldListPacket) PacketID() PacketID {
     return PACKET_CL_GET_WORLD_LIST
 }
 func (w CLGetWorldListPacket) String() string {
@@ -47,7 +47,7 @@ func readGetWorldList(buf []byte, code uint8) (Packet, error) {
 
 type CLSelectWorldPacket uint8
 
-func (sw CLSelectWorldPacket) Id() PacketID {
+func (sw CLSelectWorldPacket) PacketID() PacketID {
     return PACKET_CL_SELECT_WORLD
 }
 func (sw CLSelectWorldPacket) String() string {
@@ -60,7 +60,7 @@ func readSelectWorld(buf []byte, code uint8) (Packet, error) {
 
 type CLSelectServerPacket uint8
 
-func (ss CLSelectServerPacket) Id() PacketID {
+func (ss CLSelectServerPacket) PacketID() PacketID {
     return PACKET_CL_SELECT_SERVER
 }
 func (ss CLSelectServerPacket) String() string {
@@ -76,7 +76,7 @@ type CLSelectPcPacket struct {
     Type PCType
 }
 
-func (sp *CLSelectPcPacket) Id() PacketID {
+func (sp *CLSelectPcPacket) PacketID() PacketID {
     return PACKET_CL_SELECT_PC
 }
 func (sp *CLSelectPcPacket) String() string {

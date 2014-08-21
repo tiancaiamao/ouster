@@ -124,7 +124,7 @@ func (player *Player) Go() {
         player.packetWriter = writer
         for {
             pkt := <-write
-            log.Println("write channel get a pkt ", pkt.String())
+            // log.Println("write channel get a pkt ", pkt.String())
             err := writer.Write(player.conn, pkt)
             if err != nil {
                 log.Println(err)
@@ -382,42 +382,6 @@ func (player *Player) BroadcastPacket(x uint8, y uint8, pkt packet.Packet) {
     //						 }
     //				 }
     //		 })
-}
-
-func (player *Player) SkillToTile(packet packet.CGSkillToTilePacket) {
-    skillInfo, ok := skillTable[packet.SkillType]
-    if !ok {
-        log.Println("unknown SkillToTie type:", packet.SkillType, packet.X, packet.Y, packet.CEffectID)
-        return
-    }
-
-    handler := skillInfo.Handler
-    tileHandler, ok := handler.(PlayerSkillToTileHandler)
-    if !ok {
-        log.Println("error ", packet.SkillType, "not implement SkillTileHandler!!!")
-        return
-    }
-    tileHandler.ExecuteP2T(player, packet.X, packet.Y)
-}
-
-func (player *Player) SkillToObject(packet packet.CGSkillToObjectPacket) {
-    // skillInfo, ok := skillTable[packet.SkillType]
-    // if !ok {
-    //     log.Println("unknown SkillToObject type:", packet.SkillType, packet.TargetObjectID, packet.CEffectID)
-    //     return
-    // }
-
-    // target := player.Scene.objects[packet.TargetObjectID]
-    // if monster, ok := target.(*Monster); ok {
-    //     handler := skillInfo.Handler
-    //     if toObjectHandler, ok := handler.(PlayerSkillToMonsterHandler); ok {
-    //         toObjectHandler.ExecuteP2M(player, monster)
-    //     } else {
-    //         log.Println("can't execute skill ", packet.SkillType)
-    //     }
-    // } else {
-    //
-    // }
 }
 
 type BaseAttack struct{}

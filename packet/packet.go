@@ -607,7 +607,7 @@ type BinaryMarshaler interface {
 }
 
 func (w *Writer) Write(writer io.Writer, pkt Packet) error {
-    id := pkt.Id()
+    id := pkt.PacketID()
     err := binary.Write(writer, binary.LittleEndian, id)
     if err != nil {
         return err

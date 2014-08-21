@@ -63,68 +63,59 @@ type SkillToSelfHandler interface {
     Execute(*Player)
 }
 
-type SkillInfo struct {
-    Type        SkillPropertyType
-    Name        string
-    Level       uint
-    MinDamage   uint
-    MaxDamage   uint
-    MinDelay    uint
-    MinCastTime uint
-    MaxCastTime uint
-    ConsumeMP   uint
-    Range       uint8
-    Handler     interface{}
+type Skill struct {
 }
 
-var skillTable map[uint16]*SkillInfo
+// 派生类中重写这个函数
+func (skill Skill) ComputeOutput(*SkillInput, *SkillOutput) {}
+
+var skillTable map[uint16]SkillHandler
 
 func init() {
-    skillTable = make(map[uint16]*SkillInfo)
+    skillTable = make(map[uint16]SkillHandler)
 
-    skillTable[SKILL_BLOOD_SPEAR] = &SkillInfo{
-        Type:      SKILL_PROPERTY_TYPE_MAGIC,
-        Name:      "Bloody Spear",
-        ConsumeMP: 60,
-        Handler:   BloodSpearHandler{},
-    }
-    skillTable[SKILL_PARALYZE] = &SkillInfo{
-        Type:      SKILL_PROPERTY_TYPE_MAGIC,
-        Name:      "Paralyze",
-        ConsumeMP: 30,
-        Handler:   ParalyzeHandler{},
-    }
-    skillTable[SKILL_RAPID_GLIDING] = &SkillInfo{
-        Type:      SKILL_PROPERTY_TYPE_MAGIC,
-        Name:      "Rapid Gliding",
-        ConsumeMP: 23,
-        Handler:   RapidGlidingHandler{},
-    }
-    skillTable[SKILL_INVISIBILITY] = &SkillInfo{
-        Type:      SKILL_PROPERTY_TYPE_MAGIC,
-        Name:      "Invisibility",
-        ConsumeMP: 36,
-        Handler:   InvisibilityHandler{},
-    }
-    skillTable[SKILL_METEOR_STRIKE] = &SkillInfo{
-        Type:      SKILL_PROPERTY_TYPE_MAGIC,
-        Name:      "Meteor Strike",
-        ConsumeMP: 53,
-        Handler:   MeteorStrikeHandler{},
-    }
-
-    skillTable[SKILL_SHARP_HAIL] = &SkillInfo{
-        Type:      SKILL_PROPERTY_TYPE_PHYSIC,
-        Name:      "Sharp Hail",
-        ConsumeMP: 20,
-        Handler:   SharpHailHandler{},
-    }
+    // skillTable[SKILL_BLOOD_SPEAR] = &SkillInfo{
+    //     Type:      SKILL_PROPERTY_TYPE_MAGIC,
+    //     Name:      "Bloody Spear",
+    //     ConsumeMP: 60,
+    // }
+    // skillTable[SKILL_PARALYZE] = &SkillInfo{
+    //     Type:      SKILL_PROPERTY_TYPE_MAGIC,
+    //     Name:      "Paralyze",
+    //     ConsumeMP: 30,
+    // }
+    // skillTable[SKILL_RAPID_GLIDING] = &SkillInfo{
+    //     Type:      SKILL_PROPERTY_TYPE_MAGIC,
+    //     Name:      "Rapid Gliding",
+    //     ConsumeMP: 23,
+    // }
+    // skillTable[SKILL_INVISIBILITY] = &SkillInfo{
+    //     Type:      SKILL_PROPERTY_TYPE_MAGIC,
+    //     Name:      "Invisibility",
+    //     ConsumeMP: 36,
+    // }
+    // skillTable[SKILL_METEOR_STRIKE] = &SkillInfo{
+    //     Type:      SKILL_PROPERTY_TYPE_MAGIC,
+    //     Name:      "Meteor Strike",
+    //     ConsumeMP: 53,
+    // }
+    //
+    // skillTable[SKILL_SHARP_HAIL] = &SkillInfo{
+    //     Type:      SKILL_PROPERTY_TYPE_PHYSIC,
+    //     Name:      "Sharp Hail",
+    //     ConsumeMP: 20,
+    // }
 }
 
-type SkillOutput struct {
-    MonsterID uint32
-    Damage    int
-    Duration  int
+type Invisibility struct {
+    Skill
+}
+
+type MeteorStrike struct {
+    Skill
+}
+type Paralyze struct {
+    Skill
 }
 
 func AOE(scene *Scene,

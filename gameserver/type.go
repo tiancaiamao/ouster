@@ -88,3 +88,15 @@ type Coord_t uint8
 type Rank_t uint8
 type RankExp_t uint32
 type GuildMemberRank_t uint8
+
+type ElementalType int8
+
+const (
+    ELEMENTAL_ANY  ElementalType = -1
+    ELEMENTAL_FIRE               = iota
+    ELEMENTAL_WATER
+    ELEMENTAL_EARTH
+    ELEMENTAL_WIND
+    ELEMENTAL_SUM
+    ELEMENTAL_MAX
+)
