@@ -16,11 +16,19 @@ type AgentMessage struct {
 // Scene是一个运行起来的地图场景，包含一个Zone成员
 // Scene负责channel通信相关，然后调用Zone中对应的方法
 type Scene struct {
-    *data.Map
-    objects  []Object
-    players  []*Player
+    objects []Object
+
+    // 玩家管理
+    // NPC管理
+    // 怪物管理
+    // Effect管理
+    // 天气管理
+
+    players map[ObjectID_t]*Agent
+
     monsters []Monster
 
+    // 可以看作aoi管理
     zone *Zone
 
     quit  chan struct{}
@@ -40,14 +48,14 @@ func (scene *Scene) AddObject(obj Object) uint32 {
 func NewScene(m *data.Map) *Scene {
     ret := new(Scene)
 
-    ret.Map = m
-    players := make([]*Player, 0, 200)
+    // ret.Map = m
+    // players := make([]*Player, 0, 200)
 
     num := 0
     for _, mi := range m.MonsterInfo {
         num += int(mi.Count)
     }
-    monsters := make([]Monster, num)
+    // monsters := make([]Monster, num)
     ret.objects = make([]Object, 0, num+200)
 
     idx := 0
@@ -81,8 +89,8 @@ func NewScene(m *data.Map) *Scene {
         }
     }
 
-    ret.players = players
-    ret.monsters = monsters
+    // ret.players = players
+    // ret.monsters = monsters
     ret.quit = make(chan struct{})
     ret.event = make(chan interface{})
     ret.agent = make(chan AgentMessage, 200)
@@ -94,12 +102,8 @@ func (m *Scene) Blocked(x, y uint16) bool {
     return false
 }
 
-func (m *Scene) String() string {
-    return m.Map.Name
-}
-
 func (m *Scene) Login(player *Player, zoneX uint8, zoneY uint8) error {
-    m.players = append(m.players, player)
+    // m.players = append(m.players, player)
 
     // id := m.AddObject(player)
     // player.Entity = m.Add(zoneX, zoneY, id)
@@ -196,9 +200,9 @@ func Initialize() {
     maps["limbo_lair_se"] = NewScene(&data.LimboLairSE)
     maps["perona_nw"] = NewScene(&data.PeronaNW)
 
-    zoneTable = make(map[uint16]*Scene)
-    for _, m := range maps {
-        zoneTable[m.ZoneID] = m
-        go m.Loop()
-    }
+    // zoneTable = make(map[uint16]*Scene)
+    // for _, m := range maps {
+    //     zoneTable[m.ZoneID] = m
+    //     go m.Loop()
+    // }
 }

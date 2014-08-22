@@ -2,23 +2,29 @@ package main
 
 import (
     "github.com/tiancaiamao/ouster/packet"
+    "net"
     "time"
 )
 
 type Agent struct {
-    pc          PlayerCreatureInterface
+    PlayerCreatureInterface
+    Player
+
     computation chan func()
 }
 
+func NewAgent(conn net.Conn) *Agent {
+    agent := new(Agent)
+    InitPlayer(&agent.Player, conn)
+    return agent
+}
+
 func (agent *Agent) Loop() {
-    pcItf := agent.pc
-    pc := pcItf.PlayerCreatureInstance()
-    player := pc.Player
-    // creature := pc.Creature
+    pc := agent.PlayerCreatureInstance()
     heartbeat := time.Tick(100 * time.Millisecond)
     for {
         select {
-        case msg, ok := <-player.client:
+        case msg, ok := <-agent.client:
             if !ok {
                 // kick the player off...
                 return
@@ -33,59 +39,13 @@ func (agent *Agent) Loop() {
     }
 }
 
-type PacketHandler func(pkt packet.Packet, agent *Agent)
-
-var packetHandlers map[packet.PacketID]PacketHandler
-
-func init() {
-    packetHandlers = map[packet.PacketID]PacketHandler{
-        packet.PACKET_CG_CONNECT:         CGConnectHandler,
-        packet.PACKET_CG_ATTACK:          CGAttackHandler,
-        packet.PACKET_CG_SAY:             CGReadyHandler,
-        packet.PACKET_CG_MOVE:            CGMoveHandler,
-        packet.PACKET_CG_SKILL_TO_SELF:   CGSkillToSelfHandler,
-        packet.PACKET_CG_SKILL_TO_OBJECT: CGSkillToObjectHandler,
-        packet.PACKET_CG_SKILL_TO_TILE:   CGSkillToTileHandler,
-    }
-}
-
 func (agent *Agent) handleClientMessage(pkt packet.Packet) {
-    pcItf := agent.pc
-    pc := pcItf.PlayerCreatureInstance()
-    player := pc.Player
-
     handler, ok := packetHandlers[pkt.PacketID()]
     if !ok {
 
     }
 
     handler(pkt, agent)
-    switch pkt.PacketID() {
-    case packet.PACKET_CG_CONNECT:
-
-    case packet.PACKET_CG_READY:
-        // log.Println("get a CG Ready Packet!!!")
-        player.send <- &packet.GCSetPositionPacket{
-            // X:   player.X(),
-            // Y:   player.Y(),
-            Dir: 2,
-        }
-
-        var skillInfo packet.GCSkillInfoPacket
-        // switch player.PCType {
-        // case 'V':
-        //     skillInfo.PCType = packet.PC_VAMPIRE
-        // case 'O':
-        //     skillInfo.PCType = packet.PC_OUSTER
-        // case 'S':
-        //     skillInfo.PCType = packet.PC_SLAYER
-        // }
-        // skillInfo.PCSkillInfoList = []packet.SkillInfo{
-        // player.SkillInfo(),
-        // }
-        player.sendPacket(&skillInfo)
-        return
-    }
 }
 
 // called in scene

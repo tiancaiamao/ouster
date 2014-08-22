@@ -65,12 +65,6 @@ type Zone struct {
     SectorWidth    int
     SectorHeight   int
 
-    // 玩家管理
-    // NPC管理
-    // 怪物管理
-    // Effect管理
-    // 天气管理
-
     NPCTypes     []NPCType_t
     MonsterTypes []MonsterType_t
 
@@ -161,10 +155,10 @@ func (zone *Zone) Sector(x, y int) *Sector {
 }
 
 // 只允许scene访问，不允许其它goroutine访问
-func (zone *Zone) movePC(pcItf PlayerCreatureInterface, cx ZoneCoord_t, cy ZoneCoord_t, dir Dir_t) {
-    pc := pcItf.PlayerCreatureInstance()
+func (zone *Zone) movePC(agent *Agent, cx ZoneCoord_t, cy ZoneCoord_t, dir Dir_t) {
+    pc := agent.PlayerCreatureInstance()
     if !pc.IsAbleToMove() {
-        pc.sendPacket(packet.GCMoveErrorPacket{
+        agent.sendPacket(packet.GCMoveErrorPacket{
             X:  uint8(pc.X),
             Y:  uint8(pc.Y),
         })
@@ -182,7 +176,7 @@ func (zone *Zone) movePC(pcItf PlayerCreatureInterface, cx ZoneCoord_t, cy ZoneC
             difY = -difY
         }
         if difX > 6 || difY > 6 {
-            pc.sendPacket(packet.GCMoveErrorPacket{
+            agent.sendPacket(packet.GCMoveErrorPacket{
                 X:  uint8(pc.X),
                 Y:  uint8(pc.Y),
             })
@@ -196,7 +190,7 @@ func (zone *Zone) movePC(pcItf PlayerCreatureInterface, cx ZoneCoord_t, cy ZoneC
     nx = nx + ZoneCoord_t(dirMoveMask[dir].X)
     ny = ny + ZoneCoord_t(dirMoveMask[dir].Y)
     if nx < 0 || nx >= zone.Width || ny < 0 || ny >= zone.Height {
-        pc.sendPacket(packet.GCMoveErrorPacket{
+        agent.sendPacket(packet.GCMoveErrorPacket{
             X:  uint8(pc.X),
             Y:  uint8(pc.Y),
         })
@@ -208,7 +202,7 @@ func (zone *Zone) movePC(pcItf PlayerCreatureInterface, cx ZoneCoord_t, cy ZoneC
 
     // Tile上有东西了则不能移动
     if newTile.IsBlocked(pc.MoveMode) || newTile.HasCreature(pc.MoveMode) {
-        pc.sendPacket(packet.GCMoveErrorPacket{
+        agent.sendPacket(packet.GCMoveErrorPacket{
             X:  uint8(pc.X),
             Y:  uint8(pc.Y),
         })
@@ -216,20 +210,20 @@ func (zone *Zone) movePC(pcItf PlayerCreatureInterface, cx ZoneCoord_t, cy ZoneC
     }
 
     oldTile.DeleteCreature(pc.ObjectID)
-    newTile.AddCreature(pcItf)
+    newTile.AddCreature(agent)
 
     // 检查地雷/陷阱
 
     pc.X = nx
     pc.Y = ny
     pc.Dir = dir
-    pc.sendPacket(packet.GCMoveOKPacket{
+    agent.sendPacket(packet.GCMoveOKPacket{
         X:   uint8(nx),
         Y:   uint8(ny),
         Dir: uint8(dir),
     })
 
-    zone.movePCBroadcast(pcItf, cx, cy, nx, ny)
+    zone.movePCBroadcast(agent, cx, cy, nx, ny)
 }
 
 func (zone *Zone) movePCBroadcast(pcItf PlayerCreatureInterface, x1 ZoneCoord_t, y1 ZoneCoord_t, x2 ZoneCoord_t, y2 ZoneCoord_t) {
@@ -330,10 +324,10 @@ func (zone *Zone) movePCBroadcast(pcItf PlayerCreatureInterface, x1 ZoneCoord_t,
 }
 
 func (zone *Zone) heartbeat() {
-	zone.processMonsters()
-	zone.processNPCs()
-	
-	zone.processEffects()
+    zone.processMonsters()
+    zone.processNPCs()
+
+    zone.processEffects()
 }
 
 func (zone *Zone) processMonsters() {

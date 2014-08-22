@@ -50,5 +50,5 @@ func (receiver Invisibility) ExecuteToSelf(skill packet.CGSkillToSelfPacket, age
     }
     ok.Short = make(map[packet.ModifyType]uint16)
     ok.Short[12] = 180 + 256
-    agent.pc.PlayerCreatureInstance().sendPacket(ok)
+    agent.sendPacket(ok)
 }

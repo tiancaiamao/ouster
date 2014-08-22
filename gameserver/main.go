@@ -34,8 +34,6 @@ func handleClient(conn net.Conn) {
     log.Println("accept a connection...")
     defer conn.Close()
 
-    agent := NewPlayer(conn)
-
-    // turn into a player agent
-    agent.Go()
+    agent := NewAgent(conn)
+    go agent.Loop()
 }

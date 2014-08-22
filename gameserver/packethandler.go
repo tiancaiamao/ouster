@@ -5,6 +5,23 @@ import (
     // "log"
 )
 
+type PacketHandler func(pkt packet.Packet, agent *Agent)
+
+var packetHandlers map[packet.PacketID]PacketHandler
+
+func init() {
+    packetHandlers = map[packet.PacketID]PacketHandler{
+        packet.PACKET_CG_CONNECT:         CGConnectHandler,
+        packet.PACKET_CG_READY:           CGReadyHandler,
+        packet.PACKET_CG_ATTACK:          CGAttackHandler,
+        packet.PACKET_CG_SAY:             CGReadyHandler,
+        packet.PACKET_CG_MOVE:            CGMoveHandler,
+        packet.PACKET_CG_SKILL_TO_SELF:   CGSkillToSelfHandler,
+        packet.PACKET_CG_SKILL_TO_OBJECT: CGSkillToObjectHandler,
+        packet.PACKET_CG_SKILL_TO_TILE:   CGSkillToTileHandler,
+    }
+}
+
 func CGAttackHandler(pkt packet.Packet, agent *Agent) {
     // attack := pkt.(packet.CGAttackPacket)
     //    log.Println(" attack monster ", attack.ObjectID)
@@ -35,11 +52,6 @@ func CGAttackHandler(pkt packet.Packet, agent *Agent) {
     //		}
 }
 
-func CGReadyHandler(pkt packet.Packet, agent *Agent) {
-    // say := pkt.(*packet.CGSayPacket)
-    // log.Println("say:", say.Message)
-}
-
 func CGMoveHandler(pkt packet.Packet, agent *Agent) {
     // player.Scene.agent <- AgentMessage{
     // Player: player,
@@ -48,10 +60,6 @@ func CGMoveHandler(pkt packet.Packet, agent *Agent) {
 }
 
 func CGSkillToSelfHandler(pkt packet.Packet, agent *Agent) {
-    // pcItf := agent.pc
-    // pc := pcItf.PlayerCreatureInstance()
-    // player := pc.Player
-
     skillPacket := pkt.(packet.CGSkillToSelfPacket)
     skillHandler, ok := skillTable[skillPacket.SkillType]
     if !ok {
@@ -75,12 +83,12 @@ func CGSkillToTileHandler(pkt packet.Packet, agent *Agent) {
 }
 
 func CGConnectHandler(pkt packet.Packet, agent *Agent) {
-    pcItf := agent.pc
-    pc := pcItf.PlayerCreatureInstance()
-    player := pc.Player
-
     raw := pkt.(*packet.CGConnectPacket)
-    player.Load(raw.PCName, packet.PCType(raw.PCType))
+    pcItf, err := LoadPlayerCreature(raw.PCName, packet.PCType(raw.PCType))
+    if err != nil {
+
+    }
+    agent.PlayerCreatureInterface = pcItf
 
     info := &packet.GCUpdateInfoPacket{
         // PCType: player.PCType,
@@ -133,6 +141,44 @@ func CGConnectHandler(pkt packet.Packet, agent *Agent) {
         }
     }
 
-    player.send <- info
-    player.send <- &packet.GCPetInfoPacket{}
+    agent.sendPacket(info)
+    agent.sendPacket(&packet.GCPetInfoPacket{})
+    agent.PlayerStatus = GPS_WAITING_FOR_CG_READY
+}
+
+func CGReadyHandler(pkt packet.Packet, agent *Agent) {
+    // pc := agent.pc.PlayerCreatureInstance()
+    if agent.PlayerStatus != GPS_WAITING_FOR_CG_READY {
+
+    }
+
+    // scene := GetScene(pc.ZoneID)
+    // scene.agent <- AgentMsg{}
+
+    // var save chan<- AgentMsg
+    // 地图切换
+    if agent.ZoneID != 0 {
+        // save = agent.send
+    }
+
+    agent.sendPacket(&packet.GCSetPositionPacket{
+        // X:   player.X(),
+        // Y:   player.Y(),
+        Dir: 2,
+    })
+
+    var skillInfo packet.GCSkillInfoPacket
+    // switch player.PCType {
+    // case 'V':
+    //     skillInfo.PCType = packet.PC_VAMPIRE
+    // case 'O':
+    //     skillInfo.PCType = packet.PC_OUSTER
+    // case 'S':
+    //     skillInfo.PCType = packet.PC_SLAYER
+    // }
+    // skillInfo.PCSkillInfoList = []packet.SkillInfo{
+    // player.SkillInfo(),
+    // }
+    agent.sendPacket(&skillInfo)
+    agent.PlayerStatus = GPS_NORMAL
 }

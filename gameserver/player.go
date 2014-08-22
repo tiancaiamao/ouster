@@ -2,14 +2,11 @@ package main
 
 import (
     "bytes"
-    "encoding/json"
     "github.com/tiancaiamao/ouster"
-    "github.com/tiancaiamao/ouster/data"
     "github.com/tiancaiamao/ouster/packet"
     "log"
     "math/rand"
     "net"
-    "os"
     "time"
 )
 
@@ -48,42 +45,10 @@ const (
 )
 
 // Player负责网络相关的处理，接收消息包，发送消息包
-// 也负责玩家数据完全加载之前的封包的处理
-// 直接加载完成之后，控制权转交给agent
 type Player struct {
     PlayerStatus PlayerStatus
-    // aoi.Entity
-    // Creature
-
-    // PCType byte
-    // field from data.PCInfo
-    // Name               string
-    // Sex                uint8
-    // BatColor           uint16
-    // SkinColor          uint16
-    // HairColor          uint16
-    // MasterEffectColor  uint8
-    // Alignment          uint32
-    // Rank               uint8
-    // RankExp            uint32
-    // Exp                uint32
-    // Fame               uint32
-    // Gold               uint32
-    // Sight              uint8
-    // Bonus              uint16
-    // HotKey             [8]uint16
-    // SilverDamage       uint16
-    // Competence         uint8
-    // GuildID            uint16
-    // GuildName          string
-    // GuildMemberRank    uint8
-    // UnionID            uint32
-    // AdvancementLevel   uint8
-    // AdvancementGoalExp uint32
-
-    // Scene *Scene
-    // carried []int
-    // skillslot []SkillSlot
+    ZoneID       ZoneID_t
+    OldZoneID    ZoneID_t
 
     conn         net.Conn
     packetReader *packet.Reader
@@ -91,12 +56,33 @@ type Player struct {
 
     client <-chan packet.Packet
     send   chan<- packet.Packet
-
-    nearby map[uint32]struct{}
 }
 
-// 两个后台channel，负责与客户端的通信，分别读和写
-func (player *Player) Go() {
+type SkillSlot struct {
+    SkillType uint16
+    ExpLevel  uint16
+
+    LastUse  time.Time
+    Cooling  uint16
+    Duration uint16
+
+    Interval    uint32
+    CastingTime uint32
+}
+
+// func (player *Player) SkillSlot(SkillType uint16) *SkillSlot {
+//     for i := 0; i < len(player.skillslot); i++ {
+//         if player.skillslot[i].SkillType == SkillType {
+//             return &player.skillslot[i]
+//         }
+//     }
+//     return nil
+// }
+
+func InitPlayer(player *Player, conn net.Conn) {
+    player.PlayerStatus = GPS_BEGIN_SESSION
+    player.conn = conn
+
     read := make(chan packet.Packet, 1)
     write := make(chan packet.Packet, 1)
     player.send = write
@@ -138,40 +124,6 @@ func (player *Player) Go() {
     }()
 }
 
-type SkillSlot struct {
-    SkillType uint16
-    ExpLevel  uint16
-
-    LastUse  time.Time
-    Cooling  uint16
-    Duration uint16
-
-    Interval    uint32
-    CastingTime uint32
-}
-
-// func (player *Player) SkillSlot(SkillType uint16) *SkillSlot {
-//     for i := 0; i < len(player.skillslot); i++ {
-//         if player.skillslot[i].SkillType == SkillType {
-//             return &player.skillslot[i]
-//         }
-//     }
-//     return nil
-// }
-
-func NewPlayer(conn net.Conn) *Player {
-    ret := &Player{
-        conn:   conn,
-        nearby: make(map[uint32]struct{}),
-    }
-    go ret.Go()
-    return ret
-}
-
-func (player *Player) NearBy() map[uint32]struct{} {
-    return player.nearby
-}
-
 // TODO
 func (player *Player) sendPacket(pkt packet.Packet) {
 
@@ -189,133 +141,6 @@ func HitTest(tohit uint16, dodge uint16) bool {
     }
 
     return rand.Float32() < prob
-}
-
-func (player *Player) Load(name string, typ packet.PCType) error {
-    f, err := os.Open(os.Getenv("HOME") + "/.ouster/player/" + name)
-    if err != nil {
-        panic(err)
-        // player.Name = name
-        // player.Level = 150
-        // player.SkinColor = 420
-        // player.Alignment = 7500
-        // player.STR = [3]uint16{20, 20, 20}
-        // player.DEX = [3]uint16{20, 20, 20}
-        // player.INT = [3]uint16{20, 20, 20}
-        // player.HP = [2]uint16{472, 472}
-        // player.Rank = 50
-        // player.RankExp = 10700
-        // player.Exp = 125
-        // player.Fame = 282
-        // player.Sight = 13
-        // player.Bonus = 9999
-        // player.Competence = 1
-        // player.GuildMemberRank = 4
-        // player.AdvancementLevel = 100
-
-        // player.ZoneID =           23
-        // player.ZoneX =            145
-        // player.ZoneY =            237
-        return err
-    }
-    defer f.Close()
-    decoder := json.NewDecoder(f)
-
-    switch typ {
-    case packet.PC_VAMPIRE:
-        err = loadVampire(player, decoder)
-    case packet.PC_OUSTER:
-        err = loadOuster(player, decoder)
-    case packet.PC_SLAYER:
-    }
-
-    // player.ToHit = player.BaseToHit()
-    // player.Defense = player.BaseDefense()
-    // player.Protection = player.BaseProtection()
-    // player.Damage = player.BaseDamage()
-
-    return err
-}
-
-func loadOuster(player *Player, decoder *json.Decoder) error {
-    var pcInfo data.PCOusterInfo
-    err := decoder.Decode(&pcInfo)
-    if err != nil {
-        return err
-    }
-
-    // player.PCType = 'O'
-    // player.Name = pcInfo.Name
-    // player.Level = pcInfo.Level
-    // player.Sex = pcInfo.Sex
-    // player.HairColor = pcInfo.HairColor
-    // player.MasterEffectColor = pcInfo.MasterEffectColor
-    // player.Alignment = pcInfo.Alignment
-    // player.STR = pcInfo.STR
-    // player.DEX = pcInfo.DEX
-    // player.INT = pcInfo.INT
-    // player.HP = pcInfo.HP
-    // player.MP = pcInfo.MP
-    // player.Rank = pcInfo.Rank
-    // player.RankExp = pcInfo.RankExp
-    // player.Exp = pcInfo.Exp
-    // player.Fame = pcInfo.Fame
-    // player.Sight = pcInfo.Sight
-    // player.Bonus = pcInfo.Bonus
-    // player.Competence = pcInfo.Competence
-    // player.GuildMemberRank = pcInfo.GuildMemberRank
-    // player.AdvancementLevel = pcInfo.AdvancementLevel
-
-    var skillInfo packet.OusterSkillInfo
-    err = decoder.Decode(&skillInfo)
-    if err != nil {
-        return err
-    }
-
-    // player.skillslot = make([]SkillSlot, len(skillInfo.SubOusterSkillInfoList))
-    // for i := 0; i < len(skillInfo.SubOusterSkillInfoList); i++ {
-    //     v := &skillInfo.SubOusterSkillInfoList[i]
-    //     player.skillslot[i].SkillType = v.SkillType
-    //     player.skillslot[i].ExpLevel = v.ExpLevel
-    //     player.skillslot[i].Interval = v.Interval
-    //     player.skillslot[i].CastingTime = v.CastingTime
-    // }
-
-    // scene := zoneTable[pcInfo.ZoneID]
-    // scene.Login(player, pcInfo.ZoneX, pcInfo.ZoneY)
-    return nil
-}
-
-func loadVampire(player *Player, decoder *json.Decoder) error {
-    var pcInfo data.PCVampireInfo
-    err := decoder.Decode(&pcInfo)
-    if err != nil {
-        return err
-    }
-
-    // player.PCType = 'V'
-    // player.Name = pcInfo.Name
-    // player.Level = pcInfo.Level
-    // player.Sex = pcInfo.Sex
-    //  player.SkinColor = pcInfo.SkinColor
-    //  player.Alignment = pcInfo.Alignment
-    // player.STR = pcInfo.STR
-    // player.DEX = pcInfo.DEX
-    // player.INT = pcInfo.INT
-    // player.HP = pcInfo.HP
-    // player.Rank = pcInfo.Rank
-    // player.RankExp = pcInfo.RankExp
-    // player.Exp = pcInfo.Exp
-    // player.Fame = pcInfo.Fame
-    // player.Sight = pcInfo.Sight
-    // player.Bonus = pcInfo.Bonus
-    // player.Competence = pcInfo.Competence
-    // player.GuildMemberRank = pcInfo.GuildMemberRank
-    // player.AdvancementLevel = pcInfo.AdvancementLevel
-    //
-    // scene := zoneTable[pcInfo.ZoneID]
-    // scene.Login(player, pcInfo.ZoneX, pcInfo.ZoneY)
-    return nil
 }
 
 // func (player *Player) Save() {
