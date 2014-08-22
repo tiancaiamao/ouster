@@ -10,6 +10,7 @@ type Agent struct {
     PlayerCreatureInterface
     Player
 
+    scene       chan<- AgentMessage
     computation chan func()
 }
 
@@ -26,7 +27,7 @@ func (agent *Agent) Loop() {
         select {
         case msg, ok := <-agent.client:
             if !ok {
-                // kick the player off...
+                // 网络出问题了，将玩家踢下线
                 return
             } else {
                 agent.handleClientMessage(msg)
@@ -42,7 +43,8 @@ func (agent *Agent) Loop() {
 func (agent *Agent) handleClientMessage(pkt packet.Packet) {
     handler, ok := packetHandlers[pkt.PacketID()]
     if !ok {
-
+        // TODO
+        return
     }
 
     handler(pkt, agent)

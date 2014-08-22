@@ -53,10 +53,10 @@ func CGAttackHandler(pkt packet.Packet, agent *Agent) {
 }
 
 func CGMoveHandler(pkt packet.Packet, agent *Agent) {
-    // player.Scene.agent <- AgentMessage{
-    // Player: player,
-    // Msg:    pkt,
-    // }
+    agent.scene <- MoveMessage{
+        Agent:        agent,
+        CGMovePacket: pkt.(packet.CGMovePacket),
+    }
 }
 
 func CGSkillToSelfHandler(pkt packet.Packet, agent *Agent) {

@@ -2,16 +2,10 @@ package main
 
 import (
     "github.com/tiancaiamao/ouster/data"
-    "github.com/tiancaiamao/ouster/packet"
     "log"
     "math/rand"
     "time"
 )
-
-type AgentMessage struct {
-    Player *Player
-    Msg    interface{}
-}
 
 // Scene是一个运行起来的地图场景，包含一个Zone成员
 // Scene负责channel通信相关，然后调用Zone中对应的方法
@@ -19,17 +13,15 @@ type Scene struct {
     objects []Object
 
     // 玩家管理
+    players map[ObjectID_t]*Agent
     // NPC管理
     // 怪物管理
+    monsters []Monster
     // Effect管理
     // 天气管理
 
-    players map[ObjectID_t]*Agent
-
-    monsters []Monster
-
     // 可以看作aoi管理
-    zone *Zone
+    *Zone
 
     quit  chan struct{}
     event chan interface{}
@@ -116,42 +108,26 @@ func (s *Scene) Loop() {
     heartbeat := time.Tick(200 * time.Millisecond)
     for {
         select {
-        case <-s.agent:
-            // m.processPlayerInput(data.Player.Id(), data.Msg)
+        case msg, ok := (<-s.agent):
+            if !ok {
+
+            }
+            s.processAgentMessage(msg)
         case <-s.quit:
         case <-s.event:
         case <-heartbeat:
-            s.zone.heartbeat()
+            s.heartbeat()
         }
     }
 }
 
-func (m *Scene) processPlayerInput(playerId uint32, msg interface{}) {
+func (m *Scene) processAgentMessage(msg AgentMessage) {
     switch msg.(type) {
-    case packet.CGMovePacket:
-        move := msg.(packet.CGMovePacket)
+    case MoveMessage:
+        move := msg.(MoveMessage)
         log.Println("scene receive a CGMovePacket:", move.X, move.Y, move.Dir)
-        // obj := m.objects[playerId]
-        // player := obj.(*Player)
-
-        // if move.Dir >= 8 {
-        //     moveErr := packet.GCMoveErrorPacket{
-        //         player.X(),
-        //         player.Y(),
-        //     }
-        //     player.send <- moveErr
-        // }
-
-        move.X = uint8(int(move.X) + dirMoveMask[move.Dir].X)
-        move.Y = uint8(int(move.Y) + dirMoveMask[move.Dir].Y)
-
-        // m.Update(player.Entity, move.X, move.Y)
-        // player.send <- packet.GCMoveOKPacket{
-        //     X:   move.X,
-        //     Y:   move.Y,
-        //     Dir: move.Dir,
-        // }
-    case *packet.GCFastMovePacket:
+        m.movePC(move.Agent, ZoneCoord_t(move.X), ZoneCoord_t(move.Y), Dir_t(move.Dir))
+        // case *packet.GCFastMovePacket:
         // fastMove := msg.(*packet.GCFastMovePacket)
         // obj := m.objects[playerId]
         // player := obj.(*Player)
@@ -164,7 +140,7 @@ func (m *Scene) processPlayerInput(playerId uint32, msg interface{}) {
         //     Y:         player.Y(),
         //     Duration:  10,
         // })
-    case SkillOutput:
+        // case SkillOutput:
         // skillOutput := msg.(SkillOutput)
         // id := skillOutput.MonsterID
         // obj := m.objects[id]

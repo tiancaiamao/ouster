@@ -226,13 +226,12 @@ func (zone *Zone) movePC(agent *Agent, cx ZoneCoord_t, cy ZoneCoord_t, dir Dir_t
     zone.movePCBroadcast(agent, cx, cy, nx, ny)
 }
 
-func (zone *Zone) movePCBroadcast(pcItf PlayerCreatureInterface, x1 ZoneCoord_t, y1 ZoneCoord_t, x2 ZoneCoord_t, y2 ZoneCoord_t) {
-    // pc := pcItf.PlayerCreatureInstance()
+func (zone *Zone) movePCBroadcast(agent *Agent, x1 ZoneCoord_t, y1 ZoneCoord_t, x2 ZoneCoord_t, y2 ZoneCoord_t) {
     // gcMove := packet.GCMovePacket{
-    //     ObjectID: uint32(pc.ObjectID),
-    //     X:        uint8(pc.X),
-    //     Y:        uint8(pc.Y),
-    //     Dir:      uint8(pc.Dir),
+    //     ObjectID: uint32(agent.PlayerCreatureInstance().ObjectID),
+    //     X:        uint8(agent.X),
+    //     Y:        uint8(agent.Y),
+    //     Dir:      uint8(agent.Dir),
     // }
 
     beginX := x2 - ZoneCoord_t(maxViewportWidth) - 1
@@ -266,14 +265,14 @@ func (zone *Zone) movePCBroadcast(pcItf PlayerCreatureInterface, x1 ZoneCoord_t,
                     case Slayer:
                         // pc.sendPacket(packet.GCAddSlayer{})
                         slayer := v.(Slayer)
-                        if canSee(slayer, pcItf) {
+                        if canSee(slayer, agent) {
                             // slayer.sendPacket(packet.GCAddSlayer{})
                         } else {
                             // slayer.sendPacket(packet.GCDeleteObject{})
                         }
                     case Vampire:
                         vampire := v.(Vampire)
-                        if canSee(pcItf, vampire) {
+                        if canSee(agent, vampire) {
                             if vampire.IsFlag(EFFECT_CLASS_HIDE) {
                                 // pc.sendPacket(packet.GCAddBurrowingCreaturePacket{
                                 //     ObjectID: vampire.ObjectID,
@@ -285,15 +284,15 @@ func (zone *Zone) movePCBroadcast(pcItf PlayerCreatureInterface, x1 ZoneCoord_t,
                                 // pc.sendPacket(packet.GCAddVampire{})
                             }
                         }
-                        if canSee(vampire, pcItf) {
+                        if canSee(vampire, agent) {
                             // TODO:添加或者移除
                         }
                     case Ouster:
                         ouster := v.(Ouster)
-                        if canSee(pcItf, ouster) {
+                        if canSee(agent, ouster) {
                             // pc.sendPacket(packet.GCAddOuster{})
                         }
-                        if canSee(ouster, pcItf) {
+                        if canSee(ouster, agent) {
                             // TODO:添加或者移除
                         }
                     case *NPC:
