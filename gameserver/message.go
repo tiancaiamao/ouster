@@ -18,3 +18,15 @@ type MoveMessage struct {
     *Agent
     packet.CGMovePacket
 }
+
+type SkillBroadcastMessage struct {
+    *Agent
+    packet.Packet
+}
+
+type MeteorStrikeMessage struct {
+    *Agent
+    EffectMeteorStrike
+    X   uint8
+    Y   uint8
+}

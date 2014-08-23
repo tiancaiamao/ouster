@@ -60,6 +60,16 @@ func CGMoveHandler(pkt packet.Packet, agent *Agent) {
 }
 
 func CGSkillToSelfHandler(pkt packet.Packet, agent *Agent) {
+    if agent.PlayerStatus != GPS_NORMAL {
+        return
+    }
+
+    // 检查变身狼状态一些技能不可用
+
+    if slayer, ok := agent.PlayerCreature.(Ouster); ok {
+
+    }
+
     skillPacket := pkt.(packet.CGSkillToSelfPacket)
     skillHandler, ok := skillTable[skillPacket.SkillType]
     if !ok {
@@ -72,9 +82,25 @@ func CGSkillToSelfHandler(pkt packet.Packet, agent *Agent) {
 }
 
 func CGSkillToObjectHandler(pkt packet.Packet, agent *Agent) {
-    // skill := pkt.(packet.CGSkillToObjectPacket)
-    // player.SkillToObject(skill)
+    if agent.PlayerStatus != GPS_NORMAL {
+        return
+    }
 
+    // 检查变身狼状态一些技能不可用
+
+    if slayer, ok := agent.PlayerCreature.(Ouster); ok {
+
+    }
+
+    skillPacket := pkt.(packet.CGSkillToTilePacket)
+    skillHandler, ok := skillTable[skillPacket.SkillType]
+    if !ok {
+
+    }
+
+    if handler, ok := skillHandler.(SkillToTileInterface); ok {
+        handler.ExecuteToTile(skillPacket, agent)
+    }
 }
 
 func CGSkillToTileHandler(pkt packet.Packet, agent *Agent) {

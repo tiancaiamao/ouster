@@ -122,11 +122,9 @@ func (s *Scene) Loop() {
 }
 
 func (m *Scene) processAgentMessage(msg AgentMessage) {
-    switch msg.(type) {
+    switch data := msg.(type) {
     case MoveMessage:
-        move := msg.(MoveMessage)
-        log.Println("scene receive a CGMovePacket:", move.X, move.Y, move.Dir)
-        m.movePC(move.Agent, ZoneCoord_t(move.X), ZoneCoord_t(move.Y), Dir_t(move.Dir))
+        m.movePC(data.Agent, ZoneCoord_t(data.X), ZoneCoord_t(data.Y), Dir_t(data.Dir))
         // case *packet.GCFastMovePacket:
         // fastMove := msg.(*packet.GCFastMovePacket)
         // obj := m.objects[playerId]
@@ -163,6 +161,55 @@ func (m *Scene) processAgentMessage(msg AgentMessage) {
         //     })
         //     m.BroadcastPacket(monster.X(), monster.Y(), packet.GCCreatureDiedPacket(monster.Id()))
         // }
+    case SkillBroadcastMessage:
+        scene.broadcastPacket(agent.X, agent.Y, data.Packet)
+    case MeteorStrikeMessage:
+        tile := zone.Tile(data.X, data.Y)
+        tile.AddEffect(&datat.EffectMeteorStrike)
+
+        if tile.HasCreature(MOVE_MODE_WALKING) {
+            target := tile.GetCreature(MOVE_MODE_WALKING)
+            x := data.X
+            y := data.Y
+
+            class := target.CreatureClass()
+            if class == CREATURE_CLASS_SLAYER || class == CREATURE_CLASS_OUSTER {
+                if canSee(target, agent) {
+                    pc := target.PlayerCreatureInstance()
+                    ok2.ObjectID = pc.ObjectID
+                    ok2.SkillType = data.SkillType
+                    ok2.X = pc.X
+                    ok2.Y = pc.Y
+                    ok2.Duration = data.Duration
+                    ok2.Range = Range
+                    target.sendPacket(ok2)
+                } else {
+
+                    target.sendPacket(ok6)
+                }
+            }
+            if class == CREATURE_CLASS_MONSTER {
+                target.(Monster).addEnemy()
+            }
+        }
+
+        pc := data.PlayerCreatureInstance()
+        ok3 := GCSkillToTileOK3{
+            ObjectID:  data.PlayerCreatureInstance().ObjectID,
+            SkillType: data.SkillType,
+            X:         pc.X,
+            Y:         pc.Y,
+        }
+
+        ok4 := GCSkillToTileOK4{
+            SkillType: data.SkillType,
+            X:         pc.X,
+            Y:         pc.Y,
+            Duration:  data.Duration,
+        }
+
+        zone.broadcastPacket(pc.X, pc.Y, ok3)
+        zone.broadcastPacket(data.X, data.Y, ok4)
     }
 }
 

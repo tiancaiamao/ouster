@@ -322,6 +322,54 @@ func (zone *Zone) movePCBroadcast(agent *Agent, x1 ZoneCoord_t, y1 ZoneCoord_t, 
     }
 }
 
+func (zone *Zone) broadcastPacket(cx ZoneCoord_t, cy ZoneCoord_t, packet packet.Packet, owner *Agent) {
+    var (
+        ix   ZoneCoord_t
+        iy   ZoneCoord_t
+        endx ZoneCoord_t
+        endy ZoneCoord_t
+    )
+
+    endx = cx + maxViewportWidth + 1 + Range
+    if endx > zone.Width {
+        endx = zone.Width
+    }
+    endy = cy + maxViewportLowerHeight + 1 + Range
+    if endy > zone.Height {
+        endy = zone.Height
+    }
+
+    ix = cx - maxViewportWidth - 1 - Range
+    if ix < 0 {
+        ix = 0
+    }
+    iy = cy - maxViewportUpperHeight - 1 - Range
+    if iy < 0 {
+        iy = 0
+    }
+
+    for ; ix <= endx; ix++ {
+        for ; iy <= endy; iy++ {
+            tile := zone.Tile(ix, iy)
+
+            if tile.HasCreature() {
+                for k, v := range tile.Objects {
+                    agent, ok := v.(*Agent)
+                    if ok && agent != owner {
+                        if owner != nil {
+                            if canSee(agent, owner) {
+                                agent.sendPacket(packet)
+                            }
+                        } else {
+                            agent.sendPacket(packet)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 func (zone *Zone) heartbeat() {
     zone.processMonsters()
     zone.processNPCs()
