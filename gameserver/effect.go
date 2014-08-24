@@ -609,12 +609,24 @@ type Effect struct {
     Deadline time.Time
 }
 
+func (effect Effect) EffectInstance() *Effect {
+    return &effect
+}
+func (effect Effect) affect()   {}
+func (effect Effect) unaffect() {}
+
 func (effect Effect) ObjectClass() ObjectClass {
     return OBJECT_CLASS_EFFECT
 }
 
 type EffectInterface interface {
     ObjectInterface
+    // 基类中已经实现了，派生类中重载
+    affect()
+    unaffect()
+
+    EffectClass() EffectClass
+    EffectInstance() *Effect
 }
 
 type EffectMeteorStrike struct {
@@ -626,8 +638,16 @@ type EffectMeteorStrike struct {
     SplashRatio [3]int
 }
 
+func (effect *EffectMeteorStrike) EffectClass() EffectClass {
+    return EFFECT_CLASS_METEOR_STRIKE
+}
+
 type EffectFadeOut struct {
     Effect
+}
+
+func (effect *EffectFadeOut) EffectClass() EffectClass {
+    return EFFECT_CLASS_METEOR_STRIKE
 }
 
 func abs(x int) int {
@@ -644,7 +664,7 @@ func max(x, y int) int {
     return y
 }
 
-func (effect EffectMeteorStrike) affect() {
+func (effect *EffectMeteorStrike) affect() {
     // caster := Scene.players[UserObject]
 
     scene := effect.Scene
@@ -676,7 +696,28 @@ func (effect EffectMeteorStrike) affect() {
     // effect.Deadline = 0
 }
 
-func (effect EffectMeteorStrike) unaffect() {
+func (effect *EffectMeteorStrike) unaffect() {
     // tile := effect.Scene.Tile(X, Y)
     // tile.deleteEffect(effect.ObjectID)
+}
+
+type EffectManager struct {
+    Effects []EffectInterface
+}
+
+func (manager EffectManager) heartbeat(now time.Time) {
+    for i := len(manager.Effects) - 1; i >= 0; i-- {
+        etf := manager.Effects[i]
+        // effectclass := etf.EffectClass()
+        effect := etf.EffectInstance()
+        if now.After(effect.Deadline) {
+            // 删除
+            copy(manager.Effects[i:], manager.Effects[i+1:])
+            etf.unaffect()
+        } else {
+            if now.After(effect.NextTime) {
+                etf.affect()
+            }
+        }
+    }
 }

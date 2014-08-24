@@ -39,6 +39,8 @@ type Monster struct {
 
     Enemies []uint32
 
+    EffectManager EffectManager
+
     IsEventMonster bool
     IsChief        bool
     isMaster       bool
@@ -129,4 +131,45 @@ func dir(dx int, dy int) uint8 {
         ret = UP
     }
     return ret
+}
+
+type MonsterManager struct {
+    Monsters  map[ObjectID_t]*Monster
+    RegenTime time.Time
+}
+
+func (manager *MonsterManager) heartbeat() {
+    now := time.Now()
+    for key, monster := range manager.Monsters {
+        monster.EffectManager.heartbeat(now)
+
+        if monster.isAlive() {
+            monster.act(now)
+        } else {
+            delete(manager.Monsters, key)
+            manager.killCreature(monster)
+        }
+
+        if now.After(manager.RegenTime) {
+            manager.regenerateCreatures()
+            manager.RegenTime = now.Add(5 * time.Second)
+        }
+    }
+}
+
+func (monster *Monster) act(now time.Time) {
+    // TODO
+}
+
+func (manager *MonsterManager) regenerateCreatures() {
+
+}
+
+func (manager *MonsterManager) killCreature(monster *Monster) {
+    // 广播消息之类的 TODO
+
+}
+
+func (c *Monster) isAlive() bool {
+    return c.HP[ATTR_CURRENT] > 0
 }

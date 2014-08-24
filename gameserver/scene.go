@@ -11,18 +11,21 @@ import (
 // Scene是一个运行起来的地图场景，包含一个Zone成员
 // Scene负责channel通信相关，然后调用Zone中对应的方法
 type Scene struct {
+    // 可以看作aoi管理
+    *Zone
+
     objects []ObjectInterface
 
     // 玩家管理
     players map[ObjectID_t]*Agent
+
     // NPC管理
+
     // 怪物管理
-    monsters []Monster
+    monsterManager MonsterManager
+
     // Effect管理
     // 天气管理
-
-    // 可以看作aoi管理
-    *Zone
 
     quit  chan struct{}
     event chan interface{}
