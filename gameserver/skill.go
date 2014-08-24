@@ -68,39 +68,40 @@ type Skill struct {
 
 // 派生类中重写这个函数
 func (skill Skill) ComputeOutput(*SkillInput, *SkillOutput) {}
-func (skill Skill) Check(skillType SkillType, agent *Agent, skillSlot *SkillSlot) bool {
-    skillSlot := agent.hasSkill(skillType)
-    skillInfo := skillInfoTable[skillType]
+func (skill Skill) Check(skillType SkillType_t, agent *Agent) bool {
+    // skillSlot := agent.hasSkill(skillType)
+    // skillInfo := skillInfoTable[skillType]
     requireMP := decreaseConsumeMP(agent)
-	
-    var hitBonus int
-    if agent.hasRankBonus(RANK_BONUS_KNOWLEDGE_OF_INNATE) {
-        rankBonus := agent.getRankBonus(RANK_BONUS_KNOWLEDGE_OF_INNATE)
-        hitBonus = rankBonus.getPoint()
-    }
+
+    // var hitBonus int
+    // if agent.hasRankBonus(RANK_BONUS_KNOWLEDGE_OF_INNATE) {
+    //     rankBonus := agent.getRankBonus(RANK_BONUS_KNOWLEDGE_OF_INNATE)
+    //     hitBonus = rankBonus.getPoint()
+    // }
 
     manaCheck := hasEnoughMana(agent, requireMP)
     if !manaCheck {
         return false
     }
 
-    timeCheck := verifyRuntime(skillSlot)
-    if !timcCheck {
-        return false
-    }
+    // timeCheck := verifyRuntime(skillSlot)
+    // if !timcCheck {
+    //     return false
+    // }
 
-    hitRoll := HitRoll.isSuccessMagic(ouster, skillInfo, skillSlot, hitBonus)
-    if !hitRoll {
-        return false
-    }
+    // hitRoll := HitRoll.isSuccessMagic(ouster, skillInfo, skillSlot, hitBonus)
+    // if !hitRoll {
+    //     return false
+    // }
 
-    effected := agent.IsFlag(EFFECT_CLASS_INVISIBILITY) || agent.IsFlag(EFFECT_CLASS_HAS_FLAG) || agent.IsFlag(EFFECT_CLASS_HAS_SWEEPER)
+    pc := agent.PlayerCreatureInstance()
+    effected := pc.IsFlag(EFFECT_CLASS_INVISIBILITY) || pc.IsFlag(EFFECT_CLASS_HAS_FLAG) || pc.IsFlag(EFFECT_CLASS_HAS_SWEEPER)
     if effected {
         return false
     }
-	
-    decreaseMana(ouster, requireMP)
-    skillSlot.setRunTime(output.Delay)
+
+    decreaseMana(agent, requireMP)
+    // skillSlot.setRunTime(output.Delay)
     return true
 }
 

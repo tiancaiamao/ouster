@@ -43,20 +43,23 @@ type SkillOutput struct {
 
 func (invisibility Invisibility) ExecuteToSelf(skill packet.CGSkillToSelfPacket, agent *Agent) {
     // 基类的函数
-    if !invisiblity.CheckAndDecreaseMana(skill.SkillType, agent, skillSlot) {
-        receiver.executeSkillFailNormal(ouster, skill.SkillType)
-        return
-    }
+    // if !invisibility.CheckAndDecreaseMana(skill.SkillType, agent, skillSlot) {
+    //     receiver.executeSkillFailNormal(ouster, skill.SkillType)
+    //     return
+    // }
 
-    input := input(agent)
+    // input := input(agent)
+    var input SkillInput
     var output SkillOutput
 
     invisibility.ComputeOutput(&input, &output)
     effect := new(EffectFadeOut)
-    effect.Duration = output.Duration
-    effect.Deadline = 40
-    agent.addEffect(effect)
-    agent.setFlag(EFFECT_CLASS_FADE_OUT)
+    // effect.Duration = output.Duration
+    // effect.Deadline = 40
+
+    pc := agent.PlayerCreatureInstance()
+    pc.addEffect(effect)
+    pc.SetFlag(EFFECT_CLASS_FADE_OUT)
 
     ok1 := &packet.GCSkillToSelfOK1{
         SkillType: SKILL_INVISIBILITY,
@@ -69,51 +72,52 @@ func (invisibility Invisibility) ExecuteToSelf(skill packet.CGSkillToSelfPacket,
 
     ok2 := SkillBroadcastMessage{
         Agent: agent,
-        packet.GCSkillToSelfOK2{
-            ObjectID:  agent.PlayerCreatureInstance().ObjectID,
-            SkillType: SKILL_INVISIBILITY,
-            Duration:  0,
-        },
+        // Packet: packet.GCSkillToSelfOK2{
+        //     ObjectID:  agent.PlayerCreatureInstance().ObjectID,
+        //     SkillType: SKILL_INVISIBILITY,
+        //     Duration:  0,
+        // },
     }
 
     agent.scene <- ok2
 }
 
 func (meteor MeteorStrike) ExecuteToObject(skill packet.CGSkillToObjectPacket, agent *Agent) {
-    target := agent.NearbyAgent(skill.ObjectID)
+    // target := agent.NearbyAgent(ObjectID_t(skill.TargetObjectID))
     meteor.ExecuteToTile(packet.CGSkillToObjectPacket{
-        X:  target.X,
-        Y:  target.Y,
-    })
+    // X:  target.X,
+    // Y:  target.Y,
+    }, agent)
 }
 
 func (meteor MeteorStrike) ExecuteToTile(skill packet.CGSkillToObjectPacket, agent *Agent) {
     // 基类的函数
-    if !invisiblity.CheckAndDecreaseMana(skill.SkillType, agent, skillSlot) {
-        receiver.executeSkillFailNormal(ouster, skill.SkillType)
-        return
-    }
+    // if !invisiblity.CheckAndDecreaseMana(skill.SkillType, agent, skillSlot) {
+    //     receiver.executeSkillFailNormal(ouster, skill.SkillType)
+    //     return
+    // }
 
-    var (
-        ok1 packet.GCSkillToTileOK1
-        ok2 packet.GCSkillToTileOK2
-        ok3 packet.GCSkillToTileOK3
-        ok4 packet.GCSkillToTileOK4
-        ok5 packet.GCSkillToTileOK5
-        ok6 packet.GCSkillToTileOK6
-    )
+    // var (
+    //     ok1 packet.GCSkillToTileOK1
+    //     ok2 packet.GCSkillToTileOK2
+    //     ok3 packet.GCSkillToTileOK3
+    //     ok4 packet.GCSkillToTileOK4
+    //     ok5 packet.GCSkillToTileOK5
+    //     ok6 packet.GCSkillToTileOK6
+    // )
 
-    input := input(agent)
-    var output SKillOutput
+    // input := input(agent)
+    var input SkillInput
+    var output SkillOutput
     meteor.ComputeOutput(&input, &output)
 
-    agent.sendPacket(ok1)
+    // agent.sendPacket(ok1)
     agent.scene <- MeteorStrikeMessage{
-        UserObjectID: agent.PlayerCreatureInstance().ObjectID,
-        Damage:       output.Damage,
-        NextTime:     output.Duration,
-        X:            skill.X,
-        Y:            skill.Y,
+        // UserObjectID: agent.PlayerCreatureInstance().ObjectID,
+        // Damage:       output.Damage,
+        // NextTime:     output.Duration,
+        // X:            skill.X,
+        // Y:            skill.Y,
     }
 }
 

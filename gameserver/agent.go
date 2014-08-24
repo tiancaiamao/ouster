@@ -79,3 +79,26 @@ func (this *Player) handleAoiMessage(id uint32) {
     //     }
     // }
 }
+
+func decreaseConsumeMP(agent *Agent) int {
+    // TODO
+    return 0
+}
+
+func decreaseMana(agent *Agent, mana int) {
+    // TODO
+}
+
+func (agent *Agent) hasRankBonus() bool {
+    // TODO
+    return false
+}
+
+func hasEnoughMana(agent *Agent, requireMP int) bool {
+    // TODO
+    return true
+}
+
+func (agent *Agent) NearbyAgent(id ObjectID_t) *Agent {
+    return nil
+}

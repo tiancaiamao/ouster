@@ -330,30 +330,30 @@ func (zone *Zone) broadcastPacket(cx ZoneCoord_t, cy ZoneCoord_t, packet packet.
         endy ZoneCoord_t
     )
 
-    endx = cx + maxViewportWidth + 1 + Range
+    endx = cx + ZoneCoord_t(maxViewportWidth) + 1 //+ Range
     if endx > zone.Width {
         endx = zone.Width
     }
-    endy = cy + maxViewportLowerHeight + 1 + Range
+    endy = cy + ZoneCoord_t(maxViewportLowerHeight) + 1 //+ Range
     if endy > zone.Height {
         endy = zone.Height
     }
 
-    ix = cx - maxViewportWidth - 1 - Range
+    ix = cx - ZoneCoord_t(maxViewportWidth) - 1 //- Range
     if ix < 0 {
         ix = 0
     }
-    iy = cy - maxViewportUpperHeight - 1 - Range
+    iy = cy - ZoneCoord_t(maxViewportUpperHeight) - 1 //- Range
     if iy < 0 {
         iy = 0
     }
 
     for ; ix <= endx; ix++ {
         for ; iy <= endy; iy++ {
-            tile := zone.Tile(ix, iy)
+            tile := zone.Tile(int(ix), int(iy))
 
-            if tile.HasCreature() {
-                for k, v := range tile.Objects {
+            if tile.HasCreature(MOVE_MODE_WALKING) {
+                for _, v := range tile.Objects {
                     agent, ok := v.(*Agent)
                     if ok && agent != owner {
                         if owner != nil {

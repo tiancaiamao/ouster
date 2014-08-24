@@ -66,9 +66,9 @@ func CGSkillToSelfHandler(pkt packet.Packet, agent *Agent) {
 
     // 检查变身狼状态一些技能不可用
 
-    if slayer, ok := agent.PlayerCreature.(Ouster); ok {
+    // if slayer, ok := agent.PlayerCreatureInterface.(Ouster); ok {
 
-    }
+    // }
 
     skillPacket := pkt.(packet.CGSkillToSelfPacket)
     skillHandler, ok := skillTable[skillPacket.SkillType]
@@ -88,9 +88,9 @@ func CGSkillToObjectHandler(pkt packet.Packet, agent *Agent) {
 
     // 检查变身狼状态一些技能不可用
 
-    if slayer, ok := agent.PlayerCreature.(Ouster); ok {
-
-    }
+    // if slayer, ok := agent.PlayerCreature.(Ouster); ok {
+    //
+    // }
 
     skillPacket := pkt.(packet.CGSkillToTilePacket)
     skillHandler, ok := skillTable[skillPacket.SkillType]

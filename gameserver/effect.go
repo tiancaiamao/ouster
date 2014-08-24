@@ -602,8 +602,81 @@ const (
 type Effect struct {
     Object
 
+    Scene    *Scene
     X        ZoneCoord_t
     Y        ZoneCoord_t
     NextTime time.Time
     Deadline time.Time
+}
+
+func (effect Effect) ObjectClass() ObjectClass {
+    return OBJECT_CLASS_EFFECT
+}
+
+type EffectInterface interface {
+    ObjectInterface
+}
+
+type EffectMeteorStrike struct {
+    Effect
+
+    Damage      int
+    Delay       int
+    UserObject  ObjectID_t
+    SplashRatio [3]int
+}
+
+type EffectFadeOut struct {
+    Effect
+}
+
+func abs(x int) int {
+    if x > 0 {
+        return x
+    }
+    return -x
+}
+
+func max(x, y int) int {
+    if x > y {
+        return x
+    }
+    return y
+}
+
+func (effect EffectMeteorStrike) affect() {
+    // caster := Scene.players[UserObject]
+
+    scene := effect.Scene
+    for x := -2; x <= 2; x++ {
+        for y := -2; y <= 2; y++ {
+            X := int(effect.X) + x
+            Y := int(effect.Y) + y
+
+            if X < 0 || X >= int(scene.Width) || Y < 0 || Y >= int(scene.Height) {
+                continue
+            }
+
+            // tile := scene.Tile(X, Y)
+            // splash := max(abs(x), abs(y))
+            // damage := getPercentValue(effect.Damage, effect.SplashRatio[splash])
+
+            // for _, v := range tile.Objects {
+            // if monster, ok := v.(Monster); ok {
+            // TODO
+            // }
+            // if pc, ok := v.(*Agent); ok {
+            // 需要向agent的channel发消息
+            // pc.setDamage()
+            // }
+            // }
+        }
+    }
+
+    // effect.Deadline = 0
+}
+
+func (effect EffectMeteorStrike) unaffect() {
+    // tile := effect.Scene.Tile(X, Y)
+    // tile.deleteEffect(effect.ObjectID)
 }

@@ -2,7 +2,8 @@ package main
 
 import (
     "github.com/tiancaiamao/ouster/data"
-    "log"
+    "github.com/tiancaiamao/ouster/packet"
+    // "log"
     "math/rand"
     "time"
 )
@@ -10,7 +11,7 @@ import (
 // Scene是一个运行起来的地图场景，包含一个Zone成员
 // Scene负责channel通信相关，然后调用Zone中对应的方法
 type Scene struct {
-    objects []Object
+    objects []ObjectInterface
 
     // 玩家管理
     players map[ObjectID_t]*Agent
@@ -28,7 +29,7 @@ type Scene struct {
     agent chan AgentMessage
 }
 
-func (scene *Scene) AddObject(obj Object) uint32 {
+func (scene *Scene) AddObject(obj ObjectInterface) uint32 {
     idx := len(scene.objects)
     if idx < 10000 {
         scene.objects = append(scene.objects, obj)
@@ -48,7 +49,7 @@ func NewScene(m *data.Map) *Scene {
         num += int(mi.Count)
     }
     // monsters := make([]Monster, num)
-    ret.objects = make([]Object, 0, num+200)
+    ret.objects = make([]ObjectInterface, 0, num+200)
 
     idx := 0
     for _, mi := range m.MonsterInfo {
@@ -122,9 +123,9 @@ func (s *Scene) Loop() {
 }
 
 func (m *Scene) processAgentMessage(msg AgentMessage) {
-    switch data := msg.(type) {
+    switch raw := msg.(type) {
     case MoveMessage:
-        m.movePC(data.Agent, ZoneCoord_t(data.X), ZoneCoord_t(data.Y), Dir_t(data.Dir))
+        m.movePC(raw.Agent, ZoneCoord_t(raw.X), ZoneCoord_t(raw.Y), Dir_t(raw.Dir))
         // case *packet.GCFastMovePacket:
         // fastMove := msg.(*packet.GCFastMovePacket)
         // obj := m.objects[playerId]
@@ -162,54 +163,55 @@ func (m *Scene) processAgentMessage(msg AgentMessage) {
         //     m.BroadcastPacket(monster.X(), monster.Y(), packet.GCCreatureDiedPacket(monster.Id()))
         // }
     case SkillBroadcastMessage:
-        scene.broadcastPacket(agent.X, agent.Y, data.Packet)
+        pc := raw.Agent.PlayerCreatureInstance()
+        m.broadcastPacket(pc.X, pc.Y, raw.Packet, raw.Agent)
     case MeteorStrikeMessage:
-        tile := zone.Tile(data.X, data.Y)
-        tile.AddEffect(&datat.EffectMeteorStrike)
+        tile := m.Tile(int(raw.X), int(raw.Y))
+        tile.AddEffect(&raw.EffectMeteorStrike)
 
         if tile.HasCreature(MOVE_MODE_WALKING) {
             target := tile.GetCreature(MOVE_MODE_WALKING)
-            x := data.X
-            y := data.Y
+            // x := raw.X
+            // y := raw.Y
 
             class := target.CreatureClass()
             if class == CREATURE_CLASS_SLAYER || class == CREATURE_CLASS_OUSTER {
-                if canSee(target, agent) {
-                    pc := target.PlayerCreatureInstance()
-                    ok2.ObjectID = pc.ObjectID
-                    ok2.SkillType = data.SkillType
-                    ok2.X = pc.X
-                    ok2.Y = pc.Y
-                    ok2.Duration = data.Duration
-                    ok2.Range = Range
-                    target.sendPacket(ok2)
+                if canSee(target, msg.Sender()) {
+                    // pc := target.CreatureInstance()
+                    // ok2.ObjectID = pc.ObjectID
+                    //   ok2.SkillType = raw.SkillType
+                    //   ok2.X = pc.X
+                    //   ok2.Y = pc.Y
+                    //   ok2.Duration = raw.Duration
+                    //   ok2.Range = Range
+                    //   target.sendPacket(ok2)
                 } else {
 
-                    target.sendPacket(ok6)
+                    // target.sendPacket(ok6)
                 }
             }
             if class == CREATURE_CLASS_MONSTER {
-                target.(Monster).addEnemy()
+                // target.(*Monster).addEnemy()
             }
         }
 
-        pc := data.PlayerCreatureInstance()
-        ok3 := GCSkillToTileOK3{
-            ObjectID:  data.PlayerCreatureInstance().ObjectID,
-            SkillType: data.SkillType,
-            X:         pc.X,
-            Y:         pc.Y,
+        pc := raw.PlayerCreatureInstance()
+        ok3 := &packet.GCSkillToTileOK3{
+            ObjectID: uint32(raw.PlayerCreatureInstance().ObjectID),
+            // SkillType: raw.SkillType,
+            X:  uint8(pc.X),
+            Y:  uint8(pc.Y),
         }
 
-        ok4 := GCSkillToTileOK4{
-            SkillType: data.SkillType,
-            X:         pc.X,
-            Y:         pc.Y,
-            Duration:  data.Duration,
+        ok4 := &packet.GCSkillToTileOK4{
+            // SkillType: raw.SkillType,
+            X:  uint8(pc.X),
+            Y:  uint8(pc.Y),
+            // Duration: raw.Duration,
         }
 
-        zone.broadcastPacket(pc.X, pc.Y, ok3)
-        zone.broadcastPacket(data.X, data.Y, ok4)
+        m.broadcastPacket(pc.X, pc.Y, ok3, raw.Agent)
+        m.broadcastPacket(ZoneCoord_t(raw.X), ZoneCoord_t(raw.Y), ok4, raw.Agent)
     }
 }
 

@@ -72,3 +72,12 @@ func (tile *Tile) DeleteCreature(id ObjectID_t) {
 func (tile *Tile) AddCreature(creature CreatureInterface) {
     tile.Objects = append(tile.Objects, creature)
 }
+
+func (tile *Tile) GetCreature(mode MoveMode) CreatureInterface {
+    // TODO
+    return nil
+}
+
+func (tile *Tile) AddEffect(effect EffectInterface) {
+    // TODO
+}

@@ -53,7 +53,7 @@ func (c Creature) CreatureInstance() *Creature {
 }
 
 func (c Creature) heartbeat() {
-	
+
 }
 
 // TODO
@@ -83,6 +83,14 @@ func (c *Creature) IsFlag(effect uint) bool {
     return c.Flag.IsFlag(effect)
 }
 
+func (c Creature) SetFlag(ec EffectClass) {
+
+}
+
 func canSee(watcher CreatureInterface, marker CreatureInterface) bool {
     return true //TODO
+}
+
+func (c Creature) addEffect(effect EffectInterface) {
+
 }

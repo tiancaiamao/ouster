@@ -31,3 +31,7 @@ type OusterSkillSlot struct {
     CastingTime Turn_t
     RunTime     time.Time
 }
+
+func verifyRuntime(skillSlot SkillSlot) bool {
+    return true
+}

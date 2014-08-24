@@ -1,5 +1,9 @@
 package main
 
+var (
+    skillInfoTable map[SkillType_t]SkillInfo
+)
+
 type SkillInfo struct {
     Type        uint
     Name        string
