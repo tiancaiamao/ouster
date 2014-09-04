@@ -2,6 +2,7 @@ package main
 
 import (
     "github.com/tiancaiamao/ouster/packet"
+	"github.com/tiancaiamao/ouster/data"
 )
 
 type POINT struct {
@@ -21,28 +22,6 @@ var (
         POINT{-1, -1}, // 7 == LEFTUP
         POINT{0, 0},   // 8 == DIR_MAX, NONE
     }
-)
-
-type ZoneType uint8
-
-const (
-    ZONE_NORMAL_FIELD = iota
-    ZONE_NORMAL_DUNGEON
-    ZONE_SLAYER_GUILD
-    ZONE_RESERVED_SLAYER_GUILD
-    ZONE_PC_VAMPIRE_LAIR
-    ZONE_NPC_VAMPIRE_LAIR
-    ZONE_NPC_HOME
-    ZONE_NPC_SHOP
-    ZONE_RANDOM_MAP
-    ZONE_CASTLE
-)
-
-type ZoneAccessMode uint8
-
-const (
-    ZONE_ACCESS_PUBLIE = iota
-    ZONE_ACCESS_PRIVATE
 )
 
 type BPOINT struct {

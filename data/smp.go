@@ -2,6 +2,7 @@ package data
 
 import (
     "encoding/binary"
+    . "github.com/tiancaiamao/ouster/util"
     "io"
     "io/ioutil"
     "os"
@@ -9,25 +10,30 @@ import (
 
 type SMP struct {
     Version     string
-    ZoneID      uint16
-    ZoneGroupID uint16
+    ZoneGroupID uint8
     Name        string
-    ZoneType    uint8
-    ZoneLevel   uint8
-    Desc        string
-    Width       uint16
-    Height      uint16
-    Data        []byte
-    Levels      []uint8
+    Description string
+    ZoneID      ZoneID_t
+    ZoneType    ZoneType
+    ZoneLevel   ZoneLevel_t
+
+    ZoneAccessMode ZoneAccessMode
+    DarkLevel      DarkLevel_t
+    LightLevel     LightLevel_t
+    Width          ZoneCoord_t
+    Height         ZoneCoord_t
+
+    Data []byte
 }
 
-func ReadSMP(fileName string, zone *SMP) error {
+func ReadSMP(fileName string) (*SMP, error) {
     fd, err := os.Open(fileName)
     if err != nil {
-        return err
+        return nil, err
     }
     defer fd.Close()
 
+    ret := new(SMP)
     // read zone version
     var buf [200]byte
     var strLen uint32
@@ -36,7 +42,7 @@ func ReadSMP(fileName string, zone *SMP) error {
     ioutil.ReadAll(skip)
 
     // read zone id
-    binary.Read(fd, binary.LittleEndian, &zone.ZoneID)
+    binary.Read(fd, binary.LittleEndian, &ret.ZoneID)
 
     // read zone group id
     var ignore uint16
@@ -49,8 +55,8 @@ func ReadSMP(fileName string, zone *SMP) error {
     }
 
     // read zone type & level
-    binary.Read(fd, binary.LittleEndian, &zone.ZoneType)
-    binary.Read(fd, binary.LittleEndian, &zone.ZoneLevel)
+    binary.Read(fd, binary.LittleEndian, &ret.ZoneType)
+    binary.Read(fd, binary.LittleEndian, &ret.ZoneLevel)
 
     // read zone description
     binary.Read(fd, binary.LittleEndian, &strLen)
@@ -59,42 +65,53 @@ func ReadSMP(fileName string, zone *SMP) error {
     }
 
     // read zone width & height
-    binary.Read(fd, binary.LittleEndian, &zone.Width)
-    binary.Read(fd, binary.LittleEndian, &zone.Height)
+    binary.Read(fd, binary.LittleEndian, &ret.Width)
+    binary.Read(fd, binary.LittleEndian, &ret.Height)
 
     data, err := ioutil.ReadAll(fd)
     if err != nil {
-        return err
+        return nil, err
     }
 
-    zone.Data = data
-    return nil
+    ret.Data = data
+    return ret, nil
 }
 
-func ReadSMI(fileName string, zone *SMP) error {
+type SSIRecord struct {
+    Level  uint8
+    Left   uint8
+    Top    uint8
+    Right  uint8
+    Bottom uint8
+}
+
+type SSI []SSIRecord
+
+func ReadSSI(fileName string) (SSI, error) {
     fd, err := os.Open(fileName)
     if err != nil {
-        return err
+        return nil, err
     }
     defer fd.Close()
 
-    var size uint
-    binary.Read(fd, binary.LittleEndian, &size)
+    var size uint32
+    err = binary.Read(fd, binary.LittleEndian, &size)
+    if err != nil {
+        return nil, err
+    }
 
+    ret := make(SSI, size)
     var buf [5]byte
     for i := 0; i < int(size); i++ {
-        fd.Read(buf[:])
-        level := buf[0]
-        left := buf[1]
-        top := buf[2]
-        right := buf[3]
-        bottom := buf[4]
-
-        for bx := left; bx <= right; bx++ {
-            for by := top; by <= bottom; by++ {
-                zone.Levels[by+bx*uint8(zone.Height)] = level
-            }
+        _, err = fd.Read(buf[:])
+        if err != nil {
+            return nil, err
         }
+        ret[i].Level = buf[0]
+        ret[i].Left = buf[1]
+        ret[i].Top = buf[2]
+        ret[i].Right = buf[3]
+        ret[i].Bottom = buf[4]
     }
-    return nil
+    return ret, nil
 }

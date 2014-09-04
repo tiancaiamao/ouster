@@ -1,4 +1,4 @@
-package main
+package util
 
 type ObjectID_t uint32
 type ZoneCoord_t int16
@@ -99,4 +99,26 @@ const (
     ELEMENTAL_WIND
     ELEMENTAL_SUM
     ELEMENTAL_MAX
+)
+
+type ZoneType uint8
+
+const (
+    ZONE_NORMAL_FIELD = iota
+    ZONE_NORMAL_DUNGEON
+    ZONE_SLAYER_GUILD
+    ZONE_RESERVED_SLAYER_GUILD
+    ZONE_PC_VAMPIRE_LAIR
+    ZONE_NPC_VAMPIRE_LAIR
+    ZONE_NPC_HOME
+    ZONE_NPC_SHOP
+    ZONE_RANDOM_MAP
+    ZONE_CASTLE
+)
+
+type ZoneAccessMode uint8
+
+const (
+    ZONE_ACCESS_PUBLIE = iota
+    ZONE_ACCESS_PRIVATE
 )
