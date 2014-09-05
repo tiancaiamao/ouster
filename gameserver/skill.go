@@ -1,6 +1,8 @@
 package main
 
-import ()
+import (
+    . "github.com/tiancaiamao/ouster/util"
+)
 
 type SkillPropertyType uint8
 

@@ -1,8 +1,12 @@
 package main
 
 import (
+    "encoding/binary"
+    "github.com/tiancaiamao/ouster/data"
     "github.com/tiancaiamao/ouster/packet"
-	"github.com/tiancaiamao/ouster/data"
+    . "github.com/tiancaiamao/ouster/util"
+    // "io"
+    "bytes"
 )
 
 type POINT struct {
@@ -64,17 +68,75 @@ func NewZone(zoneID ZoneID_t) *Zone {
     }
 }
 
-func (zone *Zone) load() {
+func (zone *Zone) load(smp *data.SMP, ssi data.SSI) {
     // 读取ZoneInfo
-    zoneInfo := gZoneInfoManager.GetZoneInfo(zone.ZoneID)
-    zone.IsPKZone = zoneInfo.IsPKZone
-    zone.IsNoPortalZone = zoneInfo.IsNoPortalZone
-    zone.IsMasterLair = zoneInfo.IsMasterLair
-    zone.IsHolyLand = zoneInfo.IsHolyLand
+    zone.ZoneID = smp.ZoneID
 
-    err := ReadSMP(zoneInfo.SMPFileName, zone)
-    if err != nil {
-        panic(err)
+    zoneInfo := gZoneInfoManager.GetZoneInfo(zone.ZoneID)
+    if zoneInfo != nil {
+        zone.IsPKZone = zoneInfo.IsPKZone
+        zone.IsNoPortalZone = zoneInfo.IsNoPortalZone
+        zone.IsMasterLair = zoneInfo.IsMasterLair
+        zone.IsHolyLand = zoneInfo.IsHolyLand
+    }
+
+    zone.ZoneType = smp.ZoneType
+    zone.ZoneLevel = smp.ZoneLevel
+    zone.ZoneAccessMode = smp.ZoneAccessMode
+
+    zone.Width = smp.Width
+    zone.Height = smp.Height
+    zone.Tiles = make([]Tile, zone.Width*zone.Height)
+
+    sectorWidth := zone.Width / SECTOR_SIZE
+    sectorHeight := zone.Height / SECTOR_SIZE
+    zone.Sectors = make([]Sector, sectorWidth*sectorHeight)
+
+    for i := 0; i < int(zone.Width); i++ {
+        for j := 0; j < int(zone.Height); j++ {
+            sx := i / SECTOR_SIZE
+            sy := i / SECTOR_SIZE
+            tile := zone.Tile(i, j)
+            tile.Sector = zone.Sector(sx, sy)
+        }
+    }
+
+    for i := 0; i < int(sectorWidth); i++ {
+        for j := 0; j < int(sectorHeight); j++ {
+            for d := 0; d < 9; d++ {
+                sectorx := i + dirMoveMask[d].X
+                sectory := j + dirMoveMask[d].Y
+
+                zone.Sector(i, j).NearbySectors[d] = zone.Sector(sectorx, sectory)
+            }
+        }
+    }
+
+    for y := 0; y < int(zone.Height); y++ {
+        for x := 0; x < int(zone.Width); x++ {
+            tile := zone.Tile(x, y)
+            flag, err := smp.Data.ReadByte()
+            if (flag & 0x01) != 0x00 {
+                tile.SetBlocked(MOVE_MODE_BURROWING)
+            }
+            if (flag & 0x02) != 0x00 {
+                tile.SetBlocked(MOVE_MODE_WALKING)
+            }
+            if (flag & 0x04) != 0x00 {
+                tile.SetBlocked(MOVE_MODE_FLYING)
+            }
+            if flag == 0 {
+                zone.MonsterRegenPosition = append(zone.MonsterRegenPosition, BPOINT{byte(x), byte(y)})
+            }
+            if (flag&0x07) != 0x07 && (zone.IsMasterLair || zone.ZoneID == 3002) {
+                zone.EmptyTilePosition = append(zone.EmptyTilePosition, BPOINT{byte(x), byte(y)})
+            }
+            if (flag & 0x80) != 0x00 {
+                if readSMPPortal(smp.Data, zone) != nil {
+                    panic(err)
+                }
+            }
+        }
     }
 
     if len(zone.MonsterRegenPosition) == 0 {
@@ -95,15 +157,62 @@ func (zone *Zone) load() {
         }
     }
 
-    err = ReadSMI(zoneInfo.SMIFileName, zone)
-    if err != nil {
-        panic(err)
+    for i := 0; i < len(ssi); i++ {
+        record := ssi[i]
+        for bx := record.Left; bx <= record.Right; bx++ {
+            for by := record.Top; by <= record.Bottom; by++ {
+                *(zone.Level(int(bx), int(by))) = record.Level
+            }
+        }
     }
 
     zone.loadMonster()
     zone.loadItem()
     zone.loadNPC()
     zone.loadEffect()
+}
+
+func readSMPPortal(fd *bytes.Buffer, zone *Zone) error {
+    c, err := fd.ReadByte()
+    if err != nil {
+        return err
+    }
+
+    typ := PortalType(c)
+    // portalType := PORTAL_NORMAL
+    // bAddPortal := true
+    var targetZoneID ZoneID_t
+    var targetX byte
+    var targetY byte
+
+    if typ == PORTAL_NORMAL || typ == PORTAL_SLAYER ||
+        typ == PORTAL_VAMPIRE || typ == PORTAL_OUSTER {
+        binary.Read(fd, binary.LittleEndian, &targetZoneID)
+        binary.Read(fd, binary.LittleEndian, &targetX)
+        binary.Read(fd, binary.LittleEndian, &targetY)
+    } else if typ == PORTAL_MULTI_TARGET {
+        size, err := fd.ReadByte()
+        if err != nil {
+            return err
+        }
+
+        for i := 0; i < int(size); i++ {
+            binary.Read(fd, binary.LittleEndian, &targetZoneID)
+            binary.Read(fd, binary.LittleEndian, &targetX)
+            binary.Read(fd, binary.LittleEndian, &targetY)
+        }
+        //...
+    } else if typ == PORTAL_GUILD {
+        binary.Read(fd, binary.LittleEndian, &targetZoneID)
+        binary.Read(fd, binary.LittleEndian, &targetX)
+        binary.Read(fd, binary.LittleEndian, &targetY)
+        //...
+    } else if typ == PORTAL_BATTLE {
+        binary.Read(fd, binary.LittleEndian, &targetZoneID)
+        binary.Read(fd, binary.LittleEndian, &targetX)
+        binary.Read(fd, binary.LittleEndian, &targetY)
+    }
+    return nil
 }
 
 func (zone *Zone) loadEffect() {
@@ -213,19 +322,19 @@ func (zone *Zone) movePCBroadcast(agent *Agent, x1 ZoneCoord_t, y1 ZoneCoord_t, 
     //     Dir:      uint8(agent.Dir),
     // }
 
-    beginX := x2 - ZoneCoord_t(maxViewportWidth) - 1
+    beginX := x2 - ZoneCoord_t(MaxViewportWidth) - 1
     if beginX < 0 {
         beginX = 0
     }
-    endX := x2 + ZoneCoord_t(maxViewportWidth) + 1
+    endX := x2 + ZoneCoord_t(MaxViewportWidth) + 1
     if endX > zone.Width {
         endX = zone.Width
     }
-    beginY := y2 - ZoneCoord_t(maxViewportUpperHeight) - 1
+    beginY := y2 - ZoneCoord_t(MaxViewportUpperHeight) - 1
     if beginY < 0 {
         beginY = 0
     }
-    endY := y2 + ZoneCoord_t(maxViewportUpperHeight) + 1
+    endY := y2 + ZoneCoord_t(MaxViewportUpperHeight) + 1
     if endY > zone.Height {
         endY = zone.Height
     }
@@ -309,20 +418,20 @@ func (zone *Zone) broadcastPacket(cx ZoneCoord_t, cy ZoneCoord_t, packet packet.
         endy ZoneCoord_t
     )
 
-    endx = cx + ZoneCoord_t(maxViewportWidth) + 1 //+ Range
+    endx = cx + ZoneCoord_t(MaxViewportWidth) + 1 //+ Range
     if endx > zone.Width {
         endx = zone.Width
     }
-    endy = cy + ZoneCoord_t(maxViewportLowerHeight) + 1 //+ Range
+    endy = cy + ZoneCoord_t(MaxViewportLowerHeight) + 1 //+ Range
     if endy > zone.Height {
         endy = zone.Height
     }
 
-    ix = cx - ZoneCoord_t(maxViewportWidth) - 1 //- Range
+    ix = cx - ZoneCoord_t(MaxViewportWidth) - 1 //- Range
     if ix < 0 {
         ix = 0
     }
-    iy = cy - ZoneCoord_t(maxViewportUpperHeight) - 1 //- Range
+    iy = cy - ZoneCoord_t(MaxViewportUpperHeight) - 1 //- Range
     if iy < 0 {
         iy = 0
     }

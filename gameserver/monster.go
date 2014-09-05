@@ -2,6 +2,7 @@ package main
 
 import (
     "github.com/tiancaiamao/ouster/aoi"
+    . "github.com/tiancaiamao/ouster/util"
     "time"
 )
 

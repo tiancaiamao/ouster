@@ -4,6 +4,7 @@ import (
     "encoding/json"
     "github.com/tiancaiamao/ouster/data"
     "github.com/tiancaiamao/ouster/packet"
+    . "github.com/tiancaiamao/ouster/util"
     "os"
 )
 

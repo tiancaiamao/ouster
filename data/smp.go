@@ -1,6 +1,7 @@
 package data
 
 import (
+    "bytes"
     "encoding/binary"
     . "github.com/tiancaiamao/ouster/util"
     "io"
@@ -23,7 +24,7 @@ type SMP struct {
     Width          ZoneCoord_t
     Height         ZoneCoord_t
 
-    Data []byte
+    Data *bytes.Buffer
 }
 
 func ReadSMP(fileName string) (*SMP, error) {
@@ -68,17 +69,16 @@ func ReadSMP(fileName string) (*SMP, error) {
     binary.Read(fd, binary.LittleEndian, &ret.Width)
     binary.Read(fd, binary.LittleEndian, &ret.Height)
 
-    data, err := ioutil.ReadAll(fd)
+    io.Copy(ret.Data, fd)
     if err != nil {
         return nil, err
     }
 
-    ret.Data = data
     return ret, nil
 }
 
 type SSIRecord struct {
-    Level  uint8
+    Level  ZoneLevel_t
     Left   uint8
     Top    uint8
     Right  uint8
@@ -107,7 +107,7 @@ func ReadSSI(fileName string) (SSI, error) {
         if err != nil {
             return nil, err
         }
-        ret[i].Level = buf[0]
+        ret[i].Level = ZoneLevel_t(buf[0])
         ret[i].Left = buf[1]
         ret[i].Top = buf[2]
         ret[i].Right = buf[3]

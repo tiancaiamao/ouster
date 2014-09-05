@@ -4,6 +4,7 @@ import (
     "bytes"
     "github.com/tiancaiamao/ouster"
     "github.com/tiancaiamao/ouster/packet"
+    . "github.com/tiancaiamao/ouster/util"
     "log"
     "math/rand"
     "net"

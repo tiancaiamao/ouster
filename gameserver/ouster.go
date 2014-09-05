@@ -2,6 +2,7 @@ package main
 
 import (
     "github.com/tiancaiamao/ouster/data"
+    . "github.com/tiancaiamao/ouster/util"
     "log"
     "time"
 )

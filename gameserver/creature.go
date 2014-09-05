@@ -1,5 +1,9 @@
 package main
 
+import (
+	. "github.com/tiancaiamao/ouster/util"
+)
+
 type CreatureClass int
 
 const (

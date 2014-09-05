@@ -1,10 +1,14 @@
 package main
 
 import (
+    "github.com/tiancaiamao/ouster/config"
     "github.com/tiancaiamao/ouster/data"
     "github.com/tiancaiamao/ouster/packet"
-    // "log"
-    "math/rand"
+    . "github.com/tiancaiamao/ouster/util"
+    "os"
+    "path/filepath"
+    // "strconv"
+    "strings"
     "time"
 )
 
@@ -41,49 +45,47 @@ func (scene *Scene) AddObject(obj ObjectInterface) uint32 {
     return uint32(idx)
 }
 
-func NewScene(m *data.Map) *Scene {
+func NewScene(smp *data.SMP, ssi data.SSI) *Scene {
     ret := new(Scene)
+    ret.load(smp, ssi)
 
-    // ret.Map = m
-    // players := make([]*Player, 0, 200)
-
-    num := 0
-    for _, mi := range m.MonsterInfo {
-        num += int(mi.Count)
-    }
+    // num := 0
+    //  for _, mi := range ret.MonsterInfo {
+    //      num += int(mi.Count)
+    //  }
     // monsters := make([]Monster, num)
-    ret.objects = make([]ObjectInterface, 0, num+200)
+    // ret.objects = make([]ObjectInterface, 0, num+200)
 
-    idx := 0
-    for _, mi := range m.MonsterInfo {
-        // tp := data.MonsterType2MonsterInfo[mi.MonsterType]
-        for i := 0; i < int(mi.Count); i++ {
-            var x, y int
-            // set monster's position and so on
-            for {
-                x = rand.Intn(int(m.Width))
-                y = rand.Intn(int(m.Height))
+    // idx := 0
+    //    for _, mi := range ret.MonsterInfo {
+    //        // tp := data.MonsterType2MonsterInfo[mi.MonsterType]
+    //        for i := 0; i < int(mi.Count); i++ {
+    //            var x, y int
+    //            // set monster's position and so on
+    //            for {
+    //                x = rand.Intn(int(ret.Width))
+    //                y = rand.Intn(int(ret.Height))
+    //
+    //                flag := ret.Data[x*int(ret.Width)+y]
+    //                if flag == 0x0 && !ret.Blocked(uint16(x), uint16(y)) {
+    //                    break
+    //                }
+    //						}
 
-                flag := m.Data[x*int(m.Width)+y]
-                if flag == 0x0 && !ret.Blocked(uint16(x), uint16(y)) {
-                    break
-                }
-            }
-
-            // monster := &monsters[idx]
-            // id := ret.AddObject(monster)
-            // monster.Entity = aoi.Add(uint8(x), uint8(y), id)
-            // monster.MonsterType = mi.MonsterType
-            // monster.STR[ATTR_CURRENT], monster.STR[ATTR_BASE] = tp.STR, tp.STR
-            // monster.DEX[ATTR_CURRENT], monster.DEX[ATTR_BASE] = tp.DEX, tp.DEX
-            // monster.INT[ATTR_CURRENT], monster.DEX[ATTR_BASE] = tp.INTE, tp.INTE
-            // monster.Defense = monster.DEX[ATTR_CURRENT] / 2
-            // monster.Protection = monster.STR[ATTR_CURRENT]
-            // monster.HP[ATTR_MAX] = tp.STR*4 + uint16(tp.Level)
-            // monster.HP[ATTR_CURRENT] = monster.HP[ATTR_MAX]
-            idx++
-        }
-    }
+    // monster := &monsters[idx]
+    // id := ret.AddObject(monster)
+    // monster.Entity = aoi.Add(uint8(x), uint8(y), id)
+    // monster.MonsterType = mi.MonsterType
+    // monster.STR[ATTR_CURRENT], monster.STR[ATTR_BASE] = tp.STR, tp.STR
+    // monster.DEX[ATTR_CURRENT], monster.DEX[ATTR_BASE] = tp.DEX, tp.DEX
+    // monster.INT[ATTR_CURRENT], monster.DEX[ATTR_BASE] = tp.INTE, tp.INTE
+    // monster.Defense = monster.DEX[ATTR_CURRENT] / 2
+    // monster.Protection = monster.STR[ATTR_CURRENT]
+    // monster.HP[ATTR_MAX] = tp.STR*4 + uint16(tp.Level)
+    // monster.HP[ATTR_CURRENT] = monster.HP[ATTR_MAX]
+    // idx++
+    // }
+    // }
 
     // ret.players = players
     // ret.monsters = monsters
@@ -224,13 +226,31 @@ var (
 )
 
 func Initialize() {
-    maps = make(map[string]*Scene)
-    maps["limbo_lair_se"] = NewScene(&data.LimboLairSE)
-    maps["perona_nw"] = NewScene(&data.PeronaNW)
+    filepath.Walk(config.DataFilePath, func(path string, info os.FileInfo, err error) error {
+        if err != nil {
+            return err
+        }
 
-    // zoneTable = make(map[uint16]*Scene)
-    // for _, m := range maps {
-    //     zoneTable[m.ZoneID] = m
-    //     go m.Loop()
-    // }
+        if info.IsDir() {
+            return nil
+        }
+
+        if strings.HasSuffix(info.Name(), ".smp") {
+            smp, err := data.ReadSMP(info.Name())
+            if err != nil {
+                return err
+            }
+
+            ssiFile := strings.Replace(info.Name(), ".smp", ".ssi", 0)
+            ssi, err := data.ReadSSI(ssiFile)
+            if err != nil {
+                return err
+            }
+
+            scene := NewScene(smp, ssi)
+            go scene.Loop()
+        }
+        return nil
+    })
+
 }

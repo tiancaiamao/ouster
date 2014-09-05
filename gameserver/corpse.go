@@ -1,5 +1,9 @@
 package main
 
+import (
+    . "github.com/tiancaiamao/ouster/util"
+)
+
 type CorpseType uint8
 
 const (
@@ -38,5 +42,5 @@ type VampireCorpse struct {
 }
 
 type MonsterCorpse struct {
-	Corpse
+    Corpse
 }
