@@ -17,9 +17,11 @@ func main() {
     for {
         conn, err := ln.Accept()
         if err != nil {
+		log.Println("accept err:", err)
             continue
         }
 
+	log.Println("receive a connect request")
         go serve(conn)
     }
 }
@@ -33,11 +35,13 @@ func serve(conn net.Conn) {
     for {
         pkt, err := reader.Read(conn)
         if err != nil {
-            log.Println("read packet error in loginserver's serve:", err)
-            return
+            if _, ok := err.(packet.NotImplementError); !ok {
+                log.Println("read packet error in loginserver's serve:", err)
+                return
+            }
         }
 
-        // log.Println("read a packet: ", pkt.PacketID())
+        log.Println("read a packet: ", pkt.PacketID())
 
         switch pkt.PacketID() {
         case packet.PACKET_CL_GET_WORLD_LIST:

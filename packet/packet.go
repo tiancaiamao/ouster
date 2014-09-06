@@ -544,6 +544,25 @@ func NewReader() *Reader {
     return &Reader{}
 }
 
+type NotImplementError struct{}
+
+func (e NotImplementError) Error() string {
+    return "this packet is not implemented yet"
+}
+
+type NotImplementPacket struct {
+    Id   PacketID
+    Data []byte
+}
+
+func (notimp NotImplementPacket) PacketID() PacketID {
+    return notimp.Id
+}
+
+func (pkt NotImplementPacket) MarshalBinary(code uint8) ([]byte, error) {
+    return pkt.Data, nil
+}
+
 func (r *Reader) Read(reader io.Reader) (ret Packet, err error) {
     var id PacketID
     var sz PacketSize
@@ -575,21 +594,20 @@ func (r *Reader) Read(reader io.Reader) (ret Packet, err error) {
         return
     }
 
-    log.Println("ReadFull get:", buf[:sz])
-
-    // ignore := []byte{0}
-    // n, err = reader.Read(ignore)
-
     f := table[id]
     if f == nil {
-        log.Println("id not in table...")
-        err = errors.New("not supported packet id")
+        notimp := NotImplementPacket{
+            Id: id,
+        }
+        notimp.Data = make([]byte, sz)
+        copy(notimp.Data, buf[:sz])
+
+        ret = notimp
+        err = NotImplementError{}
         return
     }
 
-    // log.Println("befor exec func")
     ret, err = f(buf[:sz], r.Code)
-    // log.Println("after exec func and ret=", ret)
     return
 }
 
