@@ -13,11 +13,12 @@ const (
 )
 
 const (
-    SKILL_RAPID_GLIDING uint16 = 203
-    SKILL_METEOR_STRIKE uint16 = 180
-    SKILL_INVISIBILITY  uint16 = 100
-    SKILL_PARALYZE      uint16 = 89
-    SKILL_BLOOD_SPEAR   uint16 = 97
+    SKILL_ATTACK_MELEE  SkillType_t = 0
+    SKILL_RAPID_GLIDING SkillType_t = 203
+    SKILL_METEOR_STRIKE uint16      = 180
+    SKILL_INVISIBILITY  uint16      = 100
+    SKILL_PARALYZE      uint16      = 89
+    SKILL_BLOOD_SPEAR   uint16      = 97
 
     SKILL_ABSORB_SOUL       uint16 = 246
     SKILL_SUMMON_SYLPH      uint16 = 247

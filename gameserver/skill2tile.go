@@ -38,7 +38,7 @@ func (ignore RapidGlidingHandler) ExecuteP2T(player *Player, x uint8, y uint8) {
     // }
 
     ok := &packet.GCSkillToTileOK1{
-        SkillType: SKILL_RAPID_GLIDING,
+        SkillType: uint16(SKILL_RAPID_GLIDING),
         Duration:  10,
         Range:     1,
         X:         x,

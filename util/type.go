@@ -122,3 +122,26 @@ const (
     ZONE_ACCESS_PUBLIE = iota
     ZONE_ACCESS_PRIVATE
 )
+
+const (
+    LEFT = iota
+    LEFTDOWN
+    DOWN
+    RIGHTDOWN
+    RIGHT
+    RIGHTUP
+    UP
+    LEFTUP
+    DIR_MAX
+    DIR_NONE = DIR_MAX
+)
+
+const (
+    NO_SAFE_ZONE       byte = 0x00
+    SLAYER_SAFE_ZONE   byte = 0x01
+    VAMPIRE_SAFE_ZONE  byte = 0x02
+    COMPLETE_SAFE_ZONE byte = 0x04
+    NO_PK_ZONE         byte = 0x08
+    SAFE_ZONE          byte = 0x17
+    OUSTERS_SAFE_ZONE  byte = 0x10
+)

@@ -1,7 +1,7 @@
 package main
 
 import (
-    "bytes"
+    // "bytes"
     "github.com/tiancaiamao/ouster"
     "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
@@ -9,17 +9,6 @@ import (
     "math/rand"
     "net"
     "time"
-)
-
-const (
-    LEFT      = 0
-    RIGHT     = 4
-    UP        = 6
-    DOWN      = 2
-    LEFTUP    = 7
-    RIGHTUP   = 5
-    LEFTDOWN  = 1
-    RIGHTDOWN = 3
 )
 
 type Point struct {
@@ -71,15 +60,6 @@ type SkillSlot struct {
     CastingTime uint32
 }
 
-// func (player *Player) SkillSlot(SkillType uint16) *SkillSlot {
-//     for i := 0; i < len(player.skillslot); i++ {
-//         if player.skillslot[i].SkillType == SkillType {
-//             return &player.skillslot[i]
-//         }
-//     }
-//     return nil
-// }
-
 func InitPlayer(player *Player, conn net.Conn) {
     player.PlayerStatus = GPS_BEGIN_SESSION
     player.conn = conn
@@ -89,7 +69,6 @@ func InitPlayer(player *Player, conn net.Conn) {
     player.send = write
     player.client = read
 
-    // open a goroutine to read from conn
     go func() {
         reader := packet.NewReader()
         player.packetReader = reader
@@ -105,7 +84,6 @@ func InitPlayer(player *Player, conn net.Conn) {
         }
     }()
 
-    // open a goroutine to write to conn
     go func() {
         writer := packet.NewWriter()
         player.packetWriter = writer
@@ -117,17 +95,12 @@ func InitPlayer(player *Player, conn net.Conn) {
                 log.Println(err)
                 continue
             }
-
-            buf := &bytes.Buffer{}
-            writer.Write(buf, pkt)
-            log.Println("send packet to client: ", buf.Bytes())
         }
     }()
 }
 
-// TODO
 func (player *Player) sendPacket(pkt packet.Packet) {
-
+    player.send <- pkt
 }
 
 // if tohit == dodge, the default formula is 0.85

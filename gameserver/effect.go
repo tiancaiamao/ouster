@@ -651,20 +651,6 @@ func (effect *EffectFadeOut) EffectClass() EffectClass {
     return EFFECT_CLASS_METEOR_STRIKE
 }
 
-func abs(x int) int {
-    if x > 0 {
-        return x
-    }
-    return -x
-}
-
-func max(x, y int) int {
-    if x > y {
-        return x
-    }
-    return y
-}
-
 func (effect *EffectMeteorStrike) affect() {
     // caster := Scene.players[UserObject]
 

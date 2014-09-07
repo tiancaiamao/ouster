@@ -10,7 +10,7 @@ func (blood BloodSpearHandler) ExecuteP2M(player *Player, monster *Monster) {
     player.send <- &packet.GCSkillToObjectOK1{
         SkillType:      SKILL_BLOOD_SPEAR,
         CEffectID:      0,
-        TargetObjectID: monster.Id(),
+        TargetObjectID: uint32(monster.ObjectID),
     }
     // player.BroadcastPacket(player.X(), player.Y(), &packet.GCSkillToObjectOK3{
     //     ObjectID:  player.Id(),

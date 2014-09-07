@@ -62,6 +62,28 @@ type Zone struct {
     EmptyTilePosition    []BPOINT
 }
 
+func (zone *Zone) isMasterLair() bool {
+    // TODO
+    return true
+}
+
+// TODO
+// func (zone *Zone) getMasterLairManager() *MasterLairManager {
+//		 return nil
+// }
+
+func (zone *Zone) getZoneLevel(x, y ZoneCoord_t) ZoneLevel_t {
+    // TODO
+    return 0
+}
+func (zone *Zone) getWidth() ZoneCoord_t {
+    return zone.Width
+}
+
+func (zone *Zone) getHeight() ZoneCoord_t {
+    return zone.Height
+}
+
 func NewZone(zoneID ZoneID_t) *Zone {
     return &Zone{
         ZoneID: zoneID,
@@ -232,6 +254,10 @@ func (zone *Zone) loadMonster() {
 
 func (zone *Zone) Tile(x, y int) *Tile {
     return &zone.Tiles[y+x*int(zone.Width)]
+}
+
+func (zone *Zone) getTile(x, y ZoneCoord_t) *Tile {
+    return &zone.Tiles[y+x*zone.Width]
 }
 
 func (zone *Zone) Level(x, y int) *ZoneLevel_t {
@@ -408,6 +434,15 @@ func (zone *Zone) movePCBroadcast(agent *Agent, x1 ZoneCoord_t, y1 ZoneCoord_t, 
             }
         }
     }
+}
+
+func (zone *Zone) moveCreature(CreatureInterface, ZoneCoord_t, ZoneCoord_t, Dir_t) {
+    // TODO
+}
+
+func (zone *Zone) moveFastMonster(*Monster, ZoneCoord_t, ZoneCoord_t, ZoneCoord_t, ZoneCoord_t, SkillType_t) bool {
+    // TODO
+    return true
 }
 
 func (zone *Zone) broadcastPacket(cx ZoneCoord_t, cy ZoneCoord_t, packet packet.Packet, owner *Agent) {

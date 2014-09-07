@@ -1,7 +1,7 @@
 package main
 
 import (
-	. "github.com/tiancaiamao/ouster/util"
+    . "github.com/tiancaiamao/ouster/util"
 )
 
 type CreatureClass int
@@ -33,6 +33,8 @@ type CreatureInterface interface {
 
 type Creature struct {
     Object
+
+    Zone     *Zone
     MoveMode MoveMode
     X        ZoneCoord_t
     Y        ZoneCoord_t
@@ -83,8 +85,17 @@ func (c Creature) IsAbleToMove() bool {
     return true
 }
 
-func (c *Creature) IsFlag(effect uint) bool {
+func (c Creature) IsFlag(effect uint) bool {
     return c.Flag.IsFlag(effect)
+}
+
+func (c Creature) isFlag(effect uint) bool {
+    return c.Flag.IsFlag(effect)
+}
+
+// TODO
+func (c Creature) removeFlag(effect uint) {
+	
 }
 
 func (c Creature) SetFlag(ec EffectClass) {
@@ -93,6 +104,42 @@ func (c Creature) SetFlag(ec EffectClass) {
 
 func canSee(watcher CreatureInterface, marker CreatureInterface) bool {
     return true //TODO
+}
+
+func (c Creature) canMove(nx ZoneCoord_t, ny ZoneCoord_t) bool {
+    if  //isFlag(Effect::EFFECT_CLASS_SANCTUARY)
+
+    c.Flag.IsFlag(EFFECT_CLASS_POISON_MESH) ||
+        c.Flag.IsFlag(EFFECT_CLASS_TENDRIL) ||
+        c.Flag.IsFlag(EFFECT_CLASS_BLOODY_WALL_BLOCKED) ||
+        c.Flag.IsFlag(EFFECT_CLASS_CASKET) ||
+        !isValidZoneCoord(c.Zone, nx, ny) {
+        return false
+    }
+
+    rTile := c.Zone.getTile(nx, ny)
+
+    if rTile.isBlocked(c.MoveMode) ||
+        rTile.hasEffect() && (rTile.getEffect(EFFECT_CLASS_BLOODY_WALL_BLOCKED) != nil ||
+            rTile.getEffect(EFFECT_CLASS_SANCTUARY) != nil) {
+        return false
+    }
+
+    rNewTile := c.Zone.getTile(c.X, c.Y)
+
+    if rNewTile.getEffect(EFFECT_CLASS_SANCTUARY) != nil {
+        return false
+    }
+
+    return true
+}
+
+func (c Creature) isBlockedByCreature(nx ZoneCoord_t, ny ZoneCoord_t) bool {
+    if !isValidZoneCoord(c.Zone, nx, ny) ||
+        !c.Zone.getTile(nx, ny).HasCreature(c.MoveMode) {
+        return false
+    }
+    return true
 }
 
 func (c Creature) addEffect(effect EffectInterface) {

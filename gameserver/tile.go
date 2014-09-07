@@ -44,6 +44,16 @@ func (tile *Tile) HasPortal() bool {
     return false
 }
 
+func (tile *Tile) getEffect(uint16) EffectInterface {
+    // TODO
+    return nil
+}
+
+// TODO
+func (tile *Tile) hasEffect() bool {
+    return false
+}
+
 func (tile *Tile) IsGroundBlocked() bool {
     return (tile.Flags & (1 << TILE_GROUND_BLOCKED)) != 0
 }
@@ -60,8 +70,16 @@ func (tile *Tile) IsBlocked(m MoveMode) bool {
     return (tile.Flags & (1 << m)) != 0
 }
 
+func (tile *Tile) isBlocked(m MoveMode) bool {
+    return (tile.Flags & (1 << m)) != 0
+}
+
 func (tile *Tile) HasCreature(m MoveMode) bool {
     return (tile.Flags & (1 << (TileFlags(m) + TILE_WALKING_CREATURE))) != 0
+}
+
+func (tile *Tile) hasCreature() bool {
+    return tile.Flags != 0
 }
 
 func (tile *Tile) DeleteCreature(id ObjectID_t) {
