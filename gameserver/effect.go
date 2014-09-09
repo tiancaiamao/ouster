@@ -1,6 +1,7 @@
 package main
 
 import (
+    "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
     "time"
 )
@@ -615,6 +616,9 @@ func (effect Effect) EffectInstance() *Effect {
 }
 func (effect Effect) affect()   {}
 func (effect Effect) unaffect() {}
+func (effect Effect) isBroadcastingEffect() bool {
+    return false
+}
 
 func (effect Effect) ObjectClass() ObjectClass {
     return OBJECT_CLASS_EFFECT
@@ -628,6 +632,53 @@ type EffectInterface interface {
 
     EffectClass() EffectClass
     EffectInstance() *Effect
+}
+
+type SimpleCreatureEffect struct {
+    Effect
+
+    effectClass EffectClass
+}
+
+func (effect *SimpleCreatureEffect) EffectClass() EffectClass {
+    return effect.effectClass
+}
+
+func (effect *SimpleCreatureEffect) unaffect(creature CreatureInterface) {
+    pCreature := creature.CreatureInstance()
+    pCreature.removeFlag(effect.effectClass)
+
+    pZone := pCreature.Zone
+
+    pkt := packet.GCRemoveEffect{
+        ObjectID: pCreature.ObjectID,
+    }
+    pkt.EffectList = append(pkt.EffectList, uint16(effect.EffectClass()))
+
+    if effect.isBroadcastingEffect() {
+        pZone.broadcastPacket(pCreature.X, pCreature.Y, &pkt, nil)
+    } else {
+        agent := creature.(*Agent)
+        if agent != nil {
+            agent.sendPacket(&pkt)
+        }
+    }
+
+}
+
+type SimpleTileEffect struct {
+    Effect
+
+    effectClass EffectClass
+}
+
+func (effect *SimpleTileEffect) EffectClass() EffectClass {
+    return effect.effectClass
+}
+
+func (effect *SimpleTileEffect) unaffect() {
+    tile := effect.Scene.getTile(effect.X, effect.Y)
+    tile.deleteEffect(effect.ObjectID)
 }
 
 type EffectMeteorStrike struct {

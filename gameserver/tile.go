@@ -50,6 +50,10 @@ func (tile *Tile) getEffect(uint16) EffectInterface {
 }
 
 // TODO
+func (time *Tile) deleteEffect(ObjectID_t) {
+}
+
+// TODO
 func (tile *Tile) hasEffect() bool {
     return false
 }

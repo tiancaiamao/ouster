@@ -94,7 +94,7 @@ func (c Creature) isFlag(effect uint) bool {
 }
 
 // TODO
-func (c Creature) removeFlag(effect uint) {
+func (c Creature) removeFlag(effect EffectClass) {
 	
 }
 

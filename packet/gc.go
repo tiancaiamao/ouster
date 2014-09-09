@@ -4,6 +4,7 @@ import (
     "bytes"
     "encoding/binary"
     "github.com/tiancaiamao/ouster/data"
+    . "github.com/tiancaiamao/ouster/util"
     "io"
 )
 
@@ -932,7 +933,7 @@ func (ok *GCLearnSkillOK) MarshalBinary(code uint8) ([]byte, error) {
 }
 
 type GCRemoveEffect struct {
-    ObjectID   uint32
+    ObjectID   ObjectID_t
     EffectList []uint16
 }
 
