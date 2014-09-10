@@ -2,20 +2,19 @@ package main
 
 import (
     "github.com/tiancaiamao/ouster/config"
-    "log"
+    "github.com/tiancaiamao/ouster/log"
     "net"
 )
 
 func main() {
-    log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)
-    log.Println("Starting the server.")
+    log.Infoln("Starting the server.")
 
     Initialize()
 
     listener, err := net.Listen("tcp", config.GameServerPort)
     checkError(err)
 
-    log.Println("Game Server OK.")
+    log.Infoln("Game Server OK.")
 
     for {
         conn, err := listener.Accept()
@@ -32,7 +31,7 @@ func checkError(err error) {
 }
 
 func handleClient(conn net.Conn) {
-    log.Println("accept a connection...")
+    log.Debug("accept a connection...")
 
     agent := NewAgent(conn)
     go agent.Loop()

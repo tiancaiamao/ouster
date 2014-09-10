@@ -1,9 +1,9 @@
 package main
 
 import (
+    "github.com/tiancaiamao/ouster/log"
     "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
-    "log"
     "net"
     "time"
 )
@@ -44,7 +44,7 @@ func (agent *Agent) Loop() {
 
 func (agent *Agent) handleClientMessage(pkt packet.Packet) {
     if pkt == nil {
-        log.Println("不应该呀 怎么可能返回一个空r")
+        Log.Debugln("不应该呀 怎么可能返回一个空r")
     }
     handler, ok := packetHandlers[pkt.PacketID()]
     if !ok {

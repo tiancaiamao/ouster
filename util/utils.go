@@ -12,28 +12,9 @@ type Rect struct {
     H   float32
 }
 
-type Point struct {
-    X   int
-    Y   int
-}
-
 type FPoint struct {
     X   float32
     Y   float32
-}
-
-type Creature interface {
-    HP() int
-    Damage() int
-    Defense() int
-    Dodge() int
-    ToHit() int
-}
-
-func Distance2(p1, p2 FPoint) float32 {
-    dx := p1.X - p2.X
-    dy := p1.Y - p2.Y
-    return dx*dx + dy*dy
 }
 
 type Error struct {

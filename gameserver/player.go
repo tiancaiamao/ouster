@@ -2,7 +2,6 @@ package main
 
 import (
     // "bytes"
-    "github.com/tiancaiamao/ouster"
     "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
     "io"
@@ -195,10 +194,6 @@ func (player *Player) BroadcastPacket(x uint8, y uint8, pkt packet.Packet) {
 }
 
 type BaseAttack struct{}
-
-func (_ BaseAttack) ExecuteTarget(from, to ouster.Creature) (int, bool) {
-    return 10, true
-}
 
 type SkillEffect struct {
     Id   int

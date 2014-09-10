@@ -2,7 +2,7 @@ package main
 
 import (
     "github.com/tiancaiamao/ouster/packet"
-    // "log"
+    . "github.com/tiancaiamao/ouster/util"
 )
 
 type PacketHandler func(pkt packet.Packet, agent *Agent)
@@ -112,7 +112,7 @@ func CGConnectHandler(pkt packet.Packet, agent *Agent) {
     raw := pkt.(*packet.CGConnectPacket)
     pcItf, err := LoadPlayerCreature(raw.PCName, packet.PCType(raw.PCType))
     if err != nil {
-        log.Println("对CGConnectHandler的处理有问题")
+        Log.Errorln("对CGConnectHandler的处理有问题")
     }
     agent.PlayerCreatureInterface = pcItf
 
