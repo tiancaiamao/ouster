@@ -3,6 +3,7 @@ package main
 import (
     "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
+    "log"
     "net"
     "time"
 )
@@ -22,19 +23,19 @@ func NewAgent(conn net.Conn) *Agent {
 }
 
 func (agent *Agent) Loop() {
-    pc := agent.PlayerCreatureInstance()
     heartbeat := time.Tick(100 * time.Millisecond)
     for {
         select {
         case msg, ok := <-agent.client:
             if !ok {
-                // 网络出问题了，将玩家踢下线
+                log.Println("客户端关了")
                 return
-            } else {
-                agent.handleClientMessage(msg)
             }
+            agent.handleClientMessage(msg)
         case <-heartbeat:
-            pc.heartbeat()
+            if agent.PlayerCreatureInterface != nil {
+                agent.PlayerCreatureInstance().heartbeat()
+            }
         case f, _ := <-agent.computation:
             f()
         }
@@ -42,6 +43,9 @@ func (agent *Agent) Loop() {
 }
 
 func (agent *Agent) handleClientMessage(pkt packet.Packet) {
+    if pkt == nil {
+        log.Println("不应该呀 怎么可能返回一个空r")
+    }
     handler, ok := packetHandlers[pkt.PacketID()]
     if !ok {
         // TODO

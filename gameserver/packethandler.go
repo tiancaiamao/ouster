@@ -112,7 +112,7 @@ func CGConnectHandler(pkt packet.Packet, agent *Agent) {
     raw := pkt.(*packet.CGConnectPacket)
     pcItf, err := LoadPlayerCreature(raw.PCName, packet.PCType(raw.PCType))
     if err != nil {
-
+        log.Println("对CGConnectHandler的处理有问题")
     }
     agent.PlayerCreatureInterface = pcItf
 

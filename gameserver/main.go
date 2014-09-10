@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+    log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)
     log.Println("Starting the server.")
 
     Initialize()
@@ -32,7 +33,6 @@ func checkError(err error) {
 
 func handleClient(conn net.Conn) {
     log.Println("accept a connection...")
-    defer conn.Close()
 
     agent := NewAgent(conn)
     go agent.Loop()

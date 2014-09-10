@@ -1,4 +1,4 @@
-package ouster
+package util
 
 import (
     "runtime"
