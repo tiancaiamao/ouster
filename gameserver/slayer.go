@@ -37,7 +37,7 @@ type Slayer struct {
     Competence      byte
     CompetenceShape byte
 
-    Sex       Sex
+    Sex       Sex_t
     HairStyle HairStyle
 
     HairColor Color_t

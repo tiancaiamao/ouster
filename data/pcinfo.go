@@ -2,6 +2,7 @@ package data
 
 import (
     "encoding/binary"
+    . "github.com/tiancaiamao/ouster/util"
     "io"
 )
 
@@ -16,45 +17,44 @@ type PCInfo interface {
 }
 
 type PCOusterInfo struct {
-    PCType   byte
-    ObjectID uint32
+    ObjectID ObjectID_t
     Name     string
-    Level    uint8
-    Sex      uint8
+    Level    Level_t
+    Sex      Sex_t
 
-    HairColor         uint16
+    HairColor         Color_t
     MasterEffectColor uint8
 
-    Alignment uint32
-    STR       [3]uint16
-    DEX       [3]uint16
-    INT       [3]uint16
+    Alignment Alignment_t
+    STR       [3]Attr_t
+    DEX       [3]Attr_t
+    INI       [3]Attr_t
 
-    HP  [2]uint16
-    MP  [2]uint16
+    HP  [2]HP_t
+    MP  [2]MP_t
 
-    Rank    uint8
-    RankExp uint32
-    Exp     uint32
+    Rank    Rank_t
+    RankExp RankExp_t
+    Exp     Exp_t
 
-    Fame       uint32
-    Gold       uint32
-    Sight      uint8
-    Bonus      uint16
-    SkillBonus uint16
+    Fame       Fame_t
+    Gold       Gold_t
+    Sight      Sight_t
+    Bonus      Bonus_t
+    SkillBonus SkillBonus_t
 
-    SilverDamage       uint16
+    SilverDamage       Silver_t
     Competence         uint8
-    GuildID            uint16
+    GuildID            GuildID_t
     GuildName          string
-    GuildMemberRank    uint8
+    GuildMemberRank    GuildMemberRank_t
     UnionID            uint32
     AdvancementLevel   uint8
     AdvancementGoalExp uint32
 
-    ZoneID uint16
-    ZoneX  uint8
-    ZoneY  uint8
+    ZoneID ZoneID_t
+    ZoneX  ZoneCoord_t
+    ZoneY  ZoneCoord_t
 }
 
 func (info *PCOusterInfo) Dump(writer io.Writer) {
@@ -75,9 +75,9 @@ func (info *PCOusterInfo) Dump(writer io.Writer) {
     binary.Write(writer, binary.LittleEndian, info.DEX[ATTR_CURRENT])
     binary.Write(writer, binary.LittleEndian, info.DEX[ATTR_MAX])
     binary.Write(writer, binary.LittleEndian, info.DEX[ATTR_BASIC])
-    binary.Write(writer, binary.LittleEndian, info.INT[ATTR_CURRENT])
-    binary.Write(writer, binary.LittleEndian, info.INT[ATTR_MAX])
-    binary.Write(writer, binary.LittleEndian, info.INT[ATTR_BASIC])
+    binary.Write(writer, binary.LittleEndian, info.INI[ATTR_CURRENT])
+    binary.Write(writer, binary.LittleEndian, info.INI[ATTR_MAX])
+    binary.Write(writer, binary.LittleEndian, info.INI[ATTR_BASIC])
 
     binary.Write(writer, binary.LittleEndian, info.HP[ATTR_CURRENT])
     binary.Write(writer, binary.LittleEndian, info.HP[ATTR_MAX])
@@ -112,47 +112,46 @@ func (info *PCOusterInfo) Dump(writer io.Writer) {
 }
 
 type PCVampireInfo struct {
-    PCType   byte
-    ObjectID uint32
+    ObjectID ObjectID_t
     Name     string
-    Level    uint8
-    Sex      uint8
+    Level    Level_t
+    Sex      Sex_t
 
-    BatColor          uint16
-    SkinColor         uint16
+    BatColor          Color_t
+    SkinColor         Color_t
     MasterEffectColor uint8
 
-    Alignment uint32
-    STR       [3]uint16
-    DEX       [3]uint16
-    INT       [3]uint16
+    Alignment Alignment_t
+    STR       [3]Attr_t
+    DEX       [3]Attr_t
+    INI       [3]Attr_t
 
-    HP  [2]uint16
+    HP  [2]HP_t
 
-    Rank    uint8
-    RankExp uint32
+    Rank    Rank_t
+    RankExp RankExp_t
 
-    Exp          uint32
-    Fame         uint32
-    Gold         uint32
-    Sight        uint8
-    Bonus        uint16
+    Exp          Exp_t
+    Fame         Fame_t
+    Gold         Gold_t
+    Sight        Sight_t
+    Bonus        Bonus_t
     HotKey       [8]uint16
-    SilverDamage uint16
+    SilverDamage Silver_t
 
     Competence uint8
-    GuildID    uint16
+    GuildID    GuildID_t
     GuildName  string
 
-    GuildMemberRank uint8
+    GuildMemberRank GuildMemberRank_t
     UnionID         uint32
 
     AdvancementLevel   uint8
     AdvancementGoalExp uint32
 
-    ZoneID uint16
-    ZoneX  uint8
-    ZoneY  uint8
+    ZoneID ZoneID_t
+    ZoneX  Coord_t
+    ZoneY  Coord_t
 }
 
 func (info *PCVampireInfo) Dump(writer io.Writer) {
@@ -174,9 +173,9 @@ func (info *PCVampireInfo) Dump(writer io.Writer) {
     binary.Write(writer, binary.LittleEndian, info.DEX[ATTR_CURRENT])
     binary.Write(writer, binary.LittleEndian, info.DEX[ATTR_MAX])
     binary.Write(writer, binary.LittleEndian, info.DEX[ATTR_BASIC])
-    binary.Write(writer, binary.LittleEndian, info.INT[ATTR_CURRENT])
-    binary.Write(writer, binary.LittleEndian, info.INT[ATTR_MAX])
-    binary.Write(writer, binary.LittleEndian, info.INT[ATTR_BASIC])
+    binary.Write(writer, binary.LittleEndian, info.INI[ATTR_CURRENT])
+    binary.Write(writer, binary.LittleEndian, info.INI[ATTR_MAX])
+    binary.Write(writer, binary.LittleEndian, info.INI[ATTR_BASIC])
 
     binary.Write(writer, binary.LittleEndian, info.HP[ATTR_CURRENT])
     binary.Write(writer, binary.LittleEndian, info.HP[ATTR_MAX])

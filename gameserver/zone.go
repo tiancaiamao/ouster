@@ -376,16 +376,16 @@ func (zone *Zone) movePCBroadcast(agent *Agent, x1 ZoneCoord_t, y1 ZoneCoord_t, 
                         // 怪物进入玩家视线
                         // pc.sendPacket(packet.MonsterAddPackt{})
                         // 把玩家放到怪物的敌人列表中
-                    case Slayer:
+                    case *Slayer:
                         // pc.sendPacket(packet.GCAddSlayer{})
-                        slayer := v.(Slayer)
+                        slayer := v.(*Slayer)
                         if canSee(slayer, agent) {
                             // slayer.sendPacket(packet.GCAddSlayer{})
                         } else {
                             // slayer.sendPacket(packet.GCDeleteObject{})
                         }
-                    case Vampire:
-                        vampire := v.(Vampire)
+                    case *Vampire:
+                        vampire := v.(*Vampire)
                         if canSee(agent, vampire) {
                             if vampire.IsFlag(EFFECT_CLASS_HIDE) {
                                 // pc.sendPacket(packet.GCAddBurrowingCreaturePacket{
@@ -401,8 +401,8 @@ func (zone *Zone) movePCBroadcast(agent *Agent, x1 ZoneCoord_t, y1 ZoneCoord_t, 
                         if canSee(vampire, agent) {
                             // TODO:添加或者移除
                         }
-                    case Ouster:
-                        ouster := v.(Ouster)
+                    case *Ouster:
+                        ouster := v.(*Ouster)
                         if canSee(agent, ouster) {
                             // pc.sendPacket(packet.GCAddOuster{})
                         }

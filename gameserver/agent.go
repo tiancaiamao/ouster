@@ -28,9 +28,10 @@ func (agent *Agent) Loop() {
         select {
         case msg, ok := <-agent.client:
             if !ok {
-                log.Println("客户端关了")
+                log.Debugln("客户端关了")
                 return
             }
+            log.Debugln("agent收到一个packet:", msg)
             agent.handleClientMessage(msg)
         case <-heartbeat:
             if agent.PlayerCreatureInterface != nil {
@@ -44,11 +45,11 @@ func (agent *Agent) Loop() {
 
 func (agent *Agent) handleClientMessage(pkt packet.Packet) {
     if pkt == nil {
-        Log.Debugln("不应该呀 怎么可能返回一个空r")
+        log.Errorln("不应该呀 怎么可能返回一个空")
     }
     handler, ok := packetHandlers[pkt.PacketID()]
     if !ok {
-        // TODO
+        log.Errorln("packet的handler未实现：", pkt.PacketID())
         return
     }
 

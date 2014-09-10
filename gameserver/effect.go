@@ -648,7 +648,7 @@ func (effect *SimpleCreatureEffect) unaffect(creature CreatureInterface) {
     pCreature := creature.CreatureInstance()
     pCreature.removeFlag(effect.effectClass)
 
-    pZone := pCreature.Zone
+    pZone := pCreature.Scene.Zone
 
     pkt := packet.GCRemoveEffect{
         ObjectID: pCreature.ObjectID,

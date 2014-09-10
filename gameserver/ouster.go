@@ -2,8 +2,8 @@ package main
 
 import (
     "github.com/tiancaiamao/ouster/data"
+    // "github.com/tiancaiamao/ouster/log"
     . "github.com/tiancaiamao/ouster/util"
-    "log"
     "time"
 )
 
@@ -47,7 +47,7 @@ type Ouster struct {
 
     STR [3]Attr_t
     DEX [3]Attr_t
-    INT [3]Attr_t
+    INI [3]Attr_t
 
     HP  [3]HP_t
     MP  [3]MP_t
@@ -109,59 +109,53 @@ type Ouster struct {
     MPRegenTime time.Time
 }
 
-func (ouster Ouster) CreatureClass() CreatureClass {
+func (ouster *Ouster) CreatureClass() CreatureClass {
     return CREATURE_CLASS_OUSTER
 }
 
-func (ouster Ouster) PCInfo() data.PCInfo {
+func (ouster *Ouster) PCInfo() data.PCInfo {
     info := &data.PCOusterInfo{
-        ObjectID: uint32(ouster.ObjectID),
+        ObjectID: ouster.ObjectID,
         Name:     ouster.Name,
-        // Level:		player.Level,
-        // Sex: player.Sex,
+        Level:    ouster.Level,
+        Sex:      FEMALE,
 
-        HairColor:         uint16(ouster.HairColor),
-        MasterEffectColor: uint8(ouster.MasterEffectColor),
+        HairColor:         ouster.HairColor,
+        MasterEffectColor: ouster.MasterEffectColor,
 
-        Alignment: uint32(ouster.Alignment),
-        // STR:			 player.STR,
-        // DEX:			 player.DEX,
-        // INT:			 player.INT,
+        Alignment: ouster.Alignment,
 
-        // HP: player.HP,
-        // MP: player.MP,
+        Rank:    ouster.Rank,
+        RankExp: ouster.RankExp,
 
-        Rank:    uint8(ouster.Rank),
-        RankExp: uint32(ouster.RankExp),
-
-        Exp:          uint32(ouster.Exp),
-        Fame:         uint32(ouster.Fame),
-        Gold:         uint32(ouster.Gold),
-        Sight:        uint8(ouster.Sight),
-        Bonus:        uint16(ouster.Bonus),
-        SilverDamage: uint16(ouster.SilverDamage),
+        Exp:          ouster.Exp,
+        Fame:         (ouster.Fame),
+        Gold:         (ouster.Gold),
+        Sight:        (ouster.Sight),
+        Bonus:        (ouster.Bonus),
+        SilverDamage: (ouster.SilverDamage),
 
         Competence: ouster.Competence,
-        GuildID:    uint16(ouster.GuildID),
+        GuildID:    (ouster.GuildID),
 
-        GuildMemberRank: uint8(ouster.GuildMemberRank),
+        GuildMemberRank: (ouster.GuildMemberRank),
         UnionID:         ouster.UnionID,
 
         AdvancementLevel:   ouster.AdvancementLevel,
         AdvancementGoalExp: ouster.AdvancementGoalExp,
 
-        // ZoneID: player.Scene.ZoneID,
-        ZoneX: uint8(ouster.X),
-        ZoneY: uint8(ouster.Y),
+        // ZoneID: ouster.Scene.ZoneID,
+        // ZoneX:  ouster.X,
+        // ZoneY:  ouster.Y,
     }
 
-    if info.SkillBonus == 0 {
-        info.SkillBonus = 9999
-        log.Println("SKillBonus =========== 0!!!")
+    for _, v := range [...]int{ATTR_CURRENT, ATTR_MAX} {
+        info.STR[v] = ouster.STR[v]
+        info.DEX[v] = ouster.DEX[v]
+        info.INI[v] = ouster.INI[v]
+        info.HP[v] = ouster.HP[v]
+        info.MP[v] = ouster.MP[v]
     }
-    if info.GuildID == 0 {
-        info.GuildID = 66
-        log.Println("GuildID =========== 0!!!")
-    }
+
     return info
 }

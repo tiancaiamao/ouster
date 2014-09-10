@@ -23,10 +23,10 @@ type SpriteType_t uint16
 type Luck_t uint16
 type Attr_t uint16
 
-type Sex int8
+type Sex_t int8
 
 const (
-    FEMALE = iota
+    FEMALE Sex_t = iota
     MALE
 )
 
@@ -39,7 +39,7 @@ const (
 )
 
 type Color_t uint16
-type Alignment_t int
+type Alignment_t int32
 type HP_t uint16
 type MP_t uint16
 type ToHit_t uint16
@@ -145,3 +145,14 @@ const (
     SAFE_ZONE          byte = 0x17
     OUSTERS_SAFE_ZONE  byte = 0x10
 )
+
+type Weather uint8
+
+const (
+    WEATHER_CLEAR Weather = iota
+    WEATHER_RAINY
+    WEATHER_SNOWY
+    WEATHER_MAX
+)
+
+type WeatherLevel_t uint8

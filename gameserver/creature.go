@@ -34,7 +34,7 @@ type CreatureInterface interface {
 type Creature struct {
     Object
 
-    Zone     *Zone
+    Scene    *Scene
     MoveMode MoveMode
     X        ZoneCoord_t
     Y        ZoneCoord_t
@@ -95,7 +95,7 @@ func (c Creature) isFlag(effect uint) bool {
 
 // TODO
 func (c Creature) removeFlag(effect EffectClass) {
-	
+
 }
 
 func (c Creature) SetFlag(ec EffectClass) {
@@ -107,17 +107,15 @@ func canSee(watcher CreatureInterface, marker CreatureInterface) bool {
 }
 
 func (c Creature) canMove(nx ZoneCoord_t, ny ZoneCoord_t) bool {
-    if  //isFlag(Effect::EFFECT_CLASS_SANCTUARY)
-
-    c.Flag.IsFlag(EFFECT_CLASS_POISON_MESH) ||
+    if c.Flag.IsFlag(EFFECT_CLASS_POISON_MESH) ||
         c.Flag.IsFlag(EFFECT_CLASS_TENDRIL) ||
         c.Flag.IsFlag(EFFECT_CLASS_BLOODY_WALL_BLOCKED) ||
         c.Flag.IsFlag(EFFECT_CLASS_CASKET) ||
-        !isValidZoneCoord(c.Zone, nx, ny) {
+        !isValidZoneCoord(c.Scene.Zone, nx, ny) {
         return false
     }
 
-    rTile := c.Zone.getTile(nx, ny)
+    rTile := c.Scene.getTile(nx, ny)
 
     if rTile.isBlocked(c.MoveMode) ||
         rTile.hasEffect() && (rTile.getEffect(EFFECT_CLASS_BLOODY_WALL_BLOCKED) != nil ||
@@ -125,7 +123,7 @@ func (c Creature) canMove(nx ZoneCoord_t, ny ZoneCoord_t) bool {
         return false
     }
 
-    rNewTile := c.Zone.getTile(c.X, c.Y)
+    rNewTile := c.Scene.getTile(c.X, c.Y)
 
     if rNewTile.getEffect(EFFECT_CLASS_SANCTUARY) != nil {
         return false
@@ -135,8 +133,8 @@ func (c Creature) canMove(nx ZoneCoord_t, ny ZoneCoord_t) bool {
 }
 
 func (c Creature) isBlockedByCreature(nx ZoneCoord_t, ny ZoneCoord_t) bool {
-    if !isValidZoneCoord(c.Zone, nx, ny) ||
-        !c.Zone.getTile(nx, ny).HasCreature(c.MoveMode) {
+    if !isValidZoneCoord(c.Scene.Zone, nx, ny) ||
+        !c.Scene.getTile(nx, ny).HasCreature(c.MoveMode) {
         return false
     }
     return true

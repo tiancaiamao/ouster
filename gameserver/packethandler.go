@@ -1,6 +1,7 @@
 package main
 
 import (
+    "github.com/tiancaiamao/ouster/log"
     "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
 )
@@ -112,16 +113,15 @@ func CGConnectHandler(pkt packet.Packet, agent *Agent) {
     raw := pkt.(*packet.CGConnectPacket)
     pcItf, err := LoadPlayerCreature(raw.PCName, packet.PCType(raw.PCType))
     if err != nil {
-        Log.Errorln("对CGConnectHandler的处理有问题")
+        log.Errorln("LoadPlayerCreature失败了:", err)
     }
     agent.PlayerCreatureInterface = pcItf
 
     info := &packet.GCUpdateInfoPacket{
-        // PCType: player.PCType,
-        // PCInfo: player.PCInfo(),
-        // ZoneID: player.Scene.ZoneID,
-        // ZoneX:  player.X(),
-        // ZoneY:  player.Y(),
+        PCInfo: agent.PCInfo(),
+        // ZoneID: agent.Scene.ZoneID,
+        ZoneX: Coord_t(agent.CreatureInstance().X),
+        ZoneY: Coord_t(agent.CreatureInstance().Y),
 
         GameTime: packet.GameTimeType{
             Year:  1983,
@@ -136,7 +136,7 @@ func CGConnectHandler(pkt packet.Packet, agent *Agent) {
         DarkLevel:  13,
         LightLevel: 6,
 
-        MonsterTypes: []uint16{5, 6, 7, 8},
+        MonsterTypes: []MonsterType_t{5, 6, 7, 8},
 
         Premium: 17,
         NicknameInfo: packet.NicknameInfo{
@@ -144,6 +144,16 @@ func CGConnectHandler(pkt packet.Packet, agent *Agent) {
         },
 
         GuildUnionUserType: 2,
+    }
+    switch agent.PlayerCreatureInterface.(type) {
+    case *Vampire:
+        info.PCType = 'V'
+    case *Ouster:
+        info.PCType = 'O'
+        // case *Slayer:
+        //		 info.PCType = 'S'
+    default:
+        log.Errorln("agent类型不对!!")
     }
 
     // code := Encrypt(player.Scene.ZoneID, 1)

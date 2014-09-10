@@ -206,6 +206,7 @@ func (time GameTimeType) Dump(writer io.Writer) {
 }
 
 type GCUpdateInfoPacket struct {
+    // 'V'或者'O'或者'S'
     PCType             byte
     PCInfo             data.PCInfo
     InventoryInfo      InventoryInfo
@@ -215,19 +216,19 @@ type GCUpdateInfoPacket struct {
     hasMotorcycle      bool
     RideMotorcycleInfo RideMotorcycleInfo
 
-    ZoneID   uint16
-    ZoneX    uint8
-    ZoneY    uint8
+    ZoneID   ZoneID_t
+    ZoneX    Coord_t
+    ZoneY    Coord_t
     GameTime GameTimeType
 
-    Weather      uint8
-    WeatherLevel uint8
+    Weather      Weather
+    WeatherLevel WeatherLevel_t
 
-    DarkLevel  uint8
-    LightLevel uint8
+    DarkLevel  DarkLevel_t
+    LightLevel LightLevel_t
 
-    NPCTypes     []uint16
-    MonsterTypes []uint16
+    NPCTypes     []NPCType_t
+    MonsterTypes []MonsterType_t
 
     NPCInfos []NPCInfo
 

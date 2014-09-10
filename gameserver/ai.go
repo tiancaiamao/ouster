@@ -578,7 +578,7 @@ func checkEnemyNotBloodDrained(pMonster *Monster, pEnemy CreatureInterface) bool
     if pEnemy == nil {
         return false
     }
-    enemy, ok := pEnemy.(Vampire)
+    enemy, ok := pEnemy.(*Vampire)
     if !ok {
         return false
     }
@@ -594,7 +594,7 @@ func checkEnemyNotGreenPoisoned(pMonster *Monster, pEnemy CreatureInterface) boo
     if pEnemy == nil {
         return false
     }
-    vampire, ok := pEnemy.(Vampire)
+    vampire, ok := pEnemy.(*Vampire)
     if !ok {
         return false
     }
@@ -609,7 +609,7 @@ func checkEnemyNotYellowPoisoned(pMonster *Monster, pEnemy CreatureInterface) bo
     if pEnemy == nil {
         return false
     }
-    vampire, ok := pEnemy.(Vampire)
+    vampire, ok := pEnemy.(*Vampire)
     if !ok {
         return false
     }
@@ -625,7 +625,7 @@ func checkEnemyNotDarkbluePoisoned(pMonster *Monster, pEnemy CreatureInterface) 
     if pEnemy == nil {
         return false
     }
-    vampire, ok := pEnemy.(Vampire)
+    vampire, ok := pEnemy.(*Vampire)
     if !ok {
         return false
     }
@@ -640,7 +640,7 @@ func checkEnemyNotGreenStalkered(pMonster *Monster, pEnemy CreatureInterface) bo
     if pEnemy == nil {
         return false
     }
-    vampire, ok := pEnemy.(Vampire)
+    vampire, ok := pEnemy.(*Vampire)
     if !ok {
         return false
     }
@@ -680,7 +680,7 @@ func checkEnemyNotInDarkness(pMonster *Monster, pEnemy CreatureInterface) bool {
     if pEnemy == nil {
         return false
     }
-    vampire, ok := pEnemy.(Vampire)
+    vampire, ok := pEnemy.(*Vampire)
     if !ok {
         return false
     }

@@ -2,7 +2,9 @@ package main
 
 import (
     "encoding/json"
+    "github.com/tiancaiamao/ouster/config"
     "github.com/tiancaiamao/ouster/data"
+    "github.com/tiancaiamao/ouster/log"
     "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
     "os"
@@ -11,6 +13,8 @@ import (
 type PlayerCreatureInterface interface {
     CreatureInterface
     PlayerCreatureInstance() *PlayerCreature
+
+    PCInfo() data.PCInfo
 }
 
 type PlayerCreature struct {
@@ -60,17 +64,20 @@ func (pc PlayerCreature) PlayerCreatureInstance() *PlayerCreature {
 }
 
 func LoadPlayerCreature(name string, typ packet.PCType) (PlayerCreatureInterface, error) {
-    f, err := os.Open(os.Getenv("HOME") + "/.ouster/player/" + name)
+    fileName := config.DataDir + name
+    log.Debugln("load文件", fileName)
+    f, err := os.Open(fileName)
     if err != nil {
         return nil, err
     }
     defer f.Close()
+
     decoder := json.NewDecoder(f)
 
     var ret PlayerCreatureInterface
     switch typ {
     case packet.PC_VAMPIRE:
-        err = loadVampire(decoder)
+        ret, err = loadVampire(decoder)
     case packet.PC_OUSTER:
         ret, err = loadOuster(decoder)
     case packet.PC_SLAYER:
@@ -79,37 +86,39 @@ func LoadPlayerCreature(name string, typ packet.PCType) (PlayerCreatureInterface
     return ret, err
 }
 
-func loadOuster(decoder *json.Decoder) (ouster Ouster, err error) {
+func loadOuster(decoder *json.Decoder) (ouster *Ouster, err error) {
     var pcInfo data.PCOusterInfo
     err = decoder.Decode(&pcInfo)
     if err != nil {
         return
     }
 
+    ouster = new(Ouster)
     ouster.Name = pcInfo.Name
-    // ouster.Level = pcInfo.Level
-    // ouster.Sex = pcInfo.Sex
-    // ouster.HairColor = pcInfo.HairColor
-    // ouster.MasterEffectColor = pcInfo.MasterEffectColor
-    // ouster.Alignment = pcInfo.Alignment
-    // ouster.STR = pcInfo.STR
-    // ouster.DEX = pcInfo.DEX
-    // ouster.INT = pcInfo.INT
-    // ouster.HP = pcInfo.HP
-    // ouster.MP = pcInfo.MP
-    // ouster.Rank = pcInfo.Rank
-    // ouster.RankExp = pcInfo.RankExp
-    // ouster.Exp = pcInfo.Exp
-    // ouster.Fame = pcInfo.Fame
-    // ouster.Sight = pcInfo.Sight
-    // ouster.Bonus = pcInfo.Bonus
-    // ouster.Competence = pcInfo.Competence
-    // ouster.GuildMemberRank = pcInfo.GuildMemberRank
-    // ouster.AdvancementLevel = pcInfo.AdvancementLevel
+    ouster.Level = pcInfo.Level
+    ouster.HairColor = pcInfo.HairColor
+    ouster.MasterEffectColor = pcInfo.MasterEffectColor
+    ouster.Alignment = pcInfo.Alignment
+    ouster.STR = pcInfo.STR
+    ouster.DEX = pcInfo.DEX
+    ouster.INI = pcInfo.INI
+    ouster.HP[ATTR_MAX] = pcInfo.HP[ATTR_MAX]
+    ouster.HP[ATTR_CURRENT] = pcInfo.HP[ATTR_CURRENT]
+    ouster.MP[ATTR_MAX] = pcInfo.MP[ATTR_MAX]
+    ouster.MP[ATTR_CURRENT] = pcInfo.MP[ATTR_CURRENT]
+    ouster.Rank = pcInfo.Rank
+    ouster.RankExp = pcInfo.RankExp
+    ouster.Exp = pcInfo.Exp
+    ouster.Fame = pcInfo.Fame
+    ouster.Sight = pcInfo.Sight
+    ouster.Bonus = pcInfo.Bonus
+    ouster.Competence = pcInfo.Competence
+    ouster.GuildMemberRank = pcInfo.GuildMemberRank
+    ouster.AdvancementLevel = pcInfo.AdvancementLevel
 
-    // ouster.ZoneID =           23
-    // ouster.X =            145
-    // ouster.Y =            237
+    // ouster.ZoneID = pcInfo.ZoneID
+    ouster.X = pcInfo.ZoneX
+    ouster.Y = pcInfo.ZoneY
 
     var skillInfo packet.OusterSkillInfo
     err = decoder.Decode(&skillInfo)
@@ -131,34 +140,35 @@ func loadOuster(decoder *json.Decoder) (ouster Ouster, err error) {
     return
 }
 
-func loadVampire(decoder *json.Decoder) error {
+func loadVampire(decoder *json.Decoder) (vampire *Vampire, err error) {
     var pcInfo data.PCVampireInfo
-    err := decoder.Decode(&pcInfo)
+    err = decoder.Decode(&pcInfo)
     if err != nil {
-        return err
+        return
     }
 
-    // player.PCType = 'V'
-    // player.Name = pcInfo.Name
-    // player.Level = pcInfo.Level
-    // player.Sex = pcInfo.Sex
-    //  player.SkinColor = pcInfo.SkinColor
-    //  player.Alignment = pcInfo.Alignment
-    // player.STR = pcInfo.STR
-    // player.DEX = pcInfo.DEX
-    // player.INT = pcInfo.INT
-    // player.HP = pcInfo.HP
-    // player.Rank = pcInfo.Rank
-    // player.RankExp = pcInfo.RankExp
-    // player.Exp = pcInfo.Exp
-    // player.Fame = pcInfo.Fame
-    // player.Sight = pcInfo.Sight
-    // player.Bonus = pcInfo.Bonus
-    // player.Competence = pcInfo.Competence
-    // player.GuildMemberRank = pcInfo.GuildMemberRank
-    // player.AdvancementLevel = pcInfo.AdvancementLevel
+    vampire = new(Vampire)
+    vampire.Name = pcInfo.Name
+    vampire.Level = pcInfo.Level
+    vampire.Sex = pcInfo.Sex
+    vampire.SkinColor = pcInfo.SkinColor
+    vampire.Alignment = pcInfo.Alignment
+    vampire.STR = pcInfo.STR
+    vampire.DEX = pcInfo.DEX
+    vampire.INI = pcInfo.INI
+    vampire.HP[ATTR_MAX] = pcInfo.HP[ATTR_MAX]
+    vampire.HP[ATTR_CURRENT] = pcInfo.HP[ATTR_CURRENT]
+    vampire.Rank = pcInfo.Rank
+    vampire.RankExp = pcInfo.RankExp
+    vampire.Exp = pcInfo.Exp
+    vampire.Fame = pcInfo.Fame
+    vampire.Sight = pcInfo.Sight
+    vampire.Bonus = pcInfo.Bonus
+    vampire.Competence = pcInfo.Competence
+    vampire.GuildMemberRank = pcInfo.GuildMemberRank
+    vampire.AdvancementLevel = pcInfo.AdvancementLevel
     //
     // scene := zoneTable[pcInfo.ZoneID]
-    // scene.Login(player, pcInfo.ZoneX, pcInfo.ZoneY)
-    return nil
+    // scene.Login(vampire, pcInfo.ZoneX, pcInfo.ZoneY)
+    return
 }

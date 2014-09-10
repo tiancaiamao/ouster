@@ -1,6 +1,7 @@
 package main
 
 import (
+    "github.com/tiancaiamao/ouster/data"
     . "github.com/tiancaiamao/ouster/util"
     "time"
 )
@@ -32,13 +33,13 @@ const (
 )
 
 type Vampire struct {
-    Creature
+    PlayerCreature
 
     Name            string
     Competence      byte
     CompetenceShape byte
 
-    Sex       Sex
+    Sex       Sex_t
     BatColor  Color_t
     SkinColor Color_t
 
@@ -82,50 +83,55 @@ type Vampire struct {
     HPRegenTime time.Time
 }
 
-func (vampire Vampire) CreatureClass() CreatureClass {
+func (vampire *Vampire) CreatureClass() CreatureClass {
     return CREATURE_CLASS_VAMPIRE
 }
 
-// func (vampire Vampire) PCInfo() data.PCInfo {
-//		 return &data.PCVampireInfo{
-//				 ObjectID: player.Creature.ObjectID(),
-//				 Name:		 player.Name,
-//				 // Level:		player.Level,
-//				 Sex: player.Sex,
-//
-//				 BatColor:					player.BatColor,
-//				 SkinColor:				 player.SkinColor,
-//				 MasterEffectColor: player.MasterEffectColor,
-//
-//				 Alignment: player.Alignment,
-//				 // STR:			 player.STR,
-//				 // DEX:			 player.DEX,
-//				 // INT:			 player.INT,
-//
-//				 // HP: player.HP,
-//
-//				 Rank:		player.Rank,
-//				 RankExp: player.RankExp,
-//
-//				 Exp:					player.Exp,
-//				 Fame:				 player.Fame,
-//				 Gold:				 player.Gold,
-//				 Sight:				player.Sight,
-//				 Bonus:				player.Bonus,
-//				 HotKey:			 player.HotKey,
-//				 SilverDamage: player.SilverDamage,
-//
-//				 Competence: player.Competence,
-//				 GuildID:		player.GuildID,
-//
-//				 GuildMemberRank: player.GuildMemberRank,
-//				 UnionID:				 player.UnionID,
-//
-//				 AdvancementLevel:	 player.AdvancementLevel,
-//				 AdvancementGoalExp: player.AdvancementGoalExp,
-//
-//				 ZoneID: player.Scene.ZoneID,
-//				 ZoneX:	player.X,
-//				 ZoneY:	player.Y,
-//		 }
-// }
+func (vampire *Vampire) PCInfo() data.PCInfo {
+    ret := &data.PCVampireInfo{
+        ObjectID: vampire.ObjectID,
+        Name:     vampire.Name,
+        Level:    vampire.Level,
+        Sex:      vampire.Sex,
+
+        BatColor:          vampire.BatColor,
+        SkinColor:         vampire.SkinColor,
+        MasterEffectColor: vampire.MasterEffectColor,
+
+        Alignment: vampire.Alignment,
+        Rank:      vampire.Rank,
+        RankExp:   vampire.RankExp,
+
+        Exp:   vampire.Exp,
+        Fame:  vampire.Fame,
+        Gold:  vampire.Gold,
+        Sight: vampire.Sight,
+        Bonus: vampire.Bonus,
+        // HotKey:       vampire.HotKey,
+        SilverDamage: vampire.SilverDamage,
+
+        Competence: vampire.Competence,
+        GuildID:    vampire.GuildID,
+
+        GuildMemberRank: vampire.GuildMemberRank,
+        UnionID:         vampire.UnionID,
+
+        AdvancementLevel:   vampire.AdvancementLevel,
+        AdvancementGoalExp: vampire.AdvancementGoalExp,
+
+        ZoneID: vampire.Scene.ZoneID,
+        ZoneX:  Coord_t(vampire.X),
+        ZoneY:  Coord_t(vampire.Y),
+    }
+
+    ret.STR[ATTR_CURRENT] = vampire.STR[ATTR_CURRENT]
+    ret.STR[ATTR_MAX] = vampire.STR[ATTR_MAX]
+    ret.DEX[ATTR_CURRENT] = vampire.DEX[ATTR_CURRENT]
+    ret.DEX[ATTR_MAX] = vampire.DEX[ATTR_MAX]
+    ret.INI[ATTR_CURRENT] = vampire.INI[ATTR_CURRENT]
+    ret.INI[ATTR_MAX] = vampire.INI[ATTR_MAX]
+    ret.HP[ATTR_CURRENT] = vampire.HP[ATTR_CURRENT]
+    ret.HP[ATTR_MAX] = vampire.HP[ATTR_MAX]
+
+    return ret
+}

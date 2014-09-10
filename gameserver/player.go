@@ -1,11 +1,10 @@
 package main
 
 import (
-    // "bytes"
+    "github.com/tiancaiamao/ouster/log"
     "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
     "io"
-    "log"
     "math/rand"
     "net"
     "time"
@@ -99,7 +98,7 @@ func InitPlayer(player *Player, conn net.Conn) {
         player.packetWriter = writer
         for {
             pkt := <-write
-            log.Println("write channel get a pkt ", pkt)
+            log.Debugln("write channel get a pkt ", pkt)
             err := writer.Write(player.conn, pkt)
             if err != nil {
                 log.Println(err)
