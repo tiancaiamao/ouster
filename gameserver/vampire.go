@@ -96,7 +96,6 @@ func (vampire *Vampire) PCInfo() data.PCInfo {
 
         BatColor:          vampire.BatColor,
         SkinColor:         vampire.SkinColor,
-        MasterEffectColor: vampire.MasterEffectColor,
 
         Alignment: vampire.Alignment,
         Rank:      vampire.Rank,

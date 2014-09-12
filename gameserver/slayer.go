@@ -1,6 +1,7 @@
 package main
 
 import (
+    "github.com/tiancaiamao/ouster/data"
     . "github.com/tiancaiamao/ouster/util"
     "time"
 )
@@ -31,7 +32,7 @@ const (
 )
 
 type Slayer struct {
-    Creature
+    PlayerCreature
 
     Name            string
     Competence      byte
@@ -62,8 +63,14 @@ type Slayer struct {
     Vision     [2]Vision_t
     SkillPoint SkillPoint_t
 
+    DomainLevels [6]SkillLevel_t
+    DomainExps   [6]SkillExp_t
+    HotKey       [4]SkillType_t
+
     Fame Fame_t
     Gold Gold_t
+
+    AttrBonus Bonus_t
 
     SkillDomainLevels [SKILL_DOMAIN_VAMPIRE]SkillLevel_t
 
@@ -76,6 +83,12 @@ type Slayer struct {
 
     // 摩托车
     // Motocycle *Motocycle
+
+    STRExp Exp_t
+    DEXExp Exp_t
+    INIExp Exp_t
+
+    GuildName string
 
     HPStealAmount Steal_t
     HPStealRatio  Steal_t
@@ -90,6 +103,62 @@ type Slayer struct {
     MPRegenTime time.Time
 }
 
-func (slayer Slayer) CreatureClass() CreatureClass {
+func (slayer *Slayer) CreatureClass() CreatureClass {
     return CREATURE_CLASS_SLAYER
+}
+
+func (slayer *Slayer) PCInfo() data.PCInfo {
+    ret := &data.PCSlayerInfo{
+        ObjectID:          slayer.ObjectID,
+        Name:              slayer.Name,
+        Sex:               slayer.Sex,
+        HairStyle:         slayer.HairStyle,
+        HairColor:         slayer.HairColor,
+        SkinColor:         slayer.SkinColor,
+        MasterEffectColor: slayer.MasterEffectColor,
+        Alignment:         slayer.Alignment,
+
+        STRExp:  slayer.STRExp,
+        DEXExp:  slayer.DEXExp,
+        INIExp:  slayer.INIExp,
+        Rank:    slayer.Rank,
+        RankExp: slayer.RankExp,
+
+        Fame: slayer.Fame,
+        Gold: slayer.Gold,
+
+        Sight: slayer.Sight,
+
+        Competence:      slayer.Competence,
+        GuildID:         slayer.GuildID,
+        GuildName:       slayer.GuildName,
+        GuildMemberRank: slayer.GuildMemberRank,
+
+        UnionID:            slayer.UnionID,
+        AdvancementLevel:   slayer.AdvancementLevel,
+        AdvancementGoalExp: slayer.AdvancementGoalExp,
+        AttrBonus:          slayer.AttrBonus,
+    }
+
+    for i := 0; i < 3; i++ {
+        ret.STR[i] = slayer.STR[i]
+        ret.DEX[i] = slayer.DEX[i]
+        ret.INI[i] = slayer.INI[i]
+    }
+
+    for i := 0; i < 2; i++ {
+        ret.HP[i] = slayer.HP[i]
+        ret.MP[i] = slayer.MP[i]
+    }
+
+    for i := 0; i < 6; i++ {
+        ret.DomainLevels[i] = slayer.DomainLevels[i]
+        ret.DomainExps[i] = slayer.DomainExps[i]
+    }
+
+    for i := 0; i < 4; i++ {
+        ret.HotKey[i] = slayer.HotKey[i]
+    }
+
+    return ret
 }

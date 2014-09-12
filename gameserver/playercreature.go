@@ -32,8 +32,8 @@ type PlayerCreature struct {
 
     GuildMemberRank    GuildMemberRank_t
     UnionID            uint32
-    AdvancementLevel   uint8
-    AdvancementGoalExp uint32
+    AdvancementLevel   Level_t
+    AdvancementGoalExp Exp_t
     // 任务管理
 
     MagicBonusDamage  Damage_t

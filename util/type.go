@@ -88,6 +88,7 @@ type Coord_t uint8
 type Rank_t uint8
 type RankExp_t uint32
 type GuildMemberRank_t uint8
+type SkillExp_t uint32
 
 type ElementalType int8
 

@@ -150,8 +150,8 @@ func CGConnectHandler(pkt packet.Packet, agent *Agent) {
         info.PCType = 'V'
     case *Ouster:
         info.PCType = 'O'
-        // case *Slayer:
-        //		 info.PCType = 'S'
+    case *Slayer:
+        info.PCType = 'S'
     default:
         log.Errorln("agent类型不对!!")
     }

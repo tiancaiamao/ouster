@@ -141,9 +141,6 @@ func (ouster *Ouster) PCInfo() data.PCInfo {
         GuildMemberRank: (ouster.GuildMemberRank),
         UnionID:         ouster.UnionID,
 
-        AdvancementLevel:   ouster.AdvancementLevel,
-        AdvancementGoalExp: ouster.AdvancementGoalExp,
-
         // ZoneID: ouster.Scene.ZoneID,
         // ZoneX:  ouster.X,
         // ZoneY:  ouster.Y,
