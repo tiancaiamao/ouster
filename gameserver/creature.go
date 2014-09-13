@@ -50,20 +50,20 @@ type Creature struct {
     Sight Sight_t
 }
 
-func (c Creature) ObjectClass() ObjectClass {
+func (c *Creature) ObjectClass() ObjectClass {
     return OBJECT_CLASS_CREATURE
 }
 
-func (c Creature) CreatureInstance() *Creature {
-    return &c
+func (c *Creature) CreatureInstance() *Creature {
+    return c
 }
 
-func (c Creature) heartbeat() {
+func (c *Creature) heartbeat() {
 
 }
 
 // TODO
-func (c Creature) IsAbleToMove() bool {
+func (c *Creature) IsAbleToMove() bool {
     if c.Flag.IsFlag(EFFECT_CLASS_COMA) ||
         c.Flag.IsFlag(EFFECT_CLASS_PARALYZE) ||
         c.Flag.IsFlag(EFFECT_CLASS_ETERNITY_PAUSE) ||
@@ -85,20 +85,20 @@ func (c Creature) IsAbleToMove() bool {
     return true
 }
 
-func (c Creature) IsFlag(effect uint) bool {
+func (c *Creature) IsFlag(effect uint) bool {
     return c.Flag.IsFlag(effect)
 }
 
-func (c Creature) isFlag(effect uint) bool {
+func (c *Creature) isFlag(effect uint) bool {
     return c.Flag.IsFlag(effect)
 }
 
 // TODO
-func (c Creature) removeFlag(effect EffectClass) {
+func (c *Creature) removeFlag(effect EffectClass) {
 
 }
 
-func (c Creature) SetFlag(ec EffectClass) {
+func (c *Creature) SetFlag(ec EffectClass) {
 
 }
 
@@ -106,12 +106,12 @@ func canSee(watcher CreatureInterface, marker CreatureInterface) bool {
     return true //TODO
 }
 
-func (c Creature) canMove(nx ZoneCoord_t, ny ZoneCoord_t) bool {
+func (c *Creature) canMove(nx ZoneCoord_t, ny ZoneCoord_t) bool {
     if c.Flag.IsFlag(EFFECT_CLASS_POISON_MESH) ||
         c.Flag.IsFlag(EFFECT_CLASS_TENDRIL) ||
         c.Flag.IsFlag(EFFECT_CLASS_BLOODY_WALL_BLOCKED) ||
         c.Flag.IsFlag(EFFECT_CLASS_CASKET) ||
-        !isValidZoneCoord(c.Scene.Zone, nx, ny) {
+        !isValidZoneCoord(&c.Scene.Zone, nx, ny) {
         return false
     }
 
@@ -132,14 +132,14 @@ func (c Creature) canMove(nx ZoneCoord_t, ny ZoneCoord_t) bool {
     return true
 }
 
-func (c Creature) isBlockedByCreature(nx ZoneCoord_t, ny ZoneCoord_t) bool {
-    if !isValidZoneCoord(c.Scene.Zone, nx, ny) ||
+func (c *Creature) isBlockedByCreature(nx ZoneCoord_t, ny ZoneCoord_t) bool {
+    if !isValidZoneCoord(&c.Scene.Zone, nx, ny) ||
         !c.Scene.getTile(nx, ny).HasCreature(c.MoveMode) {
         return false
     }
     return true
 }
 
-func (c Creature) addEffect(effect EffectInterface) {
+func (c *Creature) addEffect(effect EffectInterface) {
 
 }

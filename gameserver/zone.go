@@ -3,6 +3,7 @@ package main
 import (
     "encoding/binary"
     "github.com/tiancaiamao/ouster/data"
+    // "github.com/tiancaiamao/ouster/log"
     "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
     // "io"
@@ -45,8 +46,8 @@ type Zone struct {
     Tiles          []Tile
     Levels         []ZoneLevel_t
     Sectors        []Sector
-    SectorWidth    int
-    SectorHeight   int
+    // SectorWidth    int
+    // SectorHeight	 int
 
     NPCTypes     []NPCType_t
     MonsterTypes []MonsterType_t
@@ -108,10 +109,10 @@ func (zone *Zone) load(smp *data.SMP, ssi data.SSI) {
 
     zone.Width = smp.Width
     zone.Height = smp.Height
-    zone.Tiles = make([]Tile, zone.Width*zone.Height)
+    zone.Tiles = make([]Tile, int(zone.Width)*int(zone.Height))
 
-    sectorWidth := zone.Width / SECTOR_SIZE
-    sectorHeight := zone.Height / SECTOR_SIZE
+    sectorWidth := int(zone.Width)/SECTOR_SIZE + 1
+    sectorHeight := int(zone.Height)/SECTOR_SIZE + 1
     zone.Sectors = make([]Sector, sectorWidth*sectorHeight)
 
     for i := 0; i < int(zone.Width); i++ {
@@ -119,12 +120,13 @@ func (zone *Zone) load(smp *data.SMP, ssi data.SSI) {
             sx := i / SECTOR_SIZE
             sy := i / SECTOR_SIZE
             tile := zone.Tile(i, j)
+            // log.Debugln(sx, sy)
             tile.Sector = zone.Sector(sx, sy)
         }
     }
 
-    for i := 0; i < int(sectorWidth); i++ {
-        for j := 0; j < int(sectorHeight); j++ {
+    for i := 1; i < sectorWidth-1; i++ {
+        for j := 1; j < sectorHeight-1; j++ {
             for d := 0; d < 9; d++ {
                 sectorx := i + dirMoveMask[d].X
                 sectory := j + dirMoveMask[d].Y
@@ -179,11 +181,16 @@ func (zone *Zone) load(smp *data.SMP, ssi data.SSI) {
         }
     }
 
+    zone.Levels = make([]ZoneLevel_t, len(zone.Tiles))
     for i := 0; i < len(ssi); i++ {
         record := ssi[i]
-        for bx := record.Left; bx <= record.Right; bx++ {
-            for by := record.Top; by <= record.Bottom; by++ {
-                *(zone.Level(int(bx), int(by))) = record.Level
+        for bx := record.Left; bx < record.Right; bx++ {
+            for by := record.Bottom; by < record.Top; by++ {
+                if int(bx)*int(by) >= len(zone.Tiles) || ZoneCoord_t(bx) >= zone.Width || ZoneCoord_t(by) >= zone.Height {
+                    // log.Debugln(bx, by, len(zone.Tiles))
+                } else {
+                    *(zone.Level(int(bx), int(by))) = record.Level
+                }
             }
         }
     }
@@ -253,11 +260,11 @@ func (zone *Zone) loadMonster() {
 }
 
 func (zone *Zone) Tile(x, y int) *Tile {
-    return &zone.Tiles[y+x*int(zone.Width)]
+    return &zone.Tiles[y+x*int(zone.Height)]
 }
 
 func (zone *Zone) getTile(x, y ZoneCoord_t) *Tile {
-    return &zone.Tiles[y+x*zone.Width]
+    return &zone.Tiles[y+x*zone.Height]
 }
 
 func (zone *Zone) Level(x, y int) *ZoneLevel_t {
@@ -265,7 +272,8 @@ func (zone *Zone) Level(x, y int) *ZoneLevel_t {
 }
 
 func (zone *Zone) Sector(x, y int) *Sector {
-    return &zone.Sectors[y+x*int(zone.SectorHeight)]
+    sectorHeight := zone.Height / SECTOR_SIZE
+    return &zone.Sectors[y+x*int(sectorHeight)]
 }
 
 // 只允许scene访问，不允许其它goroutine访问

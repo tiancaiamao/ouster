@@ -2,6 +2,7 @@ package main
 
 import (
     "github.com/tiancaiamao/ouster/data"
+    "github.com/tiancaiamao/ouster/log"
     . "github.com/tiancaiamao/ouster/util"
     "time"
 )
@@ -88,14 +89,19 @@ func (vampire *Vampire) CreatureClass() CreatureClass {
 }
 
 func (vampire *Vampire) PCInfo() data.PCInfo {
+    if vampire == nil || vampire.Scene == nil {
+		log.Errorln("fuck...Scene为空谁让你调这个函数了？")
+        return nil
+    }
+
     ret := &data.PCVampireInfo{
         ObjectID: vampire.ObjectID,
         Name:     vampire.Name,
         Level:    vampire.Level,
         Sex:      vampire.Sex,
 
-        BatColor:          vampire.BatColor,
-        SkinColor:         vampire.SkinColor,
+        BatColor:  vampire.BatColor,
+        SkinColor: vampire.SkinColor,
 
         Alignment: vampire.Alignment,
         Rank:      vampire.Rank,
@@ -123,6 +129,7 @@ func (vampire *Vampire) PCInfo() data.PCInfo {
         ZoneY:  Coord_t(vampire.Y),
     }
 
+    log.Debugln("run here.......")
     ret.STR[ATTR_CURRENT] = vampire.STR[ATTR_CURRENT]
     ret.STR[ATTR_MAX] = vampire.STR[ATTR_MAX]
     ret.DEX[ATTR_CURRENT] = vampire.DEX[ATTR_CURRENT]

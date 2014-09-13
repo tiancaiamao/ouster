@@ -35,6 +35,8 @@ func ReadSMP(fileName string) (*SMP, error) {
     defer fd.Close()
 
     ret := new(SMP)
+    ret.Data = &bytes.Buffer{}
+	
     // read zone version
     var buf [200]byte
     var strLen uint32

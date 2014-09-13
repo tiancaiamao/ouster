@@ -3,11 +3,11 @@ package main
 import (
     "github.com/tiancaiamao/ouster/config"
     "github.com/tiancaiamao/ouster/data"
+    "github.com/tiancaiamao/ouster/log"
     "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
     "os"
-    "path/filepath"
-    // "strconv"
+    "path"
     "strings"
     "time"
 )
@@ -16,7 +16,9 @@ import (
 // Scene负责channel通信相关，然后调用Zone中对应的方法
 type Scene struct {
     // 可以看作aoi管理
-    *Zone
+    Zone
+
+    registerID ObjectID_t
 
     objects []ObjectInterface
 
@@ -36,17 +38,15 @@ type Scene struct {
     agent chan AgentMessage
 }
 
-func (scene *Scene) AddObject(obj ObjectInterface) uint32 {
-    idx := len(scene.objects)
-    if idx < 10000 {
-        scene.objects = append(scene.objects, obj)
-    } else {
-    }
-    return uint32(idx)
+func (scene *Scene) registerObject(obj ObjectInterface) {
+    // 不需要加锁，但要保证这个函数只在scene的goroutine中运行
+    scene.registerID++
+    obj.ObjectInstance().ObjectID = scene.registerID
 }
 
 func NewScene(smp *data.SMP, ssi data.SSI) *Scene {
     ret := new(Scene)
+    ret.registerID = 10000
     ret.load(smp, ssi)
 
     // num := 0
@@ -87,7 +87,7 @@ func NewScene(smp *data.SMP, ssi data.SSI) *Scene {
     // }
     // }
 
-    // ret.players = players
+    ret.players = make(map[ObjectID_t]*Agent)
     // ret.monsters = monsters
     ret.quit = make(chan struct{})
     ret.event = make(chan interface{})
@@ -100,14 +100,12 @@ func (m *Scene) Blocked(x, y uint16) bool {
     return false
 }
 
-func (m *Scene) Login(player *Player, zoneX uint8, zoneY uint8) error {
-    // m.players = append(m.players, player)
+func (m *Scene) Login(agent *Agent) {
+    m.registerObject(agent)
 
-    // id := m.AddObject(player)
-    // player.Entity = m.Add(zoneX, zoneY, id)
-    // player.Scene = m
-
-    return nil
+    c := agent.CreatureInstance()
+    m.players[c.ObjectID] = agent
+    c.Scene = m
 }
 
 func (s *Scene) Loop() {
@@ -129,6 +127,9 @@ func (s *Scene) Loop() {
 
 func (m *Scene) processAgentMessage(msg AgentMessage) {
     switch raw := msg.(type) {
+    case LoginMessage:
+        m.Login(raw.Agent)
+        raw.wg.Done()
     case MoveMessage:
         m.movePC(raw.Agent, ZoneCoord_t(raw.X), ZoneCoord_t(raw.Y), Dir_t(raw.Dir))
         // case *packet.GCFastMovePacket:
@@ -221,36 +222,53 @@ func (m *Scene) processAgentMessage(msg AgentMessage) {
 }
 
 var (
-    maps      map[string]*Scene
-    zoneTable map[uint16]*Scene
+    g_Scenes map[ZoneID_t]*Scene = make(map[ZoneID_t]*Scene)
 )
 
 func Initialize() {
-    filepath.Walk(config.DataFilePath, func(path string, info os.FileInfo, err error) error {
-        if err != nil {
-            return err
-        }
+    dir, err := os.Open(config.DataFilePath)
+    if err != nil {
+        panic(err)
+    }
 
+    fi, err := dir.Readdir(0)
+    if err != nil {
+        panic(err)
+    }
+
+    for _, info := range fi {
         if info.IsDir() {
-            return nil
+            continue
         }
 
         if strings.HasSuffix(info.Name(), ".smp") {
-            smp, err := data.ReadSMP(info.Name())
+            smp, err := data.ReadSMP(path.Join(config.DataFilePath, info.Name()))
             if err != nil {
-                return err
+                log.Infof("加载SMP地图文件失败:%s, error: %s\n", info.Name(), err)
+                continue
             }
+            // log.Debugf("%s: %#v\n", info.Name(), smp)
 
             ssiFile := strings.Replace(info.Name(), ".smp", ".ssi", 0)
-            ssi, err := data.ReadSSI(ssiFile)
+            ssi, err := data.ReadSSI(path.Join(config.DataFilePath, ssiFile))
             if err != nil {
-                return err
+                log.Infof("加载SSI地图文件失败:%s, error: %s\n", info.Name(), err)
+                continue
+            }
+
+            if smp.ZoneID == 0 {
+                // 暂时不加载自己改的的图,像L3 L4 L5 塔1 塔2
+                continue
             }
 
             scene := NewScene(smp, ssi)
-            go scene.Loop()
+            if scene != nil {
+                go scene.Loop()
+                g_Scenes[scene.ZoneID] = scene
+                log.Infof("加载地图%d成功:%s", scene.ZoneID, info.Name())
+            } else {
+                log.Infof("加载地图失败:%s", info.Name())
+            }
         }
-        return nil
-    })
-
+    }
 }

@@ -3,8 +3,8 @@ package packet
 import (
     "encoding/binary"
     "errors"
+    "github.com/tiancaiamao/ouster/log"
     "io"
-    "log"
 )
 
 const (
@@ -583,7 +583,7 @@ func (r *Reader) Read(reader io.Reader) (ret Packet, err error) {
         return
     }
 
-    log.Printf("read a packet id = %d, sz = %d\n", id, sz)
+    log.Debugf("read a packet id = %d, sz = %d\n", id, sz)
 
     n, err := io.ReadFull(reader, buf[:sz])
     if err != nil {
@@ -640,6 +640,7 @@ func (w *Writer) Write(writer io.Writer, pkt Packet) error {
     if err != nil {
         return err
     }
+    log.Debugln(buf)
 
     sz := PacketSize(len(buf))
     err = binary.Write(writer, binary.LittleEndian, sz)

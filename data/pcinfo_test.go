@@ -2,12 +2,12 @@ package data
 
 import (
     "bytes"
+    . "github.com/tiancaiamao/ouster/util"
     "testing"
 )
 
 func TestPCOusterInfoDump(t *testing.T) {
     info := PCOusterInfo{
-        PCType:   'O',
         ObjectID: 1,
         Name:     "test",
         Level:    150,
@@ -15,12 +15,12 @@ func TestPCOusterInfoDump(t *testing.T) {
         HairColor: 101,
 
         Alignment: 7500,
-        STR:       [3]uint16{10, 10, 10},
-        DEX:       [3]uint16{25, 25, 25},
-        INT:       [3]uint16{10, 10, 10},
+        STR:       [3]Attr_t{10, 10, 10},
+        DEX:       [3]Attr_t{25, 25, 25},
+        INI:       [3]Attr_t{10, 10, 10},
 
-        HP: [2]uint16{315, 315},
-        MP: [2]uint16{186, 111},
+        HP: [2]HP_t{315, 315},
+        MP: [2]MP_t{186, 111},
 
         Rank:    50,
         RankExp: 10700,

@@ -151,9 +151,17 @@ func TestReadSMP(t *testing.T) {
     }
 
     for _, v := range files {
-        _, err := ReadSMP(v)
+        smp, err := ReadSMP(v)
         if err != nil {
             t.Fatal(err)
+        }
+        if smp == nil {
+            t.Fatalf("err不为空，smp却为空:%s\n", v)
+        }
+        t.Logf("name: %s, id: %d\n", v, smp.ZoneID)
+        t.Logf("%#v\n", smp)
+        if smp.Width == 0 || smp.Height == 0 {
+            t.Fatal("这个地图不对：%s\n", v)
         }
     }
 }

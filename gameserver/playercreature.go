@@ -2,6 +2,7 @@ package main
 
 import (
     "encoding/json"
+    "errors"
     "github.com/tiancaiamao/ouster/config"
     "github.com/tiancaiamao/ouster/data"
     "github.com/tiancaiamao/ouster/log"
@@ -59,34 +60,33 @@ type PlayerCreature struct {
     MasterEffectColor uint8
 }
 
-func (pc PlayerCreature) PlayerCreatureInstance() *PlayerCreature {
-    return &pc
+func (pc *PlayerCreature) PlayerCreatureInstance() *PlayerCreature {
+    return pc
 }
 
-func LoadPlayerCreature(name string, typ packet.PCType) (PlayerCreatureInterface, error) {
+func LoadPlayerCreature(name string, typ packet.PCType) (ptr PlayerCreatureInterface, zoneID ZoneID_t, err error) {
     fileName := config.DataDir + name
     log.Debugln("load文件", fileName)
     f, err := os.Open(fileName)
     if err != nil {
-        return nil, err
+        return
     }
     defer f.Close()
 
     decoder := json.NewDecoder(f)
 
-    var ret PlayerCreatureInterface
     switch typ {
     case packet.PC_VAMPIRE:
-        ret, err = loadVampire(decoder)
+        return loadVampire(decoder)
     case packet.PC_OUSTER:
-        ret, err = loadOuster(decoder)
+        return loadOuster(decoder)
     case packet.PC_SLAYER:
+        // return loadSlayer(decoder)
     }
-
-    return ret, err
+    return nil, 0, errors.New("player type error!")
 }
 
-func loadOuster(decoder *json.Decoder) (ouster *Ouster, err error) {
+func loadOuster(decoder *json.Decoder) (ouster *Ouster, zoneID ZoneID_t, err error) {
     var pcInfo data.PCOusterInfo
     err = decoder.Decode(&pcInfo)
     if err != nil {
@@ -116,7 +116,7 @@ func loadOuster(decoder *json.Decoder) (ouster *Ouster, err error) {
     ouster.GuildMemberRank = pcInfo.GuildMemberRank
     ouster.AdvancementLevel = pcInfo.AdvancementLevel
 
-    // ouster.ZoneID = pcInfo.ZoneID
+    zoneID = pcInfo.ZoneID
     ouster.X = pcInfo.ZoneX
     ouster.Y = pcInfo.ZoneY
 
@@ -135,12 +135,10 @@ func loadOuster(decoder *json.Decoder) (ouster *Ouster, err error) {
     //     player.skillslot[i].CastingTime = v.CastingTime
     // }
 
-    // scene := zoneTable[pcInfo.ZoneID]
-    // scene.Login(player, pcInfo.ZoneX, pcInfo.ZoneY)
     return
 }
 
-func loadVampire(decoder *json.Decoder) (vampire *Vampire, err error) {
+func loadVampire(decoder *json.Decoder) (vampire *Vampire, zoneID ZoneID_t, err error) {
     var pcInfo data.PCVampireInfo
     err = decoder.Decode(&pcInfo)
     if err != nil {
@@ -167,8 +165,13 @@ func loadVampire(decoder *json.Decoder) (vampire *Vampire, err error) {
     vampire.Competence = pcInfo.Competence
     vampire.GuildMemberRank = pcInfo.GuildMemberRank
     vampire.AdvancementLevel = pcInfo.AdvancementLevel
-    //
-    // scene := zoneTable[pcInfo.ZoneID]
-    // scene.Login(vampire, pcInfo.ZoneX, pcInfo.ZoneY)
+
+    zoneID = pcInfo.ZoneID
+    vampire.X = ZoneCoord_t(pcInfo.ZoneX)
+    vampire.Y = ZoneCoord_t(pcInfo.ZoneY)
+
+    if vampire.X == 0 || vampire.Y == 0 {
+        log.Debugln("不科学呀", vampire.X, vampire.Y)
+    }
     return
 }

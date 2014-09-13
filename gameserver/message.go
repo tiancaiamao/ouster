@@ -2,6 +2,7 @@ package main
 
 import (
     "github.com/tiancaiamao/ouster/packet"
+    "sync"
 )
 
 // 传interface相当于传指针，消息更小
@@ -17,6 +18,11 @@ func (agent *Agent) Sender() *Agent {
 type MoveMessage struct {
     *Agent
     packet.CGMovePacket
+}
+
+type LoginMessage struct {
+    *Agent
+    wg  *sync.WaitGroup
 }
 
 type SkillBroadcastMessage struct {

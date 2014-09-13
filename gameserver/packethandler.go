@@ -4,6 +4,7 @@ import (
     "github.com/tiancaiamao/ouster/log"
     "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
+    "sync"
 )
 
 type PacketHandler func(pkt packet.Packet, agent *Agent)
@@ -111,17 +112,35 @@ func CGSkillToTileHandler(pkt packet.Packet, agent *Agent) {
 
 func CGConnectHandler(pkt packet.Packet, agent *Agent) {
     raw := pkt.(*packet.CGConnectPacket)
-    pcItf, err := LoadPlayerCreature(raw.PCName, packet.PCType(raw.PCType))
+    pcItf, zid, err := LoadPlayerCreature(raw.PCName, packet.PCType(raw.PCType))
     if err != nil {
         log.Errorln("LoadPlayerCreature失败了:", err)
     }
-    agent.PlayerCreatureInterface = pcItf
 
+    agent.PlayerCreatureInterface = pcItf
+    scene, ok := g_Scenes[zid]
+    if !ok {
+        log.Errorln("加载的agent所在的scene不存在:", zid)
+        agent.ErrorClose()
+        return
+    }
+    agent.scene = scene.agent
+
+    msg := LoginMessage{
+        Agent: agent,
+        wg:    &sync.WaitGroup{},
+    }
+    // 向scene发消息并等待其返回
+    msg.wg.Add(1)
+    agent.scene <- msg
+    msg.wg.Wait()
+
+    log.Debugln("坐标：", agent.CreatureInstance().X, agent.CreatureInstance().Y)
     info := &packet.GCUpdateInfoPacket{
         PCInfo: agent.PCInfo(),
-        // ZoneID: agent.Scene.ZoneID,
-        ZoneX: Coord_t(agent.CreatureInstance().X),
-        ZoneY: Coord_t(agent.CreatureInstance().Y),
+        ZoneID: zid,
+        ZoneX:  Coord_t(agent.CreatureInstance().X),
+        ZoneY:  Coord_t(agent.CreatureInstance().Y),
 
         GameTime: packet.GameTimeType{
             Year:  1983,
@@ -156,9 +175,9 @@ func CGConnectHandler(pkt packet.Packet, agent *Agent) {
         log.Errorln("agent类型不对!!")
     }
 
-    // code := Encrypt(player.Scene.ZoneID, 1)
-    // player.packetReader.Code = code
-    // player.packetWriter.Code = code
+    code := Encrypt(uint16(agent.CreatureInstance().Scene.ZoneID), 1)
+    agent.packetReader.Code = code
+    agent.packetWriter.Code = code
 
     if info.PCType == 'O' {
         info.GearInfo = packet.GearInfo{

@@ -86,6 +86,11 @@ func (this *Player) handleAoiMessage(id uint32) {
     // }
 }
 
+func (agent *Agent) ErrorClose() {
+    agent.conn.Close()
+    return
+}
+
 func decreaseConsumeMP(agent *Agent) int {
     // TODO
     return 0

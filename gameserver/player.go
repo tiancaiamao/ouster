@@ -75,20 +75,20 @@ func InitPlayer(player *Player, conn net.Conn) {
             data, err := reader.Read(player.conn)
             if err != nil {
                 if _, ok := err.(packet.NotImplementError); ok {
-                    log.Println("读到一个未实现的包:", data.PacketID())
+                    log.Errorln("读到一个未实现的包:", data.PacketID())
                 } else {
                     if err == io.EOF {
-                        log.Println("后台gouroutine读客户端失败了:", err)
+                        log.Infoln("后台gouroutine读客户端失败了:", err)
                         player.conn.Close()
                         close(read)
                         return
                     } else {
-                        log.Println("这是一个严重的错误:", err)
+                        log.Errorln("这是一个严重的错误:", err)
                         return
                     }
                 }
             }
-            log.Println("读到了一个packet:", data)
+            log.Debugln("读到了一个packet:", data)
             read <- data
         }
     }()
@@ -98,10 +98,10 @@ func InitPlayer(player *Player, conn net.Conn) {
         player.packetWriter = writer
         for {
             pkt := <-write
-            log.Debugln("write channel get a pkt ", pkt)
+            log.Debugf("write channel get a pkt: %#v\n", pkt)
             err := writer.Write(player.conn, pkt)
             if err != nil {
-                log.Println(err)
+                log.Errorln(err)
                 continue
             }
         }
