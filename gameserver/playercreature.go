@@ -94,6 +94,7 @@ func loadOuster(decoder *json.Decoder) (ouster *Ouster, zoneID ZoneID_t, err err
     }
 
     ouster = new(Ouster)
+	ouster.Init()
     ouster.Name = pcInfo.Name
     ouster.Level = pcInfo.Level
     ouster.HairColor = pcInfo.HairColor
@@ -146,6 +147,7 @@ func loadVampire(decoder *json.Decoder) (vampire *Vampire, zoneID ZoneID_t, err 
     }
 
     vampire = new(Vampire)
+    vampire.Init()
     vampire.Name = pcInfo.Name
     vampire.Level = pcInfo.Level
     vampire.Sex = pcInfo.Sex

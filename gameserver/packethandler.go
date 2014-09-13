@@ -21,8 +21,11 @@ func init() {
         packet.PACKET_CG_SKILL_TO_SELF:   CGSkillToSelfHandler,
         packet.PACKET_CG_SKILL_TO_OBJECT: CGSkillToObjectHandler,
         packet.PACKET_CG_SKILL_TO_TILE:   CGSkillToTileHandler,
+        packet.PACKET_CG_VERIFY_TIME:     CGVerifyTimeHandler,
     }
 }
+
+func CGVerifyTimeHandler(pkt packet.Packet, agent *Agent) {}
 
 func CGAttackHandler(pkt packet.Packet, agent *Agent) {
     // attack := pkt.(packet.CGAttackPacket)

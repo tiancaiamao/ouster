@@ -50,6 +50,10 @@ type Creature struct {
     Sight Sight_t
 }
 
+func (c *Creature) Init() {
+    c.Flag = NewBitSet(EFFECT_CLASS_MAX)
+}
+
 func (c *Creature) ObjectClass() ObjectClass {
     return OBJECT_CLASS_CREATURE
 }
