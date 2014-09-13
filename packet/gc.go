@@ -1350,3 +1350,20 @@ type GCMoveOK struct {
     Y   uint8
     Dir uint8
 }
+
+type GCDisconnect struct {
+    Message string
+}
+
+func (disconn GCDisconnect) PacketID() PacketID {
+    return PACKET_GC_DISCONNECT
+}
+
+func (disconn GCDisconnect) MarshalBinary(code uint8) ([]byte, error) {
+    buf := &bytes.Buffer{}
+    sz := uint8(len(disconn.Message))
+
+    binary.Write(buf, binary.LittleEndian, sz)
+    io.WriteString(buf, disconn.Message)
+    return buf.Bytes(), nil
+}

@@ -21,6 +21,7 @@ type PlayerCreatureInterface interface {
 type PlayerCreature struct {
     Creature
 
+    Name string
     // 装备
     // 物品
     // 钱
@@ -94,7 +95,7 @@ func loadOuster(decoder *json.Decoder) (ouster *Ouster, zoneID ZoneID_t, err err
     }
 
     ouster = new(Ouster)
-	ouster.Init()
+    ouster.Init()
     ouster.Name = pcInfo.Name
     ouster.Level = pcInfo.Level
     ouster.HairColor = pcInfo.HairColor

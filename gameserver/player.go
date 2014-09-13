@@ -80,6 +80,7 @@ func InitPlayer(player *Player, conn net.Conn) {
                     if err == io.EOF {
                         log.Infoln("后台gouroutine读客户端失败了:", err)
                         player.conn.Close()
+                        // 关闭读channel会使得agent的goroutine退出，回收资源
                         close(read)
                         return
                     } else {
@@ -97,7 +98,12 @@ func InitPlayer(player *Player, conn net.Conn) {
         writer := packet.NewWriter()
         player.packetWriter = writer
         for {
-            pkt := <-write
+            pkt, ok := <-write
+            if !ok {
+                // 关闭使读goroutine退出
+                player.conn.Close()
+                return
+            }
             log.Debugf("write channel get a pkt: %#v\n", pkt)
             err := writer.Write(player.conn, pkt)
             if err != nil {

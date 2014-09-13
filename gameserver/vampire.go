@@ -36,7 +36,6 @@ const (
 type Vampire struct {
     PlayerCreature
 
-    Name            string
     Competence      byte
     CompetenceShape byte
 

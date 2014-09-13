@@ -1,10 +1,14 @@
 package main
 
 import (
+    "encoding/json"
+    "github.com/tiancaiamao/ouster/config"
     "github.com/tiancaiamao/ouster/log"
     "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
     "net"
+    "os"
+    "path"
     "time"
 )
 
@@ -84,6 +88,23 @@ func (this *Player) handleAoiMessage(id uint32) {
     //
     //     }
     // }
+}
+
+func (agent *Agent) save() error {
+    fileName := path.Join(config.DataDir, agent.PlayerCreatureInstance().Name)
+    f, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+    if err != nil {
+        return err
+    }
+    defer f.Close()
+
+    enc := json.NewEncoder(f)
+    info := agent.PCInfo()
+    err = enc.Encode(info)
+    if err != nil {
+        return err
+    }
+    return nil
 }
 
 func (agent *Agent) ErrorClose() {

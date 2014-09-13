@@ -25,6 +25,11 @@ type LoginMessage struct {
     wg  *sync.WaitGroup
 }
 
+type LogoutMessage struct {
+    *Agent
+    // wg  *sync.WaitGroup
+}
+
 type SkillBroadcastMessage struct {
     *Agent
     packet.Packet

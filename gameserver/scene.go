@@ -108,6 +108,22 @@ func (m *Scene) Login(agent *Agent) {
     c.Scene = m
 }
 
+func (m *Scene) Logout(agent *Agent) {
+    c := agent.CreatureInstance()
+
+    m.Tile(int(c.X), int(c.Y)).DeleteCreature(c.ObjectID)
+    delete(m.players, c.ObjectID)
+
+    gcDeleteObject := packet.GCDeleteObjectPacket(c.ObjectID)
+
+    m.broadcastPacket(c.X, c.Y, gcDeleteObject, agent)
+
+    // 最后写一条退出消息
+    agent.sendPacket(packet.GCDisconnect{})
+    // 然后关闭chan使得写的goroutine退出
+    close(agent.send)
+}
+
 func (s *Scene) Loop() {
     heartbeat := time.Tick(200 * time.Millisecond)
     for {
@@ -132,6 +148,8 @@ func (m *Scene) processAgentMessage(msg AgentMessage) {
         raw.wg.Done()
     case MoveMessage:
         m.movePC(raw.Agent, ZoneCoord_t(raw.X), ZoneCoord_t(raw.Y), Dir_t(raw.Dir))
+    case LogoutMessage:
+        m.Logout(raw.Agent)
         // case *packet.GCFastMovePacket:
         // fastMove := msg.(*packet.GCFastMovePacket)
         // obj := m.objects[playerId]

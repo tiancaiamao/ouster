@@ -34,7 +34,6 @@ const (
 type Slayer struct {
     PlayerCreature
 
-    Name            string
     Competence      byte
     CompetenceShape byte
 

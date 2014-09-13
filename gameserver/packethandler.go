@@ -22,6 +22,16 @@ func init() {
         packet.PACKET_CG_SKILL_TO_OBJECT: CGSkillToObjectHandler,
         packet.PACKET_CG_SKILL_TO_TILE:   CGSkillToTileHandler,
         packet.PACKET_CG_VERIFY_TIME:     CGVerifyTimeHandler,
+        packet.PACKET_CG_LOGOUT:          CGLogoutHandler,
+    }
+}
+
+func CGLogoutHandler(pkt packet.Packet, agent *Agent) {
+    // 保存
+    agent.save()
+    // 从Zone去除
+    agent.scene <- LogoutMessage{
+        Agent: agent,
     }
 }
 

@@ -37,8 +37,7 @@ const (
 
 type Ouster struct {
     PlayerCreature //继承自PlayerCreature
-
-    Name            string
+	
     Competence      byte
     CompetenceShape byte
 
