@@ -640,7 +640,7 @@ func (w *Writer) Write(writer io.Writer, pkt Packet) error {
     if err != nil {
         return err
     }
-    log.Debugln(buf)
+    // log.Debugln(buf)
 
     sz := PacketSize(len(buf))
     err = binary.Write(writer, binary.LittleEndian, sz)

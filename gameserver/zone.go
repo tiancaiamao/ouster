@@ -4,6 +4,7 @@ import (
     "encoding/binary"
     "github.com/tiancaiamao/ouster/data"
     // "github.com/tiancaiamao/ouster/log"
+    "errors"
     "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
     // "io"
@@ -195,7 +196,6 @@ func (zone *Zone) load(smp *data.SMP, ssi data.SSI) {
         }
     }
 
-    zone.loadMonster()
     zone.loadItem()
     zone.loadNPC()
     zone.loadEffect()
@@ -254,9 +254,6 @@ func (zone *Zone) loadNPC() {
 
 func (zne *Zone) loadItem() {
 
-}
-
-func (zone *Zone) loadMonster() {
 }
 
 func (zone *Zone) Tile(x, y int) *Tile {
@@ -444,6 +441,44 @@ func (zone *Zone) movePCBroadcast(agent *Agent, x1 ZoneCoord_t, y1 ZoneCoord_t, 
     }
 }
 
+func findSuitablePosition(zone *Zone, cx ZoneCoord_t, cy ZoneCoord_t, mode MoveMode) (pt TPOINT, err error) {
+    x := cx
+    y := cy
+    sx := ZoneCoord_t(1)
+    sy := ZoneCoord_t(0)
+    maxCount := 1
+    count := 1
+    checkCount := 300
+
+    for checkCount >= 0 {
+        if x > 0 && y > 0 && x < zone.Width && y < zone.Height {
+            rTile := zone.Tile(int(x), int(y))
+            if !rTile.isBlocked(mode) && !rTile.hasPortal() {
+                pt.X = int(x)
+                pt.Y = int(y)
+                return
+            }
+        }
+        x += sx
+        y += sy
+        count--
+        if count == 0 {
+            if sx == 0 {
+                maxCount++
+            }
+            temp := sx
+            sx = -sy
+            sy = temp
+
+            count = maxCount
+        }
+        checkCount--
+    }
+
+    err = errors.New("找不到可用的点了")
+    return
+}
+
 func (zone *Zone) moveCreature(CreatureInterface, ZoneCoord_t, ZoneCoord_t, Dir_t) {
     // TODO
 }
@@ -499,20 +534,4 @@ func (zone *Zone) broadcastPacket(cx ZoneCoord_t, cy ZoneCoord_t, packet packet.
             }
         }
     }
-}
-
-func (zone *Zone) heartbeat() {
-    zone.processMonsters()
-    zone.processNPCs()
-
-    zone.processEffects()
-}
-
-func (zone *Zone) processMonsters() {
-}
-
-func (zone *Zone) processNPCs() {
-}
-
-func (zone *Zone) processEffects() {
 }

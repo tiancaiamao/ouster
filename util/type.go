@@ -157,3 +157,8 @@ const (
 )
 
 type WeatherLevel_t uint8
+
+type TPOINT struct {
+    X   int
+    Y   int
+}

@@ -26,9 +26,10 @@ type Scene struct {
     players map[ObjectID_t]*Agent
 
     // NPC管理
+    npcManager *NPCManager
 
     // 怪物管理
-    monsterManager MonsterManager
+    monsterManager *MonsterManager
 
     // Effect管理
     // 天气管理
@@ -38,8 +39,8 @@ type Scene struct {
     agent chan AgentMessage
 }
 
-func (scene *Scene) registerObject(obj ObjectInterface) {
-    // 不需要加锁，但要保证这个函数只在scene的goroutine中运行
+// 不需要加锁，但要保证这个函数只在scene的goroutine中运行
+func (scene *Scene) registeObject(obj ObjectInterface) {
     scene.registerID++
     obj.ObjectInstance().ObjectID = scene.registerID
 }
@@ -48,47 +49,10 @@ func NewScene(smp *data.SMP, ssi data.SSI) *Scene {
     ret := new(Scene)
     ret.registerID = 10000
     ret.load(smp, ssi)
-
-    // num := 0
-    //  for _, mi := range ret.MonsterInfo {
-    //      num += int(mi.Count)
-    //  }
-    // monsters := make([]Monster, num)
-    // ret.objects = make([]ObjectInterface, 0, num+200)
-
-    // idx := 0
-    //    for _, mi := range ret.MonsterInfo {
-    //        // tp := data.MonsterType2MonsterInfo[mi.MonsterType]
-    //        for i := 0; i < int(mi.Count); i++ {
-    //            var x, y int
-    //            // set monster's position and so on
-    //            for {
-    //                x = rand.Intn(int(ret.Width))
-    //                y = rand.Intn(int(ret.Height))
-    //
-    //                flag := ret.Data[x*int(ret.Width)+y]
-    //                if flag == 0x0 && !ret.Blocked(uint16(x), uint16(y)) {
-    //                    break
-    //                }
-    //						}
-
-    // monster := &monsters[idx]
-    // id := ret.AddObject(monster)
-    // monster.Entity = aoi.Add(uint8(x), uint8(y), id)
-    // monster.MonsterType = mi.MonsterType
-    // monster.STR[ATTR_CURRENT], monster.STR[ATTR_BASE] = tp.STR, tp.STR
-    // monster.DEX[ATTR_CURRENT], monster.DEX[ATTR_BASE] = tp.DEX, tp.DEX
-    // monster.INT[ATTR_CURRENT], monster.DEX[ATTR_BASE] = tp.INTE, tp.INTE
-    // monster.Defense = monster.DEX[ATTR_CURRENT] / 2
-    // monster.Protection = monster.STR[ATTR_CURRENT]
-    // monster.HP[ATTR_MAX] = tp.STR*4 + uint16(tp.Level)
-    // monster.HP[ATTR_CURRENT] = monster.HP[ATTR_MAX]
-    // idx++
-    // }
-    // }
-
+    ret.monsterManager = NewMonsterManager(ret)
+    ret.npcManager = NewNPCManager()
     ret.players = make(map[ObjectID_t]*Agent)
-    // ret.monsters = monsters
+
     ret.quit = make(chan struct{})
     ret.event = make(chan interface{})
     ret.agent = make(chan AgentMessage, 200)
@@ -101,7 +65,7 @@ func (m *Scene) Blocked(x, y uint16) bool {
 }
 
 func (m *Scene) Login(agent *Agent) {
-    m.registerObject(agent)
+    m.registeObject(agent)
 
     c := agent.CreatureInstance()
     m.players[c.ObjectID] = agent
@@ -138,6 +102,49 @@ func (s *Scene) Loop() {
         case <-heartbeat:
             s.heartbeat()
         }
+    }
+}
+
+func (s *Scene) heartbeat() {
+    s.monsterManager.heartbeat()
+    s.npcManager.heartbeat()
+    // zone.processEffects()
+}
+
+func (zone *Zone) processMonsters() {
+}
+
+func (zone *Zone) processNPCs() {
+}
+
+func (zone *Zone) processEffects() {
+}
+
+func (scene *Scene) addCreature(creature CreatureInterface, cx ZoneCoord_t, cy ZoneCoord_t, dir Dir_t) {
+    pt, err := findSuitablePosition(&scene.Zone, cx, cy, creature.CreatureInstance().MoveMode)
+
+    if err == nil {
+        if creature.CreatureClass() == CREATURE_CLASS_MONSTER {
+            monster := creature.(*Monster)
+            scene.monsterManager.addCreature(monster)
+            // pkt = packet.AddMonsterPacket(pMonster, NULL)
+            // broadcastPacket(cx, cy, pAddMonsterPacket, pMonster)
+        } else if creature.CreatureClass() == CREATURE_CLASS_NPC {
+            npc := creature.(*NPC)
+            scene.npcManager.addCreature(npc)
+
+            // gcAddNPC := packet.GCAddNPCPacket{}
+            // broadcastPacket(pt.x, pt.y, &gcAddNPC)
+        }
+
+        scene.Tile(pt.X, pt.Y).AddCreature(creature)
+
+        c := creature.CreatureInstance()
+        c.X = ZoneCoord_t(pt.X)
+        c.Y = ZoneCoord_t(pt.Y)
+        c.Dir = dir
+
+        c.Scene = scene
     }
 }
 

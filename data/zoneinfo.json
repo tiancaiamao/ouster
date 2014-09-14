@@ -1,0 +1,342 @@
+[
+	{
+		"ZoneID": 62,
+		"ZoneInfo": {
+			"EventMonsterList": null,
+			"MonsterList": [
+				{
+					"MonsterType": 4,
+					"Count": 20
+				},
+				{
+					"MonsterType": 29,
+					"Count": 20
+				},
+				{
+					"MonsterType": 30,
+					"Count": 20
+				},
+				{
+					"MonsterType": 31,
+					"Count": 20
+				},
+				{
+					"MonsterType": 32,
+					"Count": 20
+				},
+				{
+					"MonsterType": 33,
+					"Count": 20
+				},
+				{
+					"MonsterType": 34,
+					"Count": 20
+				},
+				{
+					"MonsterType": 35,
+					"Count": 20
+				},
+				{
+					"MonsterType": 36,
+					"Count": 20
+				},
+				{
+					"MonsterType": 37,
+					"Count": 20
+				},
+				{
+					"MonsterType": 5,
+					"Count": 8
+				},
+				{
+					"MonsterType": 38,
+					"Count": 8
+				},
+				{
+					"MonsterType": 39,
+					"Count": 8
+				},
+				{
+					"MonsterType": 40,
+					"Count": 8
+				},
+				{
+					"MonsterType": 41,
+					"Count": 8
+				},
+				{
+					"MonsterType": 42,
+					"Count": 8
+				},
+				{
+					"MonsterType": 43,
+					"Count": 8
+				},
+				{
+					"MonsterType": 44,
+					"Count": 8
+				},
+				{
+					"MonsterType": 45,
+					"Count": 8
+				},
+				{
+					"MonsterType": 46,
+					"Count": 8
+				},
+				{
+					"MonsterType": 7,
+					"Count": 6
+				},
+				{
+					"MonsterType": 56,
+					"Count": 6
+				},
+				{
+					"MonsterType": 57,
+					"Count": 6
+				},
+				{
+					"MonsterType": 58,
+					"Count": 6
+				},
+				{
+					"MonsterType": 59,
+					"Count": 6
+				},
+				{
+					"MonsterType": 60,
+					"Count": 6
+				},
+				{
+					"MonsterType": 61,
+					"Count": 6
+				},
+				{
+					"MonsterType": 62,
+					"Count": 6
+				},
+				{
+					"MonsterType": 63,
+					"Count": 6
+				},
+				{
+					"MonsterType": 64,
+					"Count": 6
+				},
+				{
+					"MonsterType": 6,
+					"Count": 3
+				},
+				{
+					"MonsterType": 47,
+					"Count": 3
+				},
+				{
+					"MonsterType": 48,
+					"Count": 3
+				},
+				{
+					"MonsterType": 49,
+					"Count": 3
+				},
+				{
+					"MonsterType": 50,
+					"Count": 3
+				},
+				{
+					"MonsterType": 51,
+					"Count": 3
+				},
+				{
+					"MonsterType": 52,
+					"Count": 3
+				},
+				{
+					"MonsterType": 53,
+					"Count": 3
+				},
+				{
+					"MonsterType": 54,
+					"Count": 3
+				},
+				{
+					"MonsterType": 55,
+					"Count": 3
+				}
+			]
+		}
+	},
+	{
+		"ZoneID": 128,
+		"ZoneInfo": {
+			"EventMonsterList": null,
+			"MonsterList": [
+				{
+					"MonsterType": 5,
+					"Count": 18
+				},
+				{
+					"MonsterType": 38,
+					"Count": 18
+				},
+				{
+					"MonsterType": 39,
+					"Count": 18
+				},
+				{
+					"MonsterType": 40,
+					"Count": 18
+				},
+				{
+					"MonsterType": 41,
+					"Count": 18
+				},
+				{
+					"MonsterType": 42,
+					"Count": 18
+				},
+				{
+					"MonsterType": 43,
+					"Count": 18
+				},
+				{
+					"MonsterType": 44,
+					"Count": 18
+				},
+				{
+					"MonsterType": 45,
+					"Count": 18
+				},
+				{
+					"MonsterType": 46,
+					"Count": 18
+				},
+				{
+					"MonsterType": 7,
+					"Count": 11
+				},
+				{
+					"MonsterType": 56,
+					"Count": 11
+				},
+				{
+					"MonsterType": 57,
+					"Count": 11
+				},
+				{
+					"MonsterType": 58,
+					"Count": 11
+				},
+				{
+					"MonsterType": 59,
+					"Count": 11
+				},
+				{
+					"MonsterType": 60,
+					"Count": 10
+				},
+				{
+					"MonsterType": 61,
+					"Count": 10
+				},
+				{
+					"MonsterType": 62,
+					"Count": 10
+				},
+				{
+					"MonsterType": 63,
+					"Count": 10
+				},
+				{
+					"MonsterType": 64,
+					"Count": 10
+				},
+				{
+					"MonsterType": 6,
+					"Count": 3
+				},
+				{
+					"MonsterType": 47,
+					"Count": 3
+				},
+				{
+					"MonsterType": 48,
+					"Count": 3
+				},
+				{
+					"MonsterType": 49,
+					"Count": 3
+				},
+				{
+					"MonsterType": 50,
+					"Count": 3
+				},
+				{
+					"MonsterType": 51,
+					"Count": 3
+				},
+				{
+					"MonsterType": 52,
+					"Count": 3
+				},
+				{
+					"MonsterType": 53,
+					"Count": 3
+				},
+				{
+					"MonsterType": 54,
+					"Count": 3
+				},
+				{
+					"MonsterType": 55,
+					"Count": 3
+				},
+				{
+					"MonsterType": 9,
+					"Count": 2
+				},
+				{
+					"MonsterType": 74,
+					"Count": 2
+				},
+				{
+					"MonsterType": 75,
+					"Count": 2
+				},
+				{
+					"MonsterType": 76,
+					"Count": 2
+				},
+				{
+					"MonsterType": 77,
+					"Count": 2
+				},
+				{
+					"MonsterType": 78,
+					"Count": 1
+				},
+				{
+					"MonsterType": 79,
+					"Count": 1
+				},
+				{
+					"MonsterType": 80,
+					"Count": 1
+				},
+				{
+					"MonsterType": 81,
+					"Count": 1
+				},
+				{
+					"MonsterType": 82,
+					"Count": 1
+				},
+				{
+					"MonsterType": 687,
+					"Count": 4
+				}
+			]
+		}
+	}
+]

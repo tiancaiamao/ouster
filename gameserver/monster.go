@@ -2,6 +2,8 @@ package main
 
 import (
     // "github.com/tiancaiamao/ouster/packet"
+    "github.com/tiancaiamao/ouster/data"
+    "github.com/tiancaiamao/ouster/log"
     . "github.com/tiancaiamao/ouster/util"
     "math/rand"
     "time"
@@ -61,6 +63,31 @@ type Monster struct {
 
     RegenAmount   HP_t
     NextRegenTime time.Time
+}
+
+func NewMonster(monsterType MonsterType_t) *Monster {
+    info, ok := data.MonsterInfoTable[monsterType]
+    if !ok {
+        log.Warnln("未知的monster类型:", monsterType)
+        return nil
+    }
+
+    ret := &Monster{
+        MonsterType: monsterType,
+        Name:        info.Name,
+        // Level:        info.Level,
+        STR:          info.STR,
+        DEX:          info.DEX,
+        INI:          info.INTE,
+        Exp:          info.Exp,
+        MeleeRange:   info.MeleeRange,
+        MissileRange: info.MissileRange,
+    }
+
+    ret.HP[ATTR_CURRENT] = info.HP
+    ret.HP[ATTR_MAX] = info.HP
+
+    return ret
 }
 
 func (m *Monster) CreatureClass() CreatureClass {
@@ -137,6 +164,36 @@ func dir(dx int, dy int) uint8 {
 type MonsterManager struct {
     Monsters  map[ObjectID_t]*Monster
     RegenTime time.Time
+}
+
+func NewMonsterManager(scene *Scene) *MonsterManager {
+    ret := &MonsterManager{
+        Monsters:  make(map[ObjectID_t]*Monster),
+        RegenTime: time.Now(),
+    }
+
+    zoneInfo, ok := data.ZoneInfoTable[scene.ZoneID]
+    if !ok {
+        log.Warnln("ZoneInfo not found: ", scene.ZoneID)
+        return ret
+    }
+
+    for _, v := range zoneInfo.MonsterList {
+        monsterType := v.MonsterType
+        count := v.Count
+
+        for i := 0; i < count; i++ {
+            monster := NewMonster(monsterType)
+            scene.registeObject(monster)
+            scene.addCreature(monster, monster.X, monster.Y, Dir_t(rand.Intn(DIR_MAX)))
+        }
+    }
+
+    return ret
+}
+
+func (m *MonsterManager) addCreature(monster *Monster) {
+    m.Monsters[monster.ObjectID] = monster
 }
 
 func (manager *MonsterManager) heartbeat() {

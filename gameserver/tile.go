@@ -86,6 +86,11 @@ func (tile *Tile) hasCreature() bool {
     return tile.Flags != 0
 }
 
+// TODO
+func (tile *Tile) hasPortal() bool {
+    return false
+}
+
 func (tile *Tile) DeleteCreature(id ObjectID_t) {
     for i := 0; i < len(tile.Objects); i++ {
         if tile.Objects[i].ObjectInstance().ObjectID == id {

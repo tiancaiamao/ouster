@@ -22,10 +22,6 @@ const (
     TILE_TERRAIN
 )
 
-type Monster struct {
-    MonsterType uint16
-    Count       uint8
-}
 type Map struct {
     Name        string
     Desc        string

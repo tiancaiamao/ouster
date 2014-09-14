@@ -1,0 +1,920 @@
+[
+	{
+		"MonsterType": 31,
+		"MonsterInfo": {
+			"Name": "DeadBody",
+			"Level": 1,
+			"STR": 10,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 5,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 36,
+		"MonsterInfo": {
+			"Name": "DeadBody",
+			"Level": 1,
+			"STR": 10,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 5,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 77,
+		"MonsterInfo": {
+			"Name": "Soldier",
+			"Level": 5,
+			"STR": 40,
+			"DEX": 25,
+			"INTE": 10,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 8,
+			"MeleeRange": 1,
+			"MissileRange": 666666
+		}
+	},
+	{
+		"MonsterType": 79,
+		"MonsterInfo": {
+			"Name": "Soldier",
+			"Level": 5,
+			"STR": 40,
+			"DEX": 25,
+			"INTE": 10,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 8,
+			"MeleeRange": 1,
+			"MissileRange": 666666
+		}
+	},
+	{
+		"MonsterType": 45,
+		"MonsterInfo": {
+			"Name": "TurningDead",
+			"Level": 1,
+			"STR": 15,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 6,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 64,
+		"MonsterInfo": {
+			"Name": "TurningSoul",
+			"Level": 1,
+			"STR": 20,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 7,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 80,
+		"MonsterInfo": {
+			"Name": "Soldier",
+			"Level": 5,
+			"STR": 40,
+			"DEX": 25,
+			"INTE": 10,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 8,
+			"MeleeRange": 1,
+			"MissileRange": 666666
+		}
+	},
+	{
+		"MonsterType": 9,
+		"MonsterInfo": {
+			"Name": "Soldier",
+			"Level": 5,
+			"STR": 40,
+			"DEX": 25,
+			"INTE": 10,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 8,
+			"MeleeRange": 1,
+			"MissileRange": 666666
+		}
+	},
+	{
+		"MonsterType": 4,
+		"MonsterInfo": {
+			"Name": "DeadBody",
+			"Level": 1,
+			"STR": 10,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 5,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 29,
+		"MonsterInfo": {
+			"Name": "DeadBody",
+			"Level": 1,
+			"STR": 10,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 5,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 35,
+		"MonsterInfo": {
+			"Name": "DeadBody",
+			"Level": 1,
+			"STR": 10,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 5,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 5,
+		"MonsterInfo": {
+			"Name": "TurningDead",
+			"Level": 1,
+			"STR": 15,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 6,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 46,
+		"MonsterInfo": {
+			"Name": "TurningDead",
+			"Level": 1,
+			"STR": 15,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 6,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 57,
+		"MonsterInfo": {
+			"Name": "TurningSoul",
+			"Level": 1,
+			"STR": 20,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 7,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 53,
+		"MonsterInfo": {
+			"Name": "Kid",
+			"Level": 2,
+			"STR": 30,
+			"DEX": 20,
+			"INTE": 10,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 8,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 687,
+		"MonsterInfo": {
+			"Name": "Junior WolfArch",
+			"Level": 1,
+			"STR": 10,
+			"DEX": 10,
+			"INTE": 5,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 13,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 30,
+		"MonsterInfo": {
+			"Name": "DeadBody",
+			"Level": 1,
+			"STR": 10,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 5,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 56,
+		"MonsterInfo": {
+			"Name": "TurningSoul",
+			"Level": 1,
+			"STR": 20,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 7,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 49,
+		"MonsterInfo": {
+			"Name": "Kid",
+			"Level": 2,
+			"STR": 30,
+			"DEX": 20,
+			"INTE": 10,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 8,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 59,
+		"MonsterInfo": {
+			"Name": "TurningSoul",
+			"Level": 1,
+			"STR": 20,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 7,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 32,
+		"MonsterInfo": {
+			"Name": "DeadBody",
+			"Level": 1,
+			"STR": 10,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 5,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 34,
+		"MonsterInfo": {
+			"Name": "DeadBody",
+			"Level": 1,
+			"STR": 10,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 5,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 40,
+		"MonsterInfo": {
+			"Name": "TurningDead",
+			"Level": 1,
+			"STR": 15,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 6,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 43,
+		"MonsterInfo": {
+			"Name": "TurningDead",
+			"Level": 1,
+			"STR": 15,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 6,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 44,
+		"MonsterInfo": {
+			"Name": "TurningDead",
+			"Level": 1,
+			"STR": 15,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 6,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 7,
+		"MonsterInfo": {
+			"Name": "TurningSoul",
+			"Level": 1,
+			"STR": 20,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 7,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 58,
+		"MonsterInfo": {
+			"Name": "TurningSoul",
+			"Level": 1,
+			"STR": 20,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 7,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 61,
+		"MonsterInfo": {
+			"Name": "TurningSoul",
+			"Level": 1,
+			"STR": 20,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 7,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 63,
+		"MonsterInfo": {
+			"Name": "TurningSoul",
+			"Level": 1,
+			"STR": 20,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 7,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 47,
+		"MonsterInfo": {
+			"Name": "Kid",
+			"Level": 2,
+			"STR": 30,
+			"DEX": 20,
+			"INTE": 10,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 8,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 50,
+		"MonsterInfo": {
+			"Name": "Kid",
+			"Level": 2,
+			"STR": 30,
+			"DEX": 20,
+			"INTE": 10,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 8,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 52,
+		"MonsterInfo": {
+			"Name": "Kid",
+			"Level": 2,
+			"STR": 30,
+			"DEX": 20,
+			"INTE": 10,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 8,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 54,
+		"MonsterInfo": {
+			"Name": "Kid",
+			"Level": 2,
+			"STR": 30,
+			"DEX": 20,
+			"INTE": 10,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 8,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 33,
+		"MonsterInfo": {
+			"Name": "DeadBody",
+			"Level": 1,
+			"STR": 10,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 5,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 39,
+		"MonsterInfo": {
+			"Name": "TurningDead",
+			"Level": 1,
+			"STR": 15,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 6,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 48,
+		"MonsterInfo": {
+			"Name": "Kid",
+			"Level": 2,
+			"STR": 30,
+			"DEX": 20,
+			"INTE": 10,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 8,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 74,
+		"MonsterInfo": {
+			"Name": "Soldier",
+			"Level": 5,
+			"STR": 40,
+			"DEX": 25,
+			"INTE": 10,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 8,
+			"MeleeRange": 1,
+			"MissileRange": 666666
+		}
+	},
+	{
+		"MonsterType": 38,
+		"MonsterInfo": {
+			"Name": "TurningDead",
+			"Level": 1,
+			"STR": 15,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 6,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 42,
+		"MonsterInfo": {
+			"Name": "TurningDead",
+			"Level": 1,
+			"STR": 15,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 6,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 75,
+		"MonsterInfo": {
+			"Name": "Soldier",
+			"Level": 5,
+			"STR": 40,
+			"DEX": 25,
+			"INTE": 10,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 8,
+			"MeleeRange": 1,
+			"MissileRange": 666666
+		}
+	},
+	{
+		"MonsterType": 76,
+		"MonsterInfo": {
+			"Name": "Soldier",
+			"Level": 5,
+			"STR": 40,
+			"DEX": 25,
+			"INTE": 10,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 8,
+			"MeleeRange": 1,
+			"MissileRange": 666666
+		}
+	},
+	{
+		"MonsterType": 78,
+		"MonsterInfo": {
+			"Name": "Soldier",
+			"Level": 5,
+			"STR": 40,
+			"DEX": 25,
+			"INTE": 10,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 8,
+			"MeleeRange": 1,
+			"MissileRange": 666666
+		}
+	},
+	{
+		"MonsterType": 37,
+		"MonsterInfo": {
+			"Name": "DeadBody",
+			"Level": 1,
+			"STR": 10,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 5,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 41,
+		"MonsterInfo": {
+			"Name": "TurningDead",
+			"Level": 1,
+			"STR": 15,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 6,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 60,
+		"MonsterInfo": {
+			"Name": "TurningSoul",
+			"Level": 1,
+			"STR": 20,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 7,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 62,
+		"MonsterInfo": {
+			"Name": "TurningSoul",
+			"Level": 1,
+			"STR": 20,
+			"DEX": 10,
+			"INTE": 1,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 7,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 6,
+		"MonsterInfo": {
+			"Name": "Kid",
+			"Level": 2,
+			"STR": 30,
+			"DEX": 20,
+			"INTE": 10,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 8,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 51,
+		"MonsterInfo": {
+			"Name": "Kid",
+			"Level": 2,
+			"STR": 30,
+			"DEX": 20,
+			"INTE": 10,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 8,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 55,
+		"MonsterInfo": {
+			"Name": "Kid",
+			"Level": 2,
+			"STR": 30,
+			"DEX": 20,
+			"INTE": 10,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 8,
+			"MeleeRange": 1,
+			"MissileRange": 6
+		}
+	},
+	{
+		"MonsterType": 81,
+		"MonsterInfo": {
+			"Name": "Soldier",
+			"Level": 5,
+			"STR": 40,
+			"DEX": 25,
+			"INTE": 10,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 8,
+			"MeleeRange": 1,
+			"MissileRange": 666666
+		}
+	},
+	{
+		"MonsterType": 82,
+		"MonsterInfo": {
+			"Name": "Soldier",
+			"Level": 5,
+			"STR": 40,
+			"DEX": 25,
+			"INTE": 10,
+			"BodySize": 1,
+			"HP": 0,
+			"Exp": 0,
+			"MColor": 1,
+			"SColor": 1,
+			"Sight": 8,
+			"MeleeRange": 1,
+			"MissileRange": 666666
+		}
+	}
+]
