@@ -2,6 +2,7 @@ package main
 
 import (
     // "github.com/tiancaiamao/ouster/packet"
+    "fmt"
     "github.com/tiancaiamao/ouster/data"
     "github.com/tiancaiamao/ouster/log"
     . "github.com/tiancaiamao/ouster/util"
@@ -166,16 +167,19 @@ type MonsterManager struct {
     RegenTime time.Time
 }
 
-func NewMonsterManager(scene *Scene) *MonsterManager {
+func NewMonsterManager() *MonsterManager {
     ret := &MonsterManager{
         Monsters:  make(map[ObjectID_t]*Monster),
         RegenTime: time.Now(),
     }
+    return ret
+}
 
+func (m *MonsterManager) Init(scene *Scene) error {
     zoneInfo, ok := data.ZoneInfoTable[scene.ZoneID]
     if !ok {
-        log.Warnln("ZoneInfo not found: ", scene.ZoneID)
-        return ret
+        err := fmt.Errorf("ZoneInfo not found: %d", scene.ZoneID)
+        return err
     }
 
     for _, v := range zoneInfo.MonsterList {
@@ -189,7 +193,7 @@ func NewMonsterManager(scene *Scene) *MonsterManager {
         }
     }
 
-    return ret
+    return nil
 }
 
 func (m *MonsterManager) addCreature(monster *Monster) {

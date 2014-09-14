@@ -46,7 +46,7 @@ func init() {
         panic(err)
     }
 
-    MonsterInfoTable := make(map[MonsterType_t]MonsterInfo)
+    MonsterInfoTable = make(map[MonsterType_t]MonsterInfo)
     for _, v := range array {
         MonsterInfoTable[v.MonsterType] = v.MonsterInfo
     }

@@ -45,11 +45,11 @@ func (scene *Scene) registeObject(obj ObjectInterface) {
     obj.ObjectInstance().ObjectID = scene.registerID
 }
 
-func NewScene(smp *data.SMP, ssi data.SSI) *Scene {
-    ret := new(Scene)
+func NewScene(smp *data.SMP, ssi data.SSI) (ret *Scene, err error) {
+    ret = new(Scene)
     ret.registerID = 10000
     ret.load(smp, ssi)
-    ret.monsterManager = NewMonsterManager(ret)
+    ret.monsterManager = NewMonsterManager()
     ret.npcManager = NewNPCManager()
     ret.players = make(map[ObjectID_t]*Agent)
 
@@ -57,7 +57,12 @@ func NewScene(smp *data.SMP, ssi data.SSI) *Scene {
     ret.event = make(chan interface{})
     ret.agent = make(chan AgentMessage, 200)
 
-    return ret
+    return
+}
+
+func (s *Scene) Init() error {
+    err := s.monsterManager.Init(s)
+    return err
 }
 
 func (m *Scene) Blocked(x, y uint16) bool {
@@ -122,7 +127,6 @@ func (zone *Zone) processEffects() {
 
 func (scene *Scene) addCreature(creature CreatureInterface, cx ZoneCoord_t, cy ZoneCoord_t, dir Dir_t) {
     pt, err := findSuitablePosition(&scene.Zone, cx, cy, creature.CreatureInstance().MoveMode)
-
     if err == nil {
         if creature.CreatureClass() == CREATURE_CLASS_MONSTER {
             monster := creature.(*Monster)
@@ -145,6 +149,8 @@ func (scene *Scene) addCreature(creature CreatureInterface, cx ZoneCoord_t, cy Z
         c.Dir = dir
 
         c.Scene = scene
+    } else {
+        log.Debugln("应该是运行到这里来了，是不是？")
     }
 }
 
@@ -286,14 +292,21 @@ func Initialize() {
                 continue
             }
 
-            scene := NewScene(smp, ssi)
-            if scene != nil {
-                go scene.Loop()
-                g_Scenes[scene.ZoneID] = scene
-                log.Infof("加载地图%d成功:%s", scene.ZoneID, info.Name())
-            } else {
-                log.Infof("加载地图失败:%s", info.Name())
+            scene, err := NewScene(smp, ssi)
+            if err != nil {
+                log.Warnf("加载地图失败:%s, error:%s\n", info.Name(), err.Error())
+                continue
             }
+
+            err = scene.Init()
+            if err != nil {
+                log.Warnf("加载初始化失败:%s, error:%s\n", info.Name(), err.Error())
+                continue
+            }
+
+            go scene.Loop()
+            g_Scenes[scene.ZoneID] = scene
+            log.Infof("加载地图%d成功:%s", scene.ZoneID, info.Name())
         }
     }
 }

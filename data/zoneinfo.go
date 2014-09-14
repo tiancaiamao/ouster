@@ -3,6 +3,7 @@ package data
 import (
     "encoding/json"
     "github.com/tiancaiamao/ouster/config"
+    "github.com/tiancaiamao/ouster/log"
     . "github.com/tiancaiamao/ouster/util"
     "os"
     "path"
@@ -40,7 +41,7 @@ func init() {
         panic(err)
     }
 
-    ZoneInfoTable := make(map[ZoneID_t]ZoneInfo)
+    ZoneInfoTable = make(map[ZoneID_t]ZoneInfo)
     for _, v := range array {
         ZoneInfoTable[v.ZoneID] = v.ZoneInfo
     }
