@@ -37,7 +37,7 @@ const (
 
 type Ouster struct {
     PlayerCreature //继承自PlayerCreature
-	
+
     Competence      byte
     CompetenceShape byte
 
@@ -128,21 +128,21 @@ func (ouster *Ouster) PCInfo() data.PCInfo {
         RankExp: ouster.RankExp,
 
         Exp:          ouster.Exp,
-        Fame:         (ouster.Fame),
-        Gold:         (ouster.Gold),
-        Sight:        (ouster.Sight),
-        Bonus:        (ouster.Bonus),
-        SilverDamage: (ouster.SilverDamage),
+        Fame:         ouster.Fame,
+        Gold:         ouster.Gold,
+        Sight:        ouster.Sight,
+        Bonus:        ouster.Bonus,
+        SilverDamage: ouster.SilverDamage,
 
         Competence: ouster.Competence,
-        GuildID:    (ouster.GuildID),
+        GuildID:    ouster.GuildID,
 
-        GuildMemberRank: (ouster.GuildMemberRank),
+        GuildMemberRank: ouster.GuildMemberRank,
         UnionID:         ouster.UnionID,
 
-        // ZoneID: ouster.Scene.ZoneID,
-        // ZoneX:  ouster.X,
-        // ZoneY:  ouster.Y,
+        ZoneID: ouster.Scene.ZoneID,
+        ZoneX:  Coord_t(ouster.X),
+        ZoneY:  Coord_t(ouster.Y),
     }
 
     for _, v := range [...]int{ATTR_CURRENT, ATTR_MAX} {

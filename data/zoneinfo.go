@@ -3,7 +3,7 @@ package data
 import (
     "encoding/json"
     "github.com/tiancaiamao/ouster/config"
-    "github.com/tiancaiamao/ouster/log"
+    // "github.com/tiancaiamao/ouster/log"
     . "github.com/tiancaiamao/ouster/util"
     "os"
     "path"
