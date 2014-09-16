@@ -156,6 +156,15 @@ const (
     WEATHER_MAX
 )
 
+type MoveMode uint8
+
+const (
+    MOVE_MODE_WALKING MoveMode = iota
+    MOVE_MODE_FLYING
+    MOVE_MODE_BURROWING
+    MOVE_MODE_MAX
+)
+
 type WeatherLevel_t uint8
 
 type TPOINT struct {

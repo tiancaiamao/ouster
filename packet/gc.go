@@ -458,17 +458,17 @@ func (monster *GCAddMonsterFromBurrowing) MarshalBinary(code uint8) ([]byte, err
 }
 
 type GCAddMonster struct {
-    ObjectID    uint32
-    MonsterType uint16
+    ObjectID    ObjectID_t
+    MonsterType MonsterType_t
     MonsterName string
-    MainColor   uint16
-    SubColor    uint16
-    X           uint8
-    Y           uint8
-    Dir         uint8
+    MainColor   Color_t
+    SubColor    Color_t
+    X           Coord_t
+    Y           Coord_t
+    Dir         Dir_t
     EffectInfo  []EffectInfo
-    CurrentHP   uint16
-    MaxHP       uint16
+    CurrentHP   HP_t
+    MaxHP       HP_t
     FromFlag    byte
 }
 

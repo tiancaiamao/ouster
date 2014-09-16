@@ -27,6 +27,6 @@ type Object struct {
     Prev     ObjectInterface
 }
 
-func (obj Object) ObjectInstance() *Object {
-    return &obj
+func (obj *Object) ObjectInstance() *Object {
+    return obj
 }

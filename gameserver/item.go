@@ -137,6 +137,6 @@ type Item struct {
 }
 
 // item实现了Object接口
-func (item Item) ObjectClass() ObjectClass {
+func (item *Item) ObjectClass() ObjectClass {
     return OBJECT_CLASS_ITEM
 }

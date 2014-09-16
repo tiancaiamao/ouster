@@ -2,11 +2,12 @@ package main
 
 import (
     "encoding/binary"
-    "github.com/tiancaiamao/ouster/data"
-    // "github.com/tiancaiamao/ouster/log"
     "errors"
+    "github.com/tiancaiamao/ouster/data"
+    "github.com/tiancaiamao/ouster/log"
     "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
+    "math/rand"
     // "io"
     "bytes"
 )
@@ -378,9 +379,26 @@ func (zone *Zone) movePCBroadcast(agent *Agent, x1 ZoneCoord_t, y1 ZoneCoord_t, 
                 if objectClass == OBJECT_CLASS_CREATURE {
                     switch v.(type) {
                     case *Monster:
+                        monster := v.(*Monster)
                         // 怪物进入玩家视线
-                        // pc.sendPacket(packet.MonsterAddPackt{})
+                        agent.sendPacket(&packet.GCAddMonster{
+                            ObjectID:    monster.ObjectID,
+                            MonsterType: monster.MonsterType,
+                            MonsterName: monster.Name,
+                            // MainColor:   monster.MainColor,
+                            // SubColor:		monster.SubColor,
+                            X:   Coord_t(monster.X),
+                            Y:   Coord_t(monster.Y),
+                            Dir: monster.Dir,
+                            // EffectInfo  []EffectInfo
+                            CurrentHP: monster.HP[ATTR_CURRENT],
+                            MaxHP:     monster.HP[ATTR_MAX],
+                            // FromFlag    byte
+                        })
+                        log.Debugln("发现了一个怪物...")
                         // 把玩家放到怪物的敌人列表中
+                        monster.addEnemy(agent)
+
                     case *Slayer:
                         // pc.sendPacket(packet.GCAddSlayer{})
                         slayer := v.(*Slayer)
@@ -422,13 +440,13 @@ func (zone *Zone) movePCBroadcast(agent *Agent, x1 ZoneCoord_t, y1 ZoneCoord_t, 
                     itemClass := item.ItemClass()
                     if itemClass == ITEM_CLASS_CORPSE {
                         switch v.(type) {
-                        case SlayerCorpse:
-                            // pc.sendPacket(packet.GCAddSlayerCorpse{})
-                        case VampireCorpse:
-                            // pc.sendPacket(packet.GCAddVampireCorpse{})
-                        case OusterCorpse:
-                            // pc.sendPacket(packet.GCAddOusterCorpse{})
-                        case MonsterCorpse:
+                        case *SlayerCorpse:
+                        // pc.sendPacket(packet.GCAddSlayerCorpse{})
+                        case *VampireCorpse:
+                        // pc.sendPacket(packet.GCAddVampireCorpse{})
+                        case *OusterCorpse:
+                        // pc.sendPacket(packet.GCAddOusterCorpse{})
+                        case *MonsterCorpse:
                             // pc.sendPacket(packet.GCAddMonsterCorpse{})
                         }
                     }
@@ -439,6 +457,11 @@ func (zone *Zone) movePCBroadcast(agent *Agent, x1 ZoneCoord_t, y1 ZoneCoord_t, 
             }
         }
     }
+}
+
+func (zone *Zone) getRandomMonsterRegenPosition() BPOINT {
+    r := rand.Intn(len(zone.MonsterRegenPosition))
+    return zone.MonsterRegenPosition[r]
 }
 
 func findSuitablePosition(zone *Zone, cx ZoneCoord_t, cy ZoneCoord_t, mode MoveMode) (pt TPOINT, err error) {

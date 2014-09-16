@@ -141,8 +141,8 @@ func (ouster *Ouster) PCInfo() data.PCInfo {
         UnionID:         ouster.UnionID,
 
         ZoneID: ouster.Scene.ZoneID,
-        ZoneX:  Coord_t(ouster.X),
-        ZoneY:  Coord_t(ouster.Y),
+        ZoneX:  ZoneCoord_t(ouster.X),
+        ZoneY:  ZoneCoord_t(ouster.Y),
     }
 
     for _, v := range [...]int{ATTR_CURRENT, ATTR_MAX} {

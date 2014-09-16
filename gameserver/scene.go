@@ -300,7 +300,7 @@ func Initialize() {
 
             err = scene.Init()
             if err != nil {
-                log.Warnf("加载初始化失败:%s, error:%s\n", info.Name(), err.Error())
+                log.Warnf("地图初始化失败:%s, error:%s\n", info.Name(), err.Error())
                 continue
             }
 

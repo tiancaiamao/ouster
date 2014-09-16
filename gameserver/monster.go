@@ -25,6 +25,9 @@ type Monster struct {
     MonsterType MonsterType_t
     Name        string
 
+    MainColor Color_t
+    SubColor  Color_t
+
     STR Attr_t
     DEX Attr_t
     INI Attr_t
@@ -83,6 +86,16 @@ func NewMonster(monsterType MonsterType_t) *Monster {
         Exp:          info.Exp,
         MeleeRange:   info.MeleeRange,
         MissileRange: info.MissileRange,
+        MainColor:    info.MColor,
+        SubColor:     info.SColor,
+        // BodySize     uint
+        // MoveMode     MoveMode
+    }
+
+    ret.Sight = info.Sight
+
+    if info.HP == 0 {
+        info.HP = HP_t(int(info.Level) + int(info.STR)*3)
     }
 
     ret.HP[ATTR_CURRENT] = info.HP
@@ -164,6 +177,7 @@ func dir(dx int, dy int) uint8 {
 
 type MonsterManager struct {
     Monsters  map[ObjectID_t]*Monster
+    Count     int
     RegenTime time.Time
 }
 
@@ -187,17 +201,45 @@ func (m *MonsterManager) Init(scene *Scene) error {
         count := v.Count
 
         for i := 0; i < count; i++ {
+            x, y := m.findPosition(&scene.Zone, monsterType)
             monster := NewMonster(monsterType)
+            log.Debugf("%p\n", monster)
             scene.registeObject(monster)
-            scene.addCreature(monster, monster.X, monster.Y, Dir_t(rand.Intn(DIR_MAX)))
+            scene.addCreature(monster, x, y, Dir_t(rand.Intn(DIR_MAX)))
         }
     }
 
     return nil
 }
 
+func (m *MonsterManager) findPosition(zone *Zone, monsterType MonsterType_t) (x ZoneCoord_t, y ZoneCoord_t) {
+    info, ok := data.MonsterInfoTable[monsterType]
+    if !ok {
+        log.Error("不对，找不到monster信息")
+        return
+    }
+    for i := 0; i < 300; i++ {
+        pt := zone.getRandomMonsterRegenPosition()
+        tile := zone.Tile(int(pt.X), int(pt.Y))
+
+        if !tile.isBlocked(info.MoveMode) &&
+            !tile.hasPortal() &&
+            (*zone.Level(int(pt.X), int(pt.Y))&ZoneLevel_t(SAFE_ZONE)) == 0 {
+            x = ZoneCoord_t(pt.X)
+            y = ZoneCoord_t(pt.Y)
+            return
+        }
+    }
+    log.Errorln("地图中找不到可以放怪物的点了...不科学！")
+    return
+}
+
 func (m *MonsterManager) addCreature(monster *Monster) {
+    if monster.ObjectID == 0 {
+        panic("!!!")
+    }
     m.Monsters[monster.ObjectID] = monster
+    m.Count++
 }
 
 func (manager *MonsterManager) heartbeat() {

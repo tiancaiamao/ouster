@@ -22,9 +22,10 @@ type MonsterInfo struct {
     BodySize     uint
     HP           HP_t
     Exp          Exp_t
-    MColor       uint16
-    SColor       uint16
-    Sight        uint8
+    MColor       Color_t
+    SColor       Color_t
+    Sight        Sight_t
+    MoveMode     MoveMode
     MeleeRange   int
     MissileRange int
 }
