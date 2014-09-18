@@ -1,10 +1,10 @@
 package main
 
 import (
-    // "github.com/tiancaiamao/ouster/packet"
     "fmt"
     "github.com/tiancaiamao/ouster/data"
     "github.com/tiancaiamao/ouster/log"
+    "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
     "math/rand"
     "time"
@@ -100,6 +100,20 @@ func NewMonster(monsterType MonsterType_t) *Monster {
 
     ret.HP[ATTR_CURRENT] = info.HP
     ret.HP[ATTR_MAX] = info.HP
+
+    ret.Brain = &MonsterAI{
+        Body: ret,
+        // DirectiveSet *DirectiveSet
+        // LastAction   int
+        // MoveRule     MoveRule
+        // BlockedDir   Dir_t
+        // WallCount    int
+        // bDamaged     bool
+        // Panic        int
+        // PanicMax     int
+        // Courage      int
+        // CourageMax	 int
+    }
 
     return ret
 }
@@ -297,11 +311,12 @@ func (m *Monster) heartbeat(currentTime time.Time) {
 
         m.HP[ATTR_CURRENT] += HP_t(min(int(m.RegenAmount), int(m.HP[ATTR_MAX]-m.HP[ATTR_CURRENT])))
 
-        // var gcHP packet.GCStatusCurrentHP
-        // gcHP.setObjectID(getObjectID())
-        // gcHP.setCurrentHP(m_HP[ATTR_CURRENT])
-        //
-        // m.getZone().broadcastPacket(getX(), getY(), &gcHP)
+        pkt := packet.GCStatusCurrentHP{
+            ObjectID:  m.ObjectID,
+            CurrentHP: m.HP[ATTR_CURRENT],
+        }
+
+        m.Scene.broadcastPacket(m.X, m.Y, &pkt, nil)
     }
 
     if currentTime.Before(m.NextTurn) {

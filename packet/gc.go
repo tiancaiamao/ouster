@@ -500,8 +500,8 @@ func (monster *GCAddMonster) MarshalBinary(code uint8) ([]byte, error) {
 }
 
 type GCStatusCurrentHP struct {
-    ObjectID  uint32
-    CurrentHP uint16
+    ObjectID  ObjectID_t
+    CurrentHP HP_t
 }
 
 func (status GCStatusCurrentHP) PacketID() PacketID {

@@ -156,6 +156,9 @@ type MeteorStrike struct {
 type Paralyze struct {
     Skill
 }
+type AttackMelee struct {
+    Skill
+}
 
 func AOE(scene *Scene,
     player *Player,

@@ -113,14 +113,22 @@ func (meteor MeteorStrike) ExecuteToTile(skill packet.CGSkillToObjectPacket, age
 
     // agent.sendPacket(ok1)
     agent.scene <- MeteorStrikeMessage{
-        // UserObjectID: agent.PlayerCreatureInstance().ObjectID,
-        // Damage:       output.Damage,
-        // NextTime:     output.Duration,
-        // X:            skill.X,
-        // Y:            skill.Y,
+    // UserObjectID: agent.PlayerCreatureInstance().ObjectID,
+    // Damage:       output.Damage,
+    // NextTime:     output.Duration,
+    // X:            skill.X,
+    // Y:            skill.Y,
     }
 }
 
 func (paralyze Paralyze) ExecuteToObject(skill packet.CGSkillToObjectPacket, agent *Agent) {
 
+}
+
+func (attack AttackMelee) ExecuteToObject(skill packet.CGSkillToObjectPacket, agent *Agent) {
+    // target := agent.NearbyAgent(ObjectID_t(skill.TargetObjectID))
+    meteor.ExecuteToTile(packet.CGSkillToObjectPacket{
+    // X:  target.X,
+    // Y:  target.Y,
+    }, agent)
 }

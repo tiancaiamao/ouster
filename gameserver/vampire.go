@@ -89,7 +89,7 @@ func (vampire *Vampire) CreatureClass() CreatureClass {
 
 func (vampire *Vampire) PCInfo() data.PCInfo {
     if vampire == nil || vampire.Scene == nil {
-		log.Errorln("fuck...Scene为空谁让你调这个函数了？")
+        log.Errorln("fuck...Scene为空谁让你调这个函数了？")
         return nil
     }
 
@@ -139,4 +139,41 @@ func (vampire *Vampire) PCInfo() data.PCInfo {
     ret.HP[ATTR_MAX] = vampire.HP[ATTR_MAX]
 
     return ret
+}
+
+func (vampire *Vampire) computeDamage(creature CreatureInterface, bCritical bool) Damage_t {
+    FinalDamage := 0
+    minDamage := pVampire.Damage[ATTR_CURRENT]
+    maxDamage := pVampire.Damage[ATTR_MAX]
+    // timeband    := getZoneTimeband(pVampire->getZone())
+    // TODO
+    timeband := 0
+    pItem := pVampire.getWearItem(Vampire_WEAR_RIGHTHAND)
+
+    if pItem != nil {
+        MinDamage += pItem.getMinDamage()
+        MaxDamage += pItem.getMaxDamage()
+    }
+
+    realDamage := max(1, Random(MinDamage, MaxDamage))
+    realDamage = getPercentValue(realDamage, VampireTimebandFactor[timeband])
+
+    var protection Protection_t
+    switch creature.(type) {
+    case *Vampire:
+        protection = creature.(*Vampire).Protection[ATTR_CURRENT]
+        protection = getPercentValue(realDamage, VampireTimebandFactor[timeband])
+    case *Monster:
+        protection = creature.(*Monster).Protection[ATTR_CURRENT]
+        protection = getPercentValue(realDamage, VampireTimebandFactor[timeband])
+    case *Slayer:
+        protection = creature.(*Slayer).Protection[ATTR_CURRENT]
+    case *Ouster:
+        protection = creature.(*Ouster).Protection[ATTR_CURRENT]
+    default:
+        log.Errorln("输入的参数不对")
+    }
+    finalDamage = computeFinalDamage(minDamage, maxDamage, realDamage, protection, bCritical)
+
+    return finalDamage
 }

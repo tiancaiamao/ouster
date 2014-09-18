@@ -18,9 +18,9 @@ type Scene struct {
     // 可以看作aoi管理
     Zone
 
+    // 对象管理
     registerID ObjectID_t
-
-    objects []ObjectInterface
+    objects    [ObjectID_t]ObjectInterface
 
     // 玩家管理
     players map[ObjectID_t]*Agent
@@ -43,6 +43,7 @@ type Scene struct {
 func (scene *Scene) registeObject(obj ObjectInterface) {
     scene.registerID++
     obj.ObjectInstance().ObjectID = scene.registerID
+    scene.objects[scene.registerID] = obj
 }
 
 func NewScene(smp *data.SMP, ssi data.SSI) (ret *Scene, err error) {

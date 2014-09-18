@@ -20,6 +20,12 @@ type MoveMessage struct {
     packet.CGMovePacket
 }
 
+type DamageMessage struct {
+    *Agent
+    target CreatureInterface
+    damage Damage_t
+}
+
 type LoginMessage struct {
     *Agent
     wg  *sync.WaitGroup
