@@ -1,5 +1,57 @@
 package main
 
+import (
+    . "github.com/tiancaiamao/ouster/util"
+    "math/rand"
+)
+
+func computeFinalDamage(
+    minDamage Damage_t,
+    maxDamage Damage_t,
+    realDamage Damage_t,
+    protection Protection_t,
+    bCritical bool) Damage_t {
+    // 致命一击无视防御
+    if bCritical {
+        return realDamage
+    }
+
+    finalDamage := realDamage - (realDamage*(Damage_t(protection)/8))/100
+
+    return finalDamage
+
+    // avgDamage := (minDamage + maxDamage) / 2
+    //
+    //     	int      DamageRatio = 100;
+    //
+    //     	if (Protection < avgDamage)
+    //     	{
+    //     		DamageRatio = 100;
+    //     	}
+    //     	else if (Protection < getPercentValue(avgDamage, 150))
+    //     	{
+    //     		DamageRatio = 90;
+    //     	}
+    //     	else if (Protection < getPercentValue(avgDamage, 200))
+    //     	{
+    //     		DamageRatio = 80;
+    //     	}
+    //     	else if (Protection < getPercentValue(avgDamage, 250))
+    //     	{
+    //     		DamageRatio = 70;
+    //     	}
+    //     	else if (Protection < getPercentValue(avgDamage, 300))
+    //     	{
+    //     		DamageRatio = 60;
+    //     	}
+    //     	else
+    //     	{
+    //     		DamageRatio = 50;
+    //     	}
+
+    // return max(1, getPercentValue(realDamage, DamageRatio))
+}
+
 func (ignore MeteorStrike) ComputeOutput(c1 *SkillInput, c2 *SkillOutput) {
     return
     // Damage: int(float32(c1.Level)*0.8) +
@@ -12,13 +64,15 @@ func (ignore Paralyze) ComputeOutput(c1 *SkillInput, c2 *SkillOutput) {
 
 }
 
-func HitRoll(pAttacker pDefender, CreatureInterface, bonus int) bool {
+func HitRoll(pAttacker CreatureInterface, pDefender CreatureInterface, bonus int) bool {
     if pDefender.CreatureInstance().isFlag(EFFECT_CLASS_NO_DAMAGE) {
         return false
     }
 
-    tohit := 0
-    defense := 0
+    var (
+        tohit   ToHit_t
+        defense Defense_t
+    )
     //TODO
     // timeband = pZone->getTimeband();
     timeband := 0
@@ -30,10 +84,10 @@ func HitRoll(pAttacker pDefender, CreatureInterface, bonus int) bool {
         tohit = pAttacker.(*Ouster).ToHit[ATTR_CURRENT]
     case *Vampire:
         tohit = pAttacker.(*Vampire).ToHit[ATTR_CURRENT]
-        tohit = getPrecentValue(tohit, VampireTimebandFactor[timeband])
+        tohit = ToHit_t(getPercentValue(int(tohit), VampireTimebandFactor[timeband]))
     case *Monster:
-        tohit = pAttacker.(*Monster).ToHit[ATTR_CURRENT]
-        tohit = getPrecentValue(tohit, VampireTimebandFactor[timeband])
+        tohit = pAttacker.(*Monster).ToHit
+        tohit = ToHit_t(getPercentValue(int(tohit), VampireTimebandFactor[timeband]))
     }
 
     switch pDefender.(type) {
@@ -43,22 +97,22 @@ func HitRoll(pAttacker pDefender, CreatureInterface, bonus int) bool {
         defense = pAttacker.(*Ouster).Defense[ATTR_CURRENT]
     case *Vampire:
         defense = pAttacker.(*Vampire).Defense[ATTR_CURRENT]
-        defense = getPrecentValue(defense, VampireTimebandFactor[timeband])
+        defense = Defense_t(getPercentValue(int(defense), VampireTimebandFactor[timeband]))
     case *Monster:
-        defense = pAttacker.(*Monster).Defense[ATTR_CURRENT]
-        defense = getPrecentValue(defense, VampireTimebandFactor[timeband])
+        defense = pAttacker.(*Monster).Defense
+        defense = Defense_t(getPercentValue(int(defense), VampireTimebandFactor[timeband]))
     }
 
-    randValue = rand.Intn(100)
-    result = 0
+    randValue := rand.Intn(100)
+    var result int
 
-    if tohit >= defense {
-        Result = min(90, int(((tohit-defense)/1.5)+60)+bonus)
+    if int(tohit) >= int(defense) {
+        result = min(90, int(int((float64(int(tohit)-int(defense))/1.5))+60)+bonus)
     } else {
-        if isMonster {
-            Result = max(10, (int)(60-((defense-tohit)/1.5)+bonus))
+        if _, ok := pAttacker.(*Monster); ok {
+            result = max(10, (int)(60-int((float64(defense)-float64(tohit))/1.5)+bonus))
         } else {
-            Result = max(20, (int)(60-((defense-tohit)/1.5)+bonus))
+            result = max(20, (int)(60-int((float64(defense)-float64(tohit))/1.5)+bonus))
         }
     }
 

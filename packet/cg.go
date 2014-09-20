@@ -4,6 +4,7 @@ import (
     "bytes"
     "encoding/binary"
     "errors"
+    . "github.com/tiancaiamao/ouster/util"
     "io"
 )
 
@@ -190,7 +191,7 @@ func (verifyTime CGVerifyTimePacket) String() string {
 }
 
 type CGAttackPacket struct {
-    ObjectID uint32
+    ObjectID ObjectID_t
     X        uint8
     Y        uint8
     Dir      uint8
@@ -207,7 +208,7 @@ func readAttack(buf []byte, code uint8) (Packet, error) {
     var ret CGAttackPacket
     offset := 0
     A := func() {
-        ret.ObjectID = binary.LittleEndian.Uint32(buf[offset:]) ^ uint32(code)
+        ret.ObjectID = ObjectID_t(binary.LittleEndian.Uint32(buf[offset:]) ^ uint32(code))
         offset += 4
     }
     B := func() {

@@ -518,7 +518,7 @@ func (status GCStatusCurrentHP) MarshalBinary(code uint8) ([]byte, error) {
 }
 
 type GCAttackMeleeOK1 struct {
-    ObjectID uint32
+    ObjectID ObjectID_t
     ModifyInfo
 }
 
@@ -537,7 +537,7 @@ func (attackOk GCAttackMeleeOK1) MarshalBinary(code uint8) ([]byte, error) {
 }
 
 type GCAttackMeleeOK2 struct {
-    ObjectID uint32
+    ObjectID ObjectID_t
     ModifyInfo
 }
 
@@ -552,6 +552,22 @@ func (attackOk GCAttackMeleeOK2) MarshalBinary(code uint8) ([]byte, error) {
     buf := &bytes.Buffer{}
     binary.Write(buf, binary.LittleEndian, attackOk.ObjectID)
     attackOk.Dump(buf)
+    return buf.Bytes(), nil
+}
+
+type GCAttackMeleeOK3 struct {
+    ObjectID       ObjectID_t
+    TargetObjectID ObjectID_t
+}
+
+func (ok GCAttackMeleeOK3) PacketID() PacketID {
+    return PACKET_GC_ATTACK_MELEE_OK_3
+}
+
+func (ok GCAttackMeleeOK3) MarshalBinary(code uint8) ([]byte, error) {
+    buf := &bytes.Buffer{}
+    binary.Write(buf, binary.LittleEndian, ok.ObjectID)
+    binary.Write(buf, binary.LittleEndian, ok.TargetObjectID)
     return buf.Bytes(), nil
 }
 
@@ -956,7 +972,7 @@ func (remove GCRemoveEffect) MarshalBinary(code uint8) ([]byte, error) {
 }
 
 type GCSkillFailed1Packet struct {
-    SkillType uint16
+    SkillType SkillType_t
     Grade     uint8
     ModifyInfo
 }

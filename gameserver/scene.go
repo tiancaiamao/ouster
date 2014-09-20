@@ -20,7 +20,7 @@ type Scene struct {
 
     // 对象管理
     registerID ObjectID_t
-    objects    [ObjectID_t]ObjectInterface
+    objects    map[ObjectID_t]ObjectInterface
 
     // 玩家管理
     players map[ObjectID_t]*Agent

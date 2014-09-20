@@ -33,6 +33,18 @@ type OusterSkillSlot struct {
     RunTime     time.Time
 }
 
-func verifyRuntime(skillSlot SkillSlot) bool {
+type SkillSlot struct {
+    SkillType uint16
+    ExpLevel  uint16
+
+    LastUse  time.Time
+    Cooling  uint16
+    Duration uint16
+
+    Interval    uint32
+    CastingTime uint32
+}
+
+func verifyRunTime(skillSlot SkillSlot) bool {
     return true
 }

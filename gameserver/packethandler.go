@@ -38,65 +38,66 @@ func CGLogoutHandler(pkt packet.Packet, agent *Agent) {
 func CGVerifyTimeHandler(pkt packet.Packet, agent *Agent) {}
 
 func CGAttackHandler(pkt packet.Packet, agent *Agent) {
-    fail := packet.GCSkillFailed{
+    fail := packet.GCSkillFailed1Packet{
         SkillType: SKILL_ATTACK_MELEE,
     }
     if agent.PlayerStatus != GPS_NORMAL {
-        agent.sendPacket(fail)
+        agent.sendPacket(&fail)
         return
     }
 
-    zoneLevel := agent.Scene.getZoneLevel(agent.X, agent.Y)
-    if zoneLevel&COMPLETE_SAFE_ZONE ||
-        agent.isFlag(EFFECT_CLASS_PARALYZE) ||
-        agent.isFlag(EFFECT_CLASS_CAUSE_CRITICAL_WOUNDS) ||
-        agent.isFlag(EFFECT_CLASS_EXPLOSION_WATER) ||
-        agent.isFlag(EFFECT_CLASS_COMA) {
-        agent.sendPacket(fail)
+    pc := agent.PlayerCreatureInstance()
+    zoneLevel := pc.Scene.getZoneLevel(pc.X, pc.Y)
+    if (zoneLevel&ZoneLevel_t(COMPLETE_SAFE_ZONE)) != 0 ||
+        pc.isFlag(EFFECT_CLASS_PARALYZE) ||
+        pc.isFlag(EFFECT_CLASS_CAUSE_CRITICAL_WOUNDS) ||
+        pc.isFlag(EFFECT_CLASS_EXPLOSION_WATER) ||
+        pc.isFlag(EFFECT_CLASS_COMA) {
+        agent.sendPacket(&fail)
         return
     }
 
     attack := pkt.(packet.CGAttackPacket)
-    target, ok := agent.Scene.objects[attack.ObjectID]
+    target, ok := pc.Scene.objects[attack.ObjectID]
     if !ok {
-        agent.sendPacket(fail)
+        agent.sendPacket(&fail)
         return
     }
 
     if target.ObjectClass() != OBJECT_CLASS_CREATURE {
-        agent.sendPacket(fail)
+        agent.sendPacket(&fail)
         return
     }
     targetCreature := target.(CreatureInterface)
 
-    ok3 := packet.GCAttackMeleeOK3{}
+    // ok3 := packet.GCAttackMeleeOK3{}
 
-    skillslot = agent.hasSkill(SKILL_ATTACK_MELEE)
-    timeCheck := verifyRunTime(skillslot)
+    // skillslot = agent.hasSkill(SKILL_ATTACK_MELEE)
+    // timeCheck := verifyRunTime(skillslot)
     rangeCheck := verifyDistance(agent, targetCreature)
     hitRoll := HitRoll(agent, targetCreature, 0)
 
-    if timeCheck && rangeCheck && hitRoll {
-        damage := agent.computeDamage(targetCreature, false)
-		
-		// 这个伤害是要广播给地图周围玩家知道的
+    if rangeCheck && hitRoll {
+        damage := agent.PlayerCreatureInterface.computeDamage(targetCreature, false)
+
+        // 这个伤害是要广播给地图周围玩家知道的
         agent.scene <- DamageMessage{
             target:   targetCreature,
             damage:   damage,
             critical: false,
         }
 
-        if slayer, ok := agent.PlayerCreature.(*Slayer); ok {
+        if slayer, ok := agent.PlayerCreatureInterface.(*Slayer); ok {
             weapon := slayer.getWearItem(SLAYER_WEAR_RIGHTHAND)
             switch weapon.ItemClass() {
             case ITEM_CLASS_BLADE:
-                increaseDomainExp(pSlayer, SKILL_DOMAIN_BLADE, Point, _GCAttackMeleeOK1, targetCreature.CreatureInstance().Level)
+                increaseDomainExp(slayer, SKILL_DOMAIN_BLADE, 1, packet.GCAttackMeleeOK1{}, targetCreature.CreatureInstance().Level)
             case ITEM_CLASS_SWORD:
-                increaseDomainExp(pSlayer, SKILL_DOMAIN_BLADE, Point, _GCAttackMeleeOK1, targetCreature.CreatureInstance().Level)
+                increaseDomainExp(slayer, SKILL_DOMAIN_BLADE, 1, packet.GCAttackMeleeOK1{}, targetCreature.CreatureInstance().Level)
             case ITEM_CLASS_CROSS:
-                increaseDomainExp(pSlayer, SKILL_DOMAIN_BLADE, Point, _GCAttackMeleeOK1, targetCreature.CreatureInstance().Level)
+                increaseDomainExp(slayer, SKILL_DOMAIN_BLADE, 1, packet.GCAttackMeleeOK1{}, targetCreature.CreatureInstance().Level)
             case ITEM_CLASS_MACE:
-                increaseDomainExp(pSlayer, SKILL_DOMAIN_BLADE, Point, _GCAttackMeleeOK1, targetCreature.CreatureInstance().Level)
+                increaseDomainExp(slayer, SKILL_DOMAIN_BLADE, 1, packet.GCAttackMeleeOK1{}, targetCreature.CreatureInstance().Level)
             default:
                 log.Errorln("武器不对!")
             }
@@ -107,16 +108,18 @@ func CGAttackHandler(pkt packet.Packet, agent *Agent) {
         }
         agent.sendPacket(ok1)
 
-        if target.(*Agent) {
-            target.sendPacket(packet.GCAttackMeleeOK2{
+        switch target.(type) {
+        case *Agent:
+            targetAgent := target.(*Agent)
+            targetAgent.sendPacket(packet.GCAttackMeleeOK2{
                 ObjectID: agent.ObjectInstance().ObjectID,
             })
-        } else if target.(*Monster) {
+        case *Monster:
             monster := target.(*Monster)
             monster.addEnemy(agent)
         }
 
-        skillslot.setRunTime()
+        // skillslot.setRunTime()
     } else {
         // 执行失败处理
     }

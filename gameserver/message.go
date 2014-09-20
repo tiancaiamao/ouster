@@ -2,6 +2,7 @@ package main
 
 import (
     "github.com/tiancaiamao/ouster/packet"
+    . "github.com/tiancaiamao/ouster/util"
     "sync"
 )
 
@@ -22,8 +23,9 @@ type MoveMessage struct {
 
 type DamageMessage struct {
     *Agent
-    target CreatureInterface
-    damage Damage_t
+    target   CreatureInterface
+    damage   Damage_t
+    critical bool
 }
 
 type LoginMessage struct {

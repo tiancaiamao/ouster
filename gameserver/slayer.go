@@ -2,6 +2,7 @@ package main
 
 import (
     "github.com/tiancaiamao/ouster/data"
+    "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
     "time"
 )
@@ -160,4 +161,23 @@ func (slayer *Slayer) PCInfo() data.PCInfo {
     }
 
     return ret
+}
+
+// TODO
+func (slayer *Slayer) computeDamage(creature CreatureInterface, bCritical bool) Damage_t {
+    return 0
+}
+
+// TODO
+func (slayer *Slayer) getWearItem(class int) ItemInterface {
+    return nil
+}
+
+// TODO
+func increaseDomainExp(pSlayer *Slayer,
+    SKILL_DOMAIN_BLADE SkillPoint_t,
+    Point int,
+    _GCAttackMeleeOK1 packet.Packet,
+    level Level_t) {
+
 }

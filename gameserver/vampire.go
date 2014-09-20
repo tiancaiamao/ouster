@@ -4,6 +4,7 @@ import (
     "github.com/tiancaiamao/ouster/data"
     "github.com/tiancaiamao/ouster/log"
     . "github.com/tiancaiamao/ouster/util"
+    "math/rand"
     "time"
 )
 
@@ -142,30 +143,29 @@ func (vampire *Vampire) PCInfo() data.PCInfo {
 }
 
 func (vampire *Vampire) computeDamage(creature CreatureInterface, bCritical bool) Damage_t {
-    FinalDamage := 0
-    minDamage := pVampire.Damage[ATTR_CURRENT]
-    maxDamage := pVampire.Damage[ATTR_MAX]
-    // timeband    := getZoneTimeband(pVampire->getZone())
+    minDamage := vampire.Damage[ATTR_CURRENT]
+    maxDamage := vampire.Damage[ATTR_MAX]
+    // timeband    := getZoneTimeband(vampire->getZone())
     // TODO
     timeband := 0
-    pItem := pVampire.getWearItem(Vampire_WEAR_RIGHTHAND)
+    // pItem := vampire.getWearItem(Vampire_WEAR_RIGHTHAND)
+    //
+    // if pItem != nil {
+    //     MinDamage += pItem.getMinDamage()
+    //     MaxDamage += pItem.getMaxDamage()
+    // }
 
-    if pItem != nil {
-        MinDamage += pItem.getMinDamage()
-        MaxDamage += pItem.getMaxDamage()
-    }
-
-    realDamage := max(1, Random(MinDamage, MaxDamage))
+    realDamage := max(1, int(minDamage)+rand.Intn(int(maxDamage-minDamage)))
     realDamage = getPercentValue(realDamage, VampireTimebandFactor[timeband])
 
     var protection Protection_t
     switch creature.(type) {
     case *Vampire:
         protection = creature.(*Vampire).Protection[ATTR_CURRENT]
-        protection = getPercentValue(realDamage, VampireTimebandFactor[timeband])
+        protection = Protection_t(getPercentValue(int(protection), VampireTimebandFactor[timeband]))
     case *Monster:
-        protection = creature.(*Monster).Protection[ATTR_CURRENT]
-        protection = getPercentValue(realDamage, VampireTimebandFactor[timeband])
+        protection = creature.(*Monster).Protection
+        protection = Protection_t(getPercentValue(int(protection), VampireTimebandFactor[timeband]))
     case *Slayer:
         protection = creature.(*Slayer).Protection[ATTR_CURRENT]
     case *Ouster:
@@ -173,7 +173,7 @@ func (vampire *Vampire) computeDamage(creature CreatureInterface, bCritical bool
     default:
         log.Errorln("输入的参数不对")
     }
-    finalDamage = computeFinalDamage(minDamage, maxDamage, realDamage, protection, bCritical)
+    finalDamage := Damage_t(computeFinalDamage(minDamage, maxDamage, Damage_t(realDamage), protection, bCritical))
 
     return finalDamage
 }

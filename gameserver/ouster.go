@@ -2,8 +2,9 @@ package main
 
 import (
     "github.com/tiancaiamao/ouster/data"
-    // "github.com/tiancaiamao/ouster/log"
+    "github.com/tiancaiamao/ouster/log"
     . "github.com/tiancaiamao/ouster/util"
+    "math/rand"
     "time"
 )
 
@@ -157,29 +158,30 @@ func (ouster *Ouster) PCInfo() data.PCInfo {
 }
 
 func (ouster *Ouster) computeDamage(creature CreatureInterface, bCritical bool) Damage_t {
-    finalDamage := 0
-    minDamage := pVampire.Damage[ATTR_CURRENT]
-    maxDamage := pVampire.Damage[ATTR_MAX]
+    minDamage := ouster.Damage[ATTR_CURRENT]
+    maxDamage := ouster.Damage[ATTR_MAX]
     // timeband    := getZoneTimeband(pVampire->getZone())
     // TODO
     timeband := 0
-    pItem := ouster.getWearItem(OUSTER_WEAR_RIGHTHAND)
+    // TODO
+    // pItem := ouster.getWearItem(OUSTER_WEAR_RIGHTHAND)
+    //
+    // if pItem != nil {
+    //     MinDamage += pItem.getMinDamage()
+    //     MaxDamage += pItem.getMaxDamage()
+    // }
+    //
 
-    if pItem != nil {
-        MinDamage += pItem.getMinDamage()
-        MaxDamage += pItem.getMaxDamage()
-    }
-
-    realDamage := max(1, Random(minDamage, maxDamage))
+    realDamage := max(1, int(minDamage)+rand.Intn(int(maxDamage-minDamage)))
 
     var protection Protection_t
     switch creature.(type) {
     case *Vampire:
         protection = creature.(*Vampire).Protection[ATTR_CURRENT]
-        protection = getPercentValue(realDamage, VampireTimebandFactor[timeband])
+        protection = Protection_t(getPercentValue(int(realDamage), VampireTimebandFactor[timeband]))
     case *Monster:
-        protection = creature.(*Monster).Protection[ATTR_CURRENT]
-        protection = getPercentValue(realDamage, VampireTimebandFactor[timeband])
+        protection = creature.(*Monster).Protection
+        protection = Protection_t(getPercentValue(int(realDamage), VampireTimebandFactor[timeband]))
     case *Slayer:
         protection = creature.(*Slayer).Protection[ATTR_CURRENT]
     case *Ouster:
@@ -187,7 +189,16 @@ func (ouster *Ouster) computeDamage(creature CreatureInterface, bCritical bool) 
     default:
         log.Errorln("输入的参数不对")
     }
-    finalDamage = computeFinalDamage(minDamage, maxDamage, realDamage, protection, bCritical)
+    finalDamage := computeFinalDamage(minDamage, maxDamage, Damage_t(realDamage), protection, bCritical)
 
     return finalDamage
+}
+
+// TODO
+func (ouster *Ouster) hasSkill(skillType SkillType_t) *OusterSkillSlot {
+    return nil
+}
+
+func getPercentValue(value, percent int) int {
+    return value * percent / 100
 }

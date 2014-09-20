@@ -83,6 +83,27 @@ func init() {
     condChecker[DIRECTIVE_COND_CAN_ATTACK_THROWING_AXE] = checkCanAttackThrowingAxe
 }
 
+func abs(x int) int {
+    if x > 0 {
+        return x
+    }
+    return -x
+}
+
+func max(x, y int) int {
+    if x > y {
+        return x
+    }
+    return y
+}
+
+func min(x, y int) int {
+    if x < y {
+        return x
+    }
+    return y
+}
+
 func (ai *MonsterAI) checkCondition(condition int, pEnemy CreatureInterface) bool {
     return condChecker[condition](ai.Body, pEnemy)
 }

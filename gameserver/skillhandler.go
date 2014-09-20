@@ -126,9 +126,4 @@ func (paralyze Paralyze) ExecuteToObject(skill packet.CGSkillToObjectPacket, age
 }
 
 func (attack AttackMelee) ExecuteToObject(skill packet.CGSkillToObjectPacket, agent *Agent) {
-    // target := agent.NearbyAgent(ObjectID_t(skill.TargetObjectID))
-    meteor.ExecuteToTile(packet.CGSkillToObjectPacket{
-    // X:  target.X,
-    // Y:  target.Y,
-    }, agent)
 }

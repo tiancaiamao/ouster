@@ -31,6 +31,8 @@ type Creature struct {
     Y        ZoneCoord_t
     Dir      Dir_t
 
+    Level Level_t
+
     ViewportWidth       ZoneCoord_t
     ViewportUpperHeight ZoneCoord_t
     ViewportLowerHeight ZoneCoord_t
@@ -137,4 +139,9 @@ func (c *Creature) isBlockedByCreature(nx ZoneCoord_t, ny ZoneCoord_t) bool {
 
 func (c *Creature) addEffect(effect EffectInterface) {
 
+}
+
+// TODO
+func verifyDistance(c1, c2 CreatureInterface) bool {
+    return true
 }

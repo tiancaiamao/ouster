@@ -16,6 +16,7 @@ type PlayerCreatureInterface interface {
     PlayerCreatureInstance() *PlayerCreature
 
     PCInfo() data.PCInfo
+    computeDamage(CreatureInterface, bool) Damage_t
 }
 
 type PlayerCreature struct {

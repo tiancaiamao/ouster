@@ -7,7 +7,7 @@ import (
     "io"
     "math/rand"
     "net"
-    "time"
+    // "time"
 )
 
 type Point struct {
@@ -45,18 +45,6 @@ type Player struct {
 
     client <-chan packet.Packet
     send   chan<- packet.Packet
-}
-
-type SkillSlot struct {
-    SkillType uint16
-    ExpLevel  uint16
-
-    LastUse  time.Time
-    Cooling  uint16
-    Duration uint16
-
-    Interval    uint32
-    CastingTime uint32
 }
 
 func InitPlayer(player *Player, conn net.Conn) {
