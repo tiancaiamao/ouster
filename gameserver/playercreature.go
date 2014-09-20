@@ -60,6 +60,12 @@ type PlayerCreature struct {
     AdvancedAttrBonus Attr_t
 
     MasterEffectColor uint8
+
+    STR [3]Attr_t
+    DEX [3]Attr_t
+    INI [3]Attr_t
+
+    HP  [3]HP_t
 }
 
 func (pc *PlayerCreature) PlayerCreatureInstance() *PlayerCreature {

@@ -46,11 +46,6 @@ type Slayer struct {
 
     Alignment Alignment_t
 
-    STR [3]Attr_t
-    DEX [3]Attr_t
-    INI [3]Attr_t
-
-    HP  [3]HP_t
     MP  [3]MP_t
 
     Damage        [3]Damage_t

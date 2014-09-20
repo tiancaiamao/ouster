@@ -4,6 +4,13 @@ import (
     . "github.com/tiancaiamao/ouster/util"
 )
 
+var (
+    VampireTimebandFactor   = [4]int{125, 100, 125, 150}
+    MonsterTimebandFactor   = [4]int{75, 50, 75, 100}
+    AttrExpTimebandFactor   = [4]int{100, 100, 100, 150}
+    DomainExpTimebandFactor = [4]int{100, 100, 100, 150}
+)
+
 type SkillPropertyType uint8
 
 const (

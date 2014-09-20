@@ -517,6 +517,9 @@ func (status GCStatusCurrentHP) MarshalBinary(code uint8) ([]byte, error) {
     return buf.Bytes(), nil
 }
 
+// 发送给攻击者的，告诉他攻击成功
+// ObjectID是被攻击目标的ObjectID
+// ModifyInfo是攻击者自身的耗蓝
 type GCAttackMeleeOK1 struct {
     ObjectID ObjectID_t
     ModifyInfo
@@ -536,6 +539,8 @@ func (attackOk GCAttackMeleeOK1) MarshalBinary(code uint8) ([]byte, error) {
     return buf.Bytes(), nil
 }
 
+// 发送给被攻击者的，告诉他被攻击了
+// ObjectID是攻击者的ObjectID
 type GCAttackMeleeOK2 struct {
     ObjectID ObjectID_t
     ModifyInfo
@@ -555,6 +560,8 @@ func (attackOk GCAttackMeleeOK2) MarshalBinary(code uint8) ([]byte, error) {
     return buf.Bytes(), nil
 }
 
+// 广播
+// ObjectID是攻击者，Target是被攻击者
 type GCAttackMeleeOK3 struct {
     ObjectID       ObjectID_t
     TargetObjectID ObjectID_t

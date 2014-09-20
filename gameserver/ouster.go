@@ -45,11 +45,6 @@ type Ouster struct {
     HairColor Color_t
     Alignment Alignment_t
 
-    STR [3]Attr_t
-    DEX [3]Attr_t
-    INI [3]Attr_t
-
-    HP  [3]HP_t
     MP  [3]MP_t
 
     Damage        [3]Damage_t
@@ -172,7 +167,11 @@ func (ouster *Ouster) computeDamage(creature CreatureInterface, bCritical bool) 
     // }
     //
 
-    realDamage := max(1, int(minDamage)+rand.Intn(int(maxDamage-minDamage)))
+    scope := int(maxDamage - minDamage)
+    if scope < 1 {
+        scope = 1
+    }
+    realDamage := max(1, int(minDamage)+rand.Intn(scope))
 
     var protection Protection_t
     switch creature.(type) {

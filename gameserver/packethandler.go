@@ -75,13 +75,14 @@ func CGAttackHandler(pkt packet.Packet, agent *Agent) {
     // skillslot = agent.hasSkill(SKILL_ATTACK_MELEE)
     // timeCheck := verifyRunTime(skillslot)
     rangeCheck := verifyDistance(agent, targetCreature)
-    hitRoll := HitRoll(agent, targetCreature, 0)
+    hitRoll := HitRoll(agent.PlayerCreatureInterface, targetCreature, 0)
 
     if rangeCheck && hitRoll {
         damage := agent.PlayerCreatureInterface.computeDamage(targetCreature, false)
 
         // 这个伤害是要广播给地图周围玩家知道的
         agent.scene <- DamageMessage{
+            Agent:    agent,
             target:   targetCreature,
             damage:   damage,
             critical: false,
@@ -102,11 +103,6 @@ func CGAttackHandler(pkt packet.Packet, agent *Agent) {
                 log.Errorln("武器不对!")
             }
         }
-
-        ok1 := packet.GCAttackMeleeOK1{
-            ObjectID: attack.ObjectID,
-        }
-        agent.sendPacket(ok1)
 
         switch target.(type) {
         case *Agent:

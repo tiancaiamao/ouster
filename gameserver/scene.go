@@ -53,6 +53,7 @@ func NewScene(smp *data.SMP, ssi data.SSI) (ret *Scene, err error) {
     ret.monsterManager = NewMonsterManager()
     ret.npcManager = NewNPCManager()
     ret.players = make(map[ObjectID_t]*Agent)
+    ret.objects = make(map[ObjectID_t]ObjectInterface)
 
     ret.quit = make(chan struct{})
     ret.event = make(chan interface{})
@@ -155,6 +156,43 @@ func (scene *Scene) addCreature(creature CreatureInterface, cx ZoneCoord_t, cy Z
     }
 }
 
+func (m *Scene) setDamage(target CreatureInterface, agent *Agent, damage Damage_t) {
+    var status packet.GCStatusCurrentHP
+    switch target.(type) {
+    case *Agent:
+        // TODO
+    case *Monster:
+        monster := target.(*Monster)
+        if monster.HP[ATTR_CURRENT] < HP_t(damage) {
+
+        } else {
+            monster.HP[ATTR_CURRENT] -= HP_t(damage)
+            status = packet.GCStatusCurrentHP{
+                ObjectID:  monster.ObjectID,
+                CurrentHP: monster.HP[ATTR_CURRENT],
+            }
+        }
+    default:
+        log.Errorln("参数不对")
+    }
+
+    // 发给攻击者，告诉他攻击成功了
+    ok1 := packet.GCAttackMeleeOK1{
+        ObjectID: target.CreatureInstance().ObjectID,
+    }
+    agent.sendPacket(ok1)
+    agent.sendPacket(status)
+
+    // 广播给所有玩家，攻击成功
+    pc := agent.PlayerCreatureInstance()
+    ok3 := packet.GCAttackMeleeOK3{
+        ObjectID:       pc.ObjectID,
+        TargetObjectID: target.CreatureInstance().ObjectID,
+    }
+    m.broadcastPacket(pc.X, pc.Y, ok3, agent)
+    m.broadcastPacket(pc.X, pc.Y, status, agent)
+}
+
 func (m *Scene) processAgentMessage(msg AgentMessage) {
     switch raw := msg.(type) {
     case LoginMessage:
@@ -164,6 +202,9 @@ func (m *Scene) processAgentMessage(msg AgentMessage) {
         m.movePC(raw.Agent, ZoneCoord_t(raw.X), ZoneCoord_t(raw.Y), Dir_t(raw.Dir))
     case LogoutMessage:
         m.Logout(raw.Agent)
+    case DamageMessage:
+        m.setDamage(raw.target, raw.Agent, raw.damage)
+
         // case *packet.GCFastMovePacket:
         // fastMove := msg.(*packet.GCFastMovePacket)
         // obj := m.objects[playerId]

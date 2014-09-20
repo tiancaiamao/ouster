@@ -101,6 +101,9 @@ func NewMonster(monsterType MonsterType_t) *Monster {
     ret.HP[ATTR_CURRENT] = info.HP
     ret.HP[ATTR_MAX] = info.HP
 
+    ret.Damage[ATTR_CURRENT] = Damage_t(float64(ret.STR) / 3)
+    ret.Damage[ATTR_MAX] = ret.Damage[ATTR_CURRENT]
+
     ret.Brain = &MonsterAI{
         Body: ret,
         // DirectiveSet *DirectiveSet
@@ -114,6 +117,7 @@ func NewMonster(monsterType MonsterType_t) *Monster {
         // Courage      int
         // CourageMax	 int
     }
+    ret.Creature.Init()
 
     return ret
 }
@@ -217,7 +221,7 @@ func (m *MonsterManager) Init(scene *Scene) error {
         for i := 0; i < count; i++ {
             x, y := m.findPosition(&scene.Zone, monsterType)
             monster := NewMonster(monsterType)
-            log.Debugf("%p\n", monster)
+            // log.Debugf("%p\n", monster)
             scene.registeObject(monster)
             scene.addCreature(monster, x, y, Dir_t(rand.Intn(DIR_MAX)))
         }
@@ -353,52 +357,52 @@ func (m *Monster) heartbeat(currentTime time.Time) {
             m.Brain.Deal(pEnemy, currentTime)
         }
     } else {
-        if m.isFlag(EFFECT_CLASS_HIDE) {
-            // pMonsterInfo := g_pMonsterInfoManager.getMonsterInfo(m_MonsterType)
-            //
-            // if (rand() & 0x0000007F) < pMonsterInfo.getUnburrowChance() {
-            //     SkillHandler * pSkillHandler = g_pSkillHandlerManager.getSkillHandler(SKILL_UN_BURROW)
-            //     Assert(pSkillHandler != NULL)
-            //
-            //     pSkillHandler.execute(this)
-            //
-            //     addAccuDelay(time.Second + 500*time.MilliSecond)
-            // } else {
-            //     m.Brain.setDelay(currentTime)
-            // }
-        } else if !m.isMaster && m.Zone.ZoneID != 72 {
-            // if m.RelicIndex == -1 {
-            //     pt := POINT(m.X, m.Y)
-            //
-            //     VSRect * pOuterRect = m_pZone.getOuterRect()
-            //     VSRect * pInnerRect = m_pZone.getInnerRect()
-            //     VSRect * pCoreRect = m_pZone.getCoreRect()
-            //
-            //     if pCoreRect.ptInRect(pt) || pInnerRect.ptInRect(pt) {
-            //
-            //         diceResult := rand() & 0x0000007F //%100;
-            //         if diceResult < 6 {
-            //             direction := rand() & 0x00000007 //% 8;
-            //             nx := pt.x + dirMoveMask[direction].x
-            //             ny := pt.y + dirMoveMask[direction].y
-            //
-            //             if canMove(nx, ny) && !(m_pZone.getZoneLevel(nx, ny) & SAFE_ZONE) {
-            //                 m_pZone.moveCreature(this, nx, ny, direction)
-            //             }
-            //         }
-            //     } else if pOuterRect.ptInRect(pt) {
-            //         m.Brain.move(m_pZone.getWidth()>>1, m_pZone.getHeight()>>1)
-            //     }
-            //
-            //     if (m_bScanEnemy || isFlag(EFFECT_CLASS_HALLUCINATION)) && currentTime > m_NextScanTurn {
-            //         m_pZone.mScan(this, m_X, m_Y, m_Dir)
-            //
-            //         m.NextScanTurn.tv_sec = currentTime.tv_sec + 2
-            //         m.NextScanTurn.tv_usec = currentTime.tv_usec
-            //     }
-            // }
-            // m.Brain.setDelay(currentTime)
-        }
+        // if m.isFlag(EFFECT_CLASS_HIDE) {
+        // pMonsterInfo := g_pMonsterInfoManager.getMonsterInfo(m_MonsterType)
+        //
+        // if (rand() & 0x0000007F) < pMonsterInfo.getUnburrowChance() {
+        //     SkillHandler * pSkillHandler = g_pSkillHandlerManager.getSkillHandler(SKILL_UN_BURROW)
+        //     Assert(pSkillHandler != NULL)
+        //
+        //     pSkillHandler.execute(this)
+        //
+        //     addAccuDelay(time.Second + 500*time.MilliSecond)
+        // } else {
+        //     m.Brain.setDelay(currentTime)
+        // }
+        // } else if !m.isMaster && m.Zone.ZoneID != 72 {
+        // if m.RelicIndex == -1 {
+        //     pt := POINT(m.X, m.Y)
+        //
+        //     VSRect * pOuterRect = m_pZone.getOuterRect()
+        //     VSRect * pInnerRect = m_pZone.getInnerRect()
+        //     VSRect * pCoreRect = m_pZone.getCoreRect()
+        //
+        //     if pCoreRect.ptInRect(pt) || pInnerRect.ptInRect(pt) {
+        //
+        //         diceResult := rand() & 0x0000007F //%100;
+        //         if diceResult < 6 {
+        //             direction := rand() & 0x00000007 //% 8;
+        //             nx := pt.x + dirMoveMask[direction].x
+        //             ny := pt.y + dirMoveMask[direction].y
+        //
+        //             if canMove(nx, ny) && !(m_pZone.getZoneLevel(nx, ny) & SAFE_ZONE) {
+        //                 m_pZone.moveCreature(this, nx, ny, direction)
+        //             }
+        //         }
+        //     } else if pOuterRect.ptInRect(pt) {
+        //         m.Brain.move(m_pZone.getWidth()>>1, m_pZone.getHeight()>>1)
+        //     }
+        //
+        //     if (m_bScanEnemy || isFlag(EFFECT_CLASS_HALLUCINATION)) && currentTime > m_NextScanTurn {
+        //         m_pZone.mScan(this, m_X, m_Y, m_Dir)
+        //
+        //         m.NextScanTurn.tv_sec = currentTime.tv_sec + 2
+        //         m.NextScanTurn.tv_usec = currentTime.tv_usec
+        //     }
+        // }
+        // m.Brain.setDelay(currentTime)
+        // }
     }
 
     statSum := m.STR + m.DEX + m.INI

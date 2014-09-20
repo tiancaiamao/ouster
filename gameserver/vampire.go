@@ -50,8 +50,6 @@ type Vampire struct {
     DEX [3]Attr_t
     INI [3]Attr_t
 
-    HP  [3]HP_t
-
     Damage        [3]Damage_t
     ToHit         [2]ToHit_t
     Defense       [2]Defense_t

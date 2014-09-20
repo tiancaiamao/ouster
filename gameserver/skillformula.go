@@ -1,6 +1,7 @@
 package main
 
 import (
+    "github.com/tiancaiamao/ouster/log"
     . "github.com/tiancaiamao/ouster/util"
     "math/rand"
 )
@@ -77,6 +78,7 @@ func HitRoll(pAttacker CreatureInterface, pDefender CreatureInterface, bonus int
     // timeband = pZone->getTimeband();
     timeband := 0
 
+again1:
     switch pAttacker.(type) {
     case *Slayer:
         tohit = pAttacker.(*Slayer).ToHit[ATTR_CURRENT]
@@ -88,19 +90,28 @@ func HitRoll(pAttacker CreatureInterface, pDefender CreatureInterface, bonus int
     case *Monster:
         tohit = pAttacker.(*Monster).ToHit
         tohit = ToHit_t(getPercentValue(int(tohit), VampireTimebandFactor[timeband]))
+    case *Agent:
+        pAttacker = pAttacker.(*Agent).PlayerCreatureInterface
+        goto again1
+    default:
+        log.Errorln("参数不对")
     }
 
+again2:
     switch pDefender.(type) {
     case *Slayer:
-        defense = pAttacker.(*Slayer).Defense[ATTR_CURRENT]
+        defense = pDefender.(*Slayer).Defense[ATTR_CURRENT]
     case *Ouster:
-        defense = pAttacker.(*Ouster).Defense[ATTR_CURRENT]
+        defense = pDefender.(*Ouster).Defense[ATTR_CURRENT]
     case *Vampire:
-        defense = pAttacker.(*Vampire).Defense[ATTR_CURRENT]
+        defense = pDefender.(*Vampire).Defense[ATTR_CURRENT]
         defense = Defense_t(getPercentValue(int(defense), VampireTimebandFactor[timeband]))
     case *Monster:
-        defense = pAttacker.(*Monster).Defense
+        defense = pDefender.(*Monster).Defense
         defense = Defense_t(getPercentValue(int(defense), VampireTimebandFactor[timeband]))
+    case *Agent:
+        pDefender = pDefender.(*Agent).PlayerCreatureInterface
+        goto again2
     }
 
     randValue := rand.Intn(100)
