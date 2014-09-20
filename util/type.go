@@ -138,13 +138,13 @@ const (
 )
 
 const (
-    NO_SAFE_ZONE       byte = 0x00
-    SLAYER_SAFE_ZONE   byte = 0x01
-    VAMPIRE_SAFE_ZONE  byte = 0x02
-    COMPLETE_SAFE_ZONE byte = 0x04
-    NO_PK_ZONE         byte = 0x08
-    SAFE_ZONE          byte = 0x17
-    OUSTERS_SAFE_ZONE  byte = 0x10
+    NO_SAFE_ZONE       = 0x00
+    SLAYER_SAFE_ZONE   = 0x01
+    VAMPIRE_SAFE_ZONE  = 0x02
+    COMPLETE_SAFE_ZONE = 0x04
+    NO_PK_ZONE         = 0x08
+    SAFE_ZONE          = 0x17
+    OUSTERS_SAFE_ZONE  = 0x10
 )
 
 type Weather uint8

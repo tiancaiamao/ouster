@@ -20,6 +20,22 @@ type MonsterAI struct {
     CourageMax   int
 }
 
+func NewMonsterAI(body *Monster, aiType int) *MonsterAI {
+    ret := &MonsterAI{
+        Body:       body,
+        LastAction: LAST_ACTION_NONE,
+        MoveRule:   MOVE_RULE_NORMAL,
+        BlockedDir: DIR_NONE,
+        Panic:      5,
+        PanicMax:   5,
+        Courage:    20,
+        CourageMax: 20,
+    }
+
+    // ret.DirectiveSet = &DirectiveSet{}
+    return ret
+}
+
 type ConditionCheckFunction func(*Monster, CreatureInterface) bool
 
 var (
@@ -481,8 +497,8 @@ func (ai *MonsterAI) Deal(pEnemy CreatureInterface, currentTime time.Time) {
                 newX := (myX + diffX*ratio)
                 newY := (myY + diffY*ratio)
 
-                if isValidZoneCoord(ai.Body.Zone, newX, newY) {
-                    result = ai.Body.Zone.moveFastMonster(ai.Body, myX, myY, newX, newY, SKILL_RAPID_GLIDING)
+                if isValidZoneCoord(&ai.Body.Scene.Zone, newX, newY) {
+                    result = ai.Body.Scene.moveFastMonster(ai.Body, myX, myY, newX, newY, SKILL_RAPID_GLIDING)
                 }
                 if !result {
                     break

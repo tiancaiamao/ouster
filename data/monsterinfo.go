@@ -15,7 +15,7 @@ type MonsterInfoItem struct {
 
 type MonsterInfo struct {
     Name         string
-    Level        uint8
+    Level        Level_t
     STR          Attr_t
     DEX          Attr_t
     INTE         Attr_t
@@ -28,6 +28,9 @@ type MonsterInfo struct {
     MoveMode     MoveMode
     MeleeRange   int
     MissileRange int
+    AIType       int
+
+    UnburrowChance int
 }
 
 var MonsterInfoTable map[MonsterType_t]MonsterInfo

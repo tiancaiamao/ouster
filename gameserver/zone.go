@@ -76,8 +76,7 @@ func (zone *Zone) isMasterLair() bool {
 // }
 
 func (zone *Zone) getZoneLevel(x, y ZoneCoord_t) ZoneLevel_t {
-    // TODO
-    return 0
+    return *zone.Level(int(x), int(y))
 }
 func (zone *Zone) getWidth() ZoneCoord_t {
     return zone.Width
@@ -502,8 +501,68 @@ func findSuitablePosition(zone *Zone, cx ZoneCoord_t, cy ZoneCoord_t, mode MoveM
     return
 }
 
-func (zone *Zone) moveCreature(CreatureInterface, ZoneCoord_t, ZoneCoord_t, Dir_t) {
-    // TODO
+// moveMonster
+func (zone *Zone) moveCreature(creature CreatureInterface, nx ZoneCoord_t, ny ZoneCoord_t, dir Dir_t) {
+    inst := creature.CreatureInstance()
+    cx := inst.X
+    cy := inst.Y
+
+    tile := zone.Tile(int(cx), int(cy))
+    tile.DeleteCreature(inst.ObjectID)
+
+    newTile := zone.Tile(int(nx), int(ny))
+    newTile.AddCreature(creature)
+
+    inst.X = nx
+    inst.Y = ny
+    inst.Dir = dir
+
+    // checkMine(this, pCreature, nx, ny);
+    // checkTrap(this, pCreature);
+
+    zone.moveCreatureBroadcast(creature, cx, cy, nx, ny)
+}
+
+func (zone *Zone) moveCreatureBroadcast(creature CreatureInterface, x1 ZoneCoord_t, y1 ZoneCoord_t, x2 ZoneCoord_t, y2 ZoneCoord_t) {
+    inst := creature.CreatureInstance()
+    move := packet.GCMovePacket{
+        ObjectID: inst.ObjectID,
+        X:        Coord_t(inst.X),
+        Y:        Coord_t(inst.Y),
+        Dir:      inst.Dir,
+    }
+
+    for ix, endx := max(0, int(x2)-int(MaxViewportWidth)-1), min(int(zone.Width)-1, int(x2)+int(MaxViewportWidth)+1); ix <= endx; ix++ {
+        for iy, endy := max(0, int(y2)-int(MaxViewportUpperHeight)-1), min(int(zone.Height)-1, int(y2)+int(MaxViewportLowerHeight)+1); iy <= endy; iy++ {
+            tile := zone.Tile(ix, iy)
+            for _, obj := range tile.Objects {
+                if agent, ok := obj.(*Agent); ok {
+                    //////////////////////////////////////////////////////////////////////////////
+                    // OUT_OF_SIGHT -> ON_SIGHT/NEW_SIGHT : GCAddXXX
+                    // IN_SIGHT/ON_SIGHT/NEW_SIGHT -> IN_SIGHT/ON_SIGHT/NEW_SIGHT : GCMove
+                    //////////////////////////////////////////////////////////////////////////////
+                    // VisionState prevVS = pPC->getVisionState(x1,y1);
+                    // VisionState currVS = pPC->getVisionState(x2,y2);
+
+                    // if prevVS == OUT_OF_SIGHT && currVS >= IN_SIGHT {
+                    //     if creature.(*Monster) {
+                    //         if canSee(pPC, pMonster) {
+                    //             agent.sendPacket(pGCAddXXX)
+                    //         }
+                    //     } else {
+                    //         agent.sendPacket(pGCAddXXX)
+                    //     }
+                    // } else if prevVS >= IN_SIGHT && currVS >= IN_SIGHT {
+                    //     agent.sendStream(&outputStream)
+                    // } else if prevVS >= IN_SIGHT && currVS == OUT_OF_SIGHT {
+                    //     agent.sendPacket(&gcDeleteObject)
+                    // }
+
+                    agent.sendPacket(move)
+                }
+            }
+        }
+    }
 }
 
 func (zone *Zone) moveFastMonster(*Monster, ZoneCoord_t, ZoneCoord_t, ZoneCoord_t, ZoneCoord_t, SkillType_t) bool {

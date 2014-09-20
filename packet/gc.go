@@ -66,10 +66,10 @@ func (moveError GCMoveErrorPacket) MarshalBinary(code uint8) ([]byte, error) {
 }
 
 type GCMovePacket struct {
-    ObjectID uint32
-    X        uint8
-    Y        uint8
-    Dir      uint8
+    ObjectID ObjectID_t
+    X        Coord_t
+    Y        Coord_t
+    Dir      Dir_t
 }
 
 func (move GCMovePacket) PacketID() PacketID {
@@ -79,8 +79,8 @@ func (move GCMovePacket) String() string {
     return "move"
 }
 func (move GCMovePacket) MarshalBinary(code uint8) ([]byte, error) {
-    ret := []byte{0, 0, 0, 0, move.X, move.Y, move.Dir}
-    binary.LittleEndian.PutUint32(ret[:], move.ObjectID)
+    ret := []byte{0, 0, 0, 0, byte(move.X), byte(move.Y), byte(move.Dir)}
+    binary.LittleEndian.PutUint32(ret[:], uint32(move.ObjectID))
     return ret, nil
 }
 

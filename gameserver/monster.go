@@ -18,8 +18,6 @@ const (
 type Monster struct {
     Creature
 
-    Zone *Zone
-
     ticker uint16
 
     MonsterType MonsterType_t
@@ -69,6 +67,30 @@ type Monster struct {
     NextRegenTime time.Time
 }
 
+func (m *Monster) computeHP() {
+    m.HP[ATTR_MAX] = HP_t(m.STR*2 + Attr_t(m.Level))
+}
+
+func (m *Monster) computeToHit() {
+    m.ToHit = ToHit_t(float64(m.DEX) / 2 * (1.0 + float64(m.Level)/100))
+}
+
+func (m *Monster) computeDefense() {
+    m.Defense = Defense_t(float64(m.DEX) / 2 * (1.0 + float64(m.Level)/100))
+}
+
+func (m *Monster) computeProtection() {
+    m.Protection = Protection_t(float64(m.STR) / (5.0 - float64(m.Level)/100))
+}
+
+func (m *Monster) computeMinDamage() {
+    m.Damage[ATTR_CURRENT] = Damage_t(float64(m.STR) / (6.0 - float64(m.Level)/100))
+}
+
+func (m *Monster) computeMaxDamage() {
+    m.Damage[ATTR_MAX] = Damage_t(float64(m.STR) / (4.0 - float64(m.Level)/100))
+}
+
 func NewMonster(monsterType MonsterType_t) *Monster {
     info, ok := data.MonsterInfoTable[monsterType]
     if !ok {
@@ -77,9 +99,8 @@ func NewMonster(monsterType MonsterType_t) *Monster {
     }
 
     ret := &Monster{
-        MonsterType: monsterType,
-        Name:        info.Name,
-        // Level:        info.Level,
+        MonsterType:  monsterType,
+        Name:         info.Name,
         STR:          info.STR,
         DEX:          info.DEX,
         INI:          info.INTE,
@@ -93,30 +114,18 @@ func NewMonster(monsterType MonsterType_t) *Monster {
     }
 
     ret.Sight = info.Sight
+    ret.Level = info.Level
 
-    if info.HP == 0 {
-        info.HP = HP_t(int(info.Level) + int(info.STR)*3)
-    }
+    ret.computeHP()
+    ret.HP[ATTR_CURRENT] = ret.HP[ATTR_MAX]
 
-    ret.HP[ATTR_CURRENT] = info.HP
-    ret.HP[ATTR_MAX] = info.HP
+    ret.computeToHit()
+    ret.computeDefense()
+    ret.computeProtection()
+    ret.computeMinDamage()
+    ret.computeMaxDamage()
 
-    ret.Damage[ATTR_CURRENT] = Damage_t(float64(ret.STR) / 3)
-    ret.Damage[ATTR_MAX] = ret.Damage[ATTR_CURRENT]
-
-    ret.Brain = &MonsterAI{
-        Body: ret,
-        // DirectiveSet *DirectiveSet
-        // LastAction   int
-        // MoveRule     MoveRule
-        // BlockedDir   Dir_t
-        // WallCount    int
-        // bDamaged     bool
-        // Panic        int
-        // PanicMax     int
-        // Courage      int
-        // CourageMax	 int
-    }
+    ret.Brain = NewMonsterAI(ret, info.AIType)
     ret.Creature.Init()
 
     return ret
@@ -150,7 +159,7 @@ func (m *Monster) getMeleeRange() int {
 }
 
 func (m *Monster) getZone() *Zone {
-    return m.Zone
+    return &m.Scene.Zone
 }
 
 func (m *Monster) getX() ZoneCoord_t {
@@ -357,52 +366,47 @@ func (m *Monster) heartbeat(currentTime time.Time) {
             m.Brain.Deal(pEnemy, currentTime)
         }
     } else {
-        // if m.isFlag(EFFECT_CLASS_HIDE) {
-        // pMonsterInfo := g_pMonsterInfoManager.getMonsterInfo(m_MonsterType)
-        //
-        // if (rand() & 0x0000007F) < pMonsterInfo.getUnburrowChance() {
-        //     SkillHandler * pSkillHandler = g_pSkillHandlerManager.getSkillHandler(SKILL_UN_BURROW)
-        //     Assert(pSkillHandler != NULL)
-        //
-        //     pSkillHandler.execute(this)
-        //
-        //     addAccuDelay(time.Second + 500*time.MilliSecond)
-        // } else {
-        //     m.Brain.setDelay(currentTime)
-        // }
-        // } else if !m.isMaster && m.Zone.ZoneID != 72 {
-        // if m.RelicIndex == -1 {
-        //     pt := POINT(m.X, m.Y)
-        //
-        //     VSRect * pOuterRect = m_pZone.getOuterRect()
-        //     VSRect * pInnerRect = m_pZone.getInnerRect()
-        //     VSRect * pCoreRect = m_pZone.getCoreRect()
-        //
-        //     if pCoreRect.ptInRect(pt) || pInnerRect.ptInRect(pt) {
-        //
-        //         diceResult := rand() & 0x0000007F //%100;
-        //         if diceResult < 6 {
-        //             direction := rand() & 0x00000007 //% 8;
-        //             nx := pt.x + dirMoveMask[direction].x
-        //             ny := pt.y + dirMoveMask[direction].y
-        //
-        //             if canMove(nx, ny) && !(m_pZone.getZoneLevel(nx, ny) & SAFE_ZONE) {
-        //                 m_pZone.moveCreature(this, nx, ny, direction)
-        //             }
-        //         }
-        //     } else if pOuterRect.ptInRect(pt) {
-        //         m.Brain.move(m_pZone.getWidth()>>1, m_pZone.getHeight()>>1)
-        //     }
-        //
-        //     if (m_bScanEnemy || isFlag(EFFECT_CLASS_HALLUCINATION)) && currentTime > m_NextScanTurn {
-        //         m_pZone.mScan(this, m_X, m_Y, m_Dir)
-        //
-        //         m.NextScanTurn.tv_sec = currentTime.tv_sec + 2
-        //         m.NextScanTurn.tv_usec = currentTime.tv_usec
-        //     }
-        // }
-        // m.Brain.setDelay(currentTime)
-        // }
+        if m.isFlag(EFFECT_CLASS_HIDE) {
+            pMonsterInfo := data.MonsterInfoTable[m.MonsterType]
+            if rand.Intn(128) < pMonsterInfo.UnburrowChance {
+                // TODO
+                // SkillHandler * pSkillHandler =
+                // g_pSkillHandlerManager.getSkillHandler(SKILL_UN_BURROW)
+                // pSkillHandler.execute(this)
+                m.addAccuDelay(time.Second + 500*time.Millisecond)
+            } else {
+                m.Brain.setDelay(currentTime)
+            }
+        } else if !m.isMaster {
+            diceResult := rand.Intn(128)
+            if diceResult < 6 {
+                // 让怪走一走，锻炼身体
+                direction := rand.Intn(DIR_MAX)
+                nx := m.X + ZoneCoord_t(dirMoveMask[direction].X)
+                ny := m.Y + ZoneCoord_t(dirMoveMask[direction].Y)
+
+                if m.Scene == nil {
+                    log.Errorln("我日哦....")
+                    panic("fuck")
+                }
+                if nx < m.Scene.Width && nx >= 0 && ny < m.Scene.Height && ny >= 0 {
+                    if canMove(nx, ny) && (m.Scene.getZoneLevel(nx, ny)&SAFE_ZONE) == 0 {
+                        m.Scene.moveCreature(m, nx, ny, Dir_t(direction))
+                    }
+                }
+            }
+
+            // m.Brain.move(m_pZone.getWidth()>>1, m_pZone.getHeight()>>1)
+
+            // if (m_bScanEnemy || isFlag(EFFECT_CLASS_HALLUCINATION)) && currentTime > m_NextScanTurn {
+            //     m_pZone.mScan(this, m_X, m_Y, m_Dir)
+            //
+            //     m.NextScanTurn.tv_sec = currentTime.tv_sec + 2
+            //     m.NextScanTurn.tv_usec = currentTime.tv_usec
+            // }
+
+            m.Brain.setDelay(currentTime)
+        }
     }
 
     statSum := m.STR + m.DEX + m.INI
