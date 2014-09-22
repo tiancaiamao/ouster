@@ -21,6 +21,7 @@ type CreatureInterface interface {
     CreatureInstance() *Creature
 
     getProtection() Protection_t
+    getHP(int) HP_t
     IsAbleToMove() bool
 }
 

@@ -23,6 +23,7 @@ type Agent struct {
 func NewAgent(conn net.Conn) *Agent {
     agent := new(Agent)
     InitPlayer(&agent.Player, conn)
+    agent.computation = make(chan func(), 10)
     return agent
 }
 

@@ -172,6 +172,10 @@ func (slayer *Slayer) getWearItem(class int) ItemInterface {
     return nil
 }
 
+func (slayer *Slayer) getHP(attr int) HP_t {
+    return slayer.HP[attr]
+}
+
 // TODO
 func increaseDomainExp(pSlayer *Slayer,
     SKILL_DOMAIN_BLADE SkillPoint_t,

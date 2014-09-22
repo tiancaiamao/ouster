@@ -202,6 +202,10 @@ func (ouster *Ouster) hasSkill(skillType SkillType_t) *OusterSkillSlot {
     return nil
 }
 
+func (ouster *Ouster) getHP(attr int) HP_t {
+    return ouster.HP[attr]
+}
+
 func getPercentValue(value, percent int) int {
     return value * percent / 100
 }

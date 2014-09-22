@@ -402,7 +402,16 @@ func (ai *MonsterAI) useSkill(pEnemy CreatureInterface, SkillType SkillType_t, r
         return 0
     }
     handler := skill.(SkillToObjectInterface)
-    handler.ExecuteToObject(ai.Body, pEnemy)
+
+    // 移动计算，以闭包形式发到agent的goroutine中运行
+    if agent, ok := pEnemy.(*Agent); ok {
+        closure := func() {
+            handler.ExecuteToObject(ai.Body, pEnemy)
+        }
+        agent.computation <- closure
+    } else {
+        log.Errorln("怪物打怪物还没实现")
+    }
 
     ai.LastAction = LAST_ACTION_SKILL
     return 0
@@ -612,18 +621,16 @@ func checkEnemyDying(pMonster *Monster, pEnemy CreatureInterface) bool {
         return false
     }
 
-    // enemy := pEnemy.CreatureInstance()
-    // EnemyCurHP := enemy.HP[ATTR_CURRENT]
-    // EnemyMaxHP := enemy.HP[ATTR_MAX]
-    //
-    // if EnemyCurHP*5 < EnemyMaxHP {
-    //     return true
-    // }
+    EnemyCurHP := pEnemy.getHP(ATTR_CURRENT)
+    EnemyMaxHP := pEnemy.getHP(ATTR_MAX)
+
+    if EnemyCurHP*5 < EnemyMaxHP {
+        return true
+    }
     return false
 }
 
 func checkEnemyNotBloodDrained(pMonster *Monster, pEnemy CreatureInterface) bool {
-
     if pEnemy == nil {
         return false
     }

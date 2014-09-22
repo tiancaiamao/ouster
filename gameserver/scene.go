@@ -159,7 +159,7 @@ func (scene *Scene) addCreature(creature CreatureInterface, cx ZoneCoord_t, cy Z
 // 这个函数只能在scene的goroutine中调用
 // 被攻击者是怪物，直接减血
 // 被攻击者是玩家，发到agent的goroutine中去计算
-func (m *Scene) setDamage(sender CreatureInterface, target CreatureInterface, damage Damage_t) {
+func (m *Scene) setDamage(target CreatureInterface, agent *Agent, damage Damage_t) {
     var status packet.GCStatusCurrentHP
     switch target.(type) {
     case *Agent:
@@ -179,24 +179,20 @@ func (m *Scene) setDamage(sender CreatureInterface, target CreatureInterface, da
         log.Errorln("参数不对")
     }
 
-    switch raw := sender.(type) {
-    case *Agent:
-        // 发给攻击者，告诉他攻击成功了
-        ok1 := packet.GCAttackMeleeOK1{
-            ObjectID: target.CreatureInstance().ObjectID,
-        }
-        agent.sendPacket(ok1)
-        agent.sendPacket(status)
-    case *Monster:
+    // 发给攻击者，告诉他攻击成功了
+    ok1 := packet.GCAttackMeleeOK1{
+        ObjectID: target.CreatureInstance().ObjectID,
     }
+    agent.sendPacket(ok1)
+    agent.sendPacket(status)
 
+    pc := agent.CreatureInstance()
     // 广播给所有玩家，攻击成功，怪物状态变化
     ok3 := packet.GCAttackMeleeOK3{
-        ObjectID:       sender.CreatureInstance().ObjectID,
+        ObjectID:       pc.ObjectID,
         TargetObjectID: target.CreatureInstance().ObjectID,
     }
 
-    agent, _ := sender.(*Agent)
     m.broadcastPacket(pc.X, pc.Y, ok3, agent)
     m.broadcastPacket(pc.X, pc.Y, status, agent)
 }

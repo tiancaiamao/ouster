@@ -154,6 +154,10 @@ func (m *Monster) getDistance(x, y ZoneCoord_t) int {
     return max(abs(int(x-m.X)), abs(int(y-m.Y)))
 }
 
+func (m *Monster) getHP(attr int) HP_t {
+    return m.HP[attr]
+}
+
 func (m *Monster) computeDamage(creature CreatureInterface, critical bool) Damage_t {
     minDamage := m.Damage[ATTR_CURRENT]
     maxDamage := m.Damage[ATTR_MAX]

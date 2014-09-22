@@ -30,3 +30,7 @@ func (manager *NPCManager) addCreature(*NPC) {
 // TODO
 func (m *NPCManager) heartbeat() {
 }
+
+func (npc *NPC) getHP(attr int) HP_t {
+    return 1
+}

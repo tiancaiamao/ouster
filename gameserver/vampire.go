@@ -91,6 +91,10 @@ func (vampire *Vampire) getProtection() Protection_t {
     return vampire.Protection[ATTR_CURRENT]
 }
 
+func (vampire *Vampire) getHP(attr int) HP_t {
+    return vampire.HP[attr]
+}
+
 func (vampire *Vampire) PCInfo() data.PCInfo {
     if vampire == nil || vampire.Scene == nil {
         log.Errorln("fuck...Scene为空谁让你调这个函数了？")

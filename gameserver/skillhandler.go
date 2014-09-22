@@ -3,6 +3,7 @@ package main
 import (
     "github.com/tiancaiamao/ouster/log"
     "github.com/tiancaiamao/ouster/packet"
+    . "github.com/tiancaiamao/ouster/util"
 )
 
 type SkillToSelfInterface interface {
@@ -42,6 +43,7 @@ type SkillOutput struct {
     Delay    int
 }
 
+// 注意:需要在agent的goroutine中执行的
 func (melee AttackMelee) ExecuteToObject(sender CreatureInterface, target CreatureInterface) {
     rangeCheck := verifyDistance(sender, target)
     hitRoll := HitRoll(sender, target, 0)
@@ -74,10 +76,32 @@ func (melee AttackMelee) ExecuteToObject(sender CreatureInterface, target Creatu
             }
         }
 
-        // 应该是在scene的goroutine的
         if monster, ok := sender.(*Monster); ok {
             damage := monster.computeDamage(target, false)
-            monster.Scene.setDamage(target, nil, damage)
+            if agent, ok := target.(*Agent); ok {
+                pc := agent.PlayerCreatureInstance()
+                if pc.HP[ATTR_CURRENT] < HP_t(damage) {
+                    // 玩家被打死了
+                } else {
+                    pc.HP[ATTR_CURRENT] -= HP_t(damage)
+
+                    // 广播给所有玩家，攻击成功
+                    ok3 := packet.GCAttackMeleeOK3{
+                        ObjectID:       sender.CreatureInstance().ObjectID,
+                        TargetObjectID: target.CreatureInstance().ObjectID,
+                    }
+                    pc.Scene.broadcastPacket(pc.X, pc.Y, ok3, agent)
+
+                    // 广播给所有玩家，怪物状态变化
+                    status := packet.GCStatusCurrentHP{
+                        ObjectID:  pc.ObjectID,
+                        CurrentHP: pc.HP[ATTR_CURRENT],
+                    }
+                    pc.Scene.broadcastPacket(pc.X, pc.Y, status, nil)
+                }
+            } else {
+                log.Errorln("参数不对")
+            }
         }
 
         switch agent := target.(type) {
@@ -87,8 +111,8 @@ func (melee AttackMelee) ExecuteToObject(sender CreatureInterface, target Creatu
                 ObjectID: agent.ObjectInstance().ObjectID,
             })
         case *Monster:
-            monster := target.(*Monster)
-            monster.addEnemy(agent)
+            // monster := target.(*Monster)
+            // monster.addEnemy(agent)
         }
     }
 }
