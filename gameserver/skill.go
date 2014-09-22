@@ -20,29 +20,28 @@ const (
 )
 
 const (
-    SKILL_ATTACK_MELEE  SkillType_t = 0
-    SKILL_RAPID_GLIDING SkillType_t = 203
-    SKILL_METEOR_STRIKE uint16      = 180
-    SKILL_INVISIBILITY  uint16      = 100
-    SKILL_PARALYZE      uint16      = 89
-    SKILL_BLOOD_SPEAR   uint16      = 97
-
-    SKILL_ABSORB_SOUL       uint16 = 246
-    SKILL_SUMMON_SYLPH      uint16 = 247
-    SKILL_SHARP_HAIL        uint16 = 348 // 尖锐冰雹
-    SKILL_FLOURISH          uint16 = 219 // 活跃攻击
-    SKILL_DESTRUCTION_SPEAR uint16 = 298 //致命爆发
-    SKILL_SHARP_CHAKRAM     uint16 = 295 // 税利之轮
-    SKILL_EVADE             uint16 = 220 // 回避术
-
-    SKILL_FIRE_OF_SOUL_STONE uint16 = 227
-    SKILL_ICE_OF_SOUL_STONE  uint16 = 228
-    SKILL_SAND_OF_SOUL_STONE uint16 = 229
-
-    SKILL_TELEPORT       uint16 = 280 // 瞬间移动
-    SKILL_DUCKING_WALLOP uint16 = 302 // 光速冲击
-    SKILL_DISTANCE_BLITZ uint16 = 304 // 雷神斩
-
+    SKILL_ATTACK_MELEE       = 0
+    SKILL_UN_BURROW          = 107
+    SKILL_UN_TRANSFORM       = 108
+    SKILL_UN_INVISIBILITY    = 109
+    SKILL_RAPID_GLIDING      = 203
+    SKILL_METEOR_STRIKE      = 180
+    SKILL_INVISIBILITY       = 100
+    SKILL_PARALYZE           = 89
+    SKILL_BLOOD_SPEAR        = 97
+    SKILL_ABSORB_SOUL        = 246
+    SKILL_SUMMON_SYLPH       = 247
+    SKILL_SHARP_HAIL         = 348 // 尖锐冰雹
+    SKILL_FLOURISH           = 219 // 活跃攻击
+    SKILL_DESTRUCTION_SPEAR  = 298 //致命爆发
+    SKILL_SHARP_CHAKRAM      = 295 // 税利之轮
+    SKILL_EVADE              = 220 // 回避术
+    SKILL_FIRE_OF_SOUL_STONE = 227
+    SKILL_ICE_OF_SOUL_STONE  = 228
+    SKILL_SAND_OF_SOUL_STONE = 229
+    SKILL_TELEPORT           = 280 // 瞬间移动
+    SKILL_DUCKING_WALLOP     = 302 // 光速冲击
+    SKILL_DISTANCE_BLITZ     = 304 // 雷神斩
 )
 
 type SkillFormula interface {
@@ -115,11 +114,12 @@ func (skill Skill) Check(skillType SkillType_t, agent *Agent) bool {
     return true
 }
 
-var skillTable map[uint16]SkillHandler
+var skillTable map[SkillType_t]SkillHandler
 
 func init() {
-    skillTable = make(map[uint16]SkillHandler)
+    skillTable = make(map[SkillType_t]SkillHandler)
 
+    skillTable[SKILL_ATTACK_MELEE] = AttackMelee{}
     // skillTable[SKILL_BLOOD_SPEAR] = &SkillInfo{
     //     Type:      SKILL_PROPERTY_TYPE_MAGIC,
     //     Name:      "Bloody Spear",

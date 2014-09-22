@@ -1,0 +1,13326 @@
+[
+	{
+		"ID": 0,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Dead Body"
+		}
+	},
+	{
+		"ID": 1,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16
+					],
+					"Action": 1,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Turning Dead"
+		}
+	},
+	{
+		"ID": 3,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Turning Soul"
+		}
+	},
+	{
+		"ID": 2,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16
+					],
+					"Action": 1,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Kid"
+		}
+	},
+	{
+		"ID": 4,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Soldier"
+		}
+	},
+	{
+		"ID": 5,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Captain"
+		}
+	},
+	{
+		"ID": 7,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16
+					],
+					"Action": 1,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						6
+					],
+					"Action": 2,
+					"Parameter": 81,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Alkan"
+		}
+	},
+	{
+		"ID": 20,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Iron Teeth"
+		}
+	},
+	{
+		"ID": 9,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						1,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						6
+					],
+					"Action": 2,
+					"Parameter": 81,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						7
+					],
+					"Action": 2,
+					"Parameter": 82,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Red Eye"
+		}
+	},
+	{
+		"ID": 14,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Mutant"
+		}
+	},
+	{
+		"ID": 15,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						1,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						6
+					],
+					"Action": 2,
+					"Parameter": 81,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						13
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 86,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Moderas"
+		}
+	},
+	{
+		"ID": 18,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Vandalizer"
+		}
+	},
+	{
+		"ID": 10,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						9
+					],
+					"Action": 2,
+					"Parameter": 84,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						13
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Dirty Strider"
+		}
+	},
+	{
+		"ID": 16,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						1,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Estroider"
+		}
+	},
+	{
+		"ID": 17,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						6
+					],
+					"Action": 2,
+					"Parameter": 81,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 86,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Widows"
+		}
+	},
+	{
+		"ID": 12,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 86,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						9
+					],
+					"Action": 2,
+					"Parameter": 84,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						8
+					],
+					"Action": 2,
+					"Parameter": 83,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Hoble"
+		}
+	},
+	{
+		"ID": 19,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 1,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "BigFang"
+		}
+	},
+	{
+		"ID": 6,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						8
+					],
+					"Action": 2,
+					"Parameter": 83,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						13
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 87,
+					"Ratio": 80,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Blood Warlock"
+		}
+	},
+	{
+		"ID": 8,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Golemer"
+		}
+	},
+	{
+		"ID": 13,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						8
+					],
+					"Action": 2,
+					"Parameter": 83,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						13
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 87,
+					"Ratio": 80,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Shadow Wing"
+		}
+	},
+	{
+		"ID": 23,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Crimson Slaughter"
+		}
+	},
+	{
+		"ID": 25,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						14
+					],
+					"Action": 2,
+					"Parameter": 116,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 98,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Reaper"
+		}
+	},
+	{
+		"ID": 22,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 18,
+					"Ratio": 70,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						2
+					],
+					"Action": 2,
+					"Parameter": 164,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 98,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chaos Knight"
+		}
+	},
+	{
+		"ID": 27,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						14
+					],
+					"Action": 2,
+					"Parameter": 116,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						8
+					],
+					"Action": 2,
+					"Parameter": 83,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Hell Wizard"
+		}
+	},
+	{
+		"ID": 21,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						9
+					],
+					"Action": 2,
+					"Parameter": 84,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						8
+					],
+					"Action": 2,
+					"Parameter": 83,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Dark Screamer"
+		}
+	},
+	{
+		"ID": 11,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 98,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chaos Gurdian"
+		}
+	},
+	{
+		"ID": 26,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						9
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Hell Gurdian"
+		}
+	},
+	{
+		"ID": 24,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Lord Darkness"
+		}
+	},
+	{
+		"ID": 28,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Relic"
+		}
+	},
+	{
+		"ID": 29,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Dark Guardian"
+		}
+	},
+	{
+		"ID": 33,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Dark Haze"
+		}
+	},
+	{
+		"ID": 31,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 98,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chaos Greed"
+		}
+	},
+	{
+		"ID": 30,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 98,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Lord Chaos"
+		}
+	},
+	{
+		"ID": 32,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						9
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Hell Fiend"
+		}
+	},
+	{
+		"ID": 34,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						24
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						25,
+						1,
+						29
+					],
+					"Action": 2,
+					"Parameter": 91,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						25
+					],
+					"Action": 6,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "BathoryFly"
+		}
+	},
+	{
+		"ID": 35,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						33,
+						16
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 80,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						30
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						26
+					],
+					"Action": 5,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 15,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						27
+					],
+					"Action": 4,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 184,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						29
+					],
+					"Action": 2,
+					"Parameter": 91,
+					"Ratio": 7,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 7,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						28
+					],
+					"Action": 2,
+					"Parameter": 92,
+					"Ratio": 7,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						14
+					],
+					"Action": 2,
+					"Parameter": 116,
+					"Ratio": 7,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 87,
+					"Ratio": 15,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 95,
+					"Ratio": 35,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 96,
+					"Ratio": 35,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 158,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 182,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 148,
+					"Ratio": 40,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 150,
+					"Ratio": 80,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Bathory"
+		}
+	},
+	{
+		"ID": 36,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						24
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						25
+					],
+					"Action": 6,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "TepezCasket"
+		}
+	},
+	{
+		"ID": 37,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						30
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						26
+					],
+					"Action": 5,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						27
+					],
+					"Action": 4,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 15,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 40,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 7,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						28
+					],
+					"Action": 2,
+					"Parameter": 92,
+					"Ratio": 7,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						14
+					],
+					"Action": 2,
+					"Parameter": 116,
+					"Ratio": 7,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 87,
+					"Ratio": 25,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 95,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 158,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						31
+					],
+					"Action": 2,
+					"Parameter": 181,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 148,
+					"Ratio": 40,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 150,
+					"Ratio": 80,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Tepez"
+		}
+	},
+	{
+		"ID": 38,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 15,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 40,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 7,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						28
+					],
+					"Action": 2,
+					"Parameter": 92,
+					"Ratio": 7,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						14
+					],
+					"Action": 2,
+					"Parameter": 116,
+					"Ratio": 7,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 87,
+					"Ratio": 15,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 95,
+					"Ratio": 35,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 158,
+					"Ratio": 40,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 148,
+					"Ratio": 40,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 150,
+					"Ratio": 40,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "BathoryFake"
+		}
+	},
+	{
+		"ID": 39,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 15,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 7,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						28
+					],
+					"Action": 2,
+					"Parameter": 92,
+					"Ratio": 7,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						14
+					],
+					"Action": 2,
+					"Parameter": 116,
+					"Ratio": 7,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 87,
+					"Ratio": 25,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 95,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 40,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 158,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 148,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 150,
+					"Ratio": 40,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "TepezFake"
+		}
+	},
+	{
+		"ID": 40,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 95,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 158,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Shaman Oaf"
+		}
+	},
+	{
+		"ID": 41,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 70,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						14
+					],
+					"Action": 2,
+					"Parameter": 116,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Mum Rimmon"
+		}
+	},
+	{
+		"ID": 42,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 98,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Dun Wolfarch"
+		}
+	},
+	{
+		"ID": 43,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 5,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Dark Wolf"
+		}
+	},
+	{
+		"ID": 44,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 95,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Blood Wolf"
+		}
+	},
+	{
+		"ID": 45,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Soldier"
+		}
+	},
+	{
+		"ID": 46,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Soldier"
+		}
+	},
+	{
+		"ID": 47,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Dead Body"
+		}
+	},
+	{
+		"ID": 48,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Dead Body"
+		}
+	},
+	{
+		"ID": 49,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						8
+					],
+					"Action": 2,
+					"Parameter": 83,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						13
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 87,
+					"Ratio": 80,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Blood Warlock"
+		}
+	},
+	{
+		"ID": 50,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Kid"
+		}
+	},
+	{
+		"ID": 51,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Golemer"
+		}
+	},
+	{
+		"ID": 52,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						9
+					],
+					"Action": 2,
+					"Parameter": 84,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						13
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Dirty Strider"
+		}
+	},
+	{
+		"ID": 53,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						6
+					],
+					"Action": 2,
+					"Parameter": 81,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Alkan"
+		}
+	},
+	{
+		"ID": 54,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 98,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Chaos Gurdian"
+		}
+	},
+	{
+		"ID": 55,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						8
+					],
+					"Action": 2,
+					"Parameter": 83,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						13
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 87,
+					"Ratio": 80,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Shadow Wing"
+		}
+	},
+	{
+		"ID": 56,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Mutant"
+		}
+	},
+	{
+		"ID": 57,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						1,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Estroider"
+		}
+	},
+	{
+		"ID": 58,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						1,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						6
+					],
+					"Action": 2,
+					"Parameter": 81,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						13
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 86,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Moderas"
+		}
+	},
+	{
+		"ID": 59,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						9
+					],
+					"Action": 2,
+					"Parameter": 84,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						8
+					],
+					"Action": 2,
+					"Parameter": 83,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Dark Screamer"
+		}
+	},
+	{
+		"ID": 60,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 18,
+					"Ratio": 70,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						2
+					],
+					"Action": 2,
+					"Parameter": 158,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 98,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Chaos Knight"
+		}
+	},
+	{
+		"ID": 61,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 18,
+					"Ratio": 70,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						2
+					],
+					"Action": 2,
+					"Parameter": 164,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 98,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Chaos Knight"
+		}
+	},
+	{
+		"ID": 62,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						29
+					],
+					"Action": 2,
+					"Parameter": 91,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Lord Darkness"
+		}
+	},
+	{
+		"ID": 63,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 95,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						14
+					],
+					"Action": 2,
+					"Parameter": 116,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						8
+					],
+					"Action": 2,
+					"Parameter": 83,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Hell Wizard"
+		}
+	},
+	{
+		"ID": 64,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Dark Guardian"
+		}
+	},
+	{
+		"ID": 65,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 98,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Lord Chaos"
+		}
+	},
+	{
+		"ID": 66,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 164,
+					"Ratio": 5,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Dark Berith"
+		}
+	},
+	{
+		"ID": 67,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						26
+					],
+					"Action": 5,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 236,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						34
+					],
+					"Action": 2,
+					"Parameter": 88,
+					"Ratio": 25,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						28
+					],
+					"Action": 2,
+					"Parameter": 92,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 16,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 146,
+					"Ratio": 25,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 148,
+					"Ratio": 33,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 275,
+					"Ratio": 33,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 180,
+					"Ratio": 33,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 147,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 145,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Lich Jel"
+		}
+	},
+	{
+		"ID": 68,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 164,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Mount Crag"
+		}
+	},
+	{
+		"ID": 69,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						26
+					],
+					"Action": 5,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						34
+					],
+					"Action": 2,
+					"Parameter": 88,
+					"Ratio": 11,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						28
+					],
+					"Action": 2,
+					"Parameter": 92,
+					"Ratio": 12,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						14
+					],
+					"Action": 2,
+					"Parameter": 116,
+					"Ratio": 14,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						13
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 146,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 148,
+					"Ratio": 25,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 33,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 145,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 147,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Giant Os"
+		}
+	},
+	{
+		"ID": 70,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Dead Body"
+		}
+	},
+	{
+		"ID": 71,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Turning Dead"
+		}
+	},
+	{
+		"ID": 72,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Turning Soul"
+		}
+	},
+	{
+		"ID": 73,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Kid"
+		}
+	},
+	{
+		"ID": 74,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Wolf"
+		}
+	},
+	{
+		"ID": 75,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Captain"
+		}
+	},
+	{
+		"ID": 76,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						6
+					],
+					"Action": 2,
+					"Parameter": 81,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Alkan"
+		}
+	},
+	{
+		"ID": 77,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Iron Teeth"
+		}
+	},
+	{
+		"ID": 78,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						1,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						6
+					],
+					"Action": 2,
+					"Parameter": 81,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						7
+					],
+					"Action": 2,
+					"Parameter": 82,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Red Eye"
+		}
+	},
+	{
+		"ID": 79,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Mutant"
+		}
+	},
+	{
+		"ID": 80,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						1,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						6
+					],
+					"Action": 2,
+					"Parameter": 81,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						13
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 86,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Moderas"
+		}
+	},
+	{
+		"ID": 81,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Vandalizer"
+		}
+	},
+	{
+		"ID": 82,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						9
+					],
+					"Action": 2,
+					"Parameter": 84,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						13
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Dirty Strider"
+		}
+	},
+	{
+		"ID": 83,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						1,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Estroider"
+		}
+	},
+	{
+		"ID": 84,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						6
+					],
+					"Action": 2,
+					"Parameter": 81,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 86,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Widows"
+		}
+	},
+	{
+		"ID": 85,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 86,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						9
+					],
+					"Action": 2,
+					"Parameter": 84,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						8
+					],
+					"Action": 2,
+					"Parameter": 83,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Hoble"
+		}
+	},
+	{
+		"ID": 86,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 1,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief BigFang"
+		}
+	},
+	{
+		"ID": 87,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						8
+					],
+					"Action": 2,
+					"Parameter": 83,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						13
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 87,
+					"Ratio": 80,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Blood Warlock"
+		}
+	},
+	{
+		"ID": 88,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Golemer"
+		}
+	},
+	{
+		"ID": 89,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						8
+					],
+					"Action": 2,
+					"Parameter": 83,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						13
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 87,
+					"Ratio": 80,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Shadow Wing"
+		}
+	},
+	{
+		"ID": 90,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Crimson Slaughter"
+		}
+	},
+	{
+		"ID": 91,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						14
+					],
+					"Action": 2,
+					"Parameter": 116,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 98,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Reaper"
+		}
+	},
+	{
+		"ID": 92,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 18,
+					"Ratio": 70,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						2
+					],
+					"Action": 2,
+					"Parameter": 164,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 98,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Chaos Knight"
+		}
+	},
+	{
+		"ID": 93,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						14
+					],
+					"Action": 2,
+					"Parameter": 116,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						8
+					],
+					"Action": 2,
+					"Parameter": 83,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Hell Wizard"
+		}
+	},
+	{
+		"ID": 94,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						9
+					],
+					"Action": 2,
+					"Parameter": 84,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						8
+					],
+					"Action": 2,
+					"Parameter": 83,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Dark Screamer"
+		}
+	},
+	{
+		"ID": 95,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 98,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Chaos Gurdian"
+		}
+	},
+	{
+		"ID": 96,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						9
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Hell Gurdian"
+		}
+	},
+	{
+		"ID": 97,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Dark Guardian"
+		}
+	},
+	{
+		"ID": 98,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 98,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Lord Chaos"
+		}
+	},
+	{
+		"ID": 99,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Lord Darkness"
+		}
+	},
+	{
+		"ID": 100,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						9
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Hell Fiend"
+		}
+	},
+	{
+		"ID": 101,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 98,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Chaos Greed"
+		}
+	},
+	{
+		"ID": 102,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Dark Haze"
+		}
+	},
+	{
+		"ID": 103,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 95,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 158,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Shaman Oaf"
+		}
+	},
+	{
+		"ID": 104,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 70,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						14
+					],
+					"Action": 2,
+					"Parameter": 116,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Mum Rimmon"
+		}
+	},
+	{
+		"ID": 105,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						30
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						26
+					],
+					"Action": 5,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						33
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 5,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 258,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 199,
+					"Ratio": 75,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 258,
+					"Ratio": 40,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 17,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Dun Wolfarch"
+		}
+	},
+	{
+		"ID": 106,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 164,
+					"Ratio": 5,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Dark Berith"
+		}
+	},
+	{
+		"ID": 107,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						26
+					],
+					"Action": 5,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						33
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						34
+					],
+					"Action": 2,
+					"Parameter": 88,
+					"Ratio": 11,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						28
+					],
+					"Action": 2,
+					"Parameter": 92,
+					"Ratio": 12,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						14
+					],
+					"Action": 2,
+					"Parameter": 116,
+					"Ratio": 14,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						13
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 146,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 148,
+					"Ratio": 25,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 33,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 145,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 147,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Giant Os"
+		}
+	},
+	{
+		"ID": 108,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 164,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Mount Crag"
+		}
+	},
+	{
+		"ID": 109,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						26
+					],
+					"Action": 5,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						33
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						34
+					],
+					"Action": 2,
+					"Parameter": 88,
+					"Ratio": 25,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						28
+					],
+					"Action": 2,
+					"Parameter": 92,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 12,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						14
+					],
+					"Action": 2,
+					"Parameter": 116,
+					"Ratio": 14,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 158,
+					"Ratio": 16,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 146,
+					"Ratio": 25,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 148,
+					"Ratio": 33,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 147,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 145,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chief Lich Jel"
+		}
+	},
+	{
+		"ID": 110,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						6
+					],
+					"Action": 2,
+					"Parameter": 81,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						7
+					],
+					"Action": 2,
+					"Parameter": 82,
+					"Ratio": 25,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						9
+					],
+					"Action": 2,
+					"Parameter": 84,
+					"Ratio": 33,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 146,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 145,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 80,
+					"Ratio": 80,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Dim Gargoyle"
+		}
+	},
+	{
+		"ID": 111,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						26
+					],
+					"Action": 5,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 25,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						34
+					],
+					"Action": 2,
+					"Parameter": 88,
+					"Ratio": 33,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 275,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 87,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 199,
+					"Ratio": 80,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Volva Medusa"
+		}
+	},
+	{
+		"ID": 112,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 258,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 164,
+					"Ratio": 5,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Ash Balog"
+		}
+	},
+	{
+		"ID": 113,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Quest Kid"
+		}
+	},
+	{
+		"ID": 114,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						1,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						6
+					],
+					"Action": 2,
+					"Parameter": 81,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						13
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 86,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Quest Moderas"
+		}
+	},
+	{
+		"ID": 115,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						6
+					],
+					"Action": 2,
+					"Parameter": 81,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 86,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Quest Widows"
+		}
+	},
+	{
+		"ID": 116,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 85,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						11
+					],
+					"Action": 2,
+					"Parameter": 90,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						8
+					],
+					"Action": 2,
+					"Parameter": 83,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						13
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 87,
+					"Ratio": 80,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Quest Blood Warlock"
+		}
+	},
+	{
+		"ID": 117,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Quest Crimson Slaughter"
+		}
+	},
+	{
+		"ID": 118,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 98,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Quest Chaos Gurdian"
+		}
+	},
+	{
+		"ID": 119,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 98,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Quest Lord Chaos"
+		}
+	},
+	{
+		"ID": 120,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						20
+					],
+					"Action": 2,
+					"Parameter": 108,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						10
+					],
+					"Action": 2,
+					"Parameter": 89,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 102,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Quest Dark Guardian"
+		}
+	},
+	{
+		"ID": 121,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 98,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Quest Chaos Greed"
+		}
+	},
+	{
+		"ID": 122,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 98,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Quest Dun Wolfarch"
+		}
+	},
+	{
+		"ID": 123,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Ore"
+		}
+	},
+	{
+		"ID": 124,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						36,
+						32
+					],
+					"Action": 7,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						36,
+						32
+					],
+					"Action": 1,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						35
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 164,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 22,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						29
+					],
+					"Action": 2,
+					"Parameter": 91,
+					"Ratio": 12,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Boss Crimson Slaughter"
+		}
+	},
+	{
+		"ID": 125,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						36,
+						32
+					],
+					"Action": 7,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						36,
+						32
+					],
+					"Action": 1,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						35
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 164,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 22,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						29
+					],
+					"Action": 2,
+					"Parameter": 91,
+					"Ratio": 12,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Boss Lord Chaos"
+		}
+	},
+	{
+		"ID": 126,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						36,
+						32
+					],
+					"Action": 7,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						36,
+						32
+					],
+					"Action": 1,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						35
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 164,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 22,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 258,
+					"Ratio": 11,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Boss Dark Berith"
+		}
+	},
+	{
+		"ID": 127,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						36,
+						32
+					],
+					"Action": 7,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						36,
+						32
+					],
+					"Action": 1,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						35
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 164,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 22,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 258,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 12,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						29
+					],
+					"Action": 2,
+					"Parameter": 91,
+					"Ratio": 14,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Boss Ash Balog"
+		}
+	},
+	{
+		"ID": 128,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						36,
+						32
+					],
+					"Action": 7,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						36,
+						32
+					],
+					"Action": 1,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						35
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0,
+						13
+					],
+					"Action": 2,
+					"Parameter": 99,
+					"Ratio": 5,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 164,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 258,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 14,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						29
+					],
+					"Action": 2,
+					"Parameter": 91,
+					"Ratio": 17,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Boss Turning Dead"
+		}
+	},
+	{
+		"ID": 129,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 1,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 70,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 1,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Junior WolfArch"
+		}
+	},
+	{
+		"ID": 130,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 164,
+					"Ratio": 15,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Blunt Crag"
+		}
+	},
+	{
+		"ID": 131,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Mutant Edger"
+		}
+	},
+	{
+		"ID": 132,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						22
+					],
+					"Action": 2,
+					"Parameter": 98,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Chaos Gurdian"
+		}
+	},
+	{
+		"ID": 133,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						26
+					],
+					"Action": 5,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						27
+					],
+					"Action": 4,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						32
+					],
+					"Action": 2,
+					"Parameter": 312,
+					"Ratio": 40,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						32
+					],
+					"Action": 2,
+					"Parameter": 313,
+					"Ratio": 33,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						32
+					],
+					"Action": 2,
+					"Parameter": 310,
+					"Ratio": 25,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						32
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 33,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						32
+					],
+					"Action": 2,
+					"Parameter": 309,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						32
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 311,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 310,
+					"Ratio": 29,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 307,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 308,
+					"Ratio": 25,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 33,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": null,
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Gilles De Rais"
+		}
+	},
+	{
+		"ID": 134,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						23
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						26
+					],
+					"Action": 5,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						27
+					],
+					"Action": 4,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 307,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 38,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": null,
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Gilles De Rais Fake"
+		}
+	},
+	{
+		"ID": 135,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						26
+					],
+					"Action": 5,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						27
+					],
+					"Action": 4,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						32
+					],
+					"Action": 2,
+					"Parameter": 313,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						32
+					],
+					"Action": 2,
+					"Parameter": 312,
+					"Ratio": 29,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						32
+					],
+					"Action": 2,
+					"Parameter": 307,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						32
+					],
+					"Action": 2,
+					"Parameter": 309,
+					"Ratio": 25,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						32
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 33,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						32
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						32
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 313,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 312,
+					"Ratio": 25,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 307,
+					"Ratio": 17,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 309,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 25,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": null,
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Awakened Gilles De Rais"
+		}
+	},
+	{
+		"ID": 136,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						27
+					],
+					"Action": 4,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						32
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						32
+					],
+					"Action": 2,
+					"Parameter": 258,
+					"Ratio": 44,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						32
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 40,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						0
+					],
+					"Action": 2,
+					"Parameter": 276,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 258,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 29,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 276,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Vampire Test Model 1"
+		}
+	},
+	{
+		"ID": 137,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						27
+					],
+					"Action": 4,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						32
+					],
+					"Action": 2,
+					"Parameter": 79,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						32
+					],
+					"Action": 2,
+					"Parameter": 180,
+					"Ratio": 63,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						16,
+						32
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 180,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 60,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 150,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Vampire Test Model 2"
+		}
+	},
+	{
+		"ID": 138,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						27
+					],
+					"Action": 4,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 311,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Vampire Guard"
+		}
+	},
+	{
+		"ID": 139,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Land Mine"
+		}
+	},
+	{
+		"ID": 140,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Pleasure Station"
+		}
+	},
+	{
+		"ID": 141,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Claymore"
+		}
+	},
+	{
+		"ID": 142,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						32,
+						18
+					],
+					"Action": 2,
+					"Parameter": 107,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 330,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Gore Gland"
+		}
+	},
+	{
+		"ID": 143,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 95,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 236,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Rum Guarder"
+		}
+	},
+	{
+		"ID": 144,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Icy Ruffian"
+		}
+	},
+	{
+		"ID": 145,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						27
+					],
+					"Action": 4,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 195,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Slayer Guard"
+		}
+	},
+	{
+		"ID": 146,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						27
+					],
+					"Action": 4,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 285,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Ousters Guard"
+		}
+	},
+	{
+		"ID": 147,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						27
+					],
+					"Action": 4,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						16,
+						33
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						33
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32,
+						16
+					],
+					"Action": 2,
+					"Parameter": 340,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 340,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 337,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						37,
+						16
+					],
+					"Action": 2,
+					"Parameter": 338,
+					"Ratio": 60,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						37,
+						16
+					],
+					"Action": 2,
+					"Parameter": 339,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						37
+					],
+					"Action": 2,
+					"Parameter": 338,
+					"Ratio": 62,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						37
+					],
+					"Action": 2,
+					"Parameter": 339,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Great Ruffian Skull"
+		}
+	},
+	{
+		"ID": 148,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						27
+					],
+					"Action": 4,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 337,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						37,
+						16
+					],
+					"Action": 2,
+					"Parameter": 338,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						37,
+						16
+					],
+					"Action": 2,
+					"Parameter": 339,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						37
+					],
+					"Action": 2,
+					"Parameter": 336,
+					"Ratio": 60,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						37
+					],
+					"Action": 2,
+					"Parameter": 338,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						37
+					],
+					"Action": 2,
+					"Parameter": 339,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Great Ruffian"
+		}
+	},
+	{
+		"ID": 149,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 164,
+					"Ratio": 5,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "War Defender"
+		}
+	},
+	{
+		"ID": 150,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 350,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Miga"
+		}
+	},
+	{
+		"ID": 151,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 353,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Gefreiter"
+		}
+	},
+	{
+		"ID": 152,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						32,
+						33
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 148,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 87,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 88,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Hauptmann"
+		}
+	},
+	{
+		"ID": 153,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						32,
+						33
+					],
+					"Action": 2,
+					"Parameter": 178,
+					"Ratio": 30,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 180,
+					"Ratio": 29,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 96,
+					"Ratio": 40,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 95,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Oberst"
+		}
+	},
+	{
+		"ID": 154,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 356,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Sturmmann"
+		}
+	},
+	{
+		"ID": 155,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Oberschutze Melee"
+		}
+	},
+	{
+		"ID": 156,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 355,
+					"Ratio": 90,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 357,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Oberschutze Range"
+		}
+	},
+	{
+		"ID": 157,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 354,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Flieger"
+		}
+	},
+	{
+		"ID": 158,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Tug Leg"
+		}
+	},
+	{
+		"ID": 159,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Tug Legger"
+		}
+	},
+	{
+		"ID": 160,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Roi Cadavru"
+		}
+	},
+	{
+		"ID": 161,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						32
+					],
+					"Action": 2,
+					"Parameter": 370,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Trasla"
+		}
+	},
+	{
+		"ID": 162,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 371,
+					"Ratio": 80,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 183,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Pusca"
+		}
+	},
+	{
+		"ID": 163,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 372,
+					"Ratio": 50,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 373,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Nod Copila"
+		}
+	},
+	{
+		"ID": 164,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 20,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 93,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Razor"
+		}
+	},
+	{
+		"ID": 165,
+		"DirectiveSet": {
+			"Directives": [
+				{
+					"Conditions": [
+						0
+					],
+					"Action": 2,
+					"Parameter": 0,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1,
+						14
+					],
+					"Action": 2,
+					"Parameter": 116,
+					"Ratio": 10,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 2,
+					"Parameter": 94,
+					"Ratio": 100,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						1
+					],
+					"Action": 0,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				},
+				{
+					"Conditions": [
+						3
+					],
+					"Action": 3,
+					"Parameter": 0,
+					"Ratio": 0,
+					"Weight": 0
+				}
+			],
+			"DeadDirectives": null,
+			"Name": "Siamese"
+		}
+	}
+]

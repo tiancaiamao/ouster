@@ -8,35 +8,44 @@ import (
     "path"
 )
 
-type MonsterInfoItem struct {
-    MonsterType MonsterType_t
-    MonsterInfo MonsterInfo
-}
-
 type MonsterInfo struct {
-    Name         string
-    Level        Level_t
-    STR          Attr_t
-    DEX          Attr_t
-    INTE         Attr_t
-    BodySize     uint
-    HP           HP_t
-    Exp          Exp_t
-    MColor       Color_t
-    SColor       Color_t
-    Sight        Sight_t
-    MoveMode     MoveMode
-    MeleeRange   int
-    MissileRange int
-    AIType       int
-
+    MonsterType    MonsterType_t
+    Name           string
+    Level          Level_t
+    STR            Attr_t
+    DEX            Attr_t
+    INTE           Attr_t
+    BodySize       int
+    Exp            Exp_t
+    MColor         Color_t
+    SColor         Color_t
+    Sight          Sight_t
+    MoveMode       MoveMode
+    MeleeRange     int
+    MissileRange   int
+    AIType         int
     UnburrowChance int
+    SType          int
+    Fame           Fame_t
+    Align          int
+    AOrder         int
+    Moral          int
+    Delay          int
+    RegenPortal    bool
+    RegenInvisible bool
+    RegenBat       bool
+    Master         bool
+    ClanType       int
+    Chief          bool
+    NormalRegin    bool
+    MonsterClass   int
+    SkullType      int
 }
 
 var MonsterInfoTable map[MonsterType_t]MonsterInfo
 
 func init() {
-    var array []MonsterInfoItem
+    var array []MonsterInfo
 
     filePath := path.Join(config.DataFilePath, "monsterinfo.json")
     file, err := os.Open(filePath)
@@ -52,6 +61,6 @@ func init() {
 
     MonsterInfoTable = make(map[MonsterType_t]MonsterInfo)
     for _, v := range array {
-        MonsterInfoTable[v.MonsterType] = v.MonsterInfo
+        MonsterInfoTable[v.MonsterType] = v
     }
 }

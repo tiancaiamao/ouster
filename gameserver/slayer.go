@@ -163,6 +163,10 @@ func (slayer *Slayer) computeDamage(creature CreatureInterface, bCritical bool) 
     return 0
 }
 
+func (slayer *Slayer) getProtection() Protection_t {
+    return slayer.Protection[ATTR_CURRENT]
+}
+
 // TODO
 func (slayer *Slayer) getWearItem(class int) ItemInterface {
     return nil

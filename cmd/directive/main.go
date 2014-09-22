@@ -3,7 +3,12 @@ package main
 import (
     "bufio"
     "bytes"
-    "fmt"
+    "database/sql"
+    "encoding/json"
+    // "fmt"
+    _ "github.com/go-sql-driver/mysql"
+    "log"
+    "os"
     "strconv"
 )
 
@@ -39,9 +44,57 @@ DIRECTIVE BEGIN
 DIRECTIVE END`
 
 func main() {
-    reader := bufio.NewReader(bytes.NewBufferString(input))
+    db, err := sql.Open("mysql", "elcastle:elca110@tcp(localhost:3306)/DARKEDEN")
+    if err != nil {
+        panic(err)
+    }
 
-    set := &DirectiveSet{}
+    rows, err := db.Query("SELECT ID, Name, Content, DeadContent FROM DirectiveSet")
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer rows.Close()
+
+    items := make([]*DirectiveSetItem, 0, 200)
+    for rows.Next() {
+        var (
+            id          int
+            name        string
+            content     string
+            deadcontent string
+        )
+
+        if err := rows.Scan(&id, &name, &content, &deadcontent); err != nil {
+            log.Fatal(err)
+        }
+
+        item := &DirectiveSetItem{
+            ID: id,
+        }
+        set := &item.DirectiveSet
+        set.Name = name
+        set.Load(bufio.NewReader(bytes.NewBufferString(content)))
+
+        items = append(items, item)
+    }
+
+    if err := rows.Err(); err != nil {
+        log.Fatal(err)
+    }
+
+    bytes, err := json.MarshalIndent(items, "", "\t")
+	if err != nil {
+		panic(err)
+	}
+    file, err := os.Create("directivesetinfo.json")
+    if err != nil {
+        panic(err)
+    }
+
+    file.Write(bytes)
+}
+
+func (set *DirectiveSet) Load(reader *bufio.Reader) {
     for {
         line, err := ReadLine(reader)
         if err != nil {
@@ -57,10 +110,6 @@ func main() {
         } else if bytes.HasPrefix(line, END) {
             set.parseEnd()
         }
-    }
-
-    for _, v := range set.Directives {
-        fmt.Printf("%#v\n", v)
     }
 }
 
@@ -188,6 +237,11 @@ type Directive struct {
     Parameter  int
     Ratio      int
     Weight     int
+}
+
+type DirectiveSetItem struct {
+    ID           int
+    DirectiveSet DirectiveSet
 }
 
 type DirectiveSet struct {

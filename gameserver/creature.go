@@ -19,6 +19,8 @@ type CreatureInterface interface {
     ObjectInterface
     CreatureClass() CreatureClass
     CreatureInstance() *Creature
+
+    getProtection() Protection_t
     IsAbleToMove() bool
 }
 

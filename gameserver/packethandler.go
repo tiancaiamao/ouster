@@ -169,7 +169,7 @@ func CGSkillToSelfHandler(pkt packet.Packet, agent *Agent) {
     skillPacket := pkt.(packet.CGSkillToSelfPacket)
     skillHandler, ok := skillTable[skillPacket.SkillType]
     if !ok {
-
+        log.Errorln("没有实现的skill:", skillPacket.SkillType)
     }
 
     if handler, ok := skillHandler.(SkillToSelfInterface); ok {

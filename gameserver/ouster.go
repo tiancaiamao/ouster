@@ -108,6 +108,10 @@ func (ouster *Ouster) CreatureClass() CreatureClass {
     return CREATURE_CLASS_OUSTER
 }
 
+func (ouster *Ouster) getProtection() Protection_t {
+    return ouster.Protection[ATTR_CURRENT]
+}
+
 func (ouster *Ouster) PCInfo() data.PCInfo {
     info := &data.PCOusterInfo{
         ObjectID: ouster.ObjectID,

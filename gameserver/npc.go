@@ -1,5 +1,9 @@
 package main
 
+import (
+    . "github.com/tiancaiamao/ouster/util"
+)
+
 type NPC struct {
     Creature
 }
@@ -13,6 +17,10 @@ type NPCManager struct {
 
 func NewNPCManager() *NPCManager {
     return &NPCManager{}
+}
+
+func (npc *NPC) getProtection() Protection_t {
+    return 0
 }
 
 // TODO

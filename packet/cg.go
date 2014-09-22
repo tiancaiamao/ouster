@@ -264,7 +264,7 @@ func readLearnSkill(buf []byte, code uint8) (Packet, error) {
 }
 
 type CGSkillToObjectPacket struct {
-    SkillType      uint16
+    SkillType      SkillType_t
     CEffectID      uint16
     TargetObjectID uint32
 }
@@ -282,7 +282,7 @@ func readSkillToObject(buf []byte, code uint8) (Packet, error) {
     var ret CGSkillToObjectPacket
     offset := 0
     A := func() {
-        ret.SkillType = binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code)
+        ret.SkillType = SkillType_t(binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code))
         offset += 2
     }
     B := func() {
@@ -298,7 +298,7 @@ func readSkillToObject(buf []byte, code uint8) (Packet, error) {
 }
 
 type CGSkillToSelfPacket struct {
-    SkillType uint16
+    SkillType SkillType_t
     CEffectID uint16
 }
 
@@ -315,7 +315,7 @@ func readSkillToSelf(buf []byte, code uint8) (Packet, error) {
     var ret CGSkillToSelfPacket
     offset := 0
     A := func() {
-        ret.SkillType = binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code)
+        ret.SkillType = SkillType_t(binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code))
         offset += 2
     }
     B := func() {
@@ -327,7 +327,7 @@ func readSkillToSelf(buf []byte, code uint8) (Packet, error) {
 }
 
 type CGSkillToTilePacket struct {
-    SkillType uint16
+    SkillType SkillType_t
     CEffectID uint16
     X         uint8
     Y         uint8
@@ -346,7 +346,7 @@ func readSkillToTile(buf []byte, code uint8) (Packet, error) {
     var ret CGSkillToTilePacket
     offset := 0
     A := func() {
-        ret.SkillType = binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code)
+        ret.SkillType = SkillType_t(binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code))
         offset += 2
     }
     B := func() {

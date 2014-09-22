@@ -86,6 +86,11 @@ func (vampire *Vampire) CreatureClass() CreatureClass {
     return CREATURE_CLASS_VAMPIRE
 }
 
+func (vampire *Vampire) getProtection() Protection_t {
+    // TODO: 加入夜间加强
+    return vampire.Protection[ATTR_CURRENT]
+}
+
 func (vampire *Vampire) PCInfo() data.PCInfo {
     if vampire == nil || vampire.Scene == nil {
         log.Errorln("fuck...Scene为空谁让你调这个函数了？")

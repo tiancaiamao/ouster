@@ -1,6 +1,7 @@
 package main
 
 import (
+    "github.com/tiancaiamao/ouster/log"
     "github.com/tiancaiamao/ouster/packet"
 )
 
@@ -9,7 +10,7 @@ type SkillToSelfInterface interface {
 }
 
 type SkillToObjectInterface interface {
-    ExecuteToObject(packet.CGSkillToObjectPacket, *Agent)
+    ExecuteToObject(CreatureInterface, CreatureInterface)
 }
 
 type SkillToTileInterface interface {
@@ -39,6 +40,57 @@ type SkillOutput struct {
     ToHit    int
     Range    int
     Delay    int
+}
+
+func (melee AttackMelee) ExecuteToObject(sender CreatureInterface, target CreatureInterface) {
+    rangeCheck := verifyDistance(sender, target)
+    hitRoll := HitRoll(sender, target, 0)
+
+    if rangeCheck && hitRoll {
+        if agent, ok := sender.(*Agent); ok {
+            damage := agent.computeDamage(target, false)
+            // 这个伤害是要广播给地图周围玩家知道的
+            agent.scene <- DamageMessage{
+                Agent:    agent,
+                target:   target,
+                damage:   damage,
+                critical: false,
+            }
+
+            if slayer, ok := agent.PlayerCreatureInterface.(*Slayer); ok {
+                weapon := slayer.getWearItem(SLAYER_WEAR_RIGHTHAND)
+                switch weapon.ItemClass() {
+                case ITEM_CLASS_BLADE:
+                    // increaseDomainExp(slayer, SKILL_DOMAIN_BLADE, 1, packet.GCAttackMeleeOK1{}, targetCreature.CreatureInstance().Level)
+                case ITEM_CLASS_SWORD:
+                    // increaseDomainExp(slayer, SKILL_DOMAIN_BLADE, 1, packet.GCAttackMeleeOK1{}, targetCreature.CreatureInstance().Level)
+                case ITEM_CLASS_CROSS:
+                    // increaseDomainExp(slayer, SKILL_DOMAIN_BLADE, 1, packet.GCAttackMeleeOK1{}, targetCreature.CreatureInstance().Level)
+                case ITEM_CLASS_MACE:
+                    // increaseDomainExp(slayer, SKILL_DOMAIN_BLADE, 1, packet.GCAttackMeleeOK1{}, targetCreature.CreatureInstance().Level)
+                default:
+                    log.Errorln("武器不对!")
+                }
+            }
+        }
+
+        // 应该是在scene的goroutine的
+        if monster, ok := sender.(*Monster); ok {
+            damage := monster.computeDamage(target, false)
+            monster.Scene.setDamage(target, nil, damage)
+        }
+
+        switch agent := target.(type) {
+        case *Agent:
+            targetAgent := target.(*Agent)
+            targetAgent.sendPacket(packet.GCAttackMeleeOK2{
+                ObjectID: agent.ObjectInstance().ObjectID,
+            })
+        case *Monster:
+            monster := target.(*Monster)
+            monster.addEnemy(agent)
+        }
+    }
 }
 
 func (invisibility Invisibility) ExecuteToSelf(skill packet.CGSkillToSelfPacket, agent *Agent) {
@@ -123,7 +175,4 @@ func (meteor MeteorStrike) ExecuteToTile(skill packet.CGSkillToObjectPacket, age
 
 func (paralyze Paralyze) ExecuteToObject(skill packet.CGSkillToObjectPacket, agent *Agent) {
 
-}
-
-func (attack AttackMelee) ExecuteToObject(skill packet.CGSkillToObjectPacket, agent *Agent) {
 }

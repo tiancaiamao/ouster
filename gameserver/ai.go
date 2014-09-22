@@ -1,6 +1,8 @@
 package main
 
 import (
+    "github.com/tiancaiamao/ouster/data"
+    "github.com/tiancaiamao/ouster/log"
     . "github.com/tiancaiamao/ouster/util"
     "math/rand"
     "time"
@@ -8,7 +10,7 @@ import (
 
 type MonsterAI struct {
     Body         *Monster
-    DirectiveSet *DirectiveSet
+    DirectiveSet data.DirectiveSet
     LastAction   int
     MoveRule     MoveRule
     BlockedDir   Dir_t
@@ -32,7 +34,7 @@ func NewMonsterAI(body *Monster, aiType int) *MonsterAI {
         CourageMax: 20,
     }
 
-    // ret.DirectiveSet = &DirectiveSet{}
+    ret.DirectiveSet = data.DirectiveSetTable[aiType]
     return ret
 }
 
@@ -124,7 +126,7 @@ func (ai *MonsterAI) checkCondition(condition int, pEnemy CreatureInterface) boo
     return condChecker[condition](ai.Body, pEnemy)
 }
 
-func (ai *MonsterAI) checkDirective(pDirective *Directive, pEnemy CreatureInterface) bool {
+func (ai *MonsterAI) checkDirective(pDirective *data.Directive, pEnemy CreatureInterface) bool {
     if pDirective == nil {
         return false
     }
@@ -185,13 +187,9 @@ func (ai *MonsterAI) moveNormal(ex ZoneCoord_t, ey ZoneCoord_t, nx *ZoneCoord_t,
         } else if ai.Body.getY() > ey {
             bestDir = UP
         } else {
-            bestDir = DIR_NONE // ai.Body.getY() == ey
+            bestDir = DIR_NONE
         }
     }
-
-    ////////////////////////////////////////////////////////////
-    // search surrounding tiles
-    ////////////////////////////////////////////////////////////
 
     diffLevel := 0
     diff := 0
@@ -207,14 +205,11 @@ func (ai *MonsterAI) moveNormal(ex ZoneCoord_t, ey ZoneCoord_t, nx *ZoneCoord_t,
 
     if !bCanMove {
         bBlocked[*ndir] = true
-
         if !ai.Body.isBlockedByCreature(*nx, *ny) &&
             !ai.Body.isFlag(EFFECT_CLASS_TRANSFORM_TO_BAT) &&
             !ai.Body.isFlag(EFFECT_CLASS_HIDE) {
-            ai.setMoveRule(MOVE_RULE_RIGHTWALL) // ¿©±â²« º° ÀÇ¹Ì¾ø´Ù.
+            ai.setMoveRule(MOVE_RULE_RIGHTWALL)
             ai.BlockedDir = bestDir
-
-            // ÀÌ¹ø ÅÏ¿¡´Â ±×³É °¥ ¹æÇâÀ» °áÁ¤ÇÏ¸é µÈ´Ù.
         }
 
         for {
@@ -238,19 +233,6 @@ func (ai *MonsterAI) moveNormal(ex ZoneCoord_t, ey ZoneCoord_t, nx *ZoneCoord_t,
                 *ndir = Dir_t(int(ai.Body.getDir()) + int(DIR_MAX) - diff)
             }
 
-            ////////////////////////////////////////////////////////////
-            // ndir ÀÌ overflow, underflow ÇÒ °æ¿ì °ªÀ» º¸Á¤ÇØÁà¾ß ÇÑ´Ù.
-            // overflow  : -1 . 7 , -2 . 6 , -3 . 5 , ...
-            // underflow :  8 . 0 ,  9 . 1 , 10 . 2 , ...
-            ////////////////////////////////////////////////////////////
-            //if (ndir >= DIR_MAX) // overflow
-            //{
-            //	ndir = Directions(DIR_MAX - ndir);
-            //}
-            //else if (ndir < 0) // underflow
-            //{
-            //	ndir = Directions(DIR_MAX + ndir);
-            //}
             *ndir &= DIR_MAX_1
 
             *nx = ZoneCoord_t(int(ai.Body.getX()) + dirMoveMask[*ndir].X)
@@ -276,17 +258,15 @@ func (ai *MonsterAI) moveNormal(ex ZoneCoord_t, ey ZoneCoord_t, nx *ZoneCoord_t,
             }
 
             bBlocked[*ndir] = true
-        }   //while
+        }
     } else {
         found = true
     }
 
-    // ÁÂ¼ö/¿ì¼ö¸¦ È®½ÇÈ÷ °áÁ¤ÇØÁØ´Ù.
     if found && ai.MoveRule != MOVE_RULE_NORMAL {
         leftWall := bBlocked[(*ndir+2)&DIR_MAX_1]
         rightWall := bBlocked[(*ndir+DIR_MAX-2)&DIR_MAX_1]
 
-        // µÑ ´Ù ¸·ÇûÀ¸¸é ¹æÇâ¿¡ µû¶ó¼­.. »ç¹Ù»ç¹Ù
         if leftWall && rightWall {
             if *ndir > curDir && *ndir < curDir+4 || curDir > 4 && (*ndir > curDir || *ndir < curDir-4) {
                 ai.setMoveRule(MOVE_RULE_RIGHTWALL)
@@ -321,7 +301,6 @@ func (ai *MonsterAI) moveCoord(ex ZoneCoord_t, ey ZoneCoord_t) bool {
     found := false
     switch ai.MoveRule {
     case MOVE_RULE_NORMAL:
-        // found = moveNormal(ex, ey, nx, ny, ndir, false)
         found = ai.moveNormal(ex, ey, &nx, &ny, &ndir)
     case MOVE_RULE_LEFTWALL:
         found = ai.moveWall(ex, ey, &nx, &ny, &ndir, true)
@@ -329,7 +308,7 @@ func (ai *MonsterAI) moveCoord(ex ZoneCoord_t, ey ZoneCoord_t) bool {
         found = ai.moveWall(ex, ey, &nx, &ny, &ndir, false)
     }
 
-    if (found) && (pZone.getZoneLevel(nx, ny)&ZoneLevel_t(SAFE_ZONE)) != 0 {
+    if found && (pZone.getZoneLevel(nx, ny)&ZoneLevel_t(SAFE_ZONE)) == 0 {
         pZone.moveCreature(ai.Body, nx, ny, ndir)
     }
 
@@ -338,7 +317,7 @@ func (ai *MonsterAI) moveCoord(ex ZoneCoord_t, ey ZoneCoord_t) bool {
     return true
 }
 
-func (ai *MonsterAI) move(pEnemy CreatureInterface, bRetreat bool) bool {
+func (ai *MonsterAI) move(pEnemy CreatureInterface) bool {
     pZone := ai.Body.getZone()
     enemy := pEnemy.CreatureInstance()
     enemyX := enemy.X
@@ -350,37 +329,34 @@ func (ai *MonsterAI) move(pEnemy CreatureInterface, bRetreat bool) bool {
     ex := enemy.X
     ey := enemy.Y
 
-    if bRetreat {
-        ////////////////////////////////////////////////////////////
-        // (enemyX, enemyY)
-        //
-        //                  myX, myY
-        //
-        //                           (ex, ey)
-        //
-        ////////////////////////////////////////////////////////////
-        xOffset2 := xOffset << 1
-        yOffset2 := yOffset << 1
+    ////////////////////////////////////////////////////////////
+    // (enemyX, enemyY)
+    //
+    //                  myX, myY
+    //
+    //                           (ex, ey)
+    //
+    ////////////////////////////////////////////////////////////
+    xOffset2 := xOffset << 1
+    yOffset2 := yOffset << 1
 
-        if enemyX-xOffset2 < 0 {
-            ex = 0
-        } else if enemyX-xOffset2 > pZone.getWidth() {
-            ex = pZone.getWidth()
-        } else {
-            ex = enemyX - xOffset2
-        }
-
-        if enemyY-yOffset2 < 0 {
-            ey = 0
-        } else if enemyY-yOffset2 > pZone.getHeight() {
-            ey = pZone.getHeight()
-        } else {
-            ey = enemyY - yOffset2
-        }
-
-        ai.setMoveRule(MOVE_RULE_NORMAL)
+    if enemyX+xOffset2 < 0 {
+        ex = 0
+    } else if enemyX+xOffset2 > pZone.getWidth() {
+        ex = pZone.getWidth()
+    } else {
+        ex = enemyX + xOffset2
     }
 
+    if enemyY+yOffset2 < 0 {
+        ey = 0
+    } else if enemyY+yOffset2 > pZone.getHeight() {
+        ey = pZone.getHeight()
+    } else {
+        ey = enemyY + yOffset2
+    }
+
+    ai.setMoveRule(MOVE_RULE_NORMAL)
     return ai.moveCoord(ex, ey)
 }
 
@@ -398,11 +374,37 @@ func (ai *MonsterAI) setAttackDelay(time.Time) {
 }
 
 func (ai *MonsterAI) approach(pEnemy CreatureInterface) bool {
-    return ai.move(pEnemy, false)
+    return ai.move(pEnemy)
 }
 
-func useSkill(pEnemy CreatureInterface, SkillType SkillType_t, ratio int) int {
-    //TODO
+func (ai *MonsterAI) useSkill(pEnemy CreatureInterface, SkillType SkillType_t, ratio int) int {
+    // enemy := pEnemy.CreatureInstance()
+    // ex := enemy.X
+    // ey := enemy.Y
+    // dist := ai.Body.getDistance(ex, ey)
+
+    if rand.Intn(100) >= ratio {
+        // return SKILL_FAILED_RATIO
+        return -1
+    }
+
+    if ai.Body.isFlag(EFFECT_CLASS_HIDE) {
+        SkillType = SKILL_UN_BURROW
+    } else if ai.Body.isFlag(EFFECT_CLASS_TRANSFORM_TO_BAT) {
+        SkillType = SKILL_UN_TRANSFORM
+    } else if ai.Body.isFlag(EFFECT_CLASS_INVISIBILITY) {
+        SkillType = SKILL_UN_INVISIBILITY
+    }
+
+    skill, ok := skillTable[SkillType]
+    if !ok {
+        log.Errorf("技能%d的handler没有实现!!", SkillType)
+        return 0
+    }
+    handler := skill.(SkillToObjectInterface)
+    handler.ExecuteToObject(ai.Body, pEnemy)
+
+    ai.LastAction = LAST_ACTION_SKILL
     return 0
 }
 
@@ -416,32 +418,37 @@ func (ai *MonsterAI) Deal(pEnemy CreatureInterface, currentTime time.Time) {
         if ai.checkDirective(pDirective, pEnemy) {
             switch pDirective.Action {
             case DIRECTIVE_ACTION_APPROACH:
+                log.Debugln("动作是approach")
                 ai.approach(pEnemy)
             case DIRECTIVE_ACTION_FLEE:
+                log.Debugln("动作是逃跑")
                 if !flee(pEnemy) {
                     ai.setMoveRule(MOVE_RULE_NORMAL)
-                    rValue := useSkill(pEnemy, SKILL_ATTACK_MELEE, 100)
+                    rValue := ai.useSkill(pEnemy, SKILL_ATTACK_MELEE, 100)
                     if rValue != 0 {
                         ai.approach(pEnemy)
                     }
                 }
             case DIRECTIVE_ACTION_USE_SKILL:
+                log.Debugln("动作是放技能")
                 if ai.Body.isFlag(EFFECT_CLASS_BLOCK_HEAD) || ai.Body.isFlag(EFFECT_CLASS_TENDRIL) {
                     continue
                 }
                 parameter := pDirective.Parameter
                 ratio := pDirective.Ratio
-                rValue := useSkill(pEnemy, SkillType_t(parameter), ratio)
+                rValue := ai.useSkill(pEnemy, SkillType_t(parameter), ratio)
                 if rValue != 0 {
                     break
                 }
                 ai.setMoveRule(MOVE_RULE_NORMAL)
             case DIRECTIVE_ACTION_FORGET:
+                // log.Debugln("动作是忘记敌人")
                 if len(ai.Body.Enemies) != 0 {
-                    ai.Body.Enemies = ai.Body.Enemies[1:]
+                    // ai.Body.Enemies = ai.Body.Enemies[1:]
                 }
                 ai.setMoveRule(MOVE_RULE_NORMAL)
             case DIRECTIVE_ACTION_CHANGE_ENEMY:
+                log.Debugln("动作是切换敌人")
                 ratio := pDirective.Parameter
                 if rand.Intn(100) >= ratio {
                     break
@@ -457,6 +464,7 @@ func (ai *MonsterAI) Deal(pEnemy CreatureInterface, currentTime time.Time) {
                 }
                 // }
             case DIRECTIVE_ACTION_MOVE_RANDOM:
+                log.Debugln("动作是随机移动")
                 ratio := pDirective.Parameter
                 if rand.Intn(100) >= ratio {
                     break
@@ -483,9 +491,11 @@ func (ai *MonsterAI) Deal(pEnemy CreatureInterface, currentTime time.Time) {
                 //										 move(x1, y1)
                 //								 }
             case DIRECTIVE_ACTION_WAIT:
+                log.Debugln("动作是等待")
                 delay := 2 * time.Second
                 ai.Body.addAccuDelay(delay)
             case DIRECTIVE_ACTION_FAST_FLEE:
+                log.Debugln("动作是快速逃跑")
                 result := false
                 myX := ai.Body.X
                 myY := ai.Body.Y
@@ -504,6 +514,7 @@ func (ai *MonsterAI) Deal(pEnemy CreatureInterface, currentTime time.Time) {
                     break
                 }
             case DIRECTIVE_ACTION_SAY:
+                log.Debugln("动作是说话")
                 // parameter = pDirective.Parameter();
                 // GCSay gcSay
                 // gcSay.ObjectID = ai.Body.ObjectID
@@ -590,6 +601,7 @@ func checkEnemyRangeOutOfSight(pMonster *Monster, pEnemy CreatureInterface) bool
     }
     dist := pMonster.getDistance(pEnemy.CreatureInstance().X, pEnemy.CreatureInstance().Y)
     if dist > int(pMonster.getSight()) {
+        // log.Debugf("dist=%d, sight=%d\n", dist, pMonster.getSight())
         return true
     }
     return false

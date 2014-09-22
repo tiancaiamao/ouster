@@ -46,6 +46,8 @@ type Monster struct {
     isMaster       bool
     bTreasure      bool
 
+    MoveMode MoveMode
+
     Exp   Exp_t
     Moral Moral_t
 
@@ -53,7 +55,7 @@ type Monster struct {
     AttackDelay Turn_t
     AccuDelay   time.Duration
 
-    Enemies  []ObjectID_t
+    Enemies  map[ObjectID_t]CreatureInterface
     NextTurn time.Time
     Brain    *MonsterAI
 
@@ -91,6 +93,11 @@ func (m *Monster) computeMaxDamage() {
     m.Damage[ATTR_MAX] = Damage_t(float64(m.STR) / (4.0 - float64(m.Level)/100))
 }
 
+func (m *Monster) getProtection() Protection_t {
+    // TODO: 加入夜间强化
+    return m.Protection
+}
+
 func NewMonster(monsterType MonsterType_t) *Monster {
     info, ok := data.MonsterInfoTable[monsterType]
     if !ok {
@@ -109,8 +116,7 @@ func NewMonster(monsterType MonsterType_t) *Monster {
         MissileRange: info.MissileRange,
         MainColor:    info.MColor,
         SubColor:     info.SColor,
-        // BodySize     uint
-        // MoveMode     MoveMode
+        MoveMode:     info.MoveMode,
     }
 
     ret.Sight = info.Sight
@@ -126,6 +132,7 @@ func NewMonster(monsterType MonsterType_t) *Monster {
     ret.computeMaxDamage()
 
     ret.Brain = NewMonsterAI(ret, info.AIType)
+    ret.Enemies = make(map[ObjectID_t]CreatureInterface)
     ret.Creature.Init()
 
     return ret
@@ -144,8 +151,20 @@ func (m *Monster) addAccuDelay(time.Duration) {
 }
 
 func (m *Monster) getDistance(x, y ZoneCoord_t) int {
-    // TODO
-    return 0
+    return max(abs(int(x-m.X)), abs(int(y-m.Y)))
+}
+
+func (m *Monster) computeDamage(creature CreatureInterface, critical bool) Damage_t {
+    minDamage := m.Damage[ATTR_CURRENT]
+    maxDamage := m.Damage[ATTR_MAX]
+    scope := int(maxDamage - minDamage)
+    realDamage := max(1, int(minDamage)+rand.Intn(scope))
+
+    // timeband    = getZoneTimeband(pMonster->getZone());
+    timeband := 0
+    realDamage = getPercentValue(realDamage, MonsterTimebandFactor[timeband])
+    protection := creature.getProtection()
+    return computeFinalDamage(minDamage, maxDamage, Damage_t(realDamage), protection, critical)
 }
 
 // TODO
@@ -154,8 +173,7 @@ func (m *Monster) getFleeRange() int {
 }
 
 func (m *Monster) getMeleeRange() int {
-    // TODO
-    return 0
+    return m.MeleeRange
 }
 
 func (m *Monster) getZone() *Zone {
@@ -385,10 +403,6 @@ func (m *Monster) heartbeat(currentTime time.Time) {
                 nx := m.X + ZoneCoord_t(dirMoveMask[direction].X)
                 ny := m.Y + ZoneCoord_t(dirMoveMask[direction].Y)
 
-                if m.Scene == nil {
-                    log.Errorln("我日哦....")
-                    panic("fuck")
-                }
                 if nx < m.Scene.Width && nx >= 0 && ny < m.Scene.Height && ny >= 0 {
                     if canMove(nx, ny) && (m.Scene.getZoneLevel(nx, ny)&SAFE_ZONE) == 0 {
                         m.Scene.moveCreature(m, nx, ny, Dir_t(direction))
@@ -437,26 +451,27 @@ func (c *Monster) isAlive() bool {
     return c.HP[ATTR_CURRENT] > 0
 }
 
-// TODO
 func (m *Monster) getSight() Sight_t {
-    return 0
+    return m.Sight
 }
 
 func (m *Monster) deleteAllEnemy() {
     // TODO
 }
 
-func (m *Monster) addEnemy(CreatureInterface) {
-    // TODO
+func (m *Monster) addEnemy(creature CreatureInterface) {
+    m.Enemies[creature.CreatureInstance().ObjectID] = creature
 }
 
 func (m *Monster) hasEnemy() bool {
-    // TODO
-    return false
+    return len(m.Enemies) != 0
 }
 
-// TODO
 func (m *Monster) getPrimaryEnemy() CreatureInterface {
+    for _, v := range m.Enemies {
+        // 随机挑选一个返回
+        return v
+    }
     return nil
 }
 
