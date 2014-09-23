@@ -1,13 +1,14 @@
 package main
 
 import (
+    "github.com/tiancaiamao/ouster/log"
     . "github.com/tiancaiamao/ouster/util"
 )
 
 type TileFlags uint16
 
 const (
-    TILE_GROUND_BLOCKED TileFlags = iota
+    TILE_GROUND_BLOCKED = iota
     TILE_AIR_BLOCKED
     TILE_UNDERGROUND_BLOCKED
     TILE_WALKING_CREATURE
@@ -92,16 +93,39 @@ func (tile *Tile) hasPortal() bool {
 }
 
 func (tile *Tile) DeleteCreature(id ObjectID_t) {
+    var object ObjectInterface
     for i := 0; i < len(tile.Objects); i++ {
         if tile.Objects[i].ObjectInstance().ObjectID == id {
+            object = tile.Objects[i]
             copy(tile.Objects[i:], tile.Objects[i+1:])
-            return
+            break
         }
     }
+
+    var creature *Creature
+    switch raw := object.(type) {
+    case *Agent:
+        creature = raw.CreatureInstance()
+    case *Monster:
+        creature = raw.CreatureInstance()
+    default:
+        log.Errorln(raw)
+        panic("不对")
+    }
+    tile.Flags &^= (1 << (TILE_WALKING_CREATURE + creature.MoveMode))
+    tile.Flags &^= (1 << (TILE_GROUND_BLOCKED + creature.MoveMode))
 }
 
 func (tile *Tile) AddCreature(creature CreatureInterface) {
+    inst := creature.CreatureInstance()
+    // if tile.HasCreature(inst.MoveMode) {
+    //     panic("重复加入到tile")
+    // }
+
     tile.Objects = append(tile.Objects, creature)
+
+    tile.Flags |= (1 << (TILE_WALKING_CREATURE + inst.MoveMode))
+    tile.Flags |= (1 << (TILE_GROUND_BLOCKED + inst.MoveMode))
 }
 
 func (tile *Tile) GetCreature(mode MoveMode) CreatureInterface {

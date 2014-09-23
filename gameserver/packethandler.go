@@ -219,6 +219,9 @@ func CGConnectHandler(pkt packet.Packet, agent *Agent) {
         return
     }
     agent.scene = scene.agent
+    pc := pcItf.PlayerCreatureInstance()
+    tile := scene.Tile(int(pc.X), int(pc.Y))
+    tile.AddCreature(agent)
 
     msg := LoginMessage{
         Agent: agent,

@@ -21,6 +21,7 @@ const (
 
 const (
     SKILL_ATTACK_MELEE       = 0
+    SKILL_BLOOD_DRAIN        = 79
     SKILL_UN_BURROW          = 107
     SKILL_UN_TRANSFORM       = 108
     SKILL_UN_INVISIBILITY    = 109
@@ -120,6 +121,7 @@ func init() {
     skillTable = make(map[SkillType_t]SkillHandler)
 
     skillTable[SKILL_ATTACK_MELEE] = AttackMelee{}
+    skillTable[SKILL_BLOOD_DRAIN] = BloodDrain{}
     // skillTable[SKILL_BLOOD_SPEAR] = &SkillInfo{
     //     Type:      SKILL_PROPERTY_TYPE_MAGIC,
     //     Name:      "Bloody Spear",
@@ -164,6 +166,9 @@ type Paralyze struct {
     Skill
 }
 type AttackMelee struct {
+    Skill
+}
+type BloodDrain struct {
     Skill
 }
 

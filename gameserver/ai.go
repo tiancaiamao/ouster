@@ -366,7 +366,32 @@ func (ai *MonsterAI) setMoveRule(rule MoveRule) {
 }
 
 func (ai *MonsterAI) setDelay(time.Time) {
-    // TODO
+    delay := ai.Body.getDelay()
+
+    if ai.Body.isFlag(EFFECT_CLASS_TRANSFORM_TO_BAT) {
+        delay = 200
+    } else if ai.Body.isFlag(EFFECT_CLASS_TRANSFORM_TO_WOLF) {
+        delay = 300
+    }
+
+    modifier := rand.Intn(41) - 20
+
+    delay = delay * 1000
+    delay = delay + delay*modifier/100
+
+    nexttime := delay / 1000000 * time.Second
+    nexttime.Add((delay % 1000000) * time.MicroSecond)
+
+    nexttime = nexttime + ai.Body.getAccuDelay()
+
+    ai.Body.clearAccuDelay()
+
+    if ai.Body.isFlag(EFFECT_CLASS_ICE_FIELD_TO_CREATURE) ||
+        ai.Body.isFlag(EFFECT_CLASS_JABBING_VEIN) {
+        ai.Body.setNextTurn(currentTime.Add(2 * nexttime))
+    } else {
+        ai.Body.setNextTurn(currentTime.Add(nexttime))
+    }
 }
 
 func (ai *MonsterAI) setAttackDelay(time.Time) {

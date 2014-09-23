@@ -43,6 +43,10 @@ type SkillOutput struct {
     Delay    int
 }
 
+// TODO
+func (skill BloodDrain) ExecuteToObject(sender CreatureInterface, target CreatureInterface) {
+}
+
 // 注意:需要在agent的goroutine中执行的
 func (melee AttackMelee) ExecuteToObject(sender CreatureInterface, target CreatureInterface) {
     rangeCheck := verifyDistance(sender, target)
@@ -92,7 +96,7 @@ func (melee AttackMelee) ExecuteToObject(sender CreatureInterface, target Creatu
                     }
                     pc.Scene.broadcastPacket(pc.X, pc.Y, ok3, agent)
 
-                    // 广播给所有玩家，怪物状态变化
+                    // 广播给所有玩家，状态变化
                     status := packet.GCStatusCurrentHP{
                         ObjectID:  pc.ObjectID,
                         CurrentHP: pc.HP[ATTR_CURRENT],
