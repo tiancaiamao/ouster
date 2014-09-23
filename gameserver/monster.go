@@ -483,3 +483,7 @@ func (m *Monster) hasNextMonsterSummonInfo() bool {
     // TODO
     return false
 }
+
+func (m *Monster) getDelay() Turn_t {
+    return m.Delay
+}

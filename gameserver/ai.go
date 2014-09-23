@@ -376,11 +376,11 @@ func (ai *MonsterAI) setDelay(time.Time) {
 
     modifier := rand.Intn(41) - 20
 
-    delay = delay * 1000
-    delay = delay + delay*modifier/100
+    delay = delay * Turn_t(1000)
+    delay = delay + delay*Turn_t(modifier)/100
 
     nexttime := delay / 1000000 * time.Second
-    nexttime.Add((delay % 1000000) * time.MicroSecond)
+    nexttime.Add((delay % 1000000) * time.Microsecond)
 
     nexttime = nexttime + ai.Body.getAccuDelay()
 
@@ -395,7 +395,23 @@ func (ai *MonsterAI) setDelay(time.Time) {
 }
 
 func (ai *MonsterAI) setAttackDelay(time.Time) {
-    // TODO
+    delay := ai.Body.getAttackDelay()
+    modifier = rand.Intn(21)
+
+    delay := delay * 1000
+    delay = delay + delay*modifier/100
+
+    nexttime := delay / 1000000 * time.Second
+    nexttime.Add(delay % 1000000 * time.Microsecond)
+    nexttime.Add(ai.Body.getAccuDelay())
+
+    ai.Body.clearAccuDelay()
+
+    if ai.Body.isFlag(EFFECT_CLASS_ICE_OF_SOUL_STONE) {
+        ai.Body.setNextTurn(currentTime.Add(2 * nexttime))
+    } else {
+        ai.Body.setNextTurn(currentTime.Add(nexttime))
+    }
 }
 
 func (ai *MonsterAI) approach(pEnemy CreatureInterface) bool {
