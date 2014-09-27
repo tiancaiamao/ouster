@@ -1,6 +1,8 @@
 package main
 
 import (
+    "encoding/binary"
+    "errors"
     "fmt"
     "github.com/tiancaiamao/ouster/packet"
     "io"
@@ -9,7 +11,7 @@ import (
 
 const (
     trueLoginServer = "60.169.77.55:9999"
-    trueGameServer  = "60.169.77.55"
+    trueGameServer  = "60.169.77.55:9998"
 )
 
 var MAX int = 5
@@ -49,12 +51,10 @@ func hajackLoginServer(client net.Conn, notice chan<- struct{}) {
     }
 
     go func() {
-        clientReader := packet.NewReader()
-        serverWriter := packet.NewWriter()
         var raw packet.RawPacket
-        var buf [800]byte
+        var buf [400]byte
         for {
-            err := clientReader.ReadRaw(client, &raw, buf[:])
+            err := readRaw(client, &raw, buf[:])
             if err != nil {
                 if err == io.EOF {
                     fmt.Println("CL客户端关了，没法读取了")
@@ -66,8 +66,7 @@ func hajackLoginServer(client net.Conn, notice chan<- struct{}) {
 
             fmt.Println("[C->L]", len(raw.Data), raw)
 
-            serverWriter.Seq = raw.Seq
-            err = serverWriter.Write(server, raw)
+            err = writeRaw(server, &raw)
             if err != nil {
                 if err == io.EOF {
                     fmt.Println("LC服务端关了，没法把客户端数据写过去")
@@ -80,12 +79,10 @@ func hajackLoginServer(client net.Conn, notice chan<- struct{}) {
         }
     }()
 
-    serverReader := packet.NewReader()
-    clientWriter := packet.NewWriter()
     var raw packet.RawPacket
-    var buf [800]byte
+    var buf [400]byte
     for {
-        err := serverReader.ReadRaw(server, &raw, buf[:])
+        err := readRaw(server, &raw, buf[:])
         if err != nil {
             if err == io.EOF {
                 fmt.Println("LC服务器那边关了，没法读取了")
@@ -94,9 +91,16 @@ func hajackLoginServer(client net.Conn, notice chan<- struct{}) {
                 panic(err)
             }
         }
-        clientWriter.Seq = raw.Seq
 
         fmt.Println("[L->C]", len(raw.Data), raw)
+
+        // if raw.Id == packet.PACKET_LC_PC_LIST {
+        //     fmt.Println("run here...")
+        //     pkt := &packet.LCPCListPacket{}
+
+        //     raw.Data, _ = pkt.MarshalBinary(0)
+        //     fmt.Println("[实际发送L->C]", len(raw.Data), raw)
+        // }
 
         // 劫持修改最后的服务器包
         if raw.Id == packet.PACKET_LC_RECONNECT {
@@ -105,16 +109,17 @@ func hajackLoginServer(client net.Conn, notice chan<- struct{}) {
                 panic(err)
             }
             reconn := pkt.(*packet.LCReconnectPacket)
-            reconn.Ip = trueGameServer
+            reconn.Ip = "192.168.10.102"
             reconn.Port = 9998
 
-            clientWriter.Write(client, raw)
+            raw.Data, err = reconn.MarshalBinary(0)
+            err = writeRaw(client, &raw)
             close(notice)
             client.Close()
             return
         }
 
-        err = clientWriter.Write(client, raw)
+        err = writeRaw(client, &raw)
         if err != nil {
             if err == io.EOF {
                 fmt.Println("CL客户端关了，写不到客户端了")
@@ -128,18 +133,16 @@ func hajackLoginServer(client net.Conn, notice chan<- struct{}) {
 func hajackGameServer(client net.Conn, notice <-chan struct{}) {
     <-notice
     fmt.Println("收到客户端向GameServer连接请求...")
-    server, err := net.Dial("tcp", trueGameServer+":9998")
+    server, err := net.Dial("tcp", trueGameServer)
     if err != nil {
         panic(err)
     }
 
     go func() {
-        clientReader := packet.NewReader()
-        serverWriter := packet.NewWriter()
         var raw packet.RawPacket
         var buf [800]byte
         for {
-            err := clientReader.ReadRaw(client, &raw, buf[:])
+            err := readRaw(client, &raw, buf[:])
             if err != nil {
                 if err == io.EOF {
                     fmt.Println("CG客户端关了，没法读取了")
@@ -150,8 +153,7 @@ func hajackGameServer(client net.Conn, notice <-chan struct{}) {
 
             fmt.Println("[C->G]", raw)
 
-            serverWriter.Seq = raw.Seq
-            err = serverWriter.Write(server, &raw)
+            err = writeRaw(server, &raw)
             if err != nil {
                 if err == io.EOF {
                     fmt.Println("CG服务端关了，没法把客户端数据写过去")
@@ -162,13 +164,11 @@ func hajackGameServer(client net.Conn, notice <-chan struct{}) {
         }
     }()
 
-    serverReader := packet.NewReader()
-    clientWriter := packet.NewWriter()
     var raw packet.RawPacket
     var buf [800]byte
-    var correct uint8
+    //    var correct uint8
     for {
-        err := serverReader.ReadRaw(server, &raw, buf[:])
+        err := readRaw(server, &raw, buf[:])
         if err != nil {
             if err == io.EOF {
                 fmt.Println("CG服务器那边关了，没法读取了")
@@ -177,35 +177,87 @@ func hajackGameServer(client net.Conn, notice <-chan struct{}) {
             }
         }
 
-        fmt.Println("[G->C]", &raw)
+        fmt.Println("[G->C]", raw)
 
-        clientWriter.Code = raw.Seq + correct
-        err = clientWriter.Write(client, raw)
-        checkError(err)
-
-        if raw.Id == packet.PACKET_CG_SKILL_TO_OBJECT {
-            pkt, err := raw.Unmarshal(0)
-            skill := pkt.(packet.CGSkillToObjectPacket)
-
-            // 冰矛多倍
-            if skill.SkillType == 285 {
-                for i := 0; i < MAX; i++ {
-                    correct++
-                    clientWriter.Seq = raw.Seq + correct
-                    err = clientWriter.Write(client, raw)
-                    checkError(err)
-                }
-            }
+        err = writeRaw(client, &raw)
+        if err != nil {
+            panic(err)
         }
+
+        // if raw.Id == packet.PACKET_CG_SKILL_TO_OBJECT {
+        //     pkt, err := raw.Unmarshal(0)
+        //     skill := pkt.(packet.CGSkillToObjectPacket)
+
+        //     // 冰矛多倍
+        //     if skill.SkillType == 285 {
+        //         for i := 0; i < MAX; i++ {
+        //             correct++
+        //             raw.Seq += correct
+        //             err = writeRaw.Write(client, raw)
+        //             if err != nil {
+        //                 panic(err)
+        //             }
+        //         }
+        //     }
+        // }
     }
 }
 
-func checkError(err error) {
+func writeRaw(writer io.Writer, raw *packet.RawPacket) error {
+    err := binary.Write(writer, binary.LittleEndian, raw.Id)
     if err != nil {
-        if err == io.EOF {
-            fmt.Println("CG客户端关了，写不到客户端了")
-        } else {
-            panic(err)
-        }
+        return err
     }
+
+    err = binary.Write(writer, binary.LittleEndian, uint32(len(raw.Data)))
+    if err != nil {
+        return err
+    }
+
+    err = binary.Write(writer, binary.LittleEndian, raw.Seq)
+    if err != nil {
+        return err
+    }
+
+    _, err = writer.Write(raw.Data)
+    if err != nil {
+        return err
+    }
+
+    return nil
+}
+
+func readRaw(reader io.Reader, raw *packet.RawPacket, buf []byte) (err error) {
+    var sz uint32
+
+    err = binary.Read(reader, binary.LittleEndian, &raw.Id)
+    if err != nil {
+        return
+    }
+
+    err = binary.Read(reader, binary.LittleEndian, &sz)
+    if err != nil {
+        return
+    }
+
+    err = binary.Read(reader, binary.LittleEndian, &raw.Seq)
+    if err != nil {
+        return
+    }
+
+    if sz > uint32(len(buf)) {
+        return errors.New("packet size too large")
+    }
+
+    n, err := io.ReadFull(reader, buf[:sz])
+    if err != nil {
+        return
+    }
+    if n != int(sz) {
+        err = errors.New("read get less data than needed")
+        return
+    }
+
+    raw.Data = buf[:sz]
+    return nil
 }

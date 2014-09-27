@@ -144,13 +144,13 @@ func writeRaw(writer io.Writer, raw *packet.RawPacket) error {
 }
 
 func hajackGameServer(client, server net.Conn) {
-    go func() {
-        clientReader := packet.NewReader()
+    clientBuf := make([]byte, 200)
+    serverBuf := make([]byte, 200)
 
-        var raw packet.RawPacket
-        var buf [1000]byte
+    go func() {
         for {
-            err := clientReader.ReadRaw(client, &raw, buf[:])
+            // read from client
+            n, err := client.Read(clientBuf)
             if err != nil {
                 if err == io.EOF {
                     fmt.Println("CG客户端关了，没法读取了")
@@ -159,41 +159,48 @@ func hajackGameServer(client, server net.Conn) {
                 }
             }
 
-            fmt.Println("[C->G]", len(raw.Data), raw)
+            fmt.Println("[C->G]", clientBuf[:n])
 
-            err = writeRaw(server, &raw)
-            if err != nil {
-                if err == io.EOF {
-                    fmt.Println("CG服务端关了，没法把客户端数据写过去")
-                } else {
-                    panic(err)
+            if n > 0 {
+                // forward the msg to server
+                _, err = server.Write(clientBuf[:n])
+                if err != nil {
+                    if err == io.EOF {
+                        fmt.Println("CG服务端关了，没法把客户端数据写过去")
+                    } else {
+                        panic(err)
+                    }
                 }
             }
         }
+
     }()
 
-    serverReader := packet.NewReader()
-    var raw packet.RawPacket
-    var buf [1000]byte
-    for {
-        err := serverReader.ReadRaw(server, &raw, buf[:])
+    flag := true
+    for flag {
+        // read from server
+        n, err := server.Read(serverBuf)
         if err != nil {
             if err == io.EOF {
+                flag = false
                 fmt.Println("CG服务器那边关了，没法读取了")
             } else {
                 panic(err)
             }
         }
 
-        fmt.Println("[G->C]", len(raw.Data), raw)
+        fmt.Println("[G->C]", serverBuf[:n])
 
-        err = writeRaw(client, &raw)
-        if err != nil {
-            if err == io.EOF {
-                fmt.Println("GC客户端那边关了，没法写到客户端")
-                return
-            } else {
-                panic(err)
+        // write the msg to client
+        if n > 0 {
+            _, err = client.Write(serverBuf[:n])
+            if err != nil {
+                if err == io.EOF {
+                    flag = false
+                    fmt.Println("CG客户端关了，写不到客户端了")
+                } else {
+                    panic(err)
+                }
             }
         }
     }
