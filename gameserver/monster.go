@@ -198,8 +198,22 @@ func (m *Monster) getDir() Dir_t {
     return m.Dir
 }
 
-// TODO
-func canMove(nx ZoneCoord_t, ny ZoneCoord_t) bool {
+func (m *Monster) canMove(nx ZoneCoord_t, ny ZoneCoord_t) bool {
+    if !m.Creature.canMove(nx, ny) {
+        return false
+    }
+    if m.Scene == nil {
+        return false
+    }
+
+    tile := m.Scene.Tile(int(nx), int(ny))
+    if tile == nil {
+        return false
+    }
+
+    if tile.HasCreature(m.MoveMode) {
+        return false
+    }
     return true
 }
 
@@ -410,7 +424,7 @@ func (m *Monster) heartbeat(currentTime time.Time) {
                 ny := m.Y + ZoneCoord_t(dirMoveMask[direction].Y)
 
                 if nx < m.Scene.Width && nx >= 0 && ny < m.Scene.Height && ny >= 0 {
-                    if canMove(nx, ny) && (m.Scene.getZoneLevel(nx, ny)&SAFE_ZONE) == 0 {
+                    if m.canMove(nx, ny) && (m.Scene.getZoneLevel(nx, ny)&SAFE_ZONE) == 0 {
                         m.Scene.moveCreature(m, nx, ny, Dir_t(direction))
                     }
                 }

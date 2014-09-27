@@ -330,6 +330,7 @@ func (zone *Zone) movePC(agent *Agent, cx ZoneCoord_t, cy ZoneCoord_t, dir Dir_t
 
     oldTile.DeleteCreature(pc.ObjectID)
     newTile.AddCreature(agent)
+    log.Debugln("agent应该是加入到tile中了的!!!")
 
     // 检查地雷/陷阱
 
@@ -376,28 +377,33 @@ func (zone *Zone) movePCBroadcast(agent *Agent, x1 ZoneCoord_t, y1 ZoneCoord_t, 
             for _, v := range tile.Objects {
                 objectClass := v.ObjectClass()
                 if objectClass == OBJECT_CLASS_CREATURE {
+
+                    prevVS := getVisionState(x1, y1, ZoneCoord_t(i), ZoneCoord_t(j))
+                    currVS := getVisionState(x2, y2, ZoneCoord_t(i), ZoneCoord_t(j))
+
                     switch v.(type) {
                     case *Monster:
                         monster := v.(*Monster)
                         // 怪物进入玩家视线
-                        agent.sendPacket(&packet.GCAddMonster{
-                            ObjectID:    monster.ObjectID,
-                            MonsterType: monster.MonsterType,
-                            MonsterName: monster.Name,
-                            // MainColor:   monster.MainColor,
-                            // SubColor:		monster.SubColor,
-                            X:   Coord_t(monster.X),
-                            Y:   Coord_t(monster.Y),
-                            Dir: monster.Dir,
-                            // EffectInfo  []EffectInfo
-                            CurrentHP: monster.HP[ATTR_CURRENT],
-                            MaxHP:     monster.HP[ATTR_MAX],
-                            // FromFlag    byte
-                        })
-                        log.Debugln("发现了一个怪物...")
-                        // 把玩家放到怪物的敌人列表中
-                        monster.addEnemy(agent)
-
+                        if prevVS == OUT_OF_SIGHT && currVS == IN_SIGHT {
+                            agent.sendPacket(&packet.GCAddMonster{
+                                ObjectID:    monster.ObjectID,
+                                MonsterType: monster.MonsterType,
+                                MonsterName: monster.Name,
+                                // MainColor:   monster.MainColor,
+                                // SubColor:		monster.SubColor,
+                                X:   Coord_t(monster.X),
+                                Y:   Coord_t(monster.Y),
+                                Dir: monster.Dir,
+                                // EffectInfo  []EffectInfo
+                                CurrentHP: monster.HP[ATTR_CURRENT],
+                                MaxHP:     monster.HP[ATTR_MAX],
+                                // FromFlag    byte
+                            })
+                            log.Debugln("发现了一个怪物...")
+                            // 把玩家放到怪物的敌人列表中
+                            monster.addEnemy(agent)
+                        }
                     case *Slayer:
                         // pc.sendPacket(packet.GCAddSlayer{})
                         slayer := v.(*Slayer)
@@ -456,6 +462,32 @@ func (zone *Zone) movePCBroadcast(agent *Agent, x1 ZoneCoord_t, y1 ZoneCoord_t, 
             }
         }
     }
+}
+
+type VisionState int
+
+const (
+    IN_SIGHT = iota
+    OUT_OF_SIGHT
+)
+
+func getVisionState(SourceX, SourceY, TargetX, TargetY ZoneCoord_t) VisionState {
+    diffX := abs(int(TargetX - SourceX))
+    diffY := int(TargetY - SourceY)
+
+    isInX := diffX <= MaxViewportWidth
+    var isInY bool
+    if diffY < 0 {
+        isInY = ((-diffY) <= MaxViewportUpperHeight)
+    } else {
+        isInY = (diffY <= MaxViewportLowerHeight)
+    }
+
+    if isInX && isInY {
+        return IN_SIGHT
+    }
+
+    return OUT_OF_SIGHT
 }
 
 func (zone *Zone) getRandomMonsterRegenPosition() BPOINT {
@@ -595,25 +627,26 @@ func (zone *Zone) broadcastPacket(cx ZoneCoord_t, cy ZoneCoord_t, packet packet.
     if iy < 0 {
         iy = 0
     }
-
+    log.Debugf("难道agent没有加入tile么?? ix=%d, iy=%d, ex=%d, ey=%d\n", ix, iy, endx, endy)
     for ; ix <= endx; ix++ {
         for ; iy <= endy; iy++ {
             tile := zone.Tile(int(ix), int(iy))
-
-            if tile.HasCreature(MOVE_MODE_WALKING) {
-                for _, v := range tile.Objects {
-                    agent, ok := v.(*Agent)
-                    if ok && agent != owner {
-                        if owner != nil {
-                            if canSee(agent, owner) {
-                                agent.sendPacket(packet)
-                            }
-                        } else {
+            // if tile.HasCreature(MOVE_MODE_WALKING) {
+            for _, v := range tile.Objects {
+                agent, ok := v.(*Agent)
+                if ok && agent != owner {
+                    log.Debugln("运行进来这里了...")
+                    if owner != nil {
+                        if canSee(agent, owner) {
                             agent.sendPacket(packet)
                         }
+                    } else {
+                        log.Debugln("运行到这里，广播信息给agent")
+                        agent.sendPacket(packet)
                     }
                 }
             }
+            // }
         }
     }
 }

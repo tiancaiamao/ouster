@@ -89,12 +89,13 @@ func (melee AttackMelee) ExecuteToObject(sender CreatureInterface, target Creatu
                 } else {
                     pc.HP[ATTR_CURRENT] -= HP_t(damage)
 
+                    log.Debugln("怪物攻击玩家，广播状态信息的攻击成功")
                     // 广播给所有玩家，攻击成功
                     ok3 := packet.GCAttackMeleeOK3{
                         ObjectID:       sender.CreatureInstance().ObjectID,
                         TargetObjectID: target.CreatureInstance().ObjectID,
                     }
-                    pc.Scene.broadcastPacket(pc.X, pc.Y, ok3, agent)
+                    pc.Scene.broadcastPacket(pc.X, pc.Y, ok3, nil)
 
                     // 广播给所有玩家，状态变化
                     status := packet.GCStatusCurrentHP{

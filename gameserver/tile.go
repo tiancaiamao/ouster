@@ -118,9 +118,9 @@ func (tile *Tile) DeleteCreature(id ObjectID_t) {
 
 func (tile *Tile) AddCreature(creature CreatureInterface) {
     inst := creature.CreatureInstance()
-    // if tile.HasCreature(inst.MoveMode) {
-    //     panic("重复加入到tile")
-    // }
+    if tile.HasCreature(inst.MoveMode) {
+        panic("重复加入到tile")
+    }
 
     tile.Objects = append(tile.Objects, creature)
 
