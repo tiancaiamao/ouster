@@ -492,7 +492,7 @@ const (
     PACKET_UC_UPDATE
     PACKET_UC_UPDATE_LIST
     PACKET_CL_AGREEMENT
-    PACKET_MAX = 255
+    PACKET_MAX
 )
 
 const (
@@ -514,6 +514,8 @@ func init() {
     table[PACKET_CL_SELECT_SERVER] = readSelectServer
     table[PACKET_CL_GET_WORLD_LIST] = readGetWorldList
     table[PACKET_CL_SELECT_PC] = readSelectPc
+
+    table[PACKET_LC_RECONNECT] = readReconnect
 
     table[PACKET_CG_CONNECT] = readConnect
     table[PACKET_CG_READY] = func([]byte, uint8) (Packet, error) {
@@ -550,25 +552,39 @@ func (e NotImplementError) Error() string {
     return "this packet is not implemented yet"
 }
 
-type NotImplementPacket struct {
+type RawPacket struct {
     Id   PacketID
+    Seq  uint8
     Data []byte
 }
 
-func (notimp NotImplementPacket) PacketID() PacketID {
+func (raw *RawPacket) Unmarshal(code uint8) (ret Packet, err error) {
+    f := table[raw.Id]
+    if f == nil {
+        var data []byte
+        copy(data, raw.Data)
+        raw.Data = data
+        ret = raw
+        err = NotImplementError{}
+        return
+    }
+
+    ret, err = f(raw.Data, code)
+    return
+}
+
+func (notimp RawPacket) PacketID() PacketID {
     return notimp.Id
 }
 
-func (pkt NotImplementPacket) MarshalBinary(code uint8) ([]byte, error) {
+func (pkt RawPacket) MarshalBinary(code uint8) ([]byte, error) {
     return pkt.Data, nil
 }
 
-func (r *Reader) Read(reader io.Reader) (ret Packet, err error) {
-    var id PacketID
-    var sz PacketSize
-    var buf [300]byte
+func (r *Reader) ReadRaw(reader io.Reader, raw *RawPacket, buf []byte) (err error) {
+    var sz uint32
 
-    err = binary.Read(reader, binary.LittleEndian, &id)
+    err = binary.Read(reader, binary.LittleEndian, &raw.Id)
     if err != nil {
         return
     }
@@ -578,12 +594,15 @@ func (r *Reader) Read(reader io.Reader) (ret Packet, err error) {
         return
     }
 
-    err = binary.Read(reader, binary.LittleEndian, &r.Seq)
+    err = binary.Read(reader, binary.LittleEndian, &raw.Seq)
     if err != nil {
         return
     }
 
-    log.Debugf("read a packet id = %d, sz = %d\n", id, sz)
+    if sz > uint32(len(buf)) {
+        log.Errorf("read a packet id = %d, sz = %d\n", raw.Id, sz)
+        return errors.New("packet size too large")
+    }
 
     n, err := io.ReadFull(reader, buf[:sz])
     if err != nil {
@@ -594,20 +613,22 @@ func (r *Reader) Read(reader io.Reader) (ret Packet, err error) {
         return
     }
 
-    f := table[id]
-    if f == nil {
-        notimp := NotImplementPacket{
-            Id: id,
-        }
-        notimp.Data = make([]byte, sz)
-        copy(notimp.Data, buf[:sz])
+    raw.Data = buf[:sz]
+    return nil
+}
 
-        ret = notimp
-        err = NotImplementError{}
+//BUG:300字节的长度限制
+func (r *Reader) Read(reader io.Reader) (ret Packet, err error) {
+    var buf [500]byte
+    var raw RawPacket
+
+    err = r.ReadRaw(reader, &raw, buf[:])
+    if err != nil {
         return
     }
 
-    ret, err = f(buf[:sz], r.Code)
+    ret, err = raw.Unmarshal(r.Code)
+    r.Seq = raw.Seq
     return
 }
 
@@ -640,7 +661,6 @@ func (w *Writer) Write(writer io.Writer, pkt Packet) error {
     if err != nil {
         return err
     }
-    // log.Debugln(buf)
 
     sz := PacketSize(len(buf))
     err = binary.Write(writer, binary.LittleEndian, sz)
@@ -654,14 +674,9 @@ func (w *Writer) Write(writer io.Writer, pkt Packet) error {
     }
     w.Seq++
 
-    var off int
-    for off < len(buf) {
-        n, err := writer.Write(buf[off:])
-        if err != nil {
-            return err
-        }
-
-        off += n
+    _, err = writer.Write(buf)
+    if err != nil {
+        return err
     }
 
     return nil

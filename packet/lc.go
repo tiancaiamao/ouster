@@ -98,14 +98,16 @@ func (rc *LCReconnectPacket) MarshalBinary(code uint8) ([]byte, error) {
     ret := make([]byte, sz)
     ret[0] = byte(len(rc.Ip))
     copy(ret[1:], rc.Ip[:])
-    // for i := 1; i < len(rc.Ip); i++ {
-    // 	ret[i+1] = rc.Ip[i]
-    // }
-
     binary.LittleEndian.PutUint16(ret[1+len(rc.Ip):], rc.Port)
     copy(ret[3+len(rc.Ip):], rc.Key)
-    // for i := 0; i < len(rc.Key); i++ {
-    // 	ret[4+len(rc.Ip)+i] = rc.Key[i]
-    // }
+    return ret, nil
+}
+
+func readReconnect(buf []byte, code uint8) (Packet, error) {
+    ret := &LCReconnectPacket{}
+    len := int(buf[0])
+    ret.Ip = string(buf[1 : 1+len])
+    ret.Port = binary.LittleEndian.Uint16(buf[1+len:])
+    copy(ret.Key, buf[3+len:])
     return ret, nil
 }

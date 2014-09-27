@@ -19,9 +19,7 @@ type CGConnectPacket struct {
 func (connect *CGConnectPacket) PacketID() PacketID {
     return PACKET_CG_CONNECT
 }
-func (connect *CGConnectPacket) String() string {
-    return "connect"
-}
+
 func (connect *CGConnectPacket) MarshalBinary(code uint8) ([]byte, error) {
     buf := &bytes.Buffer{}
     binary.Write(buf, binary.LittleEndian, connect.Key)

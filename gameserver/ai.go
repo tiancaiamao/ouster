@@ -365,7 +365,7 @@ func (ai *MonsterAI) setMoveRule(rule MoveRule) {
     ai.WallCount = 0
 }
 
-func (ai *MonsterAI) setDelay(time.Time) {
+func (ai *MonsterAI) setDelay(currentTime time.Time) {
     delay := ai.Body.getDelay()
 
     if ai.Body.isFlag(EFFECT_CLASS_TRANSFORM_TO_BAT) {
@@ -394,7 +394,7 @@ func (ai *MonsterAI) setDelay(time.Time) {
     }
 }
 
-func (ai *MonsterAI) setAttackDelay(time.Time) {
+func (ai *MonsterAI) setAttackDelay(currentTime time.Time) {
     delay := ai.Body.getAttackDelay()
     modifier = rand.Intn(21)
 
