@@ -51,8 +51,8 @@ type Monster struct {
     Exp   Exp_t
     Moral Moral_t
 
-    Delay       Turn_t
-    AttackDelay Turn_t
+    Delay       time.Duration
+    AttackDelay time.Duration
     AccuDelay   time.Duration
 
     Enemies  map[ObjectID_t]CreatureInterface
@@ -121,6 +121,8 @@ func NewMonster(monsterType MonsterType_t) *Monster {
 
     ret.Sight = info.Sight
     ret.Level = info.Level
+    ret.Delay = time.Duration(info.Delay) * time.Millisecond
+    ret.AttackDelay = ret.Delay
 
     ret.computeHP()
     ret.HP[ATTR_CURRENT] = ret.HP[ATTR_MAX]
@@ -484,6 +486,22 @@ func (m *Monster) hasNextMonsterSummonInfo() bool {
     return false
 }
 
-func (m *Monster) getDelay() Turn_t {
+func (m *Monster) getDelay() time.Duration {
     return m.Delay
+}
+
+func (m *Monster) getAccuDelay() time.Duration {
+    return m.AccuDelay
+}
+
+func (m *Monster) getAttackDelay() time.Duration {
+    return m.AttackDelay
+}
+
+func (m *Monster) clearAccuDelay() {
+    m.AccuDelay = 0
+}
+
+func (m *Monster) setNextTurn(t time.Time) {
+    m.NextTurn = t
 }

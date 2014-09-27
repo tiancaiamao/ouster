@@ -74,7 +74,7 @@ const (
     SKILL_DOMAIN_MAX
 )
 
-type Turn_t uint32
+// type Turn_t uint32
 type Moral_t uint8
 type SkillLevel_t uint8
 type ItemID_t uint32

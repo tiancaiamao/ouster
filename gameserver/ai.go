@@ -369,48 +369,37 @@ func (ai *MonsterAI) setDelay(currentTime time.Time) {
     delay := ai.Body.getDelay()
 
     if ai.Body.isFlag(EFFECT_CLASS_TRANSFORM_TO_BAT) {
-        delay = 200
+        delay = 200 * time.Millisecond
     } else if ai.Body.isFlag(EFFECT_CLASS_TRANSFORM_TO_WOLF) {
-        delay = 300
+        delay = 300 * time.Millisecond
     }
 
     modifier := rand.Intn(41) - 20
-
-    delay = delay * Turn_t(1000)
-    delay = delay + delay*Turn_t(modifier)/100
-
-    nexttime := delay / 1000000 * time.Second
-    nexttime.Add((delay % 1000000) * time.Microsecond)
-
-    nexttime = nexttime + ai.Body.getAccuDelay()
+    delay = time.Duration(float64(delay) * float64(100+modifier) / 100.0)
+    delay += ai.Body.getAccuDelay()
 
     ai.Body.clearAccuDelay()
 
     if ai.Body.isFlag(EFFECT_CLASS_ICE_FIELD_TO_CREATURE) ||
         ai.Body.isFlag(EFFECT_CLASS_JABBING_VEIN) {
-        ai.Body.setNextTurn(currentTime.Add(2 * nexttime))
+        ai.Body.setNextTurn(currentTime.Add(2 * delay))
     } else {
-        ai.Body.setNextTurn(currentTime.Add(nexttime))
+        ai.Body.setNextTurn(currentTime.Add(delay))
     }
 }
 
 func (ai *MonsterAI) setAttackDelay(currentTime time.Time) {
     delay := ai.Body.getAttackDelay()
-    modifier = rand.Intn(21)
 
-    delay := delay * 1000
-    delay = delay + delay*modifier/100
-
-    nexttime := delay / 1000000 * time.Second
-    nexttime.Add(delay % 1000000 * time.Microsecond)
-    nexttime.Add(ai.Body.getAccuDelay())
-
+    modifier := rand.Intn(21)
+    delay = time.Duration(float64(delay) * (float64(100+modifier) / 100))
+    delay += ai.Body.getAccuDelay()
     ai.Body.clearAccuDelay()
 
     if ai.Body.isFlag(EFFECT_CLASS_ICE_OF_SOUL_STONE) {
-        ai.Body.setNextTurn(currentTime.Add(2 * nexttime))
+        ai.Body.setNextTurn(currentTime.Add(2 * delay))
     } else {
-        ai.Body.setNextTurn(currentTime.Add(nexttime))
+        ai.Body.setNextTurn(currentTime.Add(delay))
     }
 }
 
