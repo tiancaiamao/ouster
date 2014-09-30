@@ -45,6 +45,7 @@ type SkillOutput struct {
 
 // TODO
 func (skill BloodDrain) ExecuteToObject(sender CreatureInterface, target CreatureInterface) {
+    log.Error("尚未实现")
 }
 
 // 注意:需要在agent的goroutine中执行的
@@ -86,6 +87,7 @@ func (melee AttackMelee) ExecuteToObject(sender CreatureInterface, target Creatu
                 pc := agent.PlayerCreatureInstance()
                 if pc.HP[ATTR_CURRENT] < HP_t(damage) {
                     // 玩家被打死了
+                    log.Debugln("玩家被打死还没实现")
                 } else {
                     pc.HP[ATTR_CURRENT] -= HP_t(damage)
 
@@ -95,7 +97,7 @@ func (melee AttackMelee) ExecuteToObject(sender CreatureInterface, target Creatu
                         ObjectID:       sender.CreatureInstance().ObjectID,
                         TargetObjectID: target.CreatureInstance().ObjectID,
                     }
-                    pc.Scene.broadcastPacket(pc.X, pc.Y, ok3, nil)
+                    pc.Scene.broadcastPacket(pc.X, pc.Y, ok3, agent)
 
                     // 广播给所有玩家，状态变化
                     status := packet.GCStatusCurrentHP{

@@ -71,12 +71,41 @@ func (m *Scene) Blocked(x, y uint16) bool {
     return false
 }
 
+func addPCToTile(scene *Scene, x, y int, pc *PlayerCreature, agent *Agent) {
+    for sum := 0; sum < 20; sum++ {
+        for i := -10; i < 10; i++ {
+            for j := -10; j < 10; j++ {
+                if abs(i)+abs(j) < sum {
+                    if x+i >= int(scene.Width) || x+i < 0 {
+                        continue
+                    }
+                    if y+i >= int(scene.Height) || y+i < 0 {
+                        continue
+                    }
+
+                    tile := scene.Tile(x+i, y+j)
+                    if !tile.HasCreature(pc.MoveMode) {
+                        tile.AddCreature(agent)
+                        log.Debugf("login player: %d to (%d %d) tile=%#v\n", pc.ObjectID, x+i, y+j, tile)
+                        pc.X = ZoneCoord_t(x + i)
+                        pc.Y = ZoneCoord_t(y + j)
+                        return
+                    }
+                }
+            }
+        }
+    }
+    panic("should not reach here!!")
+}
+
 func (m *Scene) Login(agent *Agent) {
     m.registeObject(agent)
 
-    c := agent.CreatureInstance()
-    m.players[c.ObjectID] = agent
-    c.Scene = m
+    pc := agent.PlayerCreatureInstance()
+    m.players[pc.ObjectID] = agent
+    pc.Scene = m
+
+    addPCToTile(m, int(pc.X), int(pc.Y), pc, agent)
 }
 
 func (m *Scene) Logout(agent *Agent) {

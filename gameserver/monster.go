@@ -419,15 +419,15 @@ func (m *Monster) heartbeat(currentTime time.Time) {
             diceResult := rand.Intn(128)
             if diceResult < 6 {
                 // 让怪走一走，锻炼身体
-                direction := rand.Intn(DIR_MAX)
-                nx := m.X + ZoneCoord_t(dirMoveMask[direction].X)
-                ny := m.Y + ZoneCoord_t(dirMoveMask[direction].Y)
-
-                if nx < m.Scene.Width && nx >= 0 && ny < m.Scene.Height && ny >= 0 {
-                    if m.canMove(nx, ny) && (m.Scene.getZoneLevel(nx, ny)&SAFE_ZONE) == 0 {
-                        m.Scene.moveCreature(m, nx, ny, Dir_t(direction))
-                    }
-                }
+                // direction := rand.Intn(DIR_MAX)
+                //    nx := m.X + ZoneCoord_t(dirMoveMask[direction].X)
+                //    ny := m.Y + ZoneCoord_t(dirMoveMask[direction].Y)
+                //
+                //    if nx < m.Scene.Width && nx >= 0 && ny < m.Scene.Height && ny >= 0 {
+                //        if m.canMove(nx, ny) && (m.Scene.getZoneLevel(nx, ny)&SAFE_ZONE) == 0 {
+                //            m.Scene.moveCreature(m, nx, ny, Dir_t(direction))
+                //        }
+                //		}
             }
 
             // m.Brain.move(m_pZone.getWidth()>>1, m_pZone.getHeight()>>1)

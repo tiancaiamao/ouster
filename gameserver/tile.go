@@ -25,7 +25,7 @@ const (
 type Tile struct {
     Flags   uint16
     Option  uint16
-    Objects []ObjectInterface
+    Objects map[ObjectID_t]ObjectInterface
     Sector  *Sector
 }
 
@@ -94,13 +94,13 @@ func (tile *Tile) hasPortal() bool {
 
 func (tile *Tile) DeleteCreature(id ObjectID_t) {
     var object ObjectInterface
-    for i := 0; i < len(tile.Objects); i++ {
-        if tile.Objects[i].ObjectInstance().ObjectID == id {
-            object = tile.Objects[i]
-            copy(tile.Objects[i:], tile.Objects[i+1:])
-            break
-        }
+    object, ok := tile.Objects[id]
+    if !ok {
+        log.Warnf("object not exist in tile! id=%d tile=%#v\n", id, tile)
+        return
     }
+
+    delete(tile.Objects, id)
 
     var creature *Creature
     switch raw := object.(type) {
@@ -122,7 +122,7 @@ func (tile *Tile) AddCreature(creature CreatureInterface) {
         panic("重复加入到tile")
     }
 
-    tile.Objects = append(tile.Objects, creature)
+    tile.Objects[inst.ObjectID] = creature
 
     tile.Flags |= (1 << (TILE_WALKING_CREATURE + inst.MoveMode))
     tile.Flags |= (1 << (TILE_GROUND_BLOCKED + inst.MoveMode))

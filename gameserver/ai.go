@@ -329,14 +329,6 @@ func (ai *MonsterAI) move(pEnemy CreatureInterface) bool {
     ex := enemy.X
     ey := enemy.Y
 
-    ////////////////////////////////////////////////////////////
-    // (enemyX, enemyY)
-    //
-    //                  myX, myY
-    //
-    //                           (ex, ey)
-    //
-    ////////////////////////////////////////////////////////////
     xOffset2 := xOffset << 1
     yOffset2 := yOffset << 1
 
@@ -431,19 +423,24 @@ func (ai *MonsterAI) useSkill(pEnemy CreatureInterface, SkillType SkillType_t, r
         log.Errorf("技能%d的handler没有实现!!", SkillType)
         return 0
     }
-    handler := skill.(SkillToObjectInterface)
 
-    // 移动计算，以闭包形式发到agent的goroutine中运行
-    if agent, ok := pEnemy.(*Agent); ok {
-        closure := func() {
-            handler.ExecuteToObject(ai.Body, pEnemy)
+    switch handler := skill.(type) {
+    case SkillToObjectInterface:
+        // 移动计算，以闭包形式发到agent的goroutine中运行
+        if agent, ok := pEnemy.(*Agent); ok {
+            closure := func() {
+                handler.ExecuteToObject(ai.Body, pEnemy)
+            }
+            agent.computation <- closure
+        } else {
+            log.Errorln("怪物打怪物还没实现")
         }
-        agent.computation <- closure
-    } else {
-        log.Errorln("怪物打怪物还没实现")
+
+        ai.LastAction = LAST_ACTION_SKILL
+    default:
+        log.Warnln("skill handler没有实现", SkillType)
     }
 
-    ai.LastAction = LAST_ACTION_SKILL
     return 0
 }
 
@@ -453,11 +450,11 @@ func isValidZoneCoord(zone *Zone, x, y ZoneCoord_t) bool {
 }
 
 func (ai *MonsterAI) Deal(pEnemy CreatureInterface, currentTime time.Time) {
-    for _, pDirective := range ai.DirectiveSet.Directives {
+    for i, pDirective := range ai.DirectiveSet.Directives {
         if ai.checkDirective(pDirective, pEnemy) {
             switch pDirective.Action {
             case DIRECTIVE_ACTION_APPROACH:
-                log.Debugln("动作是approach")
+                log.Debugln("动作是approach", i)
                 ai.approach(pEnemy)
             case DIRECTIVE_ACTION_FLEE:
                 log.Debugln("动作是逃跑")
@@ -469,7 +466,7 @@ func (ai *MonsterAI) Deal(pEnemy CreatureInterface, currentTime time.Time) {
                     }
                 }
             case DIRECTIVE_ACTION_USE_SKILL:
-                log.Debugln("动作是放技能")
+                log.Debugln("动作是放技能", i)
                 if ai.Body.isFlag(EFFECT_CLASS_BLOCK_HEAD) || ai.Body.isFlag(EFFECT_CLASS_TENDRIL) {
                     continue
                 }
@@ -562,6 +559,8 @@ func (ai *MonsterAI) Deal(pEnemy CreatureInterface, currentTime time.Time) {
                 // ai.Body.getZone().broadcastPacket(ai.Body.getX(), ai.Body.getY(),
                 // &gcSay);
             }
+
+            // break
         }
     }
 

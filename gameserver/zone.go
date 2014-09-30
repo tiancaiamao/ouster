@@ -121,6 +121,7 @@ func (zone *Zone) load(smp *data.SMP, ssi data.SSI) {
             sx := i / SECTOR_SIZE
             sy := i / SECTOR_SIZE
             tile := zone.Tile(i, j)
+            tile.Objects = make(map[ObjectID_t]ObjectInterface)
             // log.Debugln(sx, sy)
             tile.Sector = zone.Sector(sx, sy)
         }
@@ -330,7 +331,9 @@ func (zone *Zone) movePC(agent *Agent, cx ZoneCoord_t, cy ZoneCoord_t, dir Dir_t
 
     oldTile.DeleteCreature(pc.ObjectID)
     newTile.AddCreature(agent)
-    log.Debugln("agent应该是加入到tile中了的!!!")
+
+    log.Debugf("agent %d move: (%d,%d)->(%d,%d) zone=%p, scene=%p\n", pc.ObjectID, cx, cy, nx, ny, zone, pc.Scene)
+    log.Debugln("tile:", newTile)
 
     // 检查地雷/陷阱
 
@@ -540,10 +543,13 @@ func (zone *Zone) moveCreature(creature CreatureInterface, nx ZoneCoord_t, ny Zo
     cy := inst.Y
 
     tile := zone.Tile(int(cx), int(cy))
+    newTile := zone.Tile(int(nx), int(ny))
+
+    newTile.AddCreature(creature)
     tile.DeleteCreature(inst.ObjectID)
 
-    newTile := zone.Tile(int(nx), int(ny))
-    newTile.AddCreature(creature)
+    log.Debugf("monster %d move: (%d,%d)->(%d,%d) zone=%p scene=%p\n", inst.ObjectID, cx, cy, nx, ny, zone, inst.Scene)
+    log.Debugln("tile:", newTile)
 
     inst.X = nx
     inst.Y = ny
@@ -557,40 +563,47 @@ func (zone *Zone) moveCreature(creature CreatureInterface, nx ZoneCoord_t, ny Zo
 
 func (zone *Zone) moveCreatureBroadcast(creature CreatureInterface, x1 ZoneCoord_t, y1 ZoneCoord_t, x2 ZoneCoord_t, y2 ZoneCoord_t) {
     inst := creature.CreatureInstance()
-    move := packet.GCMovePacket{
-        ObjectID: inst.ObjectID,
-        X:        Coord_t(inst.X),
-        Y:        Coord_t(inst.Y),
-        Dir:      inst.Dir,
-    }
 
     for ix, endx := max(0, int(x2)-int(MaxViewportWidth)-1), min(int(zone.Width)-1, int(x2)+int(MaxViewportWidth)+1); ix <= endx; ix++ {
         for iy, endy := max(0, int(y2)-int(MaxViewportUpperHeight)-1), min(int(zone.Height)-1, int(y2)+int(MaxViewportLowerHeight)+1); iy <= endy; iy++ {
             tile := zone.Tile(ix, iy)
             for _, obj := range tile.Objects {
                 if agent, ok := obj.(*Agent); ok {
-                    //////////////////////////////////////////////////////////////////////////////
-                    // OUT_OF_SIGHT -> ON_SIGHT/NEW_SIGHT : GCAddXXX
-                    // IN_SIGHT/ON_SIGHT/NEW_SIGHT -> IN_SIGHT/ON_SIGHT/NEW_SIGHT : GCMove
-                    //////////////////////////////////////////////////////////////////////////////
-                    // VisionState prevVS = pPC->getVisionState(x1,y1);
-                    // VisionState currVS = pPC->getVisionState(x2,y2);
+                    pc := agent.PlayerCreatureInstance()
+                    log.Debugf("agent id=%d x=%d y=%d\n", pc.ObjectID, ix, iy)
+                    prevVS := getVisionState(pc.X, pc.Y, x1, y1)
+                    currVS := getVisionState(pc.X, pc.Y, x2, y2)
 
-                    // if prevVS == OUT_OF_SIGHT && currVS >= IN_SIGHT {
-                    //     if creature.(*Monster) {
-                    //         if canSee(pPC, pMonster) {
-                    //             agent.sendPacket(pGCAddXXX)
-                    //         }
-                    //     } else {
-                    //         agent.sendPacket(pGCAddXXX)
-                    //     }
-                    // } else if prevVS >= IN_SIGHT && currVS >= IN_SIGHT {
-                    //     agent.sendStream(&outputStream)
-                    // } else if prevVS >= IN_SIGHT && currVS == OUT_OF_SIGHT {
-                    //     agent.sendPacket(&gcDeleteObject)
-                    // }
+                    if prevVS == OUT_OF_SIGHT && currVS == IN_SIGHT {
+                        if monster, ok := creature.(*Monster); ok {
+                            agent.sendPacket(&packet.GCAddMonster{
+                                ObjectID:    monster.ObjectID,
+                                MonsterType: monster.MonsterType,
+                                MonsterName: monster.Name,
+                                MainColor:   monster.MainColor,
+                                SubColor:    monster.SubColor,
+                                X:           Coord_t(monster.X),
+                                Y:           Coord_t(monster.Y),
+                                Dir:         monster.Dir,
+                                // EffectInfo  []EffectInfo
+                                CurrentHP: monster.HP[ATTR_CURRENT],
+                                MaxHP:     monster.HP[ATTR_MAX],
+                                // FromFlag		byte
+                            })
+                        }
+                    } else if prevVS == IN_SIGHT && currVS == IN_SIGHT {
+                        move := packet.GCMovePacket{
+                            ObjectID: inst.ObjectID,
+                            X:        Coord_t(inst.X),
+                            Y:        Coord_t(inst.Y),
+                            Dir:      inst.Dir,
+                        }
+                        agent.sendPacket(move)
+                        log.Debugln("broadcast a GCMovePacket", move)
+                    } else if prevVS == IN_SIGHT && currVS == OUT_OF_SIGHT {
+                        agent.sendPacket(packet.GCDeleteObjectPacket(inst.ObjectID))
+                    }
 
-                    agent.sendPacket(move)
                 }
             }
         }
@@ -603,50 +616,23 @@ func (zone *Zone) moveFastMonster(*Monster, ZoneCoord_t, ZoneCoord_t, ZoneCoord_
 }
 
 func (zone *Zone) broadcastPacket(cx ZoneCoord_t, cy ZoneCoord_t, packet packet.Packet, owner *Agent) {
-    var (
-        ix   ZoneCoord_t
-        iy   ZoneCoord_t
-        endx ZoneCoord_t
-        endy ZoneCoord_t
-    )
-
-    endx = cx + ZoneCoord_t(MaxViewportWidth) + 1 //+ Range
-    if endx > zone.Width {
-        endx = zone.Width
-    }
-    endy = cy + ZoneCoord_t(MaxViewportLowerHeight) + 1 //+ Range
-    if endy > zone.Height {
-        endy = zone.Height
-    }
-
-    ix = cx - ZoneCoord_t(MaxViewportWidth) - 1 //- Range
-    if ix < 0 {
-        ix = 0
-    }
-    iy = cy - ZoneCoord_t(MaxViewportUpperHeight) - 1 //- Range
-    if iy < 0 {
-        iy = 0
-    }
-    log.Debugf("难道agent没有加入tile么?? ix=%d, iy=%d, ex=%d, ey=%d\n", ix, iy, endx, endy)
-    for ; ix <= endx; ix++ {
-        for ; iy <= endy; iy++ {
-            tile := zone.Tile(int(ix), int(iy))
-            // if tile.HasCreature(MOVE_MODE_WALKING) {
-            for _, v := range tile.Objects {
-                agent, ok := v.(*Agent)
-                if ok && agent != owner {
-                    log.Debugln("运行进来这里了...")
-                    if owner != nil {
-                        if canSee(agent, owner) {
+    for ix, endx := max(0, int(cx)-int(MaxViewportWidth)-1), min(int(zone.Width)-1, int(cx)+int(MaxViewportWidth)+1); ix <= endx; ix++ {
+        for iy, endy := max(0, int(cy)-int(MaxViewportUpperHeight)-1), min(int(zone.Height)-1, int(cy)+int(MaxViewportLowerHeight)+1); iy <= endy; iy++ {
+            tile := zone.Tile(ix, iy)
+            if tile.HasCreature(MOVE_MODE_WALKING) {
+                for _, v := range tile.Objects {
+                    agent, ok := v.(*Agent)
+                    if ok && agent != owner {
+                        if owner != nil {
+                            if canSee(agent, owner) {
+                                agent.sendPacket(packet)
+                            }
+                        } else {
                             agent.sendPacket(packet)
                         }
-                    } else {
-                        log.Debugln("运行到这里，广播信息给agent")
-                        agent.sendPacket(packet)
                     }
                 }
             }
-            // }
         }
     }
 }

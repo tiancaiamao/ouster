@@ -75,9 +75,7 @@ type GCMovePacket struct {
 func (move GCMovePacket) PacketID() PacketID {
     return PACKET_GC_MOVE
 }
-func (move GCMovePacket) String() string {
-    return "move"
-}
+
 func (move GCMovePacket) MarshalBinary(code uint8) ([]byte, error) {
     ret := []byte{0, 0, 0, 0, byte(move.X), byte(move.Y), byte(move.Dir)}
     binary.LittleEndian.PutUint32(ret[:], uint32(move.ObjectID))

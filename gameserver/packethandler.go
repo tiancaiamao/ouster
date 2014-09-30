@@ -204,32 +204,6 @@ func CGSkillToTileHandler(pkt packet.Packet, agent *Agent) {
     // player.SkillToTile(skill)
 }
 
-func addPCToTile(scene *Scene, x, y int, pc *PlayerCreature, agent *Agent) {
-    for sum := 0; sum < 20; sum++ {
-        for i := -10; i < 10; i++ {
-            for j := -10; j < 10; j++ {
-                if abs(i)+abs(j) < sum {
-                    if x+i >= int(scene.Width) || x+i < 0 {
-                        continue
-                    }
-                    if y+i >= int(scene.Height) || y+i < 0 {
-                        continue
-                    }
-
-                    tile := scene.Tile(x+i, y+j)
-                    if !tile.HasCreature(pc.MoveMode) {
-                        tile.AddCreature(agent)
-                        pc.X = ZoneCoord_t(x + i)
-                        pc.Y = ZoneCoord_t(y + j)
-                        return
-                    }
-                }
-            }
-        }
-    }
-    panic("should not reach here!!")
-}
-
 func CGConnectHandler(pkt packet.Packet, agent *Agent) {
     raw := pkt.(*packet.CGConnectPacket)
     pcItf, zid, err := LoadPlayerCreature(raw.PCName, packet.PCType(raw.PCType))
@@ -245,10 +219,6 @@ func CGConnectHandler(pkt packet.Packet, agent *Agent) {
         return
     }
     agent.scene = scene.agent
-    pc := pcItf.PlayerCreatureInstance()
-
-    addPCToTile(scene, int(pc.X), int(pc.Y), pc, agent)
-
     msg := LoginMessage{
         Agent: agent,
         wg:    &sync.WaitGroup{},

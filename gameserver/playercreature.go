@@ -98,6 +98,7 @@ func loadOuster(decoder *json.Decoder) (ouster *Ouster, zoneID ZoneID_t, err err
     var pcInfo data.PCOusterInfo
     err = decoder.Decode(&pcInfo)
     if err != nil {
+        log.Errorln("decode pcinfo failed")
         return
     }
 
@@ -129,11 +130,11 @@ func loadOuster(decoder *json.Decoder) (ouster *Ouster, zoneID ZoneID_t, err err
     ouster.X = pcInfo.ZoneX
     ouster.Y = pcInfo.ZoneY
 
-    var skillInfo packet.OusterSkillInfo
-    err = decoder.Decode(&skillInfo)
-    if err != nil {
-        return
-    }
+    // var skillInfo packet.OusterSkillInfo
+    // err = decoder.Decode(&skillInfo)
+    // if err != nil {
+    //     return
+    // }
 
     // player.skillslot = make([]SkillSlot, len(skillInfo.SubOusterSkillInfoList))
     // for i := 0; i < len(skillInfo.SubOusterSkillInfoList); i++ {
