@@ -637,13 +637,17 @@ func (zone *Zone) moveFastMonster(*Monster, ZoneCoord_t, ZoneCoord_t, ZoneCoord_
     return true
 }
 
-func (zone *Zone) broadcastSkillPacket(x1 ZoneCoord_t, y1 ZoneCoord_t, x2 ZoneCoord_t, y2 ZoneCoord_t, pkt packet.Packet) {
+func (zone *Zone) broadcastSkillPacket(x1 ZoneCoord_t, y1 ZoneCoord_t, x2 ZoneCoord_t, y2 ZoneCoord_t, pkt packet.Packet, own *Agent) {
     for ix, endx := max(0, int(x1)-int(MaxViewportWidth)-1), min(int(zone.Width)-1, int(x1)+int(MaxViewportWidth)+1); ix <= endx; ix++ {
         for iy, endy := max(0, int(y1)-int(MaxViewportUpperHeight)-1), min(int(zone.Height)-1, int(y1)+int(MaxViewportLowerHeight)+1); iy <= endy; iy++ {
             tile := zone.Tile(ix, iy)
 
             if tile.hasCreature() {
                 for _, obj := range tile.Objects {
+                    if own == obj {
+                        continue
+                    }
+
                     if obj.ObjectClass() == OBJECT_CLASS_CREATURE {
                         if agent, ok := obj.(*Agent); ok {
                             pc := agent.PlayerCreatureInstance()

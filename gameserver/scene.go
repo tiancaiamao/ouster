@@ -212,12 +212,6 @@ func (m *Scene) setDamage(target CreatureInterface, agent *Agent, damage Damage_
     default:
         log.Errorln("参数不对")
     }
-
-    // 发给攻击者，告诉他攻击成功了
-    ok1 := packet.GCAttackMeleeOK1{
-        ObjectID: target.CreatureInstance().ObjectID,
-    }
-    agent.sendPacket(ok1)
     agent.sendPacket(status)
 
     pc := agent.CreatureInstance()

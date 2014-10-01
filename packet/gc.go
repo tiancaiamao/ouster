@@ -1020,9 +1020,9 @@ func (failed GCSkillFailed2) MarshalBinary(code uint8) ([]byte, error) {
 
 // send to player
 type GCSkillToObjectOK1 struct {
-    SkillType      uint16
+    SkillType      SkillType_t
     CEffectID      uint16
-    TargetObjectID uint32
+    TargetObjectID ObjectID_t
     Duration       uint16
     Grade          uint8
     ModifyInfo

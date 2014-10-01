@@ -65,6 +65,12 @@ func (melee AttackMelee) ExecuteToObject(sender CreatureInterface, target Creatu
                 critical: false,
             }
 
+            // 发给攻击者，告诉他攻击成功了
+            ok1 := packet.GCAttackMeleeOK1{
+                ObjectID: target.CreatureInstance().ObjectID,
+            }
+            agent.sendPacket(ok1)
+
             if slayer, ok := agent.PlayerCreatureInterface.(*Slayer); ok {
                 weapon := slayer.getWearItem(SLAYER_WEAR_RIGHTHAND)
                 switch weapon.ItemClass() {
@@ -279,33 +285,84 @@ func (sharphail SharpHail) ExecuteToTile(skill packet.CGSkillToTilePacket, agent
     })
 
     // ok5是发给即能看到施放者，又能看到tile的玩家
-    // ok5 := &packet.GCSkillToTileOK5{
-    //				 ObjectID:	pc.ObjectID,
-    //				 SkillType: skill.SkillType,
-    //				 X:				 skill.X,
-    //				 Y:				 skill.Y,
-    //				 Duration:	uint16(output.Duration),
-    //		 }
+    ok5 := &packet.GCSkillToTileOK5{
+        ObjectID:  pc.ObjectID,
+        SkillType: skill.SkillType,
+        X:         skill.X,
+        Y:         skill.Y,
+        Duration:  uint16(output.Duration),
+    }
 
-    // scene.broadcastSkillPacket(pc.X, pc.Y, ZoneCoord_t(skill.X), ZoneCoord_t(skill.Y), ok5)
+    scene.broadcastSkillPacket(pc.X, pc.Y, ZoneCoord_t(skill.X), ZoneCoord_t(skill.Y), ok5, agent)
 
     // ok3是向施法者周围广播施放成功
-    // scene.broadcastPacket(pc.X, pc.Y, &packet.GCSkillToTileOK3{
-    //     ObjectID:  pc.ObjectID,
-    //     SkillType: skill.SkillType,
-    //     X:         skill.X,
-    //     Y:         skill.Y,
-    // }, nil)
+    scene.broadcastPacket(pc.X, pc.Y, &packet.GCSkillToTileOK3{
+        ObjectID:  pc.ObjectID,
+        SkillType: skill.SkillType,
+        X:         skill.X,
+        Y:         skill.Y,
+    }, agent)
 
     // ok4是向tile周围广播
-    // scene.broadcastPacket(ZoneCoord_t(skill.X), ZoneCoord_t(skill.Y), &packet.GCSkillToTileOK4{
-    //     SkillType: skill.SkillType,
-    //     X:         Coord_t(skill.X),
-    //     Y:         Coord_t(skill.Y),
-    //		 Duration:	uint16(output.Duration),
-    // }, nil)
+    scene.broadcastPacket(ZoneCoord_t(skill.X), ZoneCoord_t(skill.Y), &packet.GCSkillToTileOK4{
+        SkillType: skill.SkillType,
+        X:         Coord_t(skill.X),
+        Y:         Coord_t(skill.Y),
+        Duration:  uint16(output.Duration),
+    }, agent)
 }
 
 func (sharphail SharpHail) ExecuteToObject(skill packet.CGSkillToObjectPacket, agent *Agent) {
 
+}
+
+func (spear DestructionSpear) ExecuteToObject(sender CreatureInterface, target CreatureInterface) {
+    // weapon := sender.getWearItem(OUSTER_WEAR_RIGHTHAND)
+    // if weapon == nil {
+    // 	// TODO
+    // 	return
+    // }
+
+    agent := sender.(*Agent)
+    // pc := agent.PlayerCreatureInstance()
+    spear.Check(SKILL_DESTRUCTION_SPEAR, agent)
+
+    var input SkillInput
+    var output SkillOutput
+
+    spear.ComputeOutput(&input, &output)
+
+    agent.scene <- DamageMessage{
+        Agent:    agent,
+        target:   target,
+        damage:   Damage_t(output.Damage),
+        critical: false,
+    }
+
+    // 发给攻击者，告诉他攻击成功了
+    ok1 := &packet.GCSkillToObjectOK1{
+        SkillType: SKILL_DESTRUCTION_SPEAR,
+        // CEffectID      uint16
+        TargetObjectID: target.CreatureInstance().ObjectID,
+        Duration:       uint16(output.Duration),
+        // Grade          uint8
+        // ModifyInfo
+    }
+    agent.sendPacket(ok1)
+
+    tc := target.CreatureInstance()
+    scene := tc.Scene
+    for x := max(0, int(tc.X)-1); x < min(int(scene.Width)-1, int(tc.X)+1); x++ {
+        for y := max(0, int(tc.Y)-1); y < min(int(scene.Height)-1, int(tc.Y)+1); y++ {
+            tile := scene.Tile(x, y)
+
+            if tile.hasCreature() {
+                // for _, v := range tile.Objects {
+                // if creature, ok := v.(CreatureInterface); ok {
+                // TODO 群体伤害的
+                // }
+                // }
+            }
+        }
+    }
 }

@@ -175,6 +175,9 @@ type BloodDrain struct {
 type SharpHail struct {
     Skill
 }
+type DestructionSpear struct {
+    Skill
+}
 
 func Distance2(x1, y1, x2, y2 uint8) int {
     d1 := int(x1) - int(x2)
