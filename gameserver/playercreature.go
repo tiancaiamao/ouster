@@ -9,6 +9,7 @@ import (
     "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
     "os"
+    "time"
 )
 
 type PlayerCreatureInterface interface {
@@ -16,6 +17,7 @@ type PlayerCreatureInterface interface {
     PlayerCreatureInstance() *PlayerCreature
 
     PCInfo() data.PCInfo
+    SkillInfo() packet.SkillInfo
     computeDamage(CreatureInterface, bool) Damage_t
 }
 
@@ -130,20 +132,24 @@ func loadOuster(decoder *json.Decoder) (ouster *Ouster, zoneID ZoneID_t, err err
     ouster.X = pcInfo.ZoneX
     ouster.Y = pcInfo.ZoneY
 
-    // var skillInfo packet.OusterSkillInfo
-    // err = decoder.Decode(&skillInfo)
-    // if err != nil {
-    //     return
-    // }
+    var skillInfo packet.OusterSkillInfo
+    err = decoder.Decode(&skillInfo)
+    if err != nil {
+        return
+    }
 
-    // player.skillslot = make([]SkillSlot, len(skillInfo.SubOusterSkillInfoList))
-    // for i := 0; i < len(skillInfo.SubOusterSkillInfoList); i++ {
-    //     v := &skillInfo.SubOusterSkillInfoList[i]
-    //     player.skillslot[i].SkillType = v.SkillType
-    //     player.skillslot[i].ExpLevel = v.ExpLevel
-    //     player.skillslot[i].Interval = v.Interval
-    //     player.skillslot[i].CastingTime = v.CastingTime
-    // }
+    ouster.SkillSlot = make(map[SkillType_t]*OusterSkillSlot)
+    for _, v := range skillInfo.SubOusterSkillInfoList {
+        skillslot := &OusterSkillSlot{
+            // Name        string
+            SkillType:   v.SkillType,
+            ExpLevel:    v.ExpLevel,
+            Interval:    time.Duration(v.Interval) * time.Millisecond,
+            CastingTime: time.Duration(v.CastingTime) * time.Millisecond,
+            // RunTime     time.Time
+        }
+        ouster.SkillSlot[v.SkillType] = skillslot
+    }
 
     return
 }

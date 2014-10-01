@@ -1321,7 +1321,7 @@ func (info VampireSkillInfo) Dump(writer io.Writer) {
 }
 
 type SubVampireSkillInfo struct {
-    SkillType   uint16
+    SkillType   SkillType_t
     Interval    uint32
     CastingTime uint32
 }
@@ -1352,8 +1352,8 @@ func (info OusterSkillInfo) Dump(writer io.Writer) {
 }
 
 type SubOusterSkillInfo struct {
-    SkillType   uint16
-    ExpLevel    uint16
+    SkillType   SkillType_t
+    ExpLevel    ExpLevel_t
     Interval    uint32
     CastingTime uint32
 }

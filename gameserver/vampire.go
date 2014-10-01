@@ -3,6 +3,7 @@ package main
 import (
     "github.com/tiancaiamao/ouster/data"
     "github.com/tiancaiamao/ouster/log"
+    "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
     "math/rand"
     "time"
@@ -93,6 +94,23 @@ func (vampire *Vampire) getProtection() Protection_t {
 
 func (vampire *Vampire) getHP(attr int) HP_t {
     return vampire.HP[attr]
+}
+
+func (vampire *Vampire) SkillInfo() packet.SkillInfo {
+    var ret packet.VampireSkillInfo
+    ret.LearnNewSkill = false
+    skillList := make([]packet.SubVampireSkillInfo, len(vampire.SkillSlot))
+
+    i := 0
+    for _, slot := range vampire.SkillSlot {
+        skillList[i].SkillType = slot.SkillType
+        skillList[i].Interval = uint32(slot.Interval / time.Millisecond)
+        skillList[i].CastingTime = uint32(slot.CastingTime / time.Millisecond)
+        i++
+    }
+
+    ret.SubVampireSkillInfoList = skillList
+    return ret
 }
 
 func (vampire *Vampire) PCInfo() data.PCInfo {

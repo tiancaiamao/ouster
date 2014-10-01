@@ -3,6 +3,7 @@ package main
 import (
     "github.com/tiancaiamao/ouster/data"
     "github.com/tiancaiamao/ouster/log"
+    "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
     "math/rand"
     "time"
@@ -102,6 +103,24 @@ type Ouster struct {
     AlignmentSaveCount uint16
 
     MPRegenTime time.Time
+}
+
+func (ouster *Ouster) SkillInfo() packet.SkillInfo {
+    var ret packet.OusterSkillInfo
+    ret.LearnNewSkill = false
+    skillList := make([]packet.SubOusterSkillInfo, len(ouster.SkillSlot))
+
+    i := 0
+    for _, slot := range ouster.SkillSlot {
+        skillList[i].SkillType = slot.SkillType
+        skillList[i].ExpLevel = slot.ExpLevel
+        skillList[i].Interval = uint32(slot.Interval / time.Millisecond)
+        skillList[i].CastingTime = uint32(slot.CastingTime / time.Millisecond)
+        i++
+    }
+
+    ret.SubOusterSkillInfoList = skillList
+    return ret
 }
 
 func (ouster *Ouster) CreatureClass() CreatureClass {

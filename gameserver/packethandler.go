@@ -13,10 +13,10 @@ var packetHandlers map[packet.PacketID]PacketHandler
 
 func init() {
     packetHandlers = map[packet.PacketID]PacketHandler{
-        packet.PACKET_CG_CONNECT:         CGConnectHandler,
-        packet.PACKET_CG_READY:           CGReadyHandler,
-        packet.PACKET_CG_ATTACK:          CGAttackHandler,
-        packet.PACKET_CG_SAY:             CGReadyHandler,
+        packet.PACKET_CG_CONNECT: CGConnectHandler,
+        packet.PACKET_CG_READY:   CGReadyHandler,
+        packet.PACKET_CG_ATTACK:  CGAttackHandler,
+        // packet.PACKET_CG_SAY:             CGReadyHandler,
         packet.PACKET_CG_MOVE:            CGMoveHandler,
         packet.PACKET_CG_SKILL_TO_SELF:   CGSkillToSelfHandler,
         packet.PACKET_CG_SKILL_TO_OBJECT: CGSkillToObjectHandler,
@@ -257,6 +257,7 @@ func CGConnectHandler(pkt packet.Packet, agent *Agent) {
 
         GuildUnionUserType: 2,
     }
+
     switch agent.PlayerCreatureInterface.(type) {
     case *Vampire:
         info.PCType = 'V'
@@ -295,7 +296,7 @@ func CGConnectHandler(pkt packet.Packet, agent *Agent) {
 }
 
 func CGReadyHandler(pkt packet.Packet, agent *Agent) {
-    // pc := agent.pc.PlayerCreatureInstance()
+    pc := agent.PlayerCreatureInstance()
     if agent.PlayerStatus != GPS_WAITING_FOR_CG_READY {
 
     }
@@ -310,23 +311,26 @@ func CGReadyHandler(pkt packet.Packet, agent *Agent) {
     }
 
     agent.sendPacket(&packet.GCSetPositionPacket{
-        // X:   player.X(),
-        // Y:   player.Y(),
-        Dir: 2,
+        X:   uint8(pc.X),
+        Y:   uint8(pc.Y),
+        Dir: uint8(pc.Dir),
     })
 
     var skillInfo packet.GCSkillInfoPacket
-    // switch player.PCType {
-    // case 'V':
-    //     skillInfo.PCType = packet.PC_VAMPIRE
-    // case 'O':
-    //     skillInfo.PCType = packet.PC_OUSTER
-    // case 'S':
-    //     skillInfo.PCType = packet.PC_SLAYER
-    // }
-    // skillInfo.PCSkillInfoList = []packet.SkillInfo{
-    // player.SkillInfo(),
-    // }
+    switch agent.PlayerCreatureInterface.(type) {
+    case *Vampire:
+        skillInfo.PCType = packet.PC_VAMPIRE
+    case *Ouster:
+        skillInfo.PCType = packet.PC_OUSTER
+    case *Slayer:
+        skillInfo.PCType = packet.PC_SLAYER
+    default:
+        log.Errorln("不应该运行到这里")
+    }
+    skillInfo.PCSkillInfoList = []packet.SkillInfo{
+        agent.SkillInfo(),
+    }
+    log.Debugf("发送技能信息%#v\n", skillInfo)
     agent.sendPacket(&skillInfo)
     agent.PlayerStatus = GPS_NORMAL
 }

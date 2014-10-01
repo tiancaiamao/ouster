@@ -77,7 +77,7 @@ func InitPlayer(player *Player, conn net.Conn) {
                     }
                 }
             }
-            log.Debugln("读到了一个packet:", data)
+            // log.Debugln("读到了一个packet:", data)
             read <- data
         }
     }()
@@ -92,7 +92,7 @@ func InitPlayer(player *Player, conn net.Conn) {
                 player.conn.Close()
                 return
             }
-            log.Debugf("write channel get a pkt: %#v\n", pkt)
+            // log.Debugf("write channel get a pkt: %#v\n", pkt)
             err := writer.Write(player.conn, pkt)
             if err != nil {
                 log.Errorln(err)
@@ -134,40 +134,6 @@ func HitTest(tohit uint16, dodge uint16) bool {
 //		 encoder.Encode(skillInfo)
 //
 //		 f.Close()
-// }
-
-// func (player *Player) SkillInfo() packet.SkillInfo {
-//		 switch player.PCType {
-//		 case 'V':
-//				 var ret packet.VampireSkillInfo
-//				 ret.LearnNewSkill = false
-//				 skillList := make([]packet.SubVampireSkillInfo, len(player.skillslot))
-//				 for i := 0; i < len(player.skillslot); i++ {
-//						 slot := &player.skillslot[i]
-//						 skillList[i].SkillType = slot.SkillType
-//						 skillList[i].Interval = slot.Interval
-//						 skillList[i].CastingTime = slot.CastingTime
-//				 }
-//
-//				 ret.SubVampireSkillInfoList = skillList
-//				 return ret
-//		 case 'O':
-//				 var ret packet.OusterSkillInfo
-//				 ret.LearnNewSkill = false
-//				 skillList := make([]packet.SubOusterSkillInfo, len(player.skillslot))
-//				 for i := 0; i < len(player.skillslot); i++ {
-//						 slot := &player.skillslot[i]
-//						 skillList[i].SkillType = slot.SkillType
-//						 skillList[i].ExpLevel = slot.ExpLevel
-//						 skillList[i].Interval = slot.Interval
-//						 skillList[i].CastingTime = slot.CastingTime
-//				 }
-//
-//				 ret.SubOusterSkillInfoList = skillList
-//				 return ret
-//		 case 'S':
-//		 }
-//		 return nil
 // }
 
 func Encrypt(ZoneID uint16, ServerID uint16) uint8 {

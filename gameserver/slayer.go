@@ -159,6 +159,11 @@ func (slayer *Slayer) PCInfo() data.PCInfo {
 }
 
 // TODO
+func (slayer *Slayer) SkillInfo() packet.SkillInfo {
+    return nil
+}
+
+// TODO
 func (slayer *Slayer) computeDamage(creature CreatureInterface, bCritical bool) Damage_t {
     return 0
 }
