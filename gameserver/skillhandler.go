@@ -113,9 +113,8 @@ func (melee AttackMelee) ExecuteToObject(sender CreatureInterface, target Creatu
 
         switch agent := target.(type) {
         case *Agent:
-            targetAgent := target.(*Agent)
-            targetAgent.sendPacket(packet.GCAttackMeleeOK2{
-                ObjectID: agent.ObjectInstance().ObjectID,
+            agent.sendPacket(packet.GCAttackMeleeOK2{
+                ObjectID: sender.CreatureInstance().ObjectID,
             })
         case *Monster:
             // monster := target.(*Monster)
