@@ -264,7 +264,7 @@ func readLearnSkill(buf []byte, code uint8) (Packet, error) {
 type CGSkillToObjectPacket struct {
     SkillType      SkillType_t
     CEffectID      uint16
-    TargetObjectID uint32
+    TargetObjectID ObjectID_t
 }
 
 func (skill CGSkillToObjectPacket) PacketID() PacketID {
@@ -288,7 +288,7 @@ func readSkillToObject(buf []byte, code uint8) (Packet, error) {
         offset += 2
     }
     C := func() {
-        ret.TargetObjectID = binary.LittleEndian.Uint32(buf[offset:]) ^ uint32(code)
+        ret.TargetObjectID = ObjectID_t(binary.LittleEndian.Uint32(buf[offset:]) ^ uint32(code))
         offset += 4
     }
     SHUFFLE_STATEMENT_3(code, A, B, C)
@@ -327,8 +327,8 @@ func readSkillToSelf(buf []byte, code uint8) (Packet, error) {
 type CGSkillToTilePacket struct {
     SkillType SkillType_t
     CEffectID uint16
-    X         uint8
-    Y         uint8
+    X         Coord_t
+    Y         Coord_t
 }
 
 func (skill CGSkillToTilePacket) PacketID() PacketID {
@@ -352,11 +352,11 @@ func readSkillToTile(buf []byte, code uint8) (Packet, error) {
         offset += 2
     }
     C := func() {
-        ret.X = buf[offset] ^ code
+        ret.X = Coord_t(buf[offset] ^ code)
         offset++
     }
     D := func() {
-        ret.Y = buf[offset] ^ code
+        ret.Y = Coord_t(buf[offset] ^ code)
         offset++
     }
     SHUFFLE_STATEMENT_4(code, A, B, C, D)

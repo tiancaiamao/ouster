@@ -122,9 +122,15 @@ func init() {
 
     skillTable[SKILL_ATTACK_MELEE] = AttackMelee{}
     skillTable[SKILL_BLOOD_DRAIN] = BloodDrain{}
+    skillTable[SKILL_SHARP_HAIL] = SharpHail{}
+    // &SkillInfo{
+    //     Type:      SKILL_PROPERTY_TYPE_PHYSIC,
+    //     Name:      "Sharp Hail",
+    //     ConsumeMP: 20,
+    // }
     // skillTable[SKILL_BLOOD_SPEAR] = &SkillInfo{
-    //     Type:      SKILL_PROPERTY_TYPE_MAGIC,
-    //     Name:      "Bloody Spear",
+    //		 Type:			SKILL_PROPERTY_TYPE_MAGIC,
+    //		 Name:			"Bloody Spear",
     //     ConsumeMP: 60,
     // }
     // skillTable[SKILL_PARALYZE] = &SkillInfo{
@@ -148,11 +154,6 @@ func init() {
     //     ConsumeMP: 53,
     // }
     //
-    // skillTable[SKILL_SHARP_HAIL] = &SkillInfo{
-    //     Type:      SKILL_PROPERTY_TYPE_PHYSIC,
-    //     Name:      "Sharp Hail",
-    //     ConsumeMP: 20,
-    // }
 }
 
 type Invisibility struct {
@@ -169,6 +170,9 @@ type AttackMelee struct {
     Skill
 }
 type BloodDrain struct {
+    Skill
+}
+type SharpHail struct {
     Skill
 }
 

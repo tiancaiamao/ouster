@@ -1117,12 +1117,12 @@ func (ok *GCSkillToSelfOK1) MarshalBinary(code uint8) ([]byte, error) {
 }
 
 type GCSkillToTileOK1 struct {
-    SkillType    uint16
+    SkillType    SkillType_t
     CEffectID    uint16
     Duration     uint16
     Range        uint8
-    X            uint8
-    Y            uint8
+    X            Coord_t
+    Y            Coord_t
     CreatureList []uint32
     Grade        uint8
     ModifyInfo
@@ -1153,10 +1153,10 @@ func (ok *GCSkillToTileOK1) MarshalBinary(code uint8) ([]byte, error) {
 }
 
 type GCSkillToTileOK5 struct {
-    ObjectID     uint32
-    SkillType    uint16
-    X            uint8
-    Y            uint8
+    ObjectID     ObjectID_t
+    SkillType    SkillType_t
+    X            Coord_t
+    Y            Coord_t
     Range        uint8
     Duration     uint16
     CreatureList []uint32
@@ -1166,9 +1166,7 @@ type GCSkillToTileOK5 struct {
 func (ok *GCSkillToTileOK5) PacketID() PacketID {
     return PACKET_GC_SKILL_TO_TILE_OK_5
 }
-func (ok *GCSkillToTileOK5) String() string {
-    return "skill to tile ok 5"
-}
+
 func (ok *GCSkillToTileOK5) MarshalBinary(code uint8) ([]byte, error) {
     buf := &bytes.Buffer{}
     binary.Write(buf, binary.LittleEndian, ok.ObjectID)
@@ -1186,9 +1184,9 @@ func (ok *GCSkillToTileOK5) MarshalBinary(code uint8) ([]byte, error) {
 }
 
 type GCSkillToTileOK4 struct {
-    SkillType    uint16
-    X            uint8
-    Y            uint8
+    SkillType    SkillType_t
+    X            Coord_t
+    Y            Coord_t
     Range        uint8
     Duration     uint16
     CreatureList []uint32
@@ -1217,10 +1215,10 @@ func (ok *GCSkillToTileOK4) MarshalBinary(code uint8) ([]byte, error) {
 }
 
 type GCSkillToTileOK3 struct {
-    ObjectID  uint32
-    SkillType uint16
-    X         uint8
-    Y         uint8
+    ObjectID  ObjectID_t
+    SkillType SkillType_t
+    X         Coord_t
+    Y         Coord_t
     Grade     uint8
 }
 

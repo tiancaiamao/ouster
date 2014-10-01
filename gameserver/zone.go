@@ -332,9 +332,6 @@ func (zone *Zone) movePC(agent *Agent, cx ZoneCoord_t, cy ZoneCoord_t, dir Dir_t
     oldTile.DeleteCreature(pc.ObjectID)
     newTile.AddCreature(agent)
 
-    log.Debugf("agent %d move: (%d,%d)->(%d,%d) zone=%p, scene=%p\n", pc.ObjectID, cx, cy, nx, ny, zone, pc.Scene)
-    log.Debugln("tile:", newTile)
-
     // 检查地雷/陷阱
 
     pc.X = nx
@@ -638,6 +635,42 @@ func (zone *Zone) moveCreatureBroadcast(creature CreatureInterface, x1 ZoneCoord
 func (zone *Zone) moveFastMonster(*Monster, ZoneCoord_t, ZoneCoord_t, ZoneCoord_t, ZoneCoord_t, SkillType_t) bool {
     // TODO
     return true
+}
+
+func (zone *Zone) broadcastSkillPacket(x1 ZoneCoord_t, y1 ZoneCoord_t, x2 ZoneCoord_t, y2 ZoneCoord_t, pkt packet.Packet) {
+    for ix, endx := max(0, int(x1)-int(MaxViewportWidth)-1), min(int(zone.Width)-1, int(x1)+int(MaxViewportWidth)+1); ix <= endx; ix++ {
+        for iy, endy := max(0, int(y1)-int(MaxViewportUpperHeight)-1), min(int(zone.Height)-1, int(y1)+int(MaxViewportLowerHeight)+1); iy <= endy; iy++ {
+            tile := zone.Tile(ix, iy)
+
+            if tile.hasCreature() {
+                for _, obj := range tile.Objects {
+                    if obj.ObjectClass() == OBJECT_CLASS_CREATURE {
+                        if agent, ok := obj.(*Agent); ok {
+                            pc := agent.PlayerCreatureInstance()
+                            if getVisionState(pc.X, pc.Y, x1, y1) == IN_SIGHT &&
+                                getVisionState(pc.X, pc.Y, x2, y2) == IN_SIGHT {
+                                agent.sendPacket(pkt)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+type BroadcastFilterFunc func() bool
+
+func (zone *Zone) broadcast(cx ZoneCoord_t, cy ZoneCoord_t, pkt packet.Packet, filters ...BroadcastFilterFunc) {
+    for ix, endx := max(0, int(cx)-int(MaxViewportWidth)-1), min(int(zone.Width)-1, int(cx)+int(MaxViewportWidth)+1); ix <= endx; ix++ {
+        for iy, endy := max(0, int(cy)-int(MaxViewportUpperHeight)-1), min(int(zone.Height)-1, int(cy)+int(MaxViewportLowerHeight)+1); iy <= endy; iy++ {
+            for _, filter := range filters {
+                if filter() {
+                    continue
+                }
+            }
+        }
+    }
 }
 
 func (zone *Zone) broadcastPacket(cx ZoneCoord_t, cy ZoneCoord_t, packet packet.Packet, owner *Agent) {

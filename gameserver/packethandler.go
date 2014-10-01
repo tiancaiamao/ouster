@@ -177,7 +177,7 @@ func CGSkillToSelfHandler(pkt packet.Packet, agent *Agent) {
     }
 }
 
-func CGSkillToObjectHandler(pkt packet.Packet, agent *Agent) {
+func CGSkillToTileHandler(pkt packet.Packet, agent *Agent) {
     if agent.PlayerStatus != GPS_NORMAL {
         return
     }
@@ -191,17 +191,55 @@ func CGSkillToObjectHandler(pkt packet.Packet, agent *Agent) {
     skillPacket := pkt.(packet.CGSkillToTilePacket)
     skillHandler, ok := skillTable[skillPacket.SkillType]
     if !ok {
-
+        log.Errorln("尚未实现的skill", skillPacket.SkillType)
+        return
     }
 
-    if handler, ok := skillHandler.(SkillToTileInterface); ok {
-        handler.ExecuteToTile(skillPacket, agent)
+    handler, ok := skillHandler.(SkillToTileInterface)
+    if !ok {
+        log.Errorln(skillPacket.SkillType, "没有实现SkillToTile接口")
+        return
     }
+
+    handler.ExecuteToTile(skillPacket, agent)
 }
 
-func CGSkillToTileHandler(pkt packet.Packet, agent *Agent) {
-    // skill := pkt.(packet.CGSkillToTilePacket)
-    // player.SkillToTile(skill)
+func CGSkillToObjectHandler(pkt packet.Packet, agent *Agent) {
+    skillPacket := pkt.(packet.CGSkillToObjectPacket)
+    skillHandler, ok := skillTable[skillPacket.SkillType]
+    if !ok {
+        log.Errorln("尚未实现的skill", skillPacket.SkillType)
+        return
+    }
+
+    handler, ok := skillHandler.(SkillToObjectInterface)
+    if !ok {
+        log.Errorln(skillPacket.SkillType, "没有实现SkillToObject接口")
+        return
+    }
+
+    // type GCSkillFailed1Packet struct {
+    //     SkillType SkillType_t
+    //     Grade     uint8
+    //     ModifyInfo
+    // }
+    //     fail := packet.GCSkillToTileFail{
+    //         SkillType: SKILL_ATTACK_MELEE,
+    //     }
+
+    pc := agent.PlayerCreatureInstance()
+    obj, ok := pc.Scene.objects[skillPacket.TargetObjectID]
+    if !ok {
+        // TODO 发送失败包
+        // agent.sendPacket()
+        return
+    }
+    target, ok := obj.(CreatureInterface)
+    if !ok {
+        log.Error("不能对非creature的东西放技能")
+        return
+    }
+    handler.ExecuteToObject(agent, target)
 }
 
 func CGConnectHandler(pkt packet.Packet, agent *Agent) {

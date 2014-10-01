@@ -1,7 +1,7 @@
 package main
 
 import (
-    "github.com/tiancaiamao/ouster/packet"
+    // "github.com/tiancaiamao/ouster/packet"
 )
 
 type SharpHailHandler struct{}
@@ -9,14 +9,14 @@ type SharpHailHandler struct{}
 func (ignore SharpHailHandler) ExecuteP2T(player *Player, x uint8, y uint8) {
     // slot := player.SkillSlot(SKILL_SHARP_HAIL)
 
-    ok := &packet.GCSkillToTileOK1{
-        SkillType: SKILL_SHARP_HAIL,
-        Duration:  10,
-        Range:     5,
-        X:         x,
-        Y:         y,
-    }
-    player.send <- ok
+    // ok := &packet.GCSkillToTileOK1{
+    //     SkillType: SKILL_SHARP_HAIL,
+    //     Duration:  10,
+    //     Range:     5,
+    //     X:         x,
+    //     Y:         y,
+    // }
+    // player.send <- ok
 
     // AOE(player.Scene, player, x, y, skillTable[SKILL_SHARP_HAIL], slot)
 }
@@ -37,14 +37,14 @@ func (ignore RapidGlidingHandler) ExecuteP2T(player *Player, x uint8, y uint8) {
     //		 Msg:		fastMove,
     // }
 
-    ok := &packet.GCSkillToTileOK1{
-        SkillType: uint16(SKILL_RAPID_GLIDING),
-        Duration:  10,
-        Range:     1,
-        X:         x,
-        Y:         y,
-    }
-    player.send <- ok
+    // ok := &packet.GCSkillToTileOK1{
+    //     SkillType: uint16(SKILL_RAPID_GLIDING),
+    //     Duration:  10,
+    //     Range:     1,
+    //     X:         x,
+    //     Y:         y,
+    // }
+    // player.send <- ok
 }
 
 type MeteorStrikeHandler struct{}
@@ -70,12 +70,12 @@ func (ignore MeteorStrikeHandler) ExecuteP2T(player *Player, x uint8, y uint8) {
     // }
     // }
     // })
-    ok := &packet.GCSkillToTileOK1{
-        SkillType: SKILL_METEOR_STRIKE,
-        Duration:  10,
-        Range:     3,
-        X:         x,
-        Y:         y,
-    }
-    player.send <- ok
+    // ok := &packet.GCSkillToTileOK1{
+    //     SkillType: SKILL_METEOR_STRIKE,
+    //     Duration:  10,
+    //     Range:     3,
+    //     X:         x,
+    //     Y:         y,
+    // }
+    // player.send <- ok
 }

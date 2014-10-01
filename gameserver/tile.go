@@ -164,11 +164,24 @@ func (tile *Tile) hasBuilding() bool {
     return tile.Flags&(1<<TILE_BUILDING) != 0
 }
 
-func (tile *Tile) GetCreature(mode MoveMode) CreatureInterface {
-    // TODO
+func (tile *Tile) canAddEffect() bool {
+    return !(tile.hasObstacle() || tile.hasBuilding() || tile.hasPortal())
+}
+
+func (tile *Tile) getCreature(mode MoveMode) CreatureInterface {
+    for _, v := range tile.Objects {
+        if creature, ok := v.(CreatureInterface); ok {
+            inst := creature.CreatureInstance()
+            if inst.MoveMode == mode {
+                return creature
+            }
+        }
+    }
     return nil
 }
 
-func (tile *Tile) AddEffect(effect EffectInterface) {
-    // TODO
+func (tile *Tile) addEffect(effect EffectInterface) {
+    inst := effect.EffectInstance()
+    tile.Objects[inst.ObjectID] = effect
+    tile.Flags |= (1 << TILE_EFFECT)
 }

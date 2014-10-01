@@ -197,20 +197,27 @@ func (ouster *Ouster) computeDamage(creature CreatureInterface, bCritical bool) 
     realDamage := max(1, int(minDamage)+rand.Intn(scope))
 
     var protection Protection_t
-    switch creature.(type) {
-    case *Vampire:
-        protection = creature.(*Vampire).Protection[ATTR_CURRENT]
-        protection = Protection_t(getPercentValue(int(realDamage), VampireTimebandFactor[timeband]))
-    case *Monster:
-        protection = creature.(*Monster).Protection
-        protection = Protection_t(getPercentValue(int(realDamage), VampireTimebandFactor[timeband]))
-    case *Slayer:
-        protection = creature.(*Slayer).Protection[ATTR_CURRENT]
-    case *Ouster:
-        protection = creature.(*Ouster).Protection[ATTR_CURRENT]
-    default:
-        log.Errorln("输入的参数不对")
+    if creature != nil {
+    again:
+        switch creature.(type) {
+        case *Vampire:
+            protection = creature.(*Vampire).Protection[ATTR_CURRENT]
+            protection = Protection_t(getPercentValue(int(realDamage), VampireTimebandFactor[timeband]))
+        case *Monster:
+            protection = creature.(*Monster).Protection
+            protection = Protection_t(getPercentValue(int(realDamage), VampireTimebandFactor[timeband]))
+        case *Slayer:
+            protection = creature.(*Slayer).Protection[ATTR_CURRENT]
+        case *Ouster:
+            protection = creature.(*Ouster).Protection[ATTR_CURRENT]
+        case *Agent:
+            creature = creature.(*Agent).PlayerCreatureInterface
+            goto again
+        default:
+            log.Errorln("输入的参数不对")
+        }
     }
+
     finalDamage := computeFinalDamage(minDamage, maxDamage, Damage_t(realDamage), protection, bCritical)
 
     return finalDamage

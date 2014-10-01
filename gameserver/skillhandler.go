@@ -4,6 +4,7 @@ import (
     "github.com/tiancaiamao/ouster/log"
     "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
+    "time"
 )
 
 type SkillToSelfInterface interface {
@@ -204,5 +205,107 @@ func (meteor MeteorStrike) ExecuteToTile(skill packet.CGSkillToObjectPacket, age
 }
 
 func (paralyze Paralyze) ExecuteToObject(skill packet.CGSkillToObjectPacket, agent *Agent) {
+
+}
+
+func (sharphail SharpHail) ExecuteToTile(skill packet.CGSkillToTilePacket, agent *Agent) {
+    // weapon := agent.getWearItem(OUSTER_WEAR_RIGHTHAND)
+    // if weapon == nil || weapon.ItemClass() != ITEM_CLASS_OUSTERS_CHAKRAM {
+    //     // TODO
+    //     return
+    // }
+
+    if !sharphail.Check(skill.SkillType, agent) {
+        // TODO
+        return
+    }
+
+    pc := agent.PlayerCreatureInstance()
+    // skillslot := pc.SkillSlot[skill.SkillType]
+
+    var input SkillInput
+    var output SkillOutput
+    // input.SkillLevel = skillslot.Level
+    // input.DomainLevel =
+    input.STR = int(pc.STR[ATTR_CURRENT])
+    input.DEX = int(pc.DEX[ATTR_CURRENT])
+    input.INT = int(pc.INI[ATTR_CURRENT])
+
+    sharphail.ComputeOutput(&input, &output)
+    scene := pc.Scene
+
+    for x := skill.X - 2; x < skill.X+2; x++ {
+        for y := skill.Y - 2; y < skill.Y+2; y++ {
+            if x < 0 || ZoneCoord_t(x) >= scene.Width || y < 0 || ZoneCoord_t(y) >= scene.Height {
+                continue
+            }
+
+            tile := scene.Tile(int(x), int(y))
+            if !tile.canAddEffect() {
+                continue
+            }
+
+            var creatureItf CreatureInterface
+            if tile.HasCreature(MOVE_MODE_WALKING) {
+                creatureItf = tile.getCreature(MOVE_MODE_WALKING)
+            }
+
+            damage := output.Damage
+            // 技能伤害叠加基础伤害
+            damage += int(agent.computeDamage(creatureItf, false))
+            effect := new(EffectSharpHail)
+            effect.UserObjectID = pc.ObjectID
+            effect.Deadline = time.Now().Add(time.Duration(output.Duration) * time.Millisecond)
+            effect.NextTime = time.Now().Add(3 * time.Millisecond)
+            effect.Tick = output.Tick
+            effect.Damage = damage / 3
+            // effect.Level = skillslot.ExpLevel
+
+            // TODO 加锁
+            scene.registeObject(effect)
+            scene.effectManager.addEffect(effect)
+            tile.addEffect(effect)
+        }
+    }
+
+    // ok1是回复攻击者技能施放成功
+    agent.sendPacket(&packet.GCSkillToTileOK1{
+        SkillType: skill.SkillType,
+        CEffectID: skill.CEffectID,
+        X:         skill.X,
+        Y:         skill.Y,
+        Duration:  10,
+        Range:     5,
+    })
+
+    // ok5是发给即能看到施放者，又能看到tile的玩家
+    // ok5 := &packet.GCSkillToTileOK5{
+    //				 ObjectID:	pc.ObjectID,
+    //				 SkillType: skill.SkillType,
+    //				 X:				 skill.X,
+    //				 Y:				 skill.Y,
+    //				 Duration:	uint16(output.Duration),
+    //		 }
+
+    // scene.broadcastSkillPacket(pc.X, pc.Y, ZoneCoord_t(skill.X), ZoneCoord_t(skill.Y), ok5)
+
+    // ok3是向施法者周围广播施放成功
+    // scene.broadcastPacket(pc.X, pc.Y, &packet.GCSkillToTileOK3{
+    //     ObjectID:  pc.ObjectID,
+    //     SkillType: skill.SkillType,
+    //     X:         skill.X,
+    //     Y:         skill.Y,
+    // }, nil)
+
+    // ok4是向tile周围广播
+    // scene.broadcastPacket(ZoneCoord_t(skill.X), ZoneCoord_t(skill.Y), &packet.GCSkillToTileOK4{
+    //     SkillType: skill.SkillType,
+    //     X:         Coord_t(skill.X),
+    //     Y:         Coord_t(skill.Y),
+    //		 Duration:	uint16(output.Duration),
+    // }, nil)
+}
+
+func (sharphail SharpHail) ExecuteToObject(skill packet.CGSkillToObjectPacket, agent *Agent) {
 
 }

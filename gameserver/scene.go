@@ -32,6 +32,8 @@ type Scene struct {
     monsterManager *MonsterManager
 
     // Effect管理
+    effectManager *EffectManager
+
     // 天气管理
 
     quit  chan struct{}
@@ -52,6 +54,7 @@ func NewScene(smp *data.SMP, ssi data.SSI) (ret *Scene, err error) {
     ret.load(smp, ssi)
     ret.monsterManager = NewMonsterManager()
     ret.npcManager = NewNPCManager()
+    ret.effectManager = NewEffectManager()
     ret.players = make(map[ObjectID_t]*Agent)
     ret.objects = make(map[ObjectID_t]ObjectInterface)
 
@@ -144,7 +147,7 @@ func (s *Scene) Loop() {
 func (s *Scene) heartbeat() {
     s.monsterManager.heartbeat()
     s.npcManager.heartbeat()
-    // zone.processEffects()
+    s.effectManager.heartbeat(time.Now())
 }
 
 func (zone *Zone) processMonsters() {
@@ -281,10 +284,10 @@ func (m *Scene) processAgentMessage(msg AgentMessage) {
         m.broadcastPacket(pc.X, pc.Y, raw.Packet, raw.Agent)
     case MeteorStrikeMessage:
         tile := m.Tile(int(raw.X), int(raw.Y))
-        tile.AddEffect(&raw.EffectMeteorStrike)
+        tile.addEffect(&raw.EffectMeteorStrike)
 
         if tile.HasCreature(MOVE_MODE_WALKING) {
-            target := tile.GetCreature(MOVE_MODE_WALKING)
+            target := tile.getCreature(MOVE_MODE_WALKING)
             // x := raw.X
             // y := raw.Y
 
@@ -311,16 +314,16 @@ func (m *Scene) processAgentMessage(msg AgentMessage) {
 
         pc := raw.PlayerCreatureInstance()
         ok3 := &packet.GCSkillToTileOK3{
-            ObjectID: uint32(raw.PlayerCreatureInstance().ObjectID),
+            ObjectID: raw.PlayerCreatureInstance().ObjectID,
             // SkillType: raw.SkillType,
-            X:  uint8(pc.X),
-            Y:  uint8(pc.Y),
+            X:  Coord_t(pc.X),
+            Y:  Coord_t(pc.Y),
         }
 
         ok4 := &packet.GCSkillToTileOK4{
             // SkillType: raw.SkillType,
-            X:  uint8(pc.X),
-            Y:  uint8(pc.Y),
+            X:  Coord_t(pc.X),
+            Y:  Coord_t(pc.Y),
             // Duration: raw.Duration,
         }
 

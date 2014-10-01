@@ -92,7 +92,7 @@ func InitPlayer(player *Player, conn net.Conn) {
                 player.conn.Close()
                 return
             }
-            // log.Debugf("write channel get a pkt: %#v\n", pkt)
+            log.Debugf("write channel get a pkt: %#v\n", pkt)
             err := writer.Write(player.conn, pkt)
             if err != nil {
                 log.Errorln(err)

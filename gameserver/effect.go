@@ -734,27 +734,49 @@ func (effect *EffectMeteorStrike) affect() {
     // effect.Deadline = 0
 }
 
+type EffectSharpHail struct {
+    Effect
+
+    UserObjectID ObjectID_t
+    Tick         int
+    Damage       int
+    Level        int
+}
+
+func (sharphail *EffectSharpHail) EffectClass() EffectClass {
+    return EFFECT_CLASS_PROMINENCE
+}
+
 func (effect *EffectMeteorStrike) unaffect() {
     // tile := effect.Scene.Tile(X, Y)
     // tile.deleteEffect(effect.ObjectID)
 }
 
 type EffectManager struct {
-    Effects []EffectInterface
+    Effects map[ObjectID_t]EffectInterface
+}
+
+func NewEffectManager() *EffectManager {
+    ret := new(EffectManager)
+    ret.Effects = make(map[ObjectID_t]EffectInterface)
+    return ret
+}
+
+func (em *EffectManager) addEffect(effect EffectInterface) {
+    em.Effects[effect.ObjectInstance().ObjectID] = effect
 }
 
 func (manager EffectManager) heartbeat(now time.Time) {
-    for i := len(manager.Effects) - 1; i >= 0; i-- {
-        etf := manager.Effects[i]
-        // effectclass := etf.EffectClass()
-        effect := etf.EffectInstance()
+    for _, eft := range manager.Effects {
+        // effectclass := eft.EffectClass()
+        effect := eft.EffectInstance()
         if now.After(effect.Deadline) {
             // 删除
-            copy(manager.Effects[i:], manager.Effects[i+1:])
-            etf.unaffect()
+            delete(manager.Effects, effect.ObjectID)
+            eft.unaffect()
         } else {
             if now.After(effect.NextTime) {
-                etf.affect()
+                eft.affect()
             }
         }
     }
