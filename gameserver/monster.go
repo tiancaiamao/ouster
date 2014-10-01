@@ -463,8 +463,18 @@ func (manager *MonsterManager) regenerateCreatures() {
 }
 
 func (manager *MonsterManager) killCreature(monster *Monster) {
-    // 广播消息之类的 TODO
+    zone := &monster.Scene.Zone
+    corpse := new(MonsterCorpse)
+    corpse.ObjectID = monster.ObjectID
+    corpse.CreateType = CREATE_TYPE_MONSTER
+    corpse.X = monster.X
+    corpse.Y = monster.Y
+    corpse.MonsterType = monster.MonsterType
+    corpse.Name = monster.Name
+    corpse.LastKiller = monster.LastKiller
 
+    zone.addItem(corpse, monster.X, monster.Y)
+    zone.broadcastPacket(monster.X, monster.Y, packet.GCCreatureDiedPacket(monster.ObjectID), nil)
 }
 
 func (c *Monster) isAlive() bool {

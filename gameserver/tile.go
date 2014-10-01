@@ -84,12 +84,13 @@ func (tile *Tile) HasCreature(m MoveMode) bool {
 }
 
 func (tile *Tile) hasCreature() bool {
-    return tile.Flags != 0
+    return tile.HasCreature(MOVE_MODE_WALKING) ||
+        tile.HasCreature(MOVE_MODE_FLYING) ||
+        tile.HasCreature(MOVE_MODE_BURROWING)
 }
 
-// TODO
 func (tile *Tile) hasPortal() bool {
-    return false
+    return tile.Flags&(1<<TILE_PORTAL) != 0
 }
 
 func (tile *Tile) DeleteCreature(id ObjectID_t) {
@@ -126,6 +127,41 @@ func (tile *Tile) AddCreature(creature CreatureInterface) {
 
     tile.Flags |= (1 << (TILE_WALKING_CREATURE + inst.MoveMode))
     tile.Flags |= (1 << (TILE_GROUND_BLOCKED + inst.MoveMode))
+}
+
+func (tile *Tile) addItem(item ItemInterface) {
+    if tile.hasItem() ||
+        tile.hasBuilding() ||
+        tile.hasObstacle() ||
+        tile.hasPortal() {
+        panic("有障碍物的tile无法加入item")
+    }
+
+    inst := item.ItemInstance()
+    tile.Objects[inst.ObjectID] = item
+    tile.Flags |= (1 << TILE_ITEM)
+}
+
+func (tile *Tile) deleteItem() {
+    if !tile.hasItem() {
+        log.Warnf("no item to delete in deleteItem")
+        return
+    }
+
+    // delete(tile.Objects, )
+    tile.Flags &^= (1 << TILE_ITEM)
+}
+
+func (tile *Tile) hasItem() bool {
+    return tile.Flags&(1<<TILE_ITEM) != 0
+}
+
+func (tile *Tile) hasObstacle() bool {
+    return tile.Flags&(1<<TILE_OBSTACLE) != 0
+}
+
+func (tile *Tile) hasBuilding() bool {
+    return tile.Flags&(1<<TILE_BUILDING) != 0
 }
 
 func (tile *Tile) GetCreature(mode MoveMode) CreatureInterface {

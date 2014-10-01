@@ -196,7 +196,9 @@ func (m *Scene) setDamage(target CreatureInterface, agent *Agent, damage Damage_
     case *Monster:
         monster := target.(*Monster)
         if monster.HP[ATTR_CURRENT] < HP_t(damage) {
-
+            // 这里只是设置dead标志，在MonsterManager的heartbeat中kill
+            monster.HP[ATTR_CURRENT] = 0
+            monster.LastKiller = agent.ObjectInstance().ObjectID
         } else {
             monster.HP[ATTR_CURRENT] -= HP_t(damage)
             status = packet.GCStatusCurrentHP{

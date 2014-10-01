@@ -124,6 +124,8 @@ const (
 
 type ItemInterface interface {
     ObjectInterface
+    ItemInstance() *Item
+
     ItemClass() ItemClass
 }
 
@@ -139,4 +141,8 @@ type Item struct {
 // item实现了Object接口
 func (item *Item) ObjectClass() ObjectClass {
     return OBJECT_CLASS_ITEM
+}
+
+func (item *Item) ItemInstance() *Item {
+    return item
 }

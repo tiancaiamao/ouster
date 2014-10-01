@@ -43,4 +43,11 @@ type VampireCorpse struct {
 
 type MonsterCorpse struct {
     Corpse
+    MonsterType   MonsterType_t
+    Name          string
+    HasHead       bool
+    HostName      string
+    HostPartyID   int
+    QuestHostName string
+    LastKiller    ObjectID_t
 }

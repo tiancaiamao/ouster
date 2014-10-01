@@ -561,6 +561,31 @@ func (zone *Zone) moveCreature(creature CreatureInterface, nx ZoneCoord_t, ny Zo
     zone.moveCreatureBroadcast(creature, cx, cy, nx, ny)
 }
 
+func (zone *Zone) addItem(item ItemInterface, x ZoneCoord_t, y ZoneCoord_t) {
+    iclass := item.ItemClass()
+
+    tile := zone.Tile(int(x), int(y))
+    tile.addItem(item)
+
+    if iclass == ITEM_CLASS_CORPSE {
+        switch corpse := item.(type) {
+        case *MonsterCorpse:
+            zone.broadcastPacket(x, y, &packet.GCAddMonsterCorpse{
+                ObjectID:      corpse.ObjectID,
+                MonsterType:   corpse.MonsterType,
+                MonsterName:   corpse.Name,
+                X:             Coord_t(x),
+                Y:             Coord_t(y),
+                HasHead:       corpse.HasHead,
+                TreasureCount: corpse.TreasureCount,
+                LastKiller:    corpse.LastKiller,
+            }, nil)
+        default:
+            log.Warnf("未实现的addItem %#v\n", corpse)
+        }
+    }
+}
+
 func (zone *Zone) moveCreatureBroadcast(creature CreatureInterface, x1 ZoneCoord_t, y1 ZoneCoord_t, x2 ZoneCoord_t, y2 ZoneCoord_t) {
     inst := creature.CreatureInstance()
 

@@ -822,17 +822,17 @@ func (effect GCAddEffect) MarshalBinary(code uint8) ([]byte, error) {
 }
 
 type GCAddMonsterCorpse struct {
-    ObjectID    uint32
-    MonsterType uint16
+    ObjectID    ObjectID_t
+    MonsterType MonsterType_t
     MonsterName string
 
-    X       uint8
-    Y       uint8
-    Dir     uint8
+    X       Coord_t
+    Y       Coord_t
+    Dir     Dir_t
     HasHead bool
 
     TreasureCount uint8
-    LastKiller    uint32
+    LastKiller    ObjectID_t
 }
 
 func (corpse *GCAddMonsterCorpse) PacketID() PacketID {
