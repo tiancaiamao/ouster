@@ -4,6 +4,7 @@ type ObjectID_t uint32
 type ZoneCoord_t int16
 type EffectID_t uint16
 type Dir_t uint8
+type Range_t uint8
 type Sight_t uint8
 type Resist_t uint16
 

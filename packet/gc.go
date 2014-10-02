@@ -1139,11 +1139,11 @@ func (ok *GCSkillToSelfOK2) MarshalBinary(code uint8) ([]byte, error) {
 type GCSkillToTileOK1 struct {
     SkillType    SkillType_t
     CEffectID    uint16
-    Duration     uint16
-    Range        uint8
+    Duration     Duration_t
+    Range        Range_t
     X            Coord_t
     Y            Coord_t
-    CreatureList []uint32
+    CreatureList []ObjectID_t
     Grade        uint8
     ModifyInfo
 }
@@ -1172,14 +1172,50 @@ func (ok *GCSkillToTileOK1) MarshalBinary(code uint8) ([]byte, error) {
     return buf.Bytes(), nil
 }
 
+type GCSkillToTileOK2 struct {
+    ModifyInfo
+
+    ObjectID  ObjectID_t
+    SkillType SkillType_t
+    X         Coord_t
+    Y         Coord_t
+    Range     Range_t
+    Duration  Duration_t
+    CList     []ObjectID_t
+    Grade     byte
+}
+
+func (ok GCSkillToTileOK2) PacketID() PacketID {
+    return PACKET_GC_SKILL_TO_TILE_OK_2
+}
+
+func (ok *GCSkillToTileOK2) MarshalBinary(code uint8) ([]byte, error) {
+    buf := &bytes.Buffer{}
+    binary.Write(buf, binary.LittleEndian, ok.ObjectID)
+    binary.Write(buf, binary.LittleEndian, ok.SkillType)
+    binary.Write(buf, binary.LittleEndian, ok.X)
+    binary.Write(buf, binary.LittleEndian, ok.Y)
+    binary.Write(buf, binary.LittleEndian, ok.Range)
+    binary.Write(buf, binary.LittleEndian, ok.Duration)
+    binary.Write(buf, binary.LittleEndian, ok.Grade)
+    binary.Write(buf, binary.LittleEndian, uint8(len(ok.CList)))
+    if len(ok.CList) > 0 {
+        for _, v := range ok.CList {
+            binary.Write(buf, binary.LittleEndian, v)
+        }
+    }
+    ok.Dump(buf)
+    return buf.Bytes(), nil
+}
+
 type GCSkillToTileOK5 struct {
     ObjectID     ObjectID_t
     SkillType    SkillType_t
     X            Coord_t
     Y            Coord_t
-    Range        uint8
-    Duration     uint16
-    CreatureList []uint32
+    Range        Range_t
+    Duration     Duration_t
+    CreatureList []ObjectID_t
     Grade        uint8
 }
 

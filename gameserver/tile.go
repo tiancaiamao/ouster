@@ -59,7 +59,7 @@ func (tile *Tile) hasEffect() bool {
     return false
 }
 
-func (tile *Tile) IsGroundBlocked() bool {
+func (tile *Tile) isGroundBlocked() bool {
     return (tile.Flags & (1 << TILE_GROUND_BLOCKED)) != 0
 }
 
@@ -67,8 +67,16 @@ func (tile *Tile) IsAirBlocked() bool {
     return (tile.Flags & (1 << TILE_AIR_BLOCKED)) != 0
 }
 
-func (tile *Tile) IsUndergroundBlocked() bool {
+func (tile *Tile) isUndergroundBlocked() bool {
     return (tile.Flags & (1 << TILE_UNDERGROUND_BLOCKED)) != 0
+}
+
+func (tile *Tile) isFixedGroundBlocked() bool {
+    return tile.isGroundBlocked() && !tile.hasWalkingCreature()
+}
+
+func (tile *Tile) hasWalkingCreature() bool {
+    return tile.Flags&(1<<TILE_WALKING_CREATURE) != 0
 }
 
 func (tile *Tile) IsBlocked(m MoveMode) bool {

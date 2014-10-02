@@ -195,6 +195,9 @@ type Teleport struct {
 
 type DuckingWallop struct {
     Skill
+
+    DuckingWallopMask [8][18]POINT
+    DamageRatio       [18]int
 }
 
 type Evade struct {

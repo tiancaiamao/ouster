@@ -175,8 +175,8 @@ func (zone *Zone) load(smp *data.SMP, ssi data.SSI) {
             for x := outerMinX; x < outerMaxX; x++ {
                 tile := zone.Tile(int(x), int(y))
 
-                if !tile.HasPortal() && !tile.IsGroundBlocked() &&
-                    !tile.IsAirBlocked() && !tile.IsUndergroundBlocked() {
+                if !tile.HasPortal() && !tile.isGroundBlocked() &&
+                    !tile.IsAirBlocked() && !tile.isUndergroundBlocked() {
                     zone.MonsterRegenPosition = append(zone.MonsterRegenPosition, BPOINT{byte(x), byte(y)})
                 }
             }

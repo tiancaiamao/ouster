@@ -280,7 +280,7 @@ func (sharphail SharpHail) ExecuteToTile(skill packet.CGSkillToTilePacket, agent
         CEffectID: skill.CEffectID,
         X:         skill.X,
         Y:         skill.Y,
-        Duration:  uint16(output.Duration),
+        Duration:  Duration_t(output.Duration),
         Range:     5,
     })
 
@@ -290,7 +290,7 @@ func (sharphail SharpHail) ExecuteToTile(skill packet.CGSkillToTilePacket, agent
         SkillType: skill.SkillType,
         X:         skill.X,
         Y:         skill.Y,
-        Duration:  uint16(output.Duration),
+        Duration:  Duration_t(output.Duration),
     }
 
     scene.broadcastSkillPacket(pc.X, pc.Y, ZoneCoord_t(skill.X), ZoneCoord_t(skill.Y), ok5, agent)
@@ -452,4 +452,267 @@ func ComputeOutput(input *SkillInput, output *SkillOutput) {
     output.Duration = min(1200, output.Duration)
     //	output.Delay = max (50 , output.Duration * 2 - (input.DEX * 2 ));
     output.Delay = output.Duration - (input.SkillLevel / 5)
+}
+
+func (wallop DuckingWallop) ExecuteToTile(skill packet.CGSkillToTilePacket, agent *Agent) {
+    wallop.Check(skill.SkillType, agent)
+
+    pc := agent.PlayerCreatureInstance()
+
+    var input SkillInput
+    var output SkillOutput
+    wallop.ComputeOutput(&input, &output)
+
+    dir := getDirectionToPosition(int(pc.X), int(pc.Y), int(skill.X), int(skill.Y))
+    if !isPassLine(&pc.Scene.Zone, pc.X, pc.Y, ZoneCoord_t(skill.X), ZoneCoord_t(skill.Y), false) {
+        // TODO
+        return
+    }
+
+    pZone := &pc.Scene.Zone
+    for i := 17; i >= 0; i-- {
+        tileX := int(pc.X) + wallop.DuckingWallopMask[dir][i].X
+        tileY := int(pc.Y) + wallop.DuckingWallopMask[dir][i].Y
+        tile := pZone.Tile(tileX, tileY)
+        if !tile.hasCreature() {
+            continue
+        }
+
+        for _, v := range tile.Objects {
+            creature, ok := v.(CreatureInterface)
+            if !ok {
+                continue
+            }
+
+            inst := creature.CreatureInstance()
+            if !canAttack(agent, creature) ||
+                inst.isFlag(EFFECT_CLASS_COMA) {
+                continue
+            }
+
+            if v == agent {
+                continue
+            }
+
+            damage := agent.computeDamage(creature, false)
+            damage += Damage_t(output.Damage)
+
+            agent.scene <- &DamageMessage{
+                Agent:  agent,
+                target: creature,
+                damage: damage,
+            }
+
+            if target, ok := v.(*Agent); ok {
+                // 向被攻击到的玩家发送ok2
+                target.sendPacket(&packet.GCSkillToTileOK2{
+                    ObjectID:  pc.ObjectID,
+                    SkillType: skill.SkillType,
+                    X:         skill.X,
+                    Y:         skill.Y,
+                    Range:     Range_t(dir),
+                    Duration:  0,
+                })
+            }
+        }
+    }
+
+    agent.sendPacket(&packet.GCSkillToTileOK1{
+        SkillType: skill.SkillType,
+        CEffectID: skill.CEffectID,
+        Duration:  0,
+        Range:     Range_t(dir),
+        X:         skill.X,
+        Y:         skill.Y,
+    })
+
+    pc.Scene.broadcastPacket(pc.X, pc.Y, &packet.GCSkillToTileOK5{
+        ObjectID:  pc.ObjectID,
+        SkillType: skill.SkillType,
+        X:         skill.X,
+        Y:         skill.Y,
+        Range:     Range_t(dir),
+        Duration:  0,
+    }, agent)
+
+    // skillslot := pc.SkillSlot[skill.SkillType]
+    // skillslot.setRunTime(output.Delay)
+}
+
+const (
+    BASIS_DIRECTION_LOW  = 0.35
+    BASIS_DIRECTION_HIGH = 3.0
+)
+
+// TODO
+func canAttack(from, to CreatureInterface) bool {
+    return true
+}
+
+func getDirectionToPosition(originX, originY, destX, destY int) Dir_t {
+    stepX := destX - originX
+    stepY := destY - originY
+
+    var k float64
+    if stepX == 0 {
+        k = 0
+    } else {
+        k = float64(stepY) / float64(stepX)
+    }
+
+    if stepY == 0 {
+        switch {
+        case stepX == 0:
+            return DOWN
+        case stepX > 0:
+            return RIGHT
+        case stepX < 0:
+            return LEFT
+        }
+    } else if stepY < 0 {
+        if stepX == 0 {
+            return UP
+        } else if stepX > 0 {
+            switch {
+            case (k < -BASIS_DIRECTION_HIGH):
+                return UP
+            case (k <= -BASIS_DIRECTION_LOW):
+                return RIGHTUP
+            default:
+                return RIGHT
+            }
+        } else {
+            switch {
+            case (k > BASIS_DIRECTION_HIGH):
+                return UP
+            case (k >= BASIS_DIRECTION_LOW):
+                return LEFTUP
+            default:
+                return LEFT
+            }
+        }
+    } else {
+        if stepX == 0 {
+            return DOWN
+        } else if stepX > 0 {
+            switch {
+            case (k > BASIS_DIRECTION_HIGH):
+                return DOWN
+            case (k >= BASIS_DIRECTION_LOW):
+                return RIGHTDOWN
+            default:
+                return RIGHT
+            }
+        } else {
+            switch {
+            case (k < -BASIS_DIRECTION_HIGH):
+                return DOWN
+            case (k <= -BASIS_DIRECTION_LOW):
+                return LEFTDOWN
+            default:
+                return LEFT
+            }
+        }
+    }
+    panic("should not reach here")
+}
+
+func isPassLine(zone *Zone,
+    sX ZoneCoord_t,
+    sY ZoneCoord_t,
+    eX ZoneCoord_t,
+    eY ZoneCoord_t,
+    blockByCreature bool) bool {
+    tpList := getLinePoint(sX, sY, eX, eY)
+    if len(tpList) == 0 {
+        return false
+    }
+
+    for _, tp := range tpList {
+        if tp.X < 0 || tp.X >= int(zone.Width) || tp.Y < 0 || tp.Y >= int(zone.Height) {
+            return false
+        }
+        if tp.X == int(sX) && tp.Y == int(sY) {
+            continue
+        }
+
+        tile := zone.Tile(tp.X, tp.Y)
+
+        if blockByCreature {
+            if tile.isGroundBlocked() {
+                return false
+            }
+        } else if tile.isFixedGroundBlocked() {
+            return false
+        }
+
+        // if (prev.x != tp.x && prev.y != tp.y) {
+        // 		if (!rect.ptInRect(tp.x, prev.y))
+        // 			return false;
+        // 		if (!rect.ptInRect(prev.x, tp.y))
+        // 			return false;
+        //
+        // 		Tile& tile1 = pZone->getTile(tp.x, prev.y);
+        // 		Tile& tile2 = pZone->getTile(prev.x, tp.y);
+        //
+        // 		if (tile1.isFixedGroundBlocked() && tile2.isFixedGroundBlocked())
+        // 			return false;
+        // 	}
+        // 	prev = tp;
+    }
+    return true
+}
+
+func getLinePoint(sX ZoneCoord_t, sY ZoneCoord_t, eX ZoneCoord_t, eY ZoneCoord_t) []TPOINT {
+    xLength := abs(int(sX - eX))
+    yLength := abs(int(sY - eY))
+
+    if xLength == 0 && yLength == 0 {
+        return nil
+    }
+
+    ret := make([]TPOINT, 0)
+    if xLength > yLength {
+        if sX > eX {
+            tmpX := sX
+            sX = eX
+            eX = tmpX
+
+            tmpY := sY
+            sY = eY
+            eY = tmpY
+        }
+
+        yStep := float64(eY-sY) / float64(eX-sX)
+
+        for i := sX; i <= eX; i++ {
+            pt := TPOINT{
+                X:  int(i),
+                Y:  int(sY) + (int)(yStep*float64(i-sX)),
+            }
+            ret = append(ret, pt)
+        }
+    } else {
+        if sY > eY {
+            tmpX := sX
+            sX = eX
+            eX = tmpX
+
+            tmpY := sY
+            sY = eY
+            eY = tmpY
+        }
+
+        xStep := float64(eX-sX) / float64(eY-sY)
+
+        for i := sY; i <= eY; i++ {
+            pt := TPOINT{
+                X:  int(sX) + (int)(xStep*float64(i-sY)),
+                Y:  int(i),
+            }
+
+            ret = append(ret, pt)
+        }
+    }
+    return ret
 }
