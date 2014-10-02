@@ -98,7 +98,7 @@ func (c *Creature) removeFlag(effect EffectClass) {
 
 }
 
-func (c *Creature) SetFlag(ec EffectClass) {
+func (c *Creature) setFlag(ec EffectClass) {
 
 }
 

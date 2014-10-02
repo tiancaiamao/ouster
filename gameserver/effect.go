@@ -6,7 +6,7 @@ import (
     "time"
 )
 
-type EffectClass int
+type EffectClass EffectID_t
 
 const (
     EFFECT_CLASS_LIGHT                       = iota // 0
@@ -750,6 +750,15 @@ func (sharphail *EffectSharpHail) EffectClass() EffectClass {
 func (effect *EffectMeteorStrike) unaffect() {
     // tile := effect.Scene.Tile(X, Y)
     // tile.deleteEffect(effect.ObjectID)
+}
+
+type EffectEvade struct {
+    Effect
+    Bonus uint32
+}
+
+func (evade *EffectEvade) EffectClass() EffectClass {
+    return EFFECT_CLASS_EVADE
 }
 
 type EffectManager struct {

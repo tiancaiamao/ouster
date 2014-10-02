@@ -2,6 +2,7 @@ package util
 
 type ObjectID_t uint32
 type ZoneCoord_t int16
+type EffectID_t uint16
 type Dir_t uint8
 type Sight_t uint8
 type Resist_t uint16
@@ -22,7 +23,7 @@ type Damage_t uint16
 type SpriteType_t uint16
 type Luck_t uint16
 type Attr_t uint16
-
+type Duration_t uint16
 type Sex_t int8
 
 const (

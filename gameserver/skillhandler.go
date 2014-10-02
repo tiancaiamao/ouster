@@ -148,7 +148,7 @@ func (invisibility Invisibility) ExecuteToSelf(skill packet.CGSkillToSelfPacket,
 
     pc := agent.PlayerCreatureInstance()
     pc.addEffect(effect)
-    pc.SetFlag(EFFECT_CLASS_FADE_OUT)
+    pc.setFlag(EFFECT_CLASS_FADE_OUT)
 
     ok1 := &packet.GCSkillToSelfOK1{
         SkillType: SKILL_INVISIBILITY,
@@ -389,4 +389,67 @@ func (spear DestructionSpear) ComputeOutput(input *SkillInput, output *SkillOutp
 
     output.Delay = 30 - input.DEX/6 - input.SkillLevel
     output.Delay = max(output.Delay, 6)
+}
+
+func (evade Evade) ExecuteToSelf(skill packet.CGSkillToSelfPacket, agent *Agent) {
+    // weapon := agent.getWearItem(OUSTER_WEAR_RIGHTHAND)
+    // if weapon == nil {
+    // 	// TODO
+    // 	return
+    // }
+
+    evade.Check(skill.SkillType, agent)
+
+    var input SkillInput
+    var output SkillOutput
+    evade.ComputeOutput(&input, &output)
+
+    pc := agent.PlayerCreatureInstance()
+
+    eft := new(EffectEvade)
+    eft.Deadline = time.Now().Add(time.Duration(output.Duration) * time.Millisecond)
+    eft.Bonus = uint32(output.Damage)
+    pc.addEffect(eft)
+    pc.setFlag(EFFECT_CLASS_EVADE)
+
+    agent.sendPacket(&packet.GCSkillToSelfOK1{
+        SkillType: skill.SkillType,
+        CEffectID: skill.CEffectID,
+        Duration:  uint16(output.Duration),
+    })
+
+    pc.Scene.broadcastPacket(pc.X, pc.Y, &packet.GCSkillToSelfOK2{
+        ObjectID:  pc.ObjectID,
+        SkillType: skill.SkillType,
+        Duration:  Duration_t(output.Duration),
+    }, agent)
+
+    pc.Scene.broadcastPacket(pc.X, pc.Y, &packet.GCAddEffect{
+        ObjectID: pc.ObjectID,
+        EffectID: EffectID_t(eft.EffectClass()),
+        Duration: Duration_t(output.Duration),
+    }, agent)
+
+    // skillslot := pc.SkillSlot[skill.SkillType]
+    // skillslot.setRunTime(output.Delay)
+}
+
+func ComputeOutput(input *SkillInput, output *SkillOutput) {
+    if input.SkillLevel <= 15 {
+        //		output.Damage = (int)((input.DEX / 10.0 ) * (1.0 + ((float)(input.SkillLevel) / 22.5 ) ));
+        output.Damage = 10 + (int)(float64(input.SkillLevel)*16.0/9.0)
+    } else {
+        //		output.Damage = (int)((input.DEX / 10.0 ) * (4.0/3.0 + ((float)(input.SkillLevel) / 45.0 ) ));
+        output.Damage = 10 + (int)(40.0/3.0+float64(input.SkillLevel)*8.0/9.0)
+        if input.SkillLevel == 30 {
+            output.Damage = (int)(float64(output.Damage) * 1.1)
+        }
+    }
+
+    output.Damage = min(50, output.Damage)
+    //	output.Duration = (int)((30.0 + ((float)(input.SkillLevel) * 3.0 ) ) * 10);
+    output.Duration = (60 + input.DEX/10*(input.SkillLevel*2/3)) * 10
+    output.Duration = min(1200, output.Duration)
+    //	output.Delay = max (50 , output.Duration * 2 - (input.DEX * 2 ));
+    output.Delay = output.Duration - (input.SkillLevel / 5)
 }

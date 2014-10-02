@@ -802,9 +802,9 @@ func (modify *GCModifyInformationPacket) MarshalBinary(code uint8) ([]byte, erro
 }
 
 type GCAddEffect struct {
-    ObjectID uint32
-    EffectID uint16
-    Duration uint16
+    ObjectID ObjectID_t
+    EffectID EffectID_t
+    Duration Duration_t
 }
 
 func (effect GCAddEffect) PacketID() PacketID {
@@ -815,9 +815,9 @@ func (effect GCAddEffect) String() string {
 }
 func (effect GCAddEffect) MarshalBinary(code uint8) ([]byte, error) {
     ret := make([]byte, 8)
-    binary.LittleEndian.PutUint32(ret, effect.ObjectID)
-    binary.LittleEndian.PutUint16(ret[4:], effect.EffectID)
-    binary.LittleEndian.PutUint16(ret[6:], effect.Duration)
+    binary.LittleEndian.PutUint32(ret, uint32(effect.ObjectID))
+    binary.LittleEndian.PutUint16(ret[4:], uint16(effect.EffectID))
+    binary.LittleEndian.PutUint16(ret[6:], uint16(effect.Duration))
     return ret, nil
 }
 
@@ -1093,7 +1093,7 @@ func (ok GCSkillToObjectOK4) MarshalBinary(code uint8) ([]byte, error) {
 }
 
 type GCSkillToSelfOK1 struct {
-    SkillType uint16
+    SkillType SkillType_t
     CEffectID uint16
     Duration  uint16
     Grade     uint8
@@ -1113,6 +1113,26 @@ func (ok *GCSkillToSelfOK1) MarshalBinary(code uint8) ([]byte, error) {
     binary.Write(buf, binary.LittleEndian, ok.Duration)
     binary.Write(buf, binary.LittleEndian, ok.Grade)
     ok.Dump(buf)
+    return buf.Bytes(), nil
+}
+
+type GCSkillToSelfOK2 struct {
+    ObjectID  ObjectID_t
+    SkillType SkillType_t
+    Duration  Duration_t
+    Grade     byte
+}
+
+func (ok2 *GCSkillToSelfOK2) PacketID() PacketID {
+    return PACKET_GC_SKILL_TO_SELF_OK_2
+}
+
+func (ok *GCSkillToSelfOK2) MarshalBinary(code uint8) ([]byte, error) {
+    buf := &bytes.Buffer{}
+    binary.Write(buf, binary.LittleEndian, ok.ObjectID)
+    binary.Write(buf, binary.LittleEndian, ok.SkillType)
+    binary.Write(buf, binary.LittleEndian, ok.Duration)
+    binary.Write(buf, binary.LittleEndian, ok.Grade)
     return buf.Bytes(), nil
 }
 

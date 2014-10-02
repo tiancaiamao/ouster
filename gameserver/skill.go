@@ -127,6 +127,7 @@ func init() {
     skillTable[SKILL_FLOURISH] = Flourish{}
     skillTable[SKILL_TELEPORT] = Teleport{}
     skillTable[SKILL_DUCKING_WALLOP] = DuckingWallop{}
+    skillTable[SKILL_EVADE] = Evade{}
     // &SkillInfo{
     //     Type:      SKILL_PROPERTY_TYPE_PHYSIC,
     //     Name:      "Sharp Hail",
@@ -193,6 +194,10 @@ type Teleport struct {
 }
 
 type DuckingWallop struct {
+    Skill
+}
+
+type Evade struct {
     Skill
 }
 
