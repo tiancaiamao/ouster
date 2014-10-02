@@ -123,6 +123,10 @@ func init() {
     skillTable[SKILL_ATTACK_MELEE] = AttackMelee{}
     skillTable[SKILL_BLOOD_DRAIN] = BloodDrain{}
     skillTable[SKILL_SHARP_HAIL] = SharpHail{}
+    skillTable[SKILL_DESTRUCTION_SPEAR] = DestructionSpear{}
+    skillTable[SKILL_FLOURISH] = Flourish{}
+    skillTable[SKILL_TELEPORT] = Teleport{}
+    skillTable[SKILL_DUCKING_WALLOP] = DuckingWallop{}
     // &SkillInfo{
     //     Type:      SKILL_PROPERTY_TYPE_PHYSIC,
     //     Name:      "Sharp Hail",
@@ -175,7 +179,20 @@ type BloodDrain struct {
 type SharpHail struct {
     Skill
 }
+
 type DestructionSpear struct {
+    Skill
+}
+
+type Flourish struct {
+    Skill
+}
+
+type Teleport struct {
+    Skill
+}
+
+type DuckingWallop struct {
     Skill
 }
 

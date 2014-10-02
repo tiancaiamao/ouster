@@ -280,7 +280,7 @@ func (sharphail SharpHail) ExecuteToTile(skill packet.CGSkillToTilePacket, agent
         CEffectID: skill.CEffectID,
         X:         skill.X,
         Y:         skill.Y,
-        Duration:  10,
+        Duration:  uint16(output.Duration),
         Range:     5,
     })
 
@@ -314,6 +314,17 @@ func (sharphail SharpHail) ExecuteToTile(skill packet.CGSkillToTilePacket, agent
 
 func (sharphail SharpHail) ExecuteToObject(skill packet.CGSkillToObjectPacket, agent *Agent) {
 
+}
+
+func (sharphail SharpHail) ComputeOutput(input *SkillInput, output *SkillOutput) {
+    output.Delay = 20
+    if input.SkillLevel <= 15 {
+        output.Damage = int(30 + ((input.DEX+input.STR)/20.0)*(1+(input.SkillLevel/15.0)))
+    } else {
+        output.Damage = int(30 + (float64(input.DEX+input.STR)/20)*(float64(5.0/3.0)+(float64(input.SkillLevel)/10.0)))
+    }
+    output.Tick = 3
+    output.Duration = 10
 }
 
 func (spear DestructionSpear) ExecuteToObject(sender CreatureInterface, target CreatureInterface) {
@@ -365,4 +376,17 @@ func (spear DestructionSpear) ExecuteToObject(sender CreatureInterface, target C
             }
         }
     }
+}
+
+func (spear DestructionSpear) ComputeOutput(input *SkillInput, output *SkillOutput) {
+    if input.SkillLevel <= 15 {
+        output.Damage = min(60, 15+(input.DEX/20)+(input.SkillLevel/3))
+        output.Duration = max(20, min(150, (int)((5.0+(float64(input.DEX)/30.0)*(1.0+(float64(input.SkillLevel)/22.5)))*10)))
+    } else {
+        output.Damage = min(60, 15+(input.DEX/20)+(input.SkillLevel/2))
+        output.Duration = max(20, min(150, (int)((5.0+(float64(input.DEX)/30.0)*(float64(4.0/3.0)+(float64(input.SkillLevel)/45.0)))*10)))
+    }
+
+    output.Delay = 30 - input.DEX/6 - input.SkillLevel
+    output.Delay = max(output.Delay, 6)
 }
