@@ -977,9 +977,10 @@ func (remove GCRemoveEffect) MarshalBinary(code uint8) ([]byte, error) {
 }
 
 type GCSkillFailed1Packet struct {
+    ModifyInfo
+
     SkillType SkillType_t
     Grade     uint8
-    ModifyInfo
 }
 
 func (failed *GCSkillFailed1Packet) PacketID() PacketID {

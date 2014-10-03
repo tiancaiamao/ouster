@@ -212,17 +212,17 @@ func (m *Scene) setDamage(target CreatureInterface, agent *Agent, damage Damage_
     default:
         log.Errorln("参数不对")
     }
-    agent.sendPacket(status)
 
     pc := agent.CreatureInstance()
-    // 广播给所有玩家，攻击成功，怪物状态变化
-    ok3 := packet.GCAttackMeleeOK3{
-        ObjectID:       pc.ObjectID,
-        TargetObjectID: target.CreatureInstance().ObjectID,
-    }
 
-    m.broadcastPacket(pc.X, pc.Y, ok3, agent)
-    m.broadcastPacket(pc.X, pc.Y, status, agent)
+    // // 广播给所有玩家，攻击成功，怪物状态变化
+    // ok3 := packet.GCAttackMeleeOK3{
+    //     ObjectID:       pc.ObjectID,
+    //     TargetObjectID: target.CreatureInstance().ObjectID,
+    // }
+    // m.broadcastPacket(pc.X, pc.Y, ok3, agent)
+
+    m.broadcastPacket(pc.X, pc.Y, status, nil)
 }
 
 func (m *Scene) processAgentMessage(msg AgentMessage) {

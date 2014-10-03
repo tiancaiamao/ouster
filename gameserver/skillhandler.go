@@ -455,7 +455,7 @@ func ComputeOutput(input *SkillInput, output *SkillOutput) {
 }
 
 func (wallop DuckingWallop) ExecuteToTile(skill packet.CGSkillToTilePacket, agent *Agent) {
-    wallop.Check(skill.SkillType, agent)
+    // wallop.Check(skill.SkillType, agent)
 
     pc := agent.PlayerCreatureInstance()
 
@@ -464,18 +464,25 @@ func (wallop DuckingWallop) ExecuteToTile(skill packet.CGSkillToTilePacket, agen
     wallop.ComputeOutput(&input, &output)
 
     dir := getDirectionToPosition(int(pc.X), int(pc.Y), int(skill.X), int(skill.Y))
-    if !isPassLine(&pc.Scene.Zone, pc.X, pc.Y, ZoneCoord_t(skill.X), ZoneCoord_t(skill.Y), false) {
-        // TODO
+    targetX := (int)(pc.X) + dirMoveMask[dir].X*6
+    targetY := (int)(pc.Y) + dirMoveMask[dir].Y*6
+
+    if !isPassLine(&pc.Scene.Zone, pc.X, pc.Y, ZoneCoord_t(targetX), ZoneCoord_t(targetY), false) {
+        agent.sendPacket(&packet.GCSkillFailed1Packet{
+            SkillType: skill.SkillType,
+        })
+        // TODO 广播
         return
     }
 
-    pc.Scene.moveFastPC(agent, pc.X, pc.Y, ZoneCoord_t(skill.X), ZoneCoord_t(skill.Y), skill.SkillType)
+    pc.Scene.moveFastPC(agent, pc.X, pc.Y, ZoneCoord_t(targetX), ZoneCoord_t(targetY), skill.SkillType)
 
     pZone := &pc.Scene.Zone
     for i := 17; i >= 0; i-- {
         tileX := int(pc.X) + wallop.DuckingWallopMask[dir][i].X
         tileY := int(pc.Y) + wallop.DuckingWallopMask[dir][i].Y
         tile := pZone.Tile(tileX, tileY)
+
         if !tile.hasCreature() {
             continue
         }
@@ -539,6 +546,15 @@ func (wallop DuckingWallop) ExecuteToTile(skill packet.CGSkillToTilePacket, agen
 
     // skillslot := pc.SkillSlot[skill.SkillType]
     // skillslot.setRunTime(output.Delay)
+}
+
+func (wallop DuckingWallop) ComputeDamage(input *SkillInput, output *SkillOutput) {
+    if input.SkillLevel <= 15 {
+        output.Damage = (int)(20 + (float64(input.DEX)/10)*(1+(float64(input.SkillLevel)/11.25)))
+    } else {
+        output.Damage = (int)(20 + (float64(input.DEX)/10)*(5.0/3.0+(float64(input.SkillLevel)/22.5)))
+    }
+    output.Delay = max(20, 100-(input.DEX/6)-input.SkillLevel)
 }
 
 const (
@@ -719,14 +735,14 @@ func getLinePoint(sX ZoneCoord_t, sY ZoneCoord_t, eX ZoneCoord_t, eY ZoneCoord_t
     return ret
 }
 
-func (sc SharpChakram) ExecuteToSelf(skill packet.CGSkillToTilePacket, agent *Agent) {
+func (sc SharpChakram) ExecuteToSelf(skill packet.CGSkillToSelfPacket, agent *Agent) {
     // weapon := agent.getWearItem(OUSTER_WEAR_RIGHTHAND)
     // if weapon == nil {
     // 	// TODO
     // 	return
     // }
 
-    sc.Check(skill.SkillType, agent)
+    // sc.Check(skill.SkillType, agent)
 
     var input SkillInput
     var output SkillOutput
@@ -745,6 +761,8 @@ func (sc SharpChakram) ExecuteToSelf(skill packet.CGSkillToTilePacket, agent *Ag
         CEffectID: skill.CEffectID,
         Duration:  uint16(output.Duration),
     })
+
+    log.Debugln("运行到这里  发送SkillToSelfOK1...")
 
     pc.Scene.broadcastPacket(pc.X, pc.Y, &packet.GCSkillToSelfOK2{
         ObjectID:  pc.ObjectID,
@@ -782,12 +800,11 @@ func (sc SharpChakram) ComputeOutput(input *SkillInput, output *SkillOutput) {
 
 func (teleport Teleport) ExecuteToTile(skill packet.CGSkillToTilePacket, agent *Agent) {
     // teleport.Check()
-
-    pc := agent.PlayerCreatureInstance()
+    // pc := agent.PlayerCreatureInstance()
     agent.scene <- FastMoveMessage{
         Agent:     agent,
-        X:         ZoneCoord_t(pc.X),
-        Y:         ZoneCoord_t(pc.Y),
+        X:         ZoneCoord_t(skill.X),
+        Y:         ZoneCoord_t(skill.Y),
         SkillType: skill.SkillType,
     }
 
@@ -799,4 +816,52 @@ func (teleport Teleport) ExecuteToTile(skill packet.CGSkillToTilePacket, agent *
     })
     // skillslot := pc.SkillSlot[skill.SkillType]
     // skillslot.setRunTime(output.Delay)
+}
+
+func (flourish Flourish) ExecuteToObject(sender CreatureInterface, target CreatureInterface) {
+    // weapon := sender.getWearItem(OUSTER_WEAR_RIGHTHAND)
+    // if weapon == nil {
+    // 	// TODO
+    // 	return
+    // }
+
+    agent := sender.(*Agent)
+    // pc := agent.PlayerCreatureInstance()
+    // spear.Check(SKILL_DESTRUCTION_SPEAR, agent)
+
+    var input SkillInput
+    var output SkillOutput
+
+    flourish.ComputeOutput(&input, &output)
+
+    agent.scene <- DamageMessage{
+        Agent:    agent,
+        target:   target,
+        damage:   Damage_t(output.Damage),
+        critical: false,
+    }
+
+    // 发给攻击者，告诉他攻击成功了
+    ok1 := &packet.GCSkillToObjectOK1{
+        SkillType: SKILL_DESTRUCTION_SPEAR,
+        // CEffectID      uint16
+        TargetObjectID: target.CreatureInstance().ObjectID,
+        Duration:       uint16(output.Duration),
+        // Grade          uint8
+        // ModifyInfo
+    }
+    agent.sendPacket(ok1)
+}
+
+func (flourish Flourish) ComputeOutput(input *SkillInput, output *SkillOutput) {
+    if input.SkillLevel < 16 {
+        output.Damage = 3 + (int)((float64(input.STR)/20.0)*(1.0+(float64(input.SkillLevel)/22.5)))
+        output.Damage = min(30, output.Damage)
+    } else {
+        output.Damage = 3 + (int)((float64(input.STR)/20.0)*(4.0/3.0+(float64(input.SkillLevel)/45.0)))
+        output.Damage = min(30, output.Damage)
+        if input.SkillLevel == 30 {
+            output.Damage = (int)(float64(output.Damage) * 1.1)
+        }
+    }
 }

@@ -170,11 +170,15 @@ func CGSkillToSelfHandler(pkt packet.Packet, agent *Agent) {
     skillHandler, ok := skillTable[skillPacket.SkillType]
     if !ok {
         log.Errorln("没有实现的skill:", skillPacket.SkillType)
+        return
     }
 
-    if handler, ok := skillHandler.(SkillToSelfInterface); ok {
-        handler.ExecuteToSelf(skillPacket, agent)
+    handler, ok := skillHandler.(SkillToSelfInterface)
+    if !ok {
+        log.Errorln("技能没有实现SkillToSelf接口", skillPacket.SkillType)
+        return
     }
+    handler.ExecuteToSelf(skillPacket, agent)
 }
 
 func CGSkillToTileHandler(pkt packet.Packet, agent *Agent) {
