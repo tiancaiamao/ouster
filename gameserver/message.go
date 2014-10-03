@@ -21,6 +21,13 @@ type MoveMessage struct {
     packet.CGMovePacket
 }
 
+type FastMoveMessage struct {
+    *Agent
+    X         ZoneCoord_t
+    Y         ZoneCoord_t
+    SkillType SkillType_t
+}
+
 type DamageMessage struct {
     *Agent
     target   CreatureInterface

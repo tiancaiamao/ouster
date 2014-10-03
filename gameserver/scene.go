@@ -88,7 +88,7 @@ func addPCToTile(scene *Scene, x, y int, pc *PlayerCreature, agent *Agent) {
 
                     tile := scene.Tile(x+i, y+j)
                     if !tile.HasCreature(pc.MoveMode) {
-                        tile.AddCreature(agent)
+                        tile.addCreature(agent)
                         log.Debugf("login player: %d to (%d %d) tile=%#v\n", pc.ObjectID, x+i, y+j, tile)
                         pc.X = ZoneCoord_t(x + i)
                         pc.Y = ZoneCoord_t(y + j)
@@ -114,7 +114,7 @@ func (m *Scene) Login(agent *Agent) {
 func (m *Scene) Logout(agent *Agent) {
     c := agent.CreatureInstance()
 
-    m.Tile(int(c.X), int(c.Y)).DeleteCreature(c.ObjectID)
+    m.Tile(int(c.X), int(c.Y)).deleteCreature(c.ObjectID)
     delete(m.players, c.ObjectID)
 
     gcDeleteObject := packet.GCDeleteObjectPacket(c.ObjectID)
@@ -175,7 +175,7 @@ func (scene *Scene) addCreature(creature CreatureInterface, cx ZoneCoord_t, cy Z
             // broadcastPacket(pt.x, pt.y, &gcAddNPC)
         }
 
-        scene.Tile(pt.X, pt.Y).AddCreature(creature)
+        scene.Tile(pt.X, pt.Y).addCreature(creature)
 
         c := creature.CreatureInstance()
         c.X = ZoneCoord_t(pt.X)
@@ -232,6 +232,9 @@ func (m *Scene) processAgentMessage(msg AgentMessage) {
         raw.wg.Done()
     case MoveMessage:
         m.movePC(raw.Agent, ZoneCoord_t(raw.X), ZoneCoord_t(raw.Y), Dir_t(raw.Dir))
+    case FastMoveMessage:
+        pc := raw.Agent.PlayerCreatureInstance()
+        m.moveFastPC(raw.Agent, pc.X, pc.Y, ZoneCoord_t(raw.X), ZoneCoord_t(raw.Y), raw.SkillType)
     case LogoutMessage:
         m.Logout(raw.Agent)
     case DamageMessage:

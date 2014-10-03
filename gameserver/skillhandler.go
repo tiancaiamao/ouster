@@ -469,6 +469,8 @@ func (wallop DuckingWallop) ExecuteToTile(skill packet.CGSkillToTilePacket, agen
         return
     }
 
+    pc.Scene.moveFastPC(agent, pc.X, pc.Y, ZoneCoord_t(skill.X), ZoneCoord_t(skill.Y), skill.SkillType)
+
     pZone := &pc.Scene.Zone
     for i := 17; i >= 0; i-- {
         tileX := int(pc.X) + wallop.DuckingWallopMask[dir][i].X
@@ -715,4 +717,86 @@ func getLinePoint(sX ZoneCoord_t, sY ZoneCoord_t, eX ZoneCoord_t, eY ZoneCoord_t
         }
     }
     return ret
+}
+
+func (sc SharpChakram) ExecuteToSelf(skill packet.CGSkillToTilePacket, agent *Agent) {
+    // weapon := agent.getWearItem(OUSTER_WEAR_RIGHTHAND)
+    // if weapon == nil {
+    // 	// TODO
+    // 	return
+    // }
+
+    sc.Check(skill.SkillType, agent)
+
+    var input SkillInput
+    var output SkillOutput
+    sc.ComputeOutput(&input, &output)
+
+    pc := agent.PlayerCreatureInstance()
+
+    eft := new(EffectSharpChakram)
+    eft.Deadline = time.Now().Add(time.Duration(output.Duration) * time.Millisecond)
+    eft.Bonus = uint32(output.Damage)
+    pc.addEffect(eft)
+    pc.setFlag(eft.EffectClass())
+
+    agent.sendPacket(&packet.GCSkillToSelfOK1{
+        SkillType: skill.SkillType,
+        CEffectID: skill.CEffectID,
+        Duration:  uint16(output.Duration),
+    })
+
+    pc.Scene.broadcastPacket(pc.X, pc.Y, &packet.GCSkillToSelfOK2{
+        ObjectID:  pc.ObjectID,
+        SkillType: skill.SkillType,
+        Duration:  Duration_t(output.Duration),
+    }, agent)
+
+    pc.Scene.broadcastPacket(pc.X, pc.Y, &packet.GCAddEffect{
+        ObjectID: pc.ObjectID,
+        EffectID: EffectID_t(eft.EffectClass()),
+        Duration: Duration_t(output.Duration),
+    }, agent)
+
+    // skillslot := pc.SkillSlot[skill.SkillType]
+    // skillslot.setRunTime(output.Delay)
+}
+
+func (sc SharpChakram) ComputeOutput(input *SkillInput, output *SkillOutput) {
+    if input.SkillLevel <= 15 {
+        output.Damage = 11 + input.SkillLevel/6
+    } else {
+        output.Damage = 11 + input.SkillLevel/4
+        if input.SkillLevel == 30 {
+            output.Damage = (int)(float64(output.Damage) * 1.1)
+        }
+    }
+
+    output.Duration = 450 + input.DEX/2 + input.SkillLevel*15
+    output.Duration = min(900, output.Duration)
+    if input.SkillLevel == 30 {
+        output.Duration = (int)(float64(output.Duration) * 1.1)
+    }
+    output.Delay = output.Duration
+}
+
+func (teleport Teleport) ExecuteToTile(skill packet.CGSkillToTilePacket, agent *Agent) {
+    // teleport.Check()
+
+    pc := agent.PlayerCreatureInstance()
+    agent.scene <- FastMoveMessage{
+        Agent:     agent,
+        X:         ZoneCoord_t(pc.X),
+        Y:         ZoneCoord_t(pc.Y),
+        SkillType: skill.SkillType,
+    }
+
+    agent.sendPacket(&packet.GCSkillToTileOK1{
+        SkillType: skill.SkillType,
+        CEffectID: skill.CEffectID,
+        X:         skill.X,
+        Y:         skill.Y,
+    })
+    // skillslot := pc.SkillSlot[skill.SkillType]
+    // skillslot.setRunTime(output.Delay)
 }

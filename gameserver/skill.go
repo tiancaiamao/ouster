@@ -128,6 +128,8 @@ func init() {
     skillTable[SKILL_TELEPORT] = Teleport{}
     skillTable[SKILL_DUCKING_WALLOP] = DuckingWallop{}
     skillTable[SKILL_EVADE] = Evade{}
+    skillTable[SKILL_SHARP_CHAKRAM] = SharpChakram{}
+
     // &SkillInfo{
     //     Type:      SKILL_PROPERTY_TYPE_PHYSIC,
     //     Name:      "Sharp Hail",
@@ -201,6 +203,9 @@ type DuckingWallop struct {
 }
 
 type Evade struct {
+    Skill
+}
+type SharpChakram struct {
     Skill
 }
 

@@ -101,7 +101,7 @@ func (tile *Tile) hasPortal() bool {
     return tile.Flags&(1<<TILE_PORTAL) != 0
 }
 
-func (tile *Tile) DeleteCreature(id ObjectID_t) {
+func (tile *Tile) deleteCreature(id ObjectID_t) {
     var object ObjectInterface
     object, ok := tile.Objects[id]
     if !ok {
@@ -125,7 +125,7 @@ func (tile *Tile) DeleteCreature(id ObjectID_t) {
     tile.Flags &^= (1 << (TILE_GROUND_BLOCKED + creature.MoveMode))
 }
 
-func (tile *Tile) AddCreature(creature CreatureInterface) {
+func (tile *Tile) addCreature(creature CreatureInterface) {
     inst := creature.CreatureInstance()
     if tile.HasCreature(inst.MoveMode) {
         panic("重复加入到tile")

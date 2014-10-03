@@ -329,8 +329,8 @@ func (zone *Zone) movePC(agent *Agent, cx ZoneCoord_t, cy ZoneCoord_t, dir Dir_t
         return
     }
 
-    oldTile.DeleteCreature(pc.ObjectID)
-    newTile.AddCreature(agent)
+    oldTile.deleteCreature(pc.ObjectID)
+    newTile.addCreature(agent)
 
     // 检查地雷/陷阱
 
@@ -346,14 +346,241 @@ func (zone *Zone) movePC(agent *Agent, cx ZoneCoord_t, cy ZoneCoord_t, dir Dir_t
     zone.movePCBroadcast(agent, cx, cy, nx, ny)
 }
 
-func (zone *Zone) movePCBroadcast(agent *Agent, x1 ZoneCoord_t, y1 ZoneCoord_t, x2 ZoneCoord_t, y2 ZoneCoord_t) {
-    // gcMove := packet.GCMovePacket{
-    //     ObjectID: uint32(agent.PlayerCreatureInstance().ObjectID),
-    //     X:        uint8(agent.X),
-    //     Y:        uint8(agent.Y),
-    //     Dir:      uint8(agent.Dir),
+var (
+    g_FastMoveSearchX = [8][4]int{
+        {0, 1, 1, 1},    // LEFT
+        {0, 1, 0, 1},    // LEFTDOWN
+        {0, 0, -1, 1},   // DOWN
+        {0, -1, 0, -1},  // RIGHTDOWN
+        {0, -1, -1, -1}, // RIGHT
+        {0, -1, 0, -1},  // RIGHTUP
+        {0, 0, -1, 1},   // UP
+        {0, 1, 0, 1},    // LEFTUP
+    }
+
+    g_FastMoveSearchY = [8][4]int{
+        {0, 0, -1, 1},   // LEFT
+        {0, -1, -1, 0},  // LEFTDOWN
+        {0, -1, -1, -1}, // DOWN
+        {0, -1, -1, 0},  // RIGHTDOWN
+        {0, 0, -1, 1},   // RIGHT
+        {0, 1, 1, 0},    // RIGHTUP
+        {0, 1, 1, 1},    // UP
+        {0, 1, 1, 0},    // LEFTUP
+    }
+)
+
+func (zone *Zone) moveFastPC(agent *Agent,
+    x1 ZoneCoord_t,
+    y1 ZoneCoord_t,
+    x2 ZoneCoord_t,
+    y2 ZoneCoord_t,
+    skillType SkillType_t) bool {
+
+    pc := agent.PlayerCreatureInstance()
+    if !pc.IsAbleToMove() {
+        return false
+    }
+
+    // if pc.hasRelicItem() {
+    //     return false
     // }
 
+    if pc.isFlag(EFFECT_CLASS_HAS_FLAG) ||
+        pc.isFlag(EFFECT_CLASS_HAS_SWEEPER) {
+        return false
+    }
+
+    rTile := pc.Scene.Tile(int(x1), int(y1))
+    if rTile.getEffect(EFFECT_CLASS_ON_BRIDGE) != nil {
+        return false
+    }
+
+    dir := ComputeDirection(int(x1), int(y1), int(x2), int(y2))
+    searchX := g_FastMoveSearchX[dir]
+    searchY := g_FastMoveSearchY[dir]
+
+    var i int
+    for ; i < 4; i++ {
+        targetX, targetY := int(x2)+searchX[i], int(y2)+searchY[i]
+        if targetX >= 0 && targetX < int(zone.Width) &&
+            targetY >= 0 && targetY < int(zone.Height) &&
+            !zone.Tile(targetX, targetY).isBlocked(pc.MoveMode) &&
+            !zone.Tile(targetX, targetY).hasPortal() &&
+            zone.Tile(targetX, targetY).getEffect(EFFECT_CLASS_SANCTUARY) == nil &&
+            zone.Tile(int(x1), int(y1)).getEffect(EFFECT_CLASS_SANCTUARY) == nil {
+            x2 = ZoneCoord_t(targetX)
+            y2 = ZoneCoord_t(targetY)
+            break
+        }
+    }
+
+    if i == 4 {
+        return false
+    }
+
+    agent.sendPacket(&packet.GCFastMovePacket{
+        ObjectID:  pc.ObjectID,
+        SkillType: skillType,
+        FromX:     Coord_t(x1),
+        FromY:     Coord_t(y1),
+        ToX:       Coord_t(x2),
+        ToY:       Coord_t(y2),
+    })
+
+    pc.X = x2
+    pc.Y = y2
+    pc.Dir = dir
+
+    rTile.deleteCreature(pc.ObjectID)
+    nTile := zone.Tile(int(x2), int(y2))
+    nTile.addCreature(agent)
+
+    // checkMine(this, pPC, x2, y2)
+    // checkTrap(this, pPC)
+
+    // switch agent.(type) {
+    // case *Slayer:
+    // case *Ouster:
+    // case *Vampire:
+    //
+    // }
+
+    // GCDeleteObject gcDeleteObject;
+    // gcDeleteObject.setObjectID(pPC->getObjectID());
+
+    var minX, maxX, minY, maxY int
+    if x1 < x2 {
+        minX = max(0, int(x1)-MaxViewportWidth)
+        maxX = min(int(zone.Width-1), int(x2)+MaxViewportWidth)
+    } else {
+        minX = max(0, int(x2)-MaxViewportWidth)
+        maxX = min(int(zone.Width-1), int(x1)+MaxViewportWidth)
+    }
+    if y1 < y2 {
+        minY = max(0, int(y1)-MaxViewportUpperHeight)
+        maxY = min(int(zone.Height-1), int(y2)+MaxViewportLowerHeight)
+    } else {
+        minY = max(0, int(y2)-MaxViewportUpperHeight)
+        maxY = min(int(zone.Height-1), int(y1)+MaxViewportLowerHeight)
+    }
+
+    for ix := minX; ix <= maxX; ix++ {
+        for iy := minY; iy <= maxY; iy++ {
+            tile := zone.Tile(ix, iy)
+            prevVisionState := getVisionState(x1, y1, ZoneCoord_t(ix), ZoneCoord_t(iy))
+            curVisionState := getVisionState(x2, y2, ZoneCoord_t(ix), ZoneCoord_t(iy))
+
+            for _, obj := range tile.Objects {
+                if obj == agent {
+                    continue
+                }
+
+                switch obj.ObjectClass() {
+                case OBJECT_CLASS_CREATURE:
+                    // creature := obj.(CreatureInterface)
+                    switch obj.(type) {
+                    case *Monster:
+                        // if (prevVisionState == OUT_OF_SIGHT && curVisionState >= IN_SIGHT) {
+                        // 	Packet* pAddMonsterPacket = createMonsterAddPacket(pMonster, pPC);
+                        //
+                        // 	if (pAddMonsterPacket!=NULL)
+                        // 	{
+                        // 		pPlayer->sendPacket(pAddMonsterPacket);
+                        // 		delete pAddMonsterPacket;
+                        // 	}
+                        // }
+
+                        // VisionState vs = pMonster->getVisionState(x2,y2);
+                        //
+                        // if (vs >= IN_SIGHT && pMonster->getAlignment() == ALIGNMENT_AGGRESSIVE)
+                        // {
+                        // 	if (isPotentialEnemy(pMonster, pPC))
+                        // 	{
+                        // 		pMonster->addPotentialEnemy(pPC);
+                        // 	}
+                        // }
+                    case *Slayer:
+                        // slayer := obj.(*Slayer)
+                        if curVisionState >= IN_SIGHT && prevVisionState == OUT_OF_SIGHT {
+                            // if canSee(pc, pCreature) {
+                            // slayer.sendPacket(&packet.GCAddSlayer{})
+                            // }
+                        }
+                        // prevVS := getVisionState(slayer.X, slayer.Y, x1, y1)
+                        // currVS := getVisionState(slayer.X, slayer.Y, x2, y2)
+                        //
+                        // if canSee(pCreature, pc) {
+                        //     if prevVS == OUT_OF_SIGHT && currVS >= IN_SIGHT {
+                        //         pCreature.sendPacket(pGCAddXXX)
+                        //         pCreature.sendPacket(&gcFastMove)
+                        //     } else if prevVS >= IN_SIGHT && currVS >= IN_SIGHT {
+                        //         pCreature.sendPacket(&gcFastMove)
+                        //     } else if prevVS >= IN_SIGHT && currVS == OUT_OF_SIGHT {
+                        //         pCreature.sendPacket(&gcDeleteObject)
+                        //     }
+                        // }
+                    case *Vampire:
+
+                        // if curVisionState >= IN_SIGHT && prevVisionState == OUT_OF_SIGHT {
+                        // if canSee(pc, pCreature) {
+                        // if pCreature.isFlag(EFFECT_CLASS_HIDE) {
+                        // GCAddBurrowingCreature gcABC;
+                        // gcABC.setObjectID(pCreature->getObjectID());
+                        // gcABC.setName(pCreature->getName());
+                        // gcABC.setX(ix);
+                        // gcABC.setY(iy);
+                        // pPlayer->sendPacket(&gcABC);
+                        // } else {
+                        // pVampire := obj.(*Vampire)
+                        // pPlayer.sendPacket(&packet.GCAddVampire)
+                        // }
+                        // }
+                        // prevVS := getVisionState(x1,y1);
+                        // currVS := getVisionState(x2,y2);
+
+                        // if canSee(pCreature, pc) {
+                        //              if prevVS == OUT_OF_SIGHT && currVS >= IN_SIGHT {
+                        //                  pCreature.sendPacket(pGCAddXXX)
+                        //                  pCreature.sendPacket(&gcFastMove)
+                        //              } else if prevVS >= IN_SIGHT && currVS >= IN_SIGHT {
+                        //                  pCreature.sendPacket(&gcFastMove)
+                        //              } else if prevVS >= IN_SIGHT && currVS == OUT_OF_SIGHT {
+                        //                  pCreature.sendPacket(&gcDeleteObject)
+                        //							}
+                        //					}
+                        // }
+                    case *Ouster:
+                        // if curVisionState >= IN_SIGHT && prevVisionState == OUT_OF_SIGHT && canSee(pc, pCreature) {
+                        //     ouster := obj.(*Ouster)
+                        //     ouster.sendPacket(&packet.GCAddOuster{})
+                        // }
+
+                        // prevVS := getVisionState(pCreature.X, pCreature.Y,x1,y1)
+                        // currVS := getVisionState(pCreature.X, pCreature.Y,x2,y2)
+                        // if (canSee(pCreature, pPC ) ){
+                        // 	if (prevVS == OUT_OF_SIGHT && currVS >= IN_SIGHT) {
+                        // 	pCreature->getPlayer()->sendPacket(pGCAddXXX);
+                        // 	pCreature->getPlayer()->sendPacket(&gcFastMove);
+                        // 	} else if (prevVS >= IN_SIGHT && currVS >= IN_SIGHT) {
+                        // 	pCreature->getPlayer()->sendPacket(&gcFastMove);
+                        // 	//pCreature->getPlayer()->sendStream(&outputStream);
+                        // 	}	else if (prevVS >= IN_SIGHT && currVS == OUT_OF_SIGHT)  {
+                        // 	pCreature->getPlayer()->sendPacket(&gcDeleteObject);
+                        // 	}
+                        // }
+                    default:
+                        log.Error("invalid creature class")
+                    }
+                }
+            }
+        }
+    }
+
+    return true
+}
+
+func (zone *Zone) movePCBroadcast(agent *Agent, x1 ZoneCoord_t, y1 ZoneCoord_t, x2 ZoneCoord_t, y2 ZoneCoord_t) {
     beginX := x2 - ZoneCoord_t(MaxViewportWidth) - 1
     if beginX < 0 {
         beginX = 0
@@ -542,8 +769,8 @@ func (zone *Zone) moveCreature(creature CreatureInterface, nx ZoneCoord_t, ny Zo
     tile := zone.Tile(int(cx), int(cy))
     newTile := zone.Tile(int(nx), int(ny))
 
-    newTile.AddCreature(creature)
-    tile.DeleteCreature(inst.ObjectID)
+    newTile.addCreature(creature)
+    tile.deleteCreature(inst.ObjectID)
 
     log.Debugf("monster %d move: (%d,%d)->(%d,%d) zone=%p scene=%p\n", inst.ObjectID, cx, cy, nx, ny, zone, inst.Scene)
     log.Debugln("tile:", newTile)

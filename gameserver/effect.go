@@ -790,3 +790,12 @@ func (manager EffectManager) heartbeat(now time.Time) {
         }
     }
 }
+
+type EffectSharpChakram struct {
+    Effect
+    Bonus uint32
+}
+
+func (eft EffectSharpChakram) EffectClass() EffectClass {
+    return EFFECT_CLASS_SHARP_CHAKRAM
+}

@@ -912,12 +912,12 @@ func (obj GCAddEffectPacket) MarshalBinary(code uint8) ([]byte, error) {
 }
 
 type GCFastMovePacket struct {
-    ObjectID  uint32
-    FromX     uint8
-    FromY     uint8
-    ToX       uint8
-    ToY       uint8
-    SkillType uint16
+    ObjectID  ObjectID_t
+    FromX     Coord_t
+    FromY     Coord_t
+    ToX       Coord_t
+    ToY       Coord_t
+    SkillType SkillType_t
 }
 
 func (fastMove *GCFastMovePacket) PacketID() PacketID {
