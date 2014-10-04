@@ -487,7 +487,9 @@ func (manager *MonsterManager) killCreature(monster *Monster) {
     corpse.LastKiller = monster.LastKiller
 
     zone.addItem(corpse, monster.X, monster.Y)
-    zone.broadcastPacket(monster.X, monster.Y, packet.GCCreatureDiedPacket(monster.ObjectID), nil)
+    zone.broadcastPacket(monster.X, monster.Y, packet.GCCreatureDiedPacket{
+        ObjectID: monster.ObjectID,
+    }, nil)
 }
 
 func (c *Monster) isAlive() bool {

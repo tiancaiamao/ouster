@@ -8,7 +8,7 @@ import (
 )
 
 type SkillToSelfInterface interface {
-    ExecuteToSelf(packet.CGSkillToSelfPacket, *Agent)
+    ExecuteToSelf(*packet.CGSkillToSelfPacket, *Agent)
 }
 
 type SkillToObjectInterface interface {
@@ -16,7 +16,7 @@ type SkillToObjectInterface interface {
 }
 
 type SkillToTileInterface interface {
-    ExecuteToTile(packet.CGSkillToTilePacket, *Agent)
+    ExecuteToTile(*packet.CGSkillToTilePacket, *Agent)
 }
 
 type SkillHandler interface {
@@ -130,7 +130,7 @@ func (melee AttackMelee) ExecuteToObject(sender CreatureInterface, target Creatu
     }
 }
 
-func (invisibility Invisibility) ExecuteToSelf(skill packet.CGSkillToSelfPacket, agent *Agent) {
+func (invisibility Invisibility) ExecuteToSelf(skill *packet.CGSkillToSelfPacket, agent *Agent) {
     // 基类的函数
     // if !invisibility.CheckAndDecreaseMana(skill.SkillType, agent, skillSlot) {
     //     receiver.executeSkillFailNormal(ouster, skill.SkillType)
@@ -173,13 +173,13 @@ func (invisibility Invisibility) ExecuteToSelf(skill packet.CGSkillToSelfPacket,
 
 func (meteor MeteorStrike) ExecuteToObject(skill packet.CGSkillToObjectPacket, agent *Agent) {
     // target := agent.NearbyAgent(ObjectID_t(skill.TargetObjectID))
-    meteor.ExecuteToTile(packet.CGSkillToObjectPacket{
+    meteor.ExecuteToTile(&packet.CGSkillToObjectPacket{
     // X:  target.X,
     // Y:  target.Y,
     }, agent)
 }
 
-func (meteor MeteorStrike) ExecuteToTile(skill packet.CGSkillToObjectPacket, agent *Agent) {
+func (meteor MeteorStrike) ExecuteToTile(skill *packet.CGSkillToObjectPacket, agent *Agent) {
     // 基类的函数
     // if !invisiblity.CheckAndDecreaseMana(skill.SkillType, agent, skillSlot) {
     //     receiver.executeSkillFailNormal(ouster, skill.SkillType)
@@ -214,7 +214,7 @@ func (paralyze Paralyze) ExecuteToObject(skill packet.CGSkillToObjectPacket, age
 
 }
 
-func (sharphail SharpHail) ExecuteToTile(skill packet.CGSkillToTilePacket, agent *Agent) {
+func (sharphail SharpHail) ExecuteToTile(skill *packet.CGSkillToTilePacket, agent *Agent) {
     // weapon := agent.getWearItem(OUSTER_WEAR_RIGHTHAND)
     // if weapon == nil || weapon.ItemClass() != ITEM_CLASS_OUSTERS_CHAKRAM {
     //     // TODO
@@ -401,7 +401,7 @@ func (spear DestructionSpear) ComputeOutput(input *SkillInput, output *SkillOutp
     output.Delay = max(output.Delay, 6)
 }
 
-func (evade Evade) ExecuteToSelf(skill packet.CGSkillToSelfPacket, agent *Agent) {
+func (evade Evade) ExecuteToSelf(skill *packet.CGSkillToSelfPacket, agent *Agent) {
     // weapon := agent.getWearItem(OUSTER_WEAR_RIGHTHAND)
     // if weapon == nil {
     // 	// TODO
@@ -464,7 +464,7 @@ func ComputeOutput(input *SkillInput, output *SkillOutput) {
     output.Delay = output.Duration - (input.SkillLevel / 5)
 }
 
-func (wallop DuckingWallop) ExecuteToTile(skill packet.CGSkillToTilePacket, agent *Agent) {
+func (wallop DuckingWallop) ExecuteToTile(skill *packet.CGSkillToTilePacket, agent *Agent) {
     // wallop.Check(skill.SkillType, agent)
 
     pc := agent.PlayerCreatureInstance()
@@ -745,7 +745,7 @@ func getLinePoint(sX ZoneCoord_t, sY ZoneCoord_t, eX ZoneCoord_t, eY ZoneCoord_t
     return ret
 }
 
-func (sc SharpChakram) ExecuteToSelf(skill packet.CGSkillToSelfPacket, agent *Agent) {
+func (sc SharpChakram) ExecuteToSelf(skill *packet.CGSkillToSelfPacket, agent *Agent) {
     // weapon := agent.getWearItem(OUSTER_WEAR_RIGHTHAND)
     // if weapon == nil {
     // 	// TODO
@@ -808,7 +808,7 @@ func (sc SharpChakram) ComputeOutput(input *SkillInput, output *SkillOutput) {
     output.Delay = output.Duration
 }
 
-func (teleport Teleport) ExecuteToTile(skill packet.CGSkillToTilePacket, agent *Agent) {
+func (teleport Teleport) ExecuteToTile(skill *packet.CGSkillToTilePacket, agent *Agent) {
     // teleport.Check()
     // pc := agent.PlayerCreatureInstance()
     agent.scene <- FastMoveMessage{

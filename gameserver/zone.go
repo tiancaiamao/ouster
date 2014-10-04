@@ -841,7 +841,7 @@ func (zone *Zone) moveCreatureBroadcast(creature CreatureInterface, x1 ZoneCoord
                             })
                         }
                     } else if prevVS == IN_SIGHT && currVS == IN_SIGHT {
-                        move := packet.GCMovePacket{
+                        move := &packet.GCMovePacket{
                             ObjectID: inst.ObjectID,
                             X:        Coord_t(inst.X),
                             Y:        Coord_t(inst.Y),
@@ -850,7 +850,9 @@ func (zone *Zone) moveCreatureBroadcast(creature CreatureInterface, x1 ZoneCoord
                         agent.sendPacket(move)
                         log.Debugln("broadcast a GCMovePacket", move)
                     } else if prevVS == IN_SIGHT && currVS == OUT_OF_SIGHT {
-                        agent.sendPacket(packet.GCDeleteObjectPacket(inst.ObjectID))
+                        agent.sendPacket(&packet.GCDeleteObjectPacket{
+                            ObjectID: inst.ObjectID,
+                        })
                     }
 
                 }

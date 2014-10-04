@@ -138,7 +138,9 @@ func (m *Scene) Logout(agent *Agent) {
     m.Tile(int(c.X), int(c.Y)).deleteCreature(c.ObjectID)
     delete(m.players, c.ObjectID)
 
-    gcDeleteObject := packet.GCDeleteObjectPacket(c.ObjectID)
+    gcDeleteObject := &packet.GCDeleteObjectPacket{
+        ObjectID: c.ObjectID,
+    }
 
     m.broadcastPacket(c.X, c.Y, gcDeleteObject, agent)
 

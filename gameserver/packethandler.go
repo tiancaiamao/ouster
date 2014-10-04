@@ -1,6 +1,7 @@
 package main
 
 import (
+    "github.com/tiancaiamao/ouster/data"
     "github.com/tiancaiamao/ouster/log"
     "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
@@ -57,7 +58,7 @@ func CGAttackHandler(pkt packet.Packet, agent *Agent) {
         return
     }
 
-    attack := pkt.(packet.CGAttackPacket)
+    attack := pkt.(*packet.CGAttackPacket)
     target, ok := pc.Scene.objects[attack.ObjectID]
     if !ok {
         agent.sendPacket(&fail)
@@ -92,13 +93,13 @@ func CGAttackHandler(pkt packet.Packet, agent *Agent) {
             weapon := slayer.getWearItem(SLAYER_WEAR_RIGHTHAND)
             switch weapon.ItemClass() {
             case ITEM_CLASS_BLADE:
-                increaseDomainExp(slayer, SKILL_DOMAIN_BLADE, 1, packet.GCAttackMeleeOK1{}, targetCreature.CreatureInstance().Level)
+                increaseDomainExp(slayer, SKILL_DOMAIN_BLADE, 1, &packet.GCAttackMeleeOK1{}, targetCreature.CreatureInstance().Level)
             case ITEM_CLASS_SWORD:
-                increaseDomainExp(slayer, SKILL_DOMAIN_BLADE, 1, packet.GCAttackMeleeOK1{}, targetCreature.CreatureInstance().Level)
+                increaseDomainExp(slayer, SKILL_DOMAIN_BLADE, 1, &packet.GCAttackMeleeOK1{}, targetCreature.CreatureInstance().Level)
             case ITEM_CLASS_CROSS:
-                increaseDomainExp(slayer, SKILL_DOMAIN_BLADE, 1, packet.GCAttackMeleeOK1{}, targetCreature.CreatureInstance().Level)
+                increaseDomainExp(slayer, SKILL_DOMAIN_BLADE, 1, &packet.GCAttackMeleeOK1{}, targetCreature.CreatureInstance().Level)
             case ITEM_CLASS_MACE:
-                increaseDomainExp(slayer, SKILL_DOMAIN_BLADE, 1, packet.GCAttackMeleeOK1{}, targetCreature.CreatureInstance().Level)
+                increaseDomainExp(slayer, SKILL_DOMAIN_BLADE, 1, &packet.GCAttackMeleeOK1{}, targetCreature.CreatureInstance().Level)
             default:
                 log.Errorln("武器不对!")
             }
@@ -151,7 +152,7 @@ func CGAttackHandler(pkt packet.Packet, agent *Agent) {
 func CGMoveHandler(pkt packet.Packet, agent *Agent) {
     agent.scene <- MoveMessage{
         Agent:        agent,
-        CGMovePacket: pkt.(packet.CGMovePacket),
+        CGMovePacket: pkt.(*packet.CGMovePacket),
     }
 }
 
@@ -166,7 +167,7 @@ func CGSkillToSelfHandler(pkt packet.Packet, agent *Agent) {
 
     // }
 
-    skillPacket := pkt.(packet.CGSkillToSelfPacket)
+    skillPacket := pkt.(*packet.CGSkillToSelfPacket)
     skillHandler, ok := skillTable[skillPacket.SkillType]
     if !ok {
         log.Errorln("没有实现的skill:", skillPacket.SkillType)
@@ -192,7 +193,7 @@ func CGSkillToTileHandler(pkt packet.Packet, agent *Agent) {
     //
     // }
 
-    skillPacket := pkt.(packet.CGSkillToTilePacket)
+    skillPacket := pkt.(*packet.CGSkillToTilePacket)
     skillHandler, ok := skillTable[skillPacket.SkillType]
     if !ok {
         log.Errorln("尚未实现的skill", skillPacket.SkillType)
@@ -209,7 +210,7 @@ func CGSkillToTileHandler(pkt packet.Packet, agent *Agent) {
 }
 
 func CGSkillToObjectHandler(pkt packet.Packet, agent *Agent) {
-    skillPacket := pkt.(packet.CGSkillToObjectPacket)
+    skillPacket := pkt.(*packet.CGSkillToObjectPacket)
     skillHandler, ok := skillTable[skillPacket.SkillType]
     if !ok {
         log.Errorln("尚未实现的skill", skillPacket.SkillType)
@@ -293,7 +294,7 @@ func CGConnectHandler(pkt packet.Packet, agent *Agent) {
         MonsterTypes: []MonsterType_t{5, 6, 7, 8},
 
         Premium: 17,
-        NicknameInfo: packet.NicknameInfo{
+        NicknameInfo: data.NicknameInfo{
             NicknameID: 32560,
         },
 
@@ -316,16 +317,17 @@ func CGConnectHandler(pkt packet.Packet, agent *Agent) {
     agent.packetWriter.Code = code
 
     if info.PCType == 'O' {
-        info.GearInfo = packet.GearInfo{
-            GearSlotInfoList: []packet.GearSlotInfo{
-                packet.GearSlotInfo{
-                    ObjectID:   12494,
-                    ItemClass:  59,
-                    ItemType:   14,
-                    Durability: 6700,
-                    Grade:      4,
-                    ItemNum:    1,
-
+        info.GearInfo = data.GearInfo{
+            GearSlotInfoList: []data.GearSlotInfo{
+                data.GearSlotInfo{
+                    PCItemInfo: data.PCItemInfo{
+                        ObjectID:   12494,
+                        IClass:     59,
+                        ItemType:   14,
+                        Durability: 6700,
+                        Grade:      4,
+                        ItemNum:    1,
+                    },
                     SlotID: 3,
                 },
             },

@@ -18,7 +18,7 @@ func (agent *Agent) Sender() *Agent {
 
 type MoveMessage struct {
     *Agent
-    packet.CGMovePacket
+    *packet.CGMovePacket
 }
 
 type FastMoveMessage struct {

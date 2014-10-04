@@ -8,6 +8,7 @@ type PacketID uint16
 
 type Packet interface {
     PacketID() PacketID
+    PacketSize() uint32
     Read(reader io.Reader, code uint8) error
     Write(writer io.Writer, code uint8) error
 }

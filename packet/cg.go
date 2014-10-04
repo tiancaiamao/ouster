@@ -32,7 +32,6 @@ func (connect *CGConnectPacket) MarshalBinary(code uint8) ([]byte, error) {
 }
 
 func (packet *CGConnectPacket) Read(reader io.Reader, code uint8) error {
-    // [ 0 0 0 240 1 4 183 232 191 241 0 80 86 192 0 8]
     binary.Read(reader, binary.LittleEndian, &packet.Key)
     binary.Read(reader, binary.LittleEndian, &packet.PCType)
     var szName uint8

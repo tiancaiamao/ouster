@@ -16,6 +16,7 @@ const (
 type PCInfo interface {
     Write(writer io.Writer) error
     Read(reader io.Reader) error
+    getSize() uint32
 }
 
 type PCOusterInfo struct {
