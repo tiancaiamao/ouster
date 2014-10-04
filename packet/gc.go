@@ -157,9 +157,8 @@ func (info *GCUpdateInfoPacket) PacketID() PacketID {
 func (info *GCUpdateInfoPacket) String() string {
     return "update info"
 }
-func (info *GCUpdateInfoPacket) MarshalBinary(code uint8) ([]byte, error) {
-    buf := &bytes.Buffer{}
-    buf.WriteByte(info.PCType)
+func (info *GCUpdateInfoPacket) Write(buf io.Writer, code uint8) error {
+    binary.Write(buf, binary.LittleEndian, info.PCType)
     info.PCInfo.Write(buf)
 
     info.InventoryInfo.Write(buf)
@@ -167,10 +166,10 @@ func (info *GCUpdateInfoPacket) MarshalBinary(code uint8) ([]byte, error) {
     info.ExtraInfo.Write(buf)
     info.EffectInfo.Write(buf)
     if info.hasMotorcycle {
-        buf.WriteByte(1)
+        binary.Write(buf, binary.LittleEndian, uint8(1))
         info.RideMotorcycleInfo.Dump(buf)
     } else {
-        buf.WriteByte(0)
+        binary.Write(buf, binary.LittleEndian, uint8(1))
     }
 
     // write zone info
@@ -218,7 +217,7 @@ func (info *GCUpdateInfoPacket) MarshalBinary(code uint8) ([]byte, error) {
 
     binary.Write(buf, binary.LittleEndian, info.PowerPoint)
 
-    return buf.Bytes(), nil
+    return nil
 
     // return []byte{
     // 	79,170,47,0,0,6,'o','u','s','t','e','r',150,0,101,0,0,76,29,0,0,10,0,10,0,10,0,25,0,25,0,25,0,10,0,10,0,10,0,59,1,59,1,186,0,111,0,50,204,41,0,0,125,0,0,0,244,1,0,0,92,0,0,0,13,15,39,10,39,0,0,1,66,0,0,4,0,0,0,0,100,0,0,0,0,2,171,47,0,0,67,0,0,0,1,0,0,0,0,0,255,255,255,255,0,9,0,0,0,0,0,172,47,0,0,66,0,0,0,1,0,0,0,0,0,255,255,255,255,0,9,0,0,0,0,1,1,173,47,0,0,59,0,0,0,145,15,0,0,0,0,4,0,0,0,0,1,0,0,0,3,0,2,148,1,54,66,109,0,246,224,0,62,0,60,56,191,7,8,19,15,56,16,0,0,13,6,0,4,5,0,6,0,7,0,8,0,2,6,192,173,206,172,209,199,141,2,32,0,22,0,4,186,194,192,173,146,2,24,0,42,0,0,17,0,0,0,0,72,126,0,0,0,0,0,0,2,1,0,0,0,0,0,0,0,0,

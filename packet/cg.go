@@ -9,8 +9,9 @@ import (
 )
 
 type CGConnectPacket struct {
-    Key uint32
-    // Slayer or Vampire?
+    NotImplementWrite
+
+    Key        uint32
     PCType     uint8
     PCName     string
     MacAddress [4]byte
@@ -30,27 +31,39 @@ func (connect *CGConnectPacket) MarshalBinary(code uint8) ([]byte, error) {
     return buf.Bytes(), nil
 }
 
-func readConnect(buf []byte, code uint8) (Packet, error) {
+func (packet *CGConnectPacket) Read(reader io.Reader, code uint8) error {
     // [ 0 0 0 240 1 4 183 232 191 241 0 80 86 192 0 8]
-    ret := new(CGConnectPacket)
-    ret.Key = binary.LittleEndian.Uint32(buf[:4])
-    ret.PCType = buf[4]
-    length := buf[5]
-    ret.PCName = string(buf[6 : 6+length])
-    copy(ret.MacAddress[:], buf[6+length:])
-    return ret, nil
+    binary.Read(reader, binary.LittleEndian, &packet.Key)
+    binary.Read(reader, binary.LittleEndian, &packet.PCType)
+    var szName uint8
+    var buf [256]byte
+    binary.Read(reader, binary.LittleEndian, &szName)
+    _, err := reader.Read(buf[:szName])
+    if err != nil {
+        return err
+    }
+    packet.PCName = string(buf[:szName])
+    _, err = reader.Read(packet.MacAddress[:])
+    if err != nil {
+        return err
+    }
+    return nil
 }
 
-type CGReadyPacket struct{}
+type CGReadyPacket struct {
+    NotImplementWrite
+}
 
 func (ready CGReadyPacket) PacketID() PacketID {
     return PACKET_CG_READY
 }
-func (ready CGReadyPacket) String() string {
-    return "ready"
+func (ready *CGReadyPacket) Read(reader io.Reader, code uint8) error {
+    return nil
 }
 
 type CGMovePacket struct {
+    NotImplementWrite
+
     Dir uint8
     X   uint8
     Y   uint8
@@ -58,9 +71,6 @@ type CGMovePacket struct {
 
 func (move CGMovePacket) PacketID() PacketID {
     return PACKET_CG_MOVE
-}
-func (move CGMovePacket) String() string {
-    return "move"
 }
 
 const (
@@ -155,40 +165,42 @@ func SHUFFLE_STATEMENT_4(code uint8, A func(), B func(), C func(), D func()) {
     return
 }
 
-func readMove(buf []byte, code uint8) (Packet, error) {
-    var ret CGMovePacket
-    var err error
-    offset := 0
+func (move *CGMovePacket) Read(reader io.Reader, code uint8) error {
     A := func() {
-        ret.X = buf[offset] ^ code
-        offset++
+        binary.Read(reader, binary.LittleEndian, &move.X)
+        move.X ^= code
     }
     B := func() {
-        ret.Y = buf[offset] ^ code
-        offset++
+        binary.Read(reader, binary.LittleEndian, &move.Y)
+        move.Y ^= code
     }
     C := func() {
-        ret.Dir = buf[offset] ^ code
-        offset++
+        binary.Read(reader, binary.LittleEndian, &move.Dir)
+        move.Dir ^= code
     }
     // encryption...fuck
     SHUFFLE_STATEMENT_3(code, A, B, C)
-    if ret.Dir >= 8 {
-        err = errors.New("Dir out of range")
+    if move.Dir >= 8 {
+        return errors.New("Dir out of range")
     }
-    return ret, err
+    return nil
 }
 
-type CGVerifyTimePacket struct{}
+type CGVerifyTimePacket struct {
+    NotImplementWrite
+}
 
 func (verifyTime CGVerifyTimePacket) PacketID() PacketID {
     return PACKET_CG_VERIFY_TIME
 }
-func (verifyTime CGVerifyTimePacket) String() string {
-    return "verify time"
+
+func (verifyTime *CGVerifyTimePacket) Read(reader io.Reader, code uint8) error {
+    return nil
 }
 
 type CGAttackPacket struct {
+    NotImplementWrite
+
     ObjectID ObjectID_t
     X        uint8
     Y        uint8
@@ -198,34 +210,32 @@ type CGAttackPacket struct {
 func (attack CGAttackPacket) PacketID() PacketID {
     return PACKET_CG_ATTACK
 }
-func (attack CGAttackPacket) String() string {
-    return "attack"
-}
-func readAttack(buf []byte, code uint8) (Packet, error) {
+
+func (attack *CGAttackPacket) Read(reader io.Reader, code uint8) error {
     // [188 251 55 82 48 0 0]
-    var ret CGAttackPacket
-    offset := 0
     A := func() {
-        ret.ObjectID = ObjectID_t(binary.LittleEndian.Uint32(buf[offset:]) ^ uint32(code))
-        offset += 4
+        binary.Read(reader, binary.LittleEndian, &attack.ObjectID)
+        attack.ObjectID ^= ObjectID_t(code)
     }
     B := func() {
-        ret.X = buf[offset] ^ code
-        offset++
+        binary.Read(reader, binary.LittleEndian, &attack.X)
+        attack.X ^= code
     }
     C := func() {
-        ret.Y = buf[offset] ^ code
-        offset++
+        binary.Read(reader, binary.LittleEndian, &attack.Y)
+        attack.Y ^= code
     }
     D := func() {
-        ret.Dir = buf[offset] ^ code
-        offset++
+        binary.Read(reader, binary.LittleEndian, &attack.Dir)
+        attack.Dir ^= code
     }
     SHUFFLE_STATEMENT_4(code, A, B, C, D)
-    return ret, nil
+    return nil
 }
 
 type CGBloodDrainPacket struct {
+    NotImplementWrite
+
     ObjectID uint32
 }
 
@@ -235,13 +245,14 @@ func (bloodDrain CGBloodDrainPacket) PacketID() PacketID {
 func (bloodDrain CGBloodDrainPacket) String() string {
     return "blood drain"
 }
-func readBloodDrain(buf []byte, code uint8) (Packet, error) {
-    id := binary.LittleEndian.Uint32(buf)
-    return CGBloodDrainPacket{id}, nil
+func (packet *CGBloodDrainPacket) Read(reader io.Reader, code uint8) error {
+    return binary.Read(reader, binary.LittleEndian, &packet.ObjectID)
 }
 
 type CGLearnSkillPacket struct {
-    SkillType       uint16
+    NotImplementWrite
+
+    SkillType       SkillType_t
     SkillDomainType uint8
 }
 
@@ -253,15 +264,15 @@ func (learnSkill CGLearnSkillPacket) String() string {
     return "learn skill"
 }
 
-func readLearnSkill(buf []byte, code uint8) (Packet, error) {
-    skillType := binary.LittleEndian.Uint16(buf)
-    return CGLearnSkillPacket{
-        SkillType:       skillType,
-        SkillDomainType: uint8(buf[2]),
-    }, nil
+func (learn *CGLearnSkillPacket) Read(reader io.Reader, code uint8) error {
+    binary.Read(reader, binary.LittleEndian, &learn.SkillType)
+    binary.Read(reader, binary.LittleEndian, &learn.SkillDomainType)
+    return nil
 }
 
 type CGSkillToObjectPacket struct {
+    NotImplementWrite
+
     SkillType      SkillType_t
     CEffectID      uint16
     TargetObjectID ObjectID_t
@@ -275,27 +286,26 @@ func (skill CGSkillToObjectPacket) String() string {
     return "skill to object"
 }
 
-func readSkillToObject(buf []byte, code uint8) (Packet, error) {
-    // encrypt!!!
-    var ret CGSkillToObjectPacket
-    offset := 0
+func (ret *CGSkillToObjectPacket) Read(reader io.Reader, code uint8) error {
     A := func() {
-        ret.SkillType = SkillType_t(binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code))
-        offset += 2
+        binary.Read(reader, binary.LittleEndian, &ret.SkillType)
+        ret.SkillType ^= SkillType_t(code)
     }
     B := func() {
-        ret.CEffectID = binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code)
-        offset += 2
+        binary.Read(reader, binary.LittleEndian, &ret.CEffectID)
+        ret.CEffectID ^= uint16(code)
     }
     C := func() {
-        ret.TargetObjectID = ObjectID_t(binary.LittleEndian.Uint32(buf[offset:]) ^ uint32(code))
-        offset += 4
+        binary.Read(reader, binary.LittleEndian, &ret.TargetObjectID)
+        ret.TargetObjectID ^= ObjectID_t(code)
     }
     SHUFFLE_STATEMENT_3(code, A, B, C)
-    return ret, nil
+    return nil
 }
 
 type CGSkillToSelfPacket struct {
+    NotImplementWrite
+
     SkillType SkillType_t
     CEffectID uint16
 }
@@ -308,23 +318,22 @@ func (skill CGSkillToSelfPacket) String() string {
     return "skill to self"
 }
 
-func readSkillToSelf(buf []byte, code uint8) (Packet, error) {
-    // encrypt!!!
-    var ret CGSkillToSelfPacket
-    offset := 0
+func (ret *CGSkillToSelfPacket) Read(reader io.Reader, code uint8) error {
     A := func() {
-        ret.SkillType = SkillType_t(binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code))
-        offset += 2
+        binary.Read(reader, binary.LittleEndian, &ret.SkillType)
+        ret.SkillType ^= SkillType_t(code)
     }
     B := func() {
-        ret.CEffectID = binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code)
-        offset += 2
+        binary.Read(reader, binary.LittleEndian, &ret.CEffectID)
+        ret.CEffectID ^= uint16(code)
     }
     SHUFFLE_STATEMENT_2(code, A, B)
-    return ret, nil
+    return nil
 }
 
 type CGSkillToTilePacket struct {
+    NotImplementWrite
+
     SkillType SkillType_t
     CEffectID uint16
     X         Coord_t
@@ -339,31 +348,30 @@ func (skill CGSkillToTilePacket) String() string {
     return "skill to tile"
 }
 
-func readSkillToTile(buf []byte, code uint8) (Packet, error) {
-    // encrypt!!!
-    var ret CGSkillToTilePacket
-    offset := 0
+func (ret *CGSkillToTilePacket) Read(reader io.Reader, code uint8) error {
     A := func() {
-        ret.SkillType = SkillType_t(binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code))
-        offset += 2
+        binary.Read(reader, binary.LittleEndian, &ret.SkillType)
+        ret.SkillType ^= SkillType_t(code)
     }
     B := func() {
-        ret.CEffectID = binary.LittleEndian.Uint16(buf[offset:]) ^ uint16(code)
-        offset += 2
+        binary.Read(reader, binary.LittleEndian, &ret.CEffectID)
+        ret.CEffectID ^= uint16(code)
     }
     C := func() {
-        ret.X = Coord_t(buf[offset] ^ code)
-        offset++
+        binary.Read(reader, binary.LittleEndian, &ret.X)
+        ret.X ^= Coord_t(code)
     }
     D := func() {
-        ret.Y = Coord_t(buf[offset] ^ code)
-        offset++
+        binary.Read(reader, binary.LittleEndian, &ret.Y)
+        ret.Y ^= Coord_t(code)
     }
     SHUFFLE_STATEMENT_4(code, A, B, C, D)
-    return ret, nil
+    return nil
 }
 
 type CGSayPacket struct {
+    NotImplementWrite
+
     Color   uint32
     Message string
 }
@@ -374,19 +382,31 @@ func (say *CGSayPacket) PacketID() PacketID {
 func (say *CGSayPacket) String() string {
     return "say"
 }
-func readSay(buf []byte, code uint8) (Packet, error) {
-    ret := new(CGSayPacket)
-    ret.Color = binary.LittleEndian.Uint32(buf)
-    sz := buf[2]
-    ret.Message = string(buf[3 : 3+sz])
-    return ret, nil
+func (say *CGSayPacket) Read(reader io.Reader, code uint8) error {
+    binary.Read(reader, binary.LittleEndian, &say.Color)
+    var sz uint8
+    var buf [256]byte
+    binary.Read(reader, binary.LittleEndian, &sz)
+    _, err := reader.Read(buf[:sz])
+    if err != nil {
+        return err
+    }
+    say.Message = string(buf[:sz])
+    return nil
 }
 
-type CGLogoutPacket struct{}
+type CGLogoutPacket struct {
+    NotImplementWrite
+}
 
 func (_ CGLogoutPacket) PacketID() PacketID {
     return PACKET_CG_LOGOUT
 }
+
+func (_ *CGLogoutPacket) Read(reader io.Reader, code uint8) error {
+    return nil
+}
+
 func (_ CGLogoutPacket) String() string {
     return "logout"
 }

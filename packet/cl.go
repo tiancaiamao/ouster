@@ -1,8 +1,19 @@
 package packet
 
-import ()
+import (
+    "encoding/binary"
+    "errors"
+    "io"
+)
+
+type NotImplementWrite struct{}
+
+func (ign NotImplementWrite) Write(writer io.Writer, code uint8) error {
+    return errors.New("not implement write method!!")
+}
 
 type CLLoginPacket struct {
+    NotImplementWrite
     Username string
     Password string
 }
@@ -11,67 +22,82 @@ func (login *CLLoginPacket) PacketID() PacketID {
     return PACKET_CL_LOGIN
 }
 
-func (login *CLLoginPacket) String() string {
-    return "Login"
+func (login *CLLoginPacket) Read(reader io.Reader, code uint8) error {
+    var tmp uint8
+    var buf [256]byte
+    binary.Read(reader, binary.LittleEndian, &tmp)
+    _, err := reader.Read(buf[:tmp])
+    if err != nil {
+        return err
+    }
+    login.Username = string(buf[:tmp])
+
+    binary.Read(reader, binary.LittleEndian, &tmp)
+    _, err = reader.Read(buf[:tmp])
+    if err != nil {
+        return err
+    }
+    login.Password = string(buf[:tmp])
+
+    return nil
 }
 
-func readLogin(buf []byte, code uint8) (Packet, error) {
-    szUsername := int(buf[0])
-    szPassword := int(buf[1+szUsername])
-    return &CLLoginPacket{
-        Username: string(buf[1 : 1+szUsername]),
-        Password: string(buf[2+szUsername : 2+szUsername+szPassword]),
-    }, nil
+type CLVersionCheckPacket struct {
+    NotImplementWrite
 }
 
-type CLVersionCheckPacket struct{}
+func (ign *CLVersionCheckPacket) Read(reader io.Reader, code uint8) error {
+    return nil
+}
 
 func (v CLVersionCheckPacket) PacketID() PacketID {
     return PACKET_CL_VERSION_CHECK
 }
-func (v CLVersionCheckPacket) String() string {
-    return "version check"
-}
 
-type CLGetWorldListPacket struct{}
+type CLGetWorldListPacket struct {
+    NotImplementWrite
+}
 
 func (worldList CLGetWorldListPacket) PacketID() PacketID {
     return PACKET_CL_GET_WORLD_LIST
 }
-func (w CLGetWorldListPacket) String() string {
-    return "get world list"
-}
-func readGetWorldList(buf []byte, code uint8) (Packet, error) {
-    return CLGetWorldListPacket{}, nil
+
+func (ign *CLGetWorldListPacket) Read(reader io.Reader, code uint8) error {
+    return nil
 }
 
-type CLSelectWorldPacket uint8
+type CLSelectWorldPacket struct {
+    NotImplementWrite
+
+    Data uint8
+}
 
 func (sw CLSelectWorldPacket) PacketID() PacketID {
     return PACKET_CL_SELECT_WORLD
 }
-func (sw CLSelectWorldPacket) String() string {
-    return "select world"
+
+func (v *CLSelectWorldPacket) Read(reader io.Reader, code uint8) error {
+    binary.Read(reader, binary.LittleEndian, v.Data)
+    return nil
 }
 
-func readSelectWorld(buf []byte, code uint8) (Packet, error) {
-    return CLSelectWorldPacket(buf[0]), nil
+type CLSelectServerPacket struct {
+    NotImplementWrite
+    Data uint8
 }
-
-type CLSelectServerPacket uint8
 
 func (ss CLSelectServerPacket) PacketID() PacketID {
     return PACKET_CL_SELECT_SERVER
 }
-func (ss CLSelectServerPacket) String() string {
-    return "select server"
-}
-func readSelectServer(buf []byte, code uint8) (Packet, error) {
-    return CLSelectServerPacket(buf[0]), nil
+
+func (v *CLSelectServerPacket) Read(reader io.Reader, code uint8) error {
+    binary.Read(reader, binary.LittleEndian, v)
+    return nil
 }
 
 type PCType uint8
 type CLSelectPcPacket struct {
+    NotImplementWrite
     Name string
     Type PCType
 }
@@ -79,14 +105,17 @@ type CLSelectPcPacket struct {
 func (sp *CLSelectPcPacket) PacketID() PacketID {
     return PACKET_CL_SELECT_PC
 }
-func (sp *CLSelectPcPacket) String() string {
-    return "select pc"
-}
-func readSelectPc(buf []byte, code uint8) (Packet, error) {
+
+func (ret *CLSelectPcPacket) Read(reader io.Reader, code uint8) error {
     //	[8 178 187 212 217 209 218 202 206 0]
-    sz := buf[0]
-    return &CLSelectPcPacket{
-        Type: PCType(buf[len(buf)-1]),
-        Name: string(buf[1 : 1+sz]),
-    }, nil
+    var sz uint8
+    var buf [256]byte
+    binary.Read(reader, binary.LittleEndian, &sz)
+    _, err := reader.Read(buf[:sz])
+    if err != nil {
+        return err
+    }
+    ret.Name = string(buf[:sz])
+    binary.Read(reader, binary.LittleEndian, &ret.Type)
+    return nil
 }

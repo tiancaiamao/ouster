@@ -495,46 +495,29 @@ const (
     PACKET_MAX
 )
 
-const (
-    szPacketID     = 2
-    szPacketSize   = 4
-    szPacketHeader = szPacketID + szPacketSize
-)
-
-type PacketSize uint32
-
-var table [PACKET_MAX]func([]byte, uint8) (Packet, error)
+var packetTable [PACKET_MAX]Packet
 
 func init() {
-    table[PACKET_CL_LOGIN] = readLogin
-    table[PACKET_CL_VERSION_CHECK] = func([]byte, uint8) (Packet, error) {
-        return CLVersionCheckPacket{}, nil
-    }
-    table[PACKET_CL_SELECT_WORLD] = readSelectWorld
-    table[PACKET_CL_SELECT_SERVER] = readSelectServer
-    table[PACKET_CL_GET_WORLD_LIST] = readGetWorldList
-    table[PACKET_CL_SELECT_PC] = readSelectPc
-
-    table[PACKET_LC_RECONNECT] = readReconnect
-
-    table[PACKET_CG_CONNECT] = readConnect
-    table[PACKET_CG_READY] = func([]byte, uint8) (Packet, error) {
-        return CGReadyPacket{}, nil
-    }
-    table[PACKET_CG_VERIFY_TIME] = func([]byte, uint8) (Packet, error) {
-        return CGVerifyTimePacket{}, nil
-    }
-    table[PACKET_CG_MOVE] = readMove
-    table[PACKET_CG_ATTACK] = readAttack
-    table[PACKET_CG_BLOOD_DRAIN] = readBloodDrain
-    table[PACKET_CG_LEARN_SKILL] = readLearnSkill
-    table[PACKET_CG_SKILL_TO_OBJECT] = readSkillToObject
-    table[PACKET_CG_SKILL_TO_SELF] = readSkillToSelf
-    table[PACKET_CG_SKILL_TO_TILE] = readSkillToTile
-    table[PACKET_CG_SAY] = readSay
-    table[PACKET_CG_LOGOUT] = func([]byte, uint8) (Packet, error) {
-        return CGLogoutPacket{}, nil
-    }
+    packetTable[PACKET_CL_LOGIN] = &CLLoginPacket{}
+    packetTable[PACKET_CL_VERSION_CHECK] = &CLVersionCheckPacket{}
+    packetTable[PACKET_CL_SELECT_WORLD] = &CLSelectWorldPacket{}
+    packetTable[PACKET_CL_SELECT_SERVER] = &CLSelectServerPacket{}
+    packetTable[PACKET_CL_GET_WORLD_LIST] = &CLGetWorldListPacket{}
+    packetTable[PACKET_CL_SELECT_PC] = &CLSelectPcPacket{}
+    packetTable[PACKET_LC_RECONNECT] = &LCReconnectPacket{}
+    packetTable[PACKET_CG_CONNECT] = &CGConnectPacket{}
+    packetTable[PACKET_CG_READY] = &CGReadyPacket{}
+    packetTable[PACKET_CG_VERIFY_TIME] = &CGVerifyTimePacket{}
+    packetTable[PACKET_CG_MOVE] = &CGMovePacket{}
+    packetTable[PACKET_CG_ATTACK] = &CGAttackPacket{}
+    packetTable[PACKET_CG_BLOOD_DRAIN] = &CGBloodDrainPacket{}
+    packetTable[PACKET_CG_LEARN_SKILL] = &CGLearnSkillPacket{}
+    packetTable[PACKET_CG_SKILL_TO_OBJECT] = &CGSkillToObjectPacket{}
+    packetTable[PACKET_CG_SKILL_TO_SELF] = &CGSkillToSelfPacket{}
+    packetTable[PACKET_CG_SKILL_TO_TILE] = &CGSkillToTilePacket{}
+    packetTable[PACKET_CG_SAY] = &CGSayPacket{}
+    packetTable[PACKET_CG_LOGOUT] = &CGLogoutPacket{}
+    packetTable[PACKET_GC_UPDATE_INFO] = &GCUpdateInfoPacket{}
 }
 
 type Reader struct {
@@ -558,20 +541,20 @@ type RawPacket struct {
     Data []byte
 }
 
-func (raw *RawPacket) Unmarshal(code uint8) (ret Packet, err error) {
-    f := table[raw.Id]
-    if f == nil {
-        var data []byte
-        copy(data, raw.Data)
-        raw.Data = data
-        ret = raw
-        err = NotImplementError{}
-        return
-    }
-
-    ret, err = f(raw.Data, code)
-    return
-}
+// func (raw *RawPacket) Unmarshal(code uint8) (ret Packet, err error) {
+//		 f := packetTable[raw.Id]
+//		 if f == nil {
+//				 var data []byte
+//				 copy(data, raw.Data)
+//				 raw.Data = data
+//				 ret = raw
+//				 err = NotImplementError{}
+//				 return
+//		 }
+//
+//		 ret, err = f(raw.Data, code)
+//		 return
+// }
 
 func (notimp RawPacket) PacketID() PacketID {
     return notimp.Id
@@ -581,22 +564,29 @@ func (pkt RawPacket) MarshalBinary(code uint8) ([]byte, error) {
     return pkt.Data, nil
 }
 
-func (r *Reader) ReadRaw(reader io.Reader, raw *RawPacket, buf []byte) (err error) {
+func ReadHeader(reader io.Reader, id *PacketID, size *uint32, seq *uint8) error {
+    err := binary.Read(reader, binary.LittleEndian, &id)
+    if err != nil {
+        return err
+    }
+
+    err = binary.Read(reader, binary.LittleEndian, &size)
+    if err != nil {
+        return err
+    }
+
+    err = binary.Read(reader, binary.LittleEndian, &seq)
+    if err != nil {
+        return err
+    }
+    return nil
+}
+
+func (r *Reader) ReadRaw(reader io.Reader, raw *RawPacket, buf []byte) error {
     var sz uint32
-
-    err = binary.Read(reader, binary.LittleEndian, &raw.Id)
+    err := ReadHeader(reader, &raw.Id, &sz, &raw.Seq)
     if err != nil {
-        return
-    }
-
-    err = binary.Read(reader, binary.LittleEndian, &sz)
-    if err != nil {
-        return
-    }
-
-    err = binary.Read(reader, binary.LittleEndian, &raw.Seq)
-    if err != nil {
-        return
+        return err
     }
 
     if sz > uint32(len(buf)) {
@@ -606,29 +596,54 @@ func (r *Reader) ReadRaw(reader io.Reader, raw *RawPacket, buf []byte) (err erro
 
     n, err := io.ReadFull(reader, buf[:sz])
     if err != nil {
-        return
+        return err
     }
     if n != int(sz) {
         err = errors.New("read get less data than needed")
-        return
+        return err
     }
 
     raw.Data = buf[:sz]
     return nil
 }
 
-//BUG:300字节的长度限制
 func (r *Reader) Read(reader io.Reader) (ret Packet, err error) {
-    var buf [500]byte
-    var raw RawPacket
+    var id PacketID
+    var sz uint32
+    var seq uint8
 
-    err = r.ReadRaw(reader, &raw, buf[:])
+    err = ReadHeader(reader, &id, &sz, &seq)
     if err != nil {
         return
     }
+    r.Seq = seq
 
-    ret, err = raw.Unmarshal(r.Code)
-    r.Seq = raw.Seq
+    if id >= PACKET_MAX {
+        err = errors.New("packet id too large!")
+        return
+    }
+
+    ret = packetTable[id]
+    if ret == nil {
+        var buf [500]byte
+        raw := RawPacket{
+            Id:  id,
+            Seq: seq,
+        }
+        if sz > uint32(len(buf)) {
+            err = errors.New("too large raw packet")
+            return
+        }
+        _, err = reader.Read(buf[:sz])
+        if err != nil {
+            return
+        }
+        copy(raw.Data, buf[:sz])
+        err = NotImplementError{}
+        return
+    }
+
+    err = ret.Read(reader, r.Code)
     return
 }
 
@@ -662,7 +677,7 @@ func (w *Writer) Write(writer io.Writer, pkt Packet) error {
         return err
     }
 
-    sz := PacketSize(len(buf))
+    sz := uint32(len(buf))
     err = binary.Write(writer, binary.LittleEndian, sz)
     if err != nil {
         return err
@@ -680,16 +695,4 @@ func (w *Writer) Write(writer io.Writer, pkt Packet) error {
     }
 
     return nil
-}
-
-type opaque struct {
-    PacketReader
-    PacketWriter
-}
-
-func New() opaque {
-    return opaque{
-        PacketReader: NewReader(),
-        PacketWriter: NewWriter(),
-    }
 }

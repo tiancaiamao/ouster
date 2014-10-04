@@ -3,6 +3,7 @@ package packet
 import (
     "encoding/binary"
     "github.com/tiancaiamao/ouster/data"
+    "io"
 )
 
 type LCLoginOKPacket struct{}
@@ -81,9 +82,11 @@ func (pl *LCPCListPacket) MarshalBinary(code uint8) ([]byte, error) {
 }
 
 type LCReconnectPacket struct {
+    NotImplementWrite
+
     Ip   string
     Port uint16
-    Key  []byte
+    Key  uint32
 }
 
 func (rc *LCReconnectPacket) PacketID() PacketID {
@@ -99,15 +102,21 @@ func (rc *LCReconnectPacket) MarshalBinary(code uint8) ([]byte, error) {
     ret[0] = byte(len(rc.Ip))
     copy(ret[1:], rc.Ip[:])
     binary.LittleEndian.PutUint16(ret[1+len(rc.Ip):], rc.Port)
-    copy(ret[3+len(rc.Ip):], rc.Key)
+    // TODO TODO TODO !!!
+    // copy(ret[3+len(rc.Ip):], rc.Key)
     return ret, nil
 }
 
-func readReconnect(buf []byte, code uint8) (Packet, error) {
-    ret := &LCReconnectPacket{}
-    len := int(buf[0])
-    ret.Ip = string(buf[1 : 1+len])
-    ret.Port = binary.LittleEndian.Uint16(buf[1+len:])
-    copy(ret.Key, buf[3+len:])
-    return ret, nil
+func (ret *LCReconnectPacket) Read(reader io.Reader, code uint8) error {
+    var sz uint8
+    var buf [256]byte
+    binary.Read(reader, binary.LittleEndian, &sz)
+    _, err := reader.Read(buf[:sz])
+    if err != nil {
+        return err
+    }
+    ret.Ip = string(buf[:sz])
+    binary.Read(reader, binary.LittleEndian, &ret.Port)
+    binary.Read(reader, binary.LittleEndian, &ret.Key)
+    return nil
 }
