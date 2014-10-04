@@ -48,6 +48,23 @@ func (scene *Scene) registeObject(obj ObjectInterface) {
     scene.objects[scene.registerID] = obj
 }
 
+func (scene *Scene) getCreature(objectID ObjectID_t) CreatureInterface {
+    monster := scene.monsterManager.getCreature(objectID)
+    if monster != nil {
+        return monster
+    }
+
+    agent, ok := scene.players[objectID]
+    if ok {
+        return agent
+    }
+
+    log.Debugln("没有找到creature")
+    // pCreature = m_pNPCManager->getCreature(objectID);
+
+    return nil
+}
+
 func NewScene(smp *data.SMP, ssi data.SSI) (ret *Scene, err error) {
     ret = new(Scene)
     ret.registerID = 10000
@@ -109,6 +126,10 @@ func (m *Scene) Login(agent *Agent) {
     pc.Scene = m
 
     addPCToTile(m, int(pc.X), int(pc.Y), pc, agent)
+
+    log.Debugln("login的时候应该是加入了的: ", pc.ObjectID, m.players[pc.ObjectID])
+    obj := m.getCreature(pc.ObjectID)
+    log.Debugln("立马能取出来: ", pc.ObjectID, obj)
 }
 
 func (m *Scene) Logout(agent *Agent) {
@@ -148,15 +169,6 @@ func (s *Scene) heartbeat() {
     s.monsterManager.heartbeat()
     s.npcManager.heartbeat()
     s.effectManager.heartbeat(time.Now())
-}
-
-func (zone *Zone) processMonsters() {
-}
-
-func (zone *Zone) processNPCs() {
-}
-
-func (zone *Zone) processEffects() {
 }
 
 func (scene *Scene) addCreature(creature CreatureInterface, cx ZoneCoord_t, cy ZoneCoord_t, dir Dir_t) {

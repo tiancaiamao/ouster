@@ -28,7 +28,7 @@ func NewAgent(conn net.Conn) *Agent {
 }
 
 func (agent *Agent) Loop() {
-    heartbeat := time.Tick(100 * time.Millisecond)
+    heartbeat := time.Tick(200 * time.Millisecond)
     for {
         select {
         case msg, ok := <-agent.client:
@@ -40,7 +40,7 @@ func (agent *Agent) Loop() {
             agent.handleClientMessage(msg)
         case <-heartbeat:
             if agent.PlayerCreatureInterface != nil {
-                agent.PlayerCreatureInstance().heartbeat()
+                agent.heartbeat()
             }
         case f, _ := <-agent.computation:
             f()

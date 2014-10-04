@@ -1,6 +1,7 @@
 package main
 
 import (
+    "github.com/tiancaiamao/ouster/log"
     "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
     "time"
@@ -747,6 +748,78 @@ func (sharphail *EffectSharpHail) EffectClass() EffectClass {
     return EFFECT_CLASS_PROMINENCE
 }
 
+func (effect *EffectSharpHail) affect() {
+    castCreature := effect.Scene.getCreature(effect.UserObjectID)
+    log.Debugln("userObjectID:", effect.UserObjectID, castCreature)
+    tile := effect.Scene.Tile(int(effect.X), int(effect.Y))
+
+    for _, obj := range tile.Objects {
+        if obj.ObjectClass() != OBJECT_CLASS_CREATURE {
+            continue
+        }
+
+        creature := obj.(CreatureInterface)
+
+        if !canAttack(castCreature, creature) ||
+            creature.CreatureInstance().isFlag(EFFECT_CLASS_COMA) {
+            continue
+        }
+
+        // if (pCastCreature != NULL && !HitRoll::isSuccess(pCastCreature, pCreature ) ) continue;
+
+        switch obj.(type) {
+        case *Monster:
+            monster := obj.(*Monster)
+            effect.Scene.setDamage(monster, castCreature.(*Agent), Damage_t(effect.Damage)) // SKILL_SHARP_HAIL, NULL, &gcAttackerMI, true, true);
+            log.Debugln("sharphail的effect对怪物affect了...")
+        }
+
+        // GCModifyInformation gcAttackerMI;
+        // GCModifyInformation gcDefenderMI;
+
+        // if (pCreature->isSlayer())
+        // 			{
+        // 				Slayer* pSlayer = dynamic_cast<Slayer*>(pCreature);
+        //
+        // 				::setDamage(pSlayer, m_Damage, pCastCreature, SKILL_SHARP_HAIL, &gcDefenderMI, &gcAttackerMI, true, true);
+        //
+        // 				Player* pPlayer = pSlayer->getPlayer();
+        // 				Assert(pPlayer != NULL);
+        // 				pPlayer->sendPacket(&gcDefenderMI);
+        // 			}
+        // 			else if (pCreature->isVampire())
+        // 			{
+        // 				Vampire* pVampire = dynamic_cast<Vampire*>(pCreature);
+        //
+        // 				::setDamage(pVampire, m_Damage, pCastCreature, SKILL_SHARP_HAIL, &gcDefenderMI, &gcAttackerMI, true, true);
+        //
+        // 				Player* pPlayer = pVampire->getPlayer();
+        // 				Assert(pPlayer != NULL);
+        // 				pPlayer->sendPacket(&gcDefenderMI);
+        // 			}
+        // else if (pCreature->isOusters() && isForce() )
+        // {
+        // 	Ousters* pOusters = dynamic_cast<Ousters*>(pCreature);
+        //
+        // 	::setDamage(pOusters, m_Damage, pCastCreature, SKILL_SHARP_HAIL, &gcDefenderMI, &gcAttackerMI, true, true);
+        //
+        // 	Player* pPlayer = pOusters->getPlayer();
+        // 	Assert(pPlayer != NULL);
+        // 	pPlayer->sendPacket(&gcDefenderMI);
+        // }
+
+        // if (gcAttackerMI.getShortCount() != 0 || gcAttackerMI.getLongCount() != 0 )
+        // pCastCreature->getPlayer()->sendPacket(&gcAttackerMI);
+    }
+
+    effect.NextTime = effect.NextTime.Add(time.Duration(effect.Tick) * time.Millisecond)
+}
+
+func (effect *EffectSharpHail) unaffect() {
+    tile := effect.Scene.Tile(int(effect.X), int(effect.Y))
+    tile.deleteEffect(effect.ObjectID)
+}
+
 func (effect *EffectMeteorStrike) unaffect() {
     // tile := effect.Scene.Tile(X, Y)
     // tile.deleteEffect(effect.ObjectID)
@@ -781,10 +854,12 @@ func (manager EffectManager) heartbeat(now time.Time) {
         effect := eft.EffectInstance()
         if now.After(effect.Deadline) {
             // 删除
-            delete(manager.Effects, effect.ObjectID)
             eft.unaffect()
+            delete(manager.Effects, effect.ObjectID)
+            log.Debugln("effect unaffect...", eft)
         } else {
             if now.After(effect.NextTime) {
+                log.Debugln("effect affact...", eft)
                 eft.affect()
             }
         }

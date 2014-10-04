@@ -58,9 +58,8 @@ func (c *Creature) CreatureInstance() *Creature {
     return c
 }
 
-func (c *Creature) heartbeat() {
-
-}
+// 派生类中重写这个函数
+func (c *Creature) heartbeat() {}
 
 // TODO
 func (c *Creature) IsAbleToMove() bool {

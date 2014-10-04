@@ -39,7 +39,7 @@ type Monster struct {
     MeleeRange   int
     MissileRange int
 
-    EffectManager EffectManager
+    EffectManager *EffectManager
 
     IsEventMonster bool
     IsChief        bool
@@ -135,6 +135,7 @@ func NewMonster(monsterType MonsterType_t) *Monster {
 
     ret.Brain = NewMonsterAI(ret, info.AIType)
     ret.Enemies = make(map[ObjectID_t]CreatureInterface)
+    ret.EffectManager = NewEffectManager()
     ret.Creature.Init()
 
     return ret
@@ -307,6 +308,14 @@ func (m *MonsterManager) addCreature(monster *Monster) {
     m.Count++
 }
 
+func (m *MonsterManager) getCreature(id ObjectID_t) *Monster {
+    ret, ok := m.Monsters[id]
+    if ok {
+        return ret
+    }
+    return nil
+}
+
 func (manager *MonsterManager) heartbeat() {
     now := time.Now()
     for key, monster := range manager.Monsters {
@@ -324,6 +333,10 @@ func (manager *MonsterManager) heartbeat() {
             manager.RegenTime = now.Add(5 * time.Second)
         }
     }
+}
+
+func (m *Monster) addEffect(effect EffectInterface) {
+
 }
 
 func (m *Monster) heartbeat(currentTime time.Time) {

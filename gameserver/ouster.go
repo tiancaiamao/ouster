@@ -103,6 +103,8 @@ type Ouster struct {
     AlignmentSaveCount uint16
 
     MPRegenTime time.Time
+
+    EffectManager *EffectManager
 }
 
 func (ouster *Ouster) SkillInfo() packet.SkillInfo {
@@ -121,6 +123,11 @@ func (ouster *Ouster) SkillInfo() packet.SkillInfo {
 
     ret.SubOusterSkillInfoList = skillList
     return ret
+}
+
+func (ouster *Ouster) Init() {
+    ouster.Creature.Init()
+    ouster.EffectManager = NewEffectManager()
 }
 
 func (ouster *Ouster) CreatureClass() CreatureClass {
@@ -173,6 +180,10 @@ func (ouster *Ouster) PCInfo() data.PCInfo {
     }
 
     return info
+}
+
+func (ouster *Ouster) heartbeat() {
+    ouster.EffectManager.heartbeat(time.Now())
 }
 
 func (ouster *Ouster) computeDamage(creature CreatureInterface, bCritical bool) Damage_t {

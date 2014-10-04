@@ -254,15 +254,26 @@ func (sharphail SharpHail) ExecuteToTile(skill packet.CGSkillToTilePacket, agent
             var creatureItf CreatureInterface
             if tile.HasCreature(MOVE_MODE_WALKING) {
                 creatureItf = tile.getCreature(MOVE_MODE_WALKING)
+            } else {
+                continue
             }
 
             damage := output.Damage
-            // 技能伤害叠加基础伤害
             damage += int(agent.computeDamage(creatureItf, false))
+
             effect := new(EffectSharpHail)
+            effect.X = ZoneCoord_t(x)
+            effect.Y = ZoneCoord_t(y)
+            effect.Scene = scene
+
             effect.UserObjectID = pc.ObjectID
-            effect.Deadline = time.Now().Add(time.Duration(output.Duration) * time.Millisecond)
+            log.Debugln("userObjectID ---", pc.ObjectID)
+            // effect.Deadline = time.Now().Add(time.Duration(output.Duration) * time.Millisecond)
+            // effect.NextTime = time.Now().Add(3 * time.Millisecond)
+
+            effect.Deadline = time.Now().Add(time.Duration(output.Duration) * time.Second)
             effect.NextTime = time.Now().Add(3 * time.Millisecond)
+
             effect.Tick = output.Tick
             effect.Damage = damage / 3
             // effect.Level = skillslot.ExpLevel
@@ -313,7 +324,6 @@ func (sharphail SharpHail) ExecuteToTile(skill packet.CGSkillToTilePacket, agent
 }
 
 func (sharphail SharpHail) ExecuteToObject(skill packet.CGSkillToObjectPacket, agent *Agent) {
-
 }
 
 func (sharphail SharpHail) ComputeOutput(input *SkillInput, output *SkillOutput) {

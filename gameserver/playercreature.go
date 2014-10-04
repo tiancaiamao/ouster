@@ -19,6 +19,7 @@ type PlayerCreatureInterface interface {
     PCInfo() data.PCInfo
     SkillInfo() packet.SkillInfo
     computeDamage(CreatureInterface, bool) Damage_t
+    heartbeat()
 }
 
 type PlayerCreature struct {
