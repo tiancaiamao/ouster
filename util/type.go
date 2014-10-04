@@ -91,6 +91,16 @@ type Rank_t uint8
 type RankExp_t uint32
 type GuildMemberRank_t uint8
 type SkillExp_t uint32
+type ItemType_t uint16
+type OptionType_t uint8
+type Durability_t uint32
+type Grade_t int32
+type EnchantLevel_t byte
+type SlotID_t uint8
+type ItemNum_t uint8
+
+type CoordInven_t uint8
+type NPCID_t uint16
 
 type ElementalType int8
 

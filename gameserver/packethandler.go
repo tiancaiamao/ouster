@@ -369,10 +369,10 @@ func CGReadyHandler(pkt packet.Packet, agent *Agent) {
     default:
         log.Errorln("不应该运行到这里")
     }
-    skillInfo.PCSkillInfoList = []packet.SkillInfo{
-        agent.SkillInfo(),
-    }
-    log.Debugf("发送技能信息%#v\n", skillInfo)
-    agent.sendPacket(&skillInfo)
+    // skillInfo.PCSkillInfoList = []packet.SkillInfo{
+    // agent.SkillInfo(),
+    // }
+    // log.Debugf("发送技能信息%#v\n", skillInfo)
+    // agent.sendPacket(&skillInfo)
     agent.PlayerStatus = GPS_NORMAL
 }

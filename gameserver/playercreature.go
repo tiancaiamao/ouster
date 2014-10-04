@@ -92,7 +92,7 @@ func LoadPlayerCreature(name string, typ packet.PCType) (ptr PlayerCreatureInter
     case packet.PC_OUSTER:
         return loadOuster(decoder)
     case packet.PC_SLAYER:
-        // return loadSlayer(decoder)
+        return loadSlayer(decoder)
     }
     return nil, 0, errors.New("player type error!")
 }
@@ -151,6 +151,66 @@ func loadOuster(decoder *json.Decoder) (ouster *Ouster, zoneID ZoneID_t, err err
         }
         ouster.SkillSlot[v.SkillType] = skillslot
     }
+
+    return
+}
+
+func loadSlayer(decoder *json.Decoder) (slayer *Slayer, zoneID ZoneID_t, err error) {
+    var pcInfo data.PCSlayerInfo
+    err = decoder.Decode(&pcInfo)
+    if err != nil {
+        log.Errorln("decode pcinfo failed")
+        return
+    }
+
+    slayer = new(Slayer)
+    slayer.Init()
+    slayer.Name = pcInfo.Name
+    slayer.HairColor = pcInfo.HairColor
+    slayer.MasterEffectColor = pcInfo.MasterEffectColor
+    slayer.Alignment = pcInfo.Alignment
+    slayer.STR = pcInfo.STR
+    slayer.DEX = pcInfo.DEX
+    slayer.INI = pcInfo.INI
+    slayer.HP[ATTR_MAX] = pcInfo.HP[ATTR_MAX]
+    slayer.HP[ATTR_CURRENT] = pcInfo.HP[ATTR_CURRENT]
+    slayer.MP[ATTR_MAX] = pcInfo.MP[ATTR_MAX]
+    slayer.MP[ATTR_CURRENT] = pcInfo.MP[ATTR_CURRENT]
+    slayer.Rank = pcInfo.Rank
+    slayer.RankExp = pcInfo.RankExp
+    slayer.Fame = pcInfo.Fame
+    slayer.Sight = pcInfo.Sight
+    slayer.Competence = pcInfo.Competence
+    slayer.GuildMemberRank = pcInfo.GuildMemberRank
+    slayer.AdvancementLevel = pcInfo.AdvancementLevel
+
+    for i := 0; i < 6; i++ {
+        slayer.DomainLevels[i] = pcInfo.DomainLevels[i]
+        slayer.DomainExps[i] = pcInfo.DomainExps[i]
+    }
+
+    zoneID = pcInfo.ZoneID
+    slayer.X = ZoneCoord_t(pcInfo.ZoneX)
+    slayer.Y = ZoneCoord_t(pcInfo.ZoneY)
+
+    // var skillInfo packet.OusterSkillInfo
+    // err = decoder.Decode(&skillInfo)
+    // if err != nil {
+    //     return
+    // }
+    //
+    // slayer.SkillSlot = make(map[SkillType_t]*OusterSkillSlot)
+    // for _, v := range skillInfo.SubOusterSkillInfoList {
+    //     skillslot := &OusterSkillSlot{
+    //         // Name        string
+    //         SkillType:   v.SkillType,
+    //         ExpLevel:    v.ExpLevel,
+    //         Interval:    time.Duration(v.Interval) * time.Millisecond,
+    //         CastingTime: time.Duration(v.CastingTime) * time.Millisecond,
+    //         // RunTime     time.Time
+    //     }
+    //     slayer.SkillSlot[v.SkillType] = skillslot
+    // }
 
     return
 }

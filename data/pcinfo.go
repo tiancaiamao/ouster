@@ -2,6 +2,7 @@ package data
 
 import (
     "encoding/binary"
+    "errors"
     . "github.com/tiancaiamao/ouster/util"
     "io"
 )
@@ -13,7 +14,8 @@ const (
 )
 
 type PCInfo interface {
-    Dump(writer io.Writer)
+    Write(writer io.Writer) error
+    Read(reader io.Reader) error
 }
 
 type PCOusterInfo struct {
@@ -57,7 +59,11 @@ type PCOusterInfo struct {
     ZoneY  ZoneCoord_t
 }
 
-func (info *PCOusterInfo) Dump(writer io.Writer) {
+func (info *PCOusterInfo) Read(reader io.Reader) error {
+    return errors.New("not implement yet!!!")
+}
+
+func (info *PCOusterInfo) Write(writer io.Writer) error {
     binary.Write(writer, binary.LittleEndian, info.ObjectID)
     binary.Write(writer, binary.LittleEndian, uint8(len(info.Name)))
     io.WriteString(writer, info.Name)
@@ -108,7 +114,7 @@ func (info *PCOusterInfo) Dump(writer io.Writer) {
     binary.Write(writer, binary.LittleEndian, info.AdvancementLevel)
     binary.Write(writer, binary.LittleEndian, info.AdvancementGoalExp)
 
-    return
+    return nil
 }
 
 type PCVampireInfo struct {
@@ -154,7 +160,10 @@ type PCVampireInfo struct {
     ZoneY  Coord_t
 }
 
-func (info *PCVampireInfo) Dump(writer io.Writer) {
+func (info *PCVampireInfo) Read(reader io.Reader) error {
+    return errors.New("not implement yet!!!")
+}
+func (info *PCVampireInfo) Write(writer io.Writer) error {
     binary.Write(writer, binary.LittleEndian, info.ObjectID)
     binary.Write(writer, binary.LittleEndian, uint8(len(info.Name)))
     io.WriteString(writer, info.Name)
@@ -206,7 +215,7 @@ func (info *PCVampireInfo) Dump(writer io.Writer) {
     binary.Write(writer, binary.LittleEndian, info.AdvancementLevel)
     binary.Write(writer, binary.LittleEndian, info.AdvancementGoalExp)
 
-    return
+    return nil
 }
 
 type PCSlayerInfo struct {
@@ -245,9 +254,13 @@ type PCSlayerInfo struct {
     AdvancementLevel   Level_t
     AdvancementGoalExp Exp_t
     AttrBonus          Bonus_t
+
+    ZoneID ZoneID_t
+    ZoneX  Coord_t
+    ZoneY  Coord_t
 }
 
-func (info *PCSlayerInfo) Dump(writer io.Writer) {
+func (info *PCSlayerInfo) Write(writer io.Writer) error {
     binary.Write(writer, binary.LittleEndian, info.ObjectID)
     binary.Write(writer, binary.LittleEndian, uint8(len(info.Name)))
     io.WriteString(writer, info.Name)
@@ -306,4 +319,75 @@ func (info *PCSlayerInfo) Dump(writer io.Writer) {
     binary.Write(writer, binary.LittleEndian, info.AdvancementLevel)
     binary.Write(writer, binary.LittleEndian, info.AdvancementGoalExp)
     binary.Write(writer, binary.LittleEndian, info.AttrBonus)
+    return nil
+}
+
+func (info *PCSlayerInfo) Read(reader io.Reader) error {
+    var buf [256]byte
+    binary.Read(reader, binary.LittleEndian, &info.ObjectID)
+    var szName uint8
+    binary.Read(reader, binary.LittleEndian, &szName)
+    _, err := reader.Read(buf[:szName])
+    if err != nil {
+        return err
+    }
+    info.Name = string(buf[:szName])
+    binary.Read(reader, binary.LittleEndian, &info.Sex)
+    binary.Read(reader, binary.LittleEndian, &info.HairStyle)
+    binary.Read(reader, binary.LittleEndian, &info.HairColor)
+    binary.Read(reader, binary.LittleEndian, &info.SkinColor)
+    binary.Read(reader, binary.LittleEndian, &info.MasterEffectColor)
+    binary.Read(reader, binary.LittleEndian, &info.Alignment)
+    binary.Read(reader, binary.LittleEndian, &info.STR[ATTR_CURRENT])
+    binary.Read(reader, binary.LittleEndian, &info.STR[ATTR_MAX])
+    binary.Read(reader, binary.LittleEndian, &info.STR[ATTR_BASIC])
+    binary.Read(reader, binary.LittleEndian, &info.DEX[ATTR_CURRENT])
+    binary.Read(reader, binary.LittleEndian, &info.DEX[ATTR_MAX])
+    binary.Read(reader, binary.LittleEndian, &info.DEX[ATTR_BASIC])
+    binary.Read(reader, binary.LittleEndian, &info.INI[ATTR_CURRENT])
+    binary.Read(reader, binary.LittleEndian, &info.INI[ATTR_MAX])
+    binary.Read(reader, binary.LittleEndian, &info.INI[ATTR_BASIC])
+
+    binary.Read(reader, binary.LittleEndian, &info.Rank)
+    binary.Read(reader, binary.LittleEndian, &info.RankExp)
+
+    binary.Read(reader, binary.LittleEndian, &info.STRExp)
+    binary.Read(reader, binary.LittleEndian, &info.DEXExp)
+    binary.Read(reader, binary.LittleEndian, &info.INIExp)
+
+    binary.Read(reader, binary.LittleEndian, &info.HP[ATTR_CURRENT])
+    binary.Read(reader, binary.LittleEndian, &info.HP[ATTR_MAX])
+    binary.Read(reader, binary.LittleEndian, &info.MP[ATTR_CURRENT])
+    binary.Read(reader, binary.LittleEndian, &info.MP[ATTR_MAX])
+
+    binary.Read(reader, binary.LittleEndian, &info.Fame)
+    binary.Read(reader, binary.LittleEndian, &info.Gold)
+
+    for i := 0; i < SKILL_DOMAIN_VAMPIRE; i++ {
+        binary.Read(reader, binary.LittleEndian, &info.DomainLevels[i])
+        binary.Read(reader, binary.LittleEndian, &info.DomainExps[i])
+    }
+
+    binary.Read(reader, binary.LittleEndian, &info.Sight)
+
+    for i := 0; i < 4; i++ {
+        binary.Read(reader, binary.LittleEndian, &info.HotKey[i])
+    }
+
+    binary.Read(reader, binary.LittleEndian, &info.Competence)
+    binary.Read(reader, binary.LittleEndian, &info.GuildID)
+
+    var szGuildName uint8
+    _, err = reader.Read(buf[:szGuildName])
+    if err != nil {
+        return err
+    }
+    info.GuildName = string(buf[:szGuildName])
+
+    binary.Read(reader, binary.LittleEndian, &info.GuildMemberRank)
+    binary.Read(reader, binary.LittleEndian, &info.UnionID)
+    binary.Read(reader, binary.LittleEndian, &info.AdvancementLevel)
+    binary.Read(reader, binary.LittleEndian, &info.AdvancementGoalExp)
+    binary.Read(reader, binary.LittleEndian, &info.AttrBonus)
+    return nil
 }

@@ -3,6 +3,7 @@ package packet
 import (
     "bytes"
     "encoding/binary"
+    "errors"
     "github.com/tiancaiamao/ouster/data"
     . "github.com/tiancaiamao/ouster/util"
     "io"
@@ -83,104 +84,12 @@ func (move GCMovePacket) MarshalBinary(code uint8) ([]byte, error) {
 }
 
 type NPCType uint16
-type InventoryInfo struct{}
-
-func (info InventoryInfo) Dump(writer io.Writer) {
-    binary.Write(writer, binary.LittleEndian, uint8(0))
-}
-
-type GearSlotInfo struct {
-    ObjectID     uint32
-    ItemClass    uint8
-    ItemType     uint16
-    OptionList   []uint8
-    Durability   uint32
-    Silver       uint16
-    Grade        uint32
-    EnchantLevel uint8
-    ItemNum      uint8
-    MainColor    uint16
-
-    SlotID uint8
-}
-
-func (info GearSlotInfo) Dump(writer io.Writer) {
-    binary.Write(writer, binary.LittleEndian, info.ObjectID)
-    binary.Write(writer, binary.LittleEndian, info.ItemClass)
-    binary.Write(writer, binary.LittleEndian, info.ItemType)
-    binary.Write(writer, binary.LittleEndian, uint8(len(info.OptionList)))
-    for _, v := range info.OptionList {
-        binary.Write(writer, binary.LittleEndian, v)
-    }
-    binary.Write(writer, binary.LittleEndian, info.Durability)
-    binary.Write(writer, binary.LittleEndian, info.Silver)
-    binary.Write(writer, binary.LittleEndian, info.Grade)
-    binary.Write(writer, binary.LittleEndian, info.EnchantLevel)
-    binary.Write(writer, binary.LittleEndian, info.ItemNum)
-    binary.Write(writer, binary.LittleEndian, info.MainColor)
-    binary.Write(writer, binary.LittleEndian, uint8(0))
-
-    binary.Write(writer, binary.LittleEndian, info.SlotID)
-}
-
-type GearInfo struct {
-    GearSlotInfoList []GearSlotInfo
-}
-
-func (info GearInfo) Dump(writer io.Writer) {
-    binary.Write(writer, binary.LittleEndian, uint8(len(info.GearSlotInfoList)))
-    for _, v := range info.GearSlotInfoList {
-        v.Dump(writer)
-    }
-}
-
-type ExtraInfo struct{}
-
-func (info ExtraInfo) Dump(writer io.Writer) {
-    // TODO
-    binary.Write(writer, binary.LittleEndian, uint8(0))
-}
-
-type EffectInfo struct{}
-
-func (info EffectInfo) Dump(writer io.Writer) {
-    // TODO
-    binary.Write(writer, binary.LittleEndian, uint8(0))
-}
 
 type RideMotorcycleInfo struct{}
 
 func (info RideMotorcycleInfo) Dump(writer io.Writer) {
     // TODO
     binary.Write(writer, binary.LittleEndian, uint8(0))
-}
-
-type NPCInfo struct{}
-
-func (info NPCInfo) Dump(writer io.Writer) {
-    // TODO
-}
-
-type BloodBibleSignInfo struct{}
-
-func (info BloodBibleSignInfo) Dump(writer io.Writer) {
-    // TODO
-    binary.Write(writer, binary.LittleEndian, uint32(1))
-    binary.Write(writer, binary.LittleEndian, uint8(0))
-    return
-}
-
-type NicknameInfo struct {
-    NicknameID    uint16
-    NicknameType  uint8
-    Nickname      string
-    NicknameIndex uint16
-}
-
-func (info NicknameInfo) Dump(writer io.Writer) {
-    binary.Write(writer, binary.LittleEndian, info.NicknameID)
-    binary.Write(writer, binary.LittleEndian, uint8(0))
-    return
 }
 
 type GameTimeType struct {
@@ -207,10 +116,10 @@ type GCUpdateInfoPacket struct {
     // 'V'或者'O'或者'S'
     PCType             byte
     PCInfo             data.PCInfo
-    InventoryInfo      InventoryInfo
-    GearInfo           GearInfo
-    ExtraInfo          ExtraInfo
-    EffectInfo         EffectInfo
+    InventoryInfo      data.InventoryInfo
+    GearInfo           data.GearInfo
+    ExtraInfo          data.ExtraInfo
+    EffectInfo         data.EffectInfo
     hasMotorcycle      bool
     RideMotorcycleInfo RideMotorcycleInfo
 
@@ -228,17 +137,17 @@ type GCUpdateInfoPacket struct {
     NPCTypes     []NPCType_t
     MonsterTypes []MonsterType_t
 
-    NPCInfos []NPCInfo
+    NPCInfos []data.NPCInfo
 
     ServerStat   uint8
     Premium      uint8
     SMSCharge    uint32
-    NicknameInfo NicknameInfo
+    NicknameInfo data.NicknameInfo
 
     NonPK              bool
     GuildUnionID       uint32
     GuildUnionUserType uint8
-    BloodBibleSignInfo BloodBibleSignInfo
+    BloodBibleSignInfo data.BloodBibleSignInfo
     PowerPoint         uint32
 }
 
@@ -251,12 +160,12 @@ func (info *GCUpdateInfoPacket) String() string {
 func (info *GCUpdateInfoPacket) MarshalBinary(code uint8) ([]byte, error) {
     buf := &bytes.Buffer{}
     buf.WriteByte(info.PCType)
-    info.PCInfo.Dump(buf)
+    info.PCInfo.Write(buf)
 
-    info.InventoryInfo.Dump(buf)
-    info.GearInfo.Dump(buf)
-    info.ExtraInfo.Dump(buf)
-    info.EffectInfo.Dump(buf)
+    info.InventoryInfo.Write(buf)
+    info.GearInfo.Write(buf)
+    info.ExtraInfo.Write(buf)
+    info.EffectInfo.Write(buf)
     if info.hasMotorcycle {
         buf.WriteByte(1)
         info.RideMotorcycleInfo.Dump(buf)
@@ -287,14 +196,14 @@ func (info *GCUpdateInfoPacket) MarshalBinary(code uint8) ([]byte, error) {
 
     binary.Write(buf, binary.LittleEndian, uint8(len(info.NPCInfos)))
     for i := 0; i < len(info.NPCInfos); i++ {
-        info.NPCInfos[i].Dump(buf)
+        info.NPCInfos[i].Write(buf)
     }
 
     binary.Write(buf, binary.LittleEndian, info.ServerStat)
     binary.Write(buf, binary.LittleEndian, info.Premium)
     binary.Write(buf, binary.LittleEndian, info.SMSCharge)
 
-    info.NicknameInfo.Dump(buf)
+    info.NicknameInfo.Write(buf)
 
     if info.NonPK {
         binary.Write(buf, binary.LittleEndian, uint8(1))
@@ -305,7 +214,7 @@ func (info *GCUpdateInfoPacket) MarshalBinary(code uint8) ([]byte, error) {
     binary.Write(buf, binary.LittleEndian, info.GuildUnionID)
     binary.Write(buf, binary.LittleEndian, info.GuildUnionUserType)
 
-    info.BloodBibleSignInfo.Dump(buf)
+    info.BloodBibleSignInfo.Write(buf)
 
     binary.Write(buf, binary.LittleEndian, info.PowerPoint)
 
@@ -360,6 +269,83 @@ func (info *GCUpdateInfoPacket) MarshalBinary(code uint8) ([]byte, error) {
     // 		0, 44, 0, 0, 2, 58, 38, 32, 28, 0, 0, 0, 0, 4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 4, 0, 0, 2, 146, 1, 54, 66, 109, 0, 246, 224, 0, 21, 0, 145, 237, 190, 7, 3, 19, 16,
     // 		10, 40, 0, 0, 13, 2, 0, 5, 9, 0, 61, 0, 62, 0, 64, 0, 163, 0, 0, 0, 17, 0, 0, 0, 0, 24, 125, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0},
     // 	nil
+}
+
+func (update *GCUpdateInfoPacket) Read(reader io.Reader, code uint8) error {
+    var pcType byte
+    binary.Read(reader, binary.LittleEndian, &pcType)
+    switch pcType {
+    case 'S':
+        update.PCInfo = &data.PCSlayerInfo{}
+    case 'V':
+        update.PCInfo = &data.PCVampireInfo{}
+    case 'O':
+        update.PCInfo = &data.PCOusterInfo{}
+    default:
+        return errors.New("invalid pc type")
+    }
+    err := update.PCInfo.Read(reader)
+    if err != nil {
+        return err
+    }
+
+    update.InventoryInfo.Read(reader)
+    update.GearInfo.Read(reader)
+    update.ExtraInfo.Read(reader)
+    update.EffectInfo.Read(reader)
+
+    binary.Read(reader, binary.LittleEndian, &update.hasMotorcycle)
+    if update.hasMotorcycle {
+        return errors.New("not implement yet!!!")
+    }
+
+    binary.Read(reader, binary.LittleEndian, &update.ZoneID)
+    binary.Read(reader, binary.LittleEndian, &update.ZoneX)
+    binary.Read(reader, binary.LittleEndian, &update.ZoneY)
+
+    binary.Read(reader, binary.LittleEndian, &update.GameTime)
+
+    binary.Read(reader, binary.LittleEndian, &update.Weather)
+    binary.Read(reader, binary.LittleEndian, &update.WeatherLevel)
+
+    binary.Read(reader, binary.LittleEndian, &update.DarkLevel)
+    binary.Read(reader, binary.LittleEndian, &update.LightLevel)
+
+    var nNPC uint8
+    binary.Read(reader, binary.LittleEndian, &nNPC)
+    update.NPCTypes = make([]NPCType_t, nNPC)
+    for i := 0; i < int(nNPC); i++ {
+        binary.Read(reader, binary.LittleEndian, &update.NPCTypes[i])
+    }
+
+    var nMonster uint8
+    binary.Read(reader, binary.LittleEndian, &nMonster)
+    update.MonsterTypes = make([]MonsterType_t, nNPC)
+    for i := 0; i < int(nMonster); i++ {
+        binary.Read(reader, binary.LittleEndian, &update.MonsterTypes[i])
+    }
+
+    var nNPCInfo uint8
+    binary.Read(reader, binary.LittleEndian, &nNPCInfo)
+    update.NPCInfos = make([]data.NPCInfo, nNPCInfo)
+    for i := 0; i < int(nNPCInfo); i++ {
+        // TODO
+        update.NPCInfos[i].Read(reader)
+    }
+
+    binary.Read(reader, binary.LittleEndian, &update.ServerStat)
+    binary.Read(reader, binary.LittleEndian, &update.Premium)
+    binary.Read(reader, binary.LittleEndian, &update.SMSCharge)
+
+    update.NicknameInfo.Read(reader)
+
+    binary.Read(reader, binary.LittleEndian, &update.NonPK)
+    binary.Read(reader, binary.LittleEndian, &update.GuildUnionID)
+    binary.Read(reader, binary.LittleEndian, &update.GuildUnionUserType)
+
+    update.BloodBibleSignInfo.Read(reader)
+    binary.Read(reader, binary.LittleEndian, &update.PowerPoint)
+    return nil
 }
 
 type GCPetInfoPacket struct {
@@ -439,7 +425,7 @@ type GCAddMonsterFromBurrowing struct {
     X           uint8
     Y           uint8
     Dir         uint8
-    EffectInfo  []EffectInfo
+    EffectInfo  []data.EffectInfo
     CurrentHP   uint16
     MaxHP       uint16
 }
@@ -464,7 +450,7 @@ type GCAddMonster struct {
     X           Coord_t
     Y           Coord_t
     Dir         Dir_t
-    EffectInfo  []EffectInfo
+    EffectInfo  []data.EffectInfo
     CurrentHP   HP_t
     MaxHP       HP_t
     FromFlag    byte
