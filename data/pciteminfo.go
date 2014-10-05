@@ -20,6 +20,15 @@ type PCItemInfo struct {
     SubItemInfoList []SubItemInfo
 }
 
+func (info *PCItemInfo) Size() uint32 {
+    var sz uint32
+    sz = 4 + 1 + 2 + 1 + 4 + 2 + 4 + 1 + 1 + 2 + 1
+    for i := 0; i < len(info.SubItemInfoList); i++ {
+        sz += info.SubItemInfoList[i].Size()
+    }
+    return sz
+}
+
 func (info *PCItemInfo) Read(reader io.Reader) {
     binary.Read(reader, binary.LittleEndian, &info.ObjectID)
     binary.Read(reader, binary.LittleEndian, &info.IClass)

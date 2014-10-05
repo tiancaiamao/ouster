@@ -14,6 +14,10 @@ type SubItemInfo struct {
     SlotID   SlotID_t
 }
 
+func (info *SubItemInfo) Size() uint32 {
+    return 9
+}
+
 func (info *SubItemInfo) Read(reader io.Reader) error {
     binary.Read(reader, binary.LittleEndian, &info.ObjectID)
     binary.Read(reader, binary.LittleEndian, &info.IClass)

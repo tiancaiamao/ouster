@@ -1,6 +1,7 @@
 package packet
 
 import (
+    "bytes"
     "encoding/binary"
     "github.com/tiancaiamao/ouster/data"
     "io"
@@ -12,6 +13,9 @@ type LCLoginOKPacket struct {
 
 func (loginOk LCLoginOKPacket) PacketID() PacketID {
     return PACKET_LC_LOGIN_OK
+}
+func (loginOk LCLoginOKPacket) PacketSize() uint32 {
+    return 5
 }
 
 func (loginOk LCLoginOKPacket) String() string {
@@ -30,7 +34,9 @@ type LCVersionCheckOKPacket struct {
 func (v LCVersionCheckOKPacket) PacketID() PacketID {
     return PACKET_LC_VERSION_CHECK_OK
 }
-
+func (v LCVersionCheckOKPacket) PacketSize() uint32 {
+    return 0
+}
 func (v LCVersionCheckOKPacket) String() string {
     return "version check ok"
 }
@@ -42,6 +48,9 @@ type LCWorldListPacket struct {
     DummyRead
 }
 
+func (wl LCWorldListPacket) PacketSize() uint32 {
+    return 13
+}
 func (wl LCWorldListPacket) PacketID() PacketID {
     return PACKET_LC_WORLD_LIST
 }
@@ -67,6 +76,9 @@ func (sl *LCServerListPacket) PacketID() PacketID {
 func (sl *LCServerListPacket) String() string {
     return "server list"
 }
+func (sl *LCServerListPacket) PacketSize() uint32 {
+    return 22
+}
 func (sl *LCServerListPacket) Write(buf io.Writer, code uint8) error {
     buf.Write([]byte{1, 2, 0, 6, 183, 226, 178, 226, 199, 248, 0, 1, 8, 185, 237, 247, 200, 193, 182, 211, 252, 0})
     return nil
@@ -82,6 +94,13 @@ func (pl *LCPCListPacket) PacketID() PacketID {
 }
 func (pl *LCPCListPacket) String() string {
     return "pc list"
+}
+
+// TODO
+func (pl *LCPCListPacket) PacketSize() uint32 {
+    buf := &bytes.Buffer{}
+    pl.Write(buf, 0)
+    return uint32(buf.Len())
 }
 func (pl *LCPCListPacket) Write(buf io.Writer, code uint8) error {
     buf.Write([]byte{
@@ -104,6 +123,9 @@ type LCReconnectPacket struct {
 
 func (rc *LCReconnectPacket) PacketID() PacketID {
     return PACKET_LC_RECONNECT
+}
+func (rc *LCReconnectPacket) PacketSize() uint32 {
+    return uint32(1 + len(rc.Ip) + 6)
 }
 func (rc *LCReconnectPacket) String() string {
     return "reconnect"

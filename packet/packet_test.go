@@ -2,6 +2,7 @@ package packet
 
 import (
     "bytes"
+    "github.com/tiancaiamao/ouster/data"
     "testing"
 )
 
@@ -29,4 +30,13 @@ func TestCGConnectPacket(t *testing.T) {
         t.Fail()
     }
     // t.Logf("%#v\n", pkt)
+}
+
+func TestGetSize(t *testing.T) {
+    buf := &bytes.Buffer{}
+    gearinfo := &data.GearInfo{}
+    gearinfo.Write(buf)
+    if buf.Len() != gearinfo.getSize() {
+        t.Errorf("GearInfo的getSize不对:期待%d 实际%d\n", buf.Len(), gearinfo.getSize())
+    }
 }

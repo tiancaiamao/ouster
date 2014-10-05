@@ -159,7 +159,7 @@ func (slayer *Slayer) PCInfo() data.PCInfo {
 }
 
 // TODO
-func (slayer *Slayer) SkillInfo() packet.SkillInfo {
+func (slayer *Slayer) SkillInfo() data.PCSkillInfo {
     return nil
 }
 

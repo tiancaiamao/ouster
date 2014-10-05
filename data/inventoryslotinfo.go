@@ -28,3 +28,7 @@ func (slot *InventorySlotInfo) Write(writer io.Writer) error {
     binary.Write(writer, binary.LittleEndian, slot.InvenY)
     return nil
 }
+
+func (info *InventorySlotInfo) Size() uint32 {
+    return 2 + info.PCItemInfo.Size()
+}

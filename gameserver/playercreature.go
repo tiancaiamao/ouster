@@ -17,7 +17,7 @@ type PlayerCreatureInterface interface {
     PlayerCreatureInstance() *PlayerCreature
 
     PCInfo() data.PCInfo
-    SkillInfo() packet.SkillInfo
+    SkillInfo() data.PCSkillInfo
     computeDamage(CreatureInterface, bool) Damage_t
     heartbeat()
 }
@@ -133,7 +133,7 @@ func loadOuster(decoder *json.Decoder) (ouster *Ouster, zoneID ZoneID_t, err err
     ouster.X = pcInfo.ZoneX
     ouster.Y = pcInfo.ZoneY
 
-    var skillInfo packet.OusterSkillInfo
+    var skillInfo data.OusterSkillInfo
     err = decoder.Decode(&skillInfo)
     if err != nil {
         return

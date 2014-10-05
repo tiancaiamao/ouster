@@ -16,7 +16,7 @@ const (
 type PCInfo interface {
     Write(writer io.Writer) error
     Read(reader io.Reader) error
-    getSize() uint32
+    Size() uint32
 }
 
 type PCOusterInfo struct {
@@ -58,6 +58,15 @@ type PCOusterInfo struct {
     ZoneID ZoneID_t
     ZoneX  ZoneCoord_t
     ZoneY  ZoneCoord_t
+}
+
+func (info *PCOusterInfo) Size() uint32 {
+    sz := 4 + 1 + uint32(len(info.Name)) + 2
+    sz = sz + 2 + 1 + 4 + 9*2
+    sz = sz + 4*2 + 1 + 4 + 4
+    sz = sz + 4 + 4 + 1 + 2 + 2
+    sz = sz + 2 + 1 + 2 + 1 + uint32(len(info.GuildName)) + 1 + 4 + 1 + 4
+    return sz
 }
 
 func (info *PCOusterInfo) Read(reader io.Reader) error {
@@ -161,6 +170,11 @@ type PCVampireInfo struct {
     ZoneY  Coord_t
 }
 
+// TODO
+func (info *PCVampireInfo) Size() uint32 {
+	return 0
+}
+
 func (info *PCVampireInfo) Read(reader io.Reader) error {
     return errors.New("not implement yet!!!")
 }
@@ -259,6 +273,11 @@ type PCSlayerInfo struct {
     ZoneID ZoneID_t
     ZoneX  Coord_t
     ZoneY  Coord_t
+}
+
+// TODO
+func (info *PCSlayerInfo) Size() uint32 {
+	return 0
 }
 
 func (info *PCSlayerInfo) Write(writer io.Writer) error {

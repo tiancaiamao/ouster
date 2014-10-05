@@ -3,7 +3,6 @@ package main
 import (
     "github.com/tiancaiamao/ouster/data"
     "github.com/tiancaiamao/ouster/log"
-    "github.com/tiancaiamao/ouster/packet"
     . "github.com/tiancaiamao/ouster/util"
     "math/rand"
     "time"
@@ -107,10 +106,10 @@ type Ouster struct {
     EffectManager *EffectManager
 }
 
-func (ouster *Ouster) SkillInfo() packet.SkillInfo {
-    var ret packet.OusterSkillInfo
+func (ouster *Ouster) SkillInfo() data.PCSkillInfo {
+    var ret data.OusterSkillInfo
     ret.LearnNewSkill = false
-    skillList := make([]packet.SubOusterSkillInfo, len(ouster.SkillSlot))
+    skillList := make([]data.SubOusterSkillInfo, len(ouster.SkillSlot))
 
     i := 0
     for _, slot := range ouster.SkillSlot {

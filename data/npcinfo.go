@@ -13,6 +13,13 @@ type NPCInfo struct {
     Y     ZoneCoord_t
 }
 
+func (info *NPCInfo) Size() uint32 {
+    if len(info.Name) > 0 {
+        return 7 + uint32(len(info.Name))
+    }
+    return 1
+}
+
 func (info *NPCInfo) Read(reader io.Reader) error {
     var szName uint8
     var buf [256]byte

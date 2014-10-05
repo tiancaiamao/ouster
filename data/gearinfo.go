@@ -10,6 +10,14 @@ type GearInfo struct {
     GearSlotInfoList []GearSlotInfo
 }
 
+func (info *GearInfo) Size() uint32 {
+    sz := uint32(1)
+    for i := 0; i < len(info.GearSlotInfoList); i++ {
+        sz += info.GearSlotInfoList[i].Size()
+    }
+    return sz
+}
+
 func (info *GearInfo) Read(reader io.Reader) error {
     var num uint8
     err := binary.Read(reader, binary.LittleEndian, &num)

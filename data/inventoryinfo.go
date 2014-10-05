@@ -13,6 +13,14 @@ type InventoryInfo struct {
     InventorySlotInfoList []InventorySlotInfo
 }
 
+func (info *InventoryInfo) Size() uint32 {
+    sz := uint32(3)
+    for i := 0; i < len(info.InventorySlotInfoList); i++ {
+        sz += info.InventorySlotInfoList[i].Size()
+    }
+    return sz
+}
+
 func (info *InventoryInfo) Write(writer io.Writer) {
     num := uint8(len(info.InventorySlotInfoList))
     binary.Write(writer, binary.LittleEndian, num)

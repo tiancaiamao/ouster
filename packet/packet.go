@@ -667,17 +667,7 @@ func (w *Writer) Write(writer io.Writer, pkt Packet) error {
         return err
     }
 
-    b, ok := pkt.(BinaryMarshaler)
-    if !ok {
-        return errors.New("write this packet is not supported")
-    }
-
-    buf, err := b.MarshalBinary(w.Code)
-    if err != nil {
-        return err
-    }
-
-    sz := uint32(len(buf))
+    sz := pkt.PacketSize()
     err = binary.Write(writer, binary.LittleEndian, sz)
     if err != nil {
         return err
@@ -689,7 +679,7 @@ func (w *Writer) Write(writer io.Writer, pkt Packet) error {
     }
     w.Seq++
 
-    _, err = writer.Write(buf)
+    err = pkt.Write(writer, w.Code)
     if err != nil {
         return err
     }

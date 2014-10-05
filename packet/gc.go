@@ -126,6 +126,10 @@ type GameTimeType struct {
     Second uint8
 }
 
+func (time *GameTimeType) Size() uint32 {
+    return 7
+}
+
 func (time GameTimeType) Dump(writer io.Writer) {
     binary.Write(writer, binary.LittleEndian, time.Year)
     binary.Write(writer, binary.LittleEndian, time.Month)
@@ -179,25 +183,27 @@ func (info *GCUpdateInfoPacket) PacketID() PacketID {
     return PACKET_GC_UPDATE_INFO
 }
 func (info *GCUpdateInfoPacket) PacketSize() uint32 {
-    sz := info.PCInfo.getSize() +
-        info.InventoryInfo.getSize() +
-        info.GearInfo.getSize() +
-        info.ExtraInfo.getSize() + 1
+    var sz uint32
+    sz = info.PCInfo.Size() +
+        info.InventoryInfo.Size() +
+        info.GearInfo.Size() +
+        info.ExtraInfo.Size() + 1
 
     if info.hasMotorcycle {
-        sz += info.RideMotorcycleInfo.getSize()
+        panic("not implement yet")
+        // sz += info.RideMotorcycleInfo.Size()
     }
 
     sz = sz + 2 + 1 + 1 +
-        info.GameTime.getSize() + 1 + 1 + 1
+        info.GameTime.Size() + 1 + 1 + 1
 
-    sz = sz + 1 + len(info.NPCTypes)*2 + 1 + len(info.MonsterTypes)*2 + 1
+    sz = sz + 1 + uint32(len(info.NPCTypes))*2 + 1 + uint32(len(info.MonsterTypes))*2 + 1
 
     for i := 0; i < len(info.NPCInfos); i++ {
-        sz += info.NPCInfos[i].getSize()
+        sz += info.NPCInfos[i].Size()
     }
     sz += 6
-    sz += info.BloodBibleSignInfo.getSize()
+    sz += info.BloodBibleSignInfo.Size()
     sz += 4
     return sz
 }
@@ -455,7 +461,7 @@ func (bat *GCAddBat) PacketID() PacketID {
     return PACKET_GC_ADD_BAT
 }
 func (bat *GCAddBat) PacketSize() uint32 {
-    return 4 + 1 + len(bat.MonsterName) + 2 + 1 + 1 + 1 + 2 + 2 + 2 + 2
+    return 4 + 1 + uint32(len(bat.MonsterName)) + 2 + 1 + 1 + 1 + 2 + 2 + 2 + 2
 }
 func (bat *GCAddBat) String() string {
     return "add bat"
@@ -493,10 +499,10 @@ type GCAddMonsterFromBurrowing struct {
 func (monster *GCAddMonsterFromBurrowing) PacketID() PacketID {
     return PACKET_GC_ADD_MONSTER_FROM_BURROWING
 }
-func (monster *GCAddMonsterFromBurrowing) PacketSize() PacketID {
-    sz := 4 + 2 + 1 + len(monster.MonsterName) + 2 + 2 + 1 + 1 + 1 + 2 + 2
+func (monster *GCAddMonsterFromBurrowing) PacketSize() uint32 {
+    sz := 4 + 2 + 1 + uint32(len(monster.MonsterName)) + 2 + 2 + 1 + 1 + 1 + 2 + 2
     for i := 0; i < len(monster.EffectInfo); i++ {
-        sz += monster.EffectInfo[i].getSize()
+        sz += monster.EffectInfo[i].Size()
     }
     return sz
 }
@@ -531,9 +537,9 @@ func (monster *GCAddMonster) PacketID() PacketID {
 }
 
 func (monster *GCAddMonster) PacketSize() uint32 {
-    sz := 4 + 2 + 1 + len(monster.MonsterName) + 2 + 2 + 1 + 1 + 1 + 2 + 2 + 1
+    sz := 4 + 2 + 1 + uint32(len(monster.MonsterName)) + 2 + 2 + 1 + 1 + 1 + 2 + 2 + 1
     for i := 0; i < len(monster.EffectInfo); i++ {
-        sz += monster.Effect[i].getSize()
+        sz += monster.EffectInfo[i].Size()
     }
     return sz
 }
@@ -597,7 +603,7 @@ type GCAttackMeleeOK1 struct {
 }
 
 func (ok1 GCAttackMeleeOK1) PacketSize() uint32 {
-    return 4 + ok1.ModifyInfo.getSize()
+    return 4 + ok1.ModifyInfo.Size()
 }
 
 func (attackOk GCAttackMeleeOK1) PacketID() PacketID {
@@ -627,7 +633,7 @@ func (attackOk GCAttackMeleeOK2) PacketID() PacketID {
     return PACKET_GC_ATTACK_MELEE_OK_2
 }
 func (ok GCAttackMeleeOK2) PacketSize() uint32 {
-    return 4 + ok.ModifyInfo.getSize()
+    return 4 + ok.ModifyInfo.Size()
 }
 
 func (attackOk GCAttackMeleeOK2) String() string {
@@ -861,8 +867,8 @@ func (modify *ModifyInfo) Dump(writer io.Writer) {
     }
 }
 
-func (info *ModifyInfo) getSize() uint32 {
-    return 2 + len(info.Short)*3 + len(info.Long)*5
+func (info *ModifyInfo) Size() uint32 {
+    return uint32(2 + len(info.Short)*3 + len(info.Long)*5)
 }
 
 type GCBloodDrainOK1 struct {
@@ -876,7 +882,7 @@ func (bdo *GCBloodDrainOK1) PacketID() PacketID {
     return PACKET_GC_BLOOD_DRAIN_OK_1
 }
 func (bdo *GCBloodDrainOK1) PacketSize() uint32 {
-    return 4 + bdo.Modify.getSize()
+    return 4 + bdo.Modify.Size()
 }
 func (bdo *GCBloodDrainOK1) String() string {
     return "blood drain ok 1"
@@ -948,7 +954,7 @@ func (corpse *GCAddMonsterCorpse) PacketID() PacketID {
     return PACKET_GC_ADD_MONSTER_CORPSE
 }
 func (corpse *GCAddMonsterCorpse) PacketSize() uint32 {
-    return 6 + 1 + len(corpse.MonsterName) + 5 + 4
+    return uint32(6 + 1 + len(corpse.MonsterName) + 5 + 4)
 }
 func (corpse *GCAddMonsterCorpse) String() string {
     return "add monster corpse"
@@ -1101,7 +1107,7 @@ func (remove GCRemoveEffect) PacketID() PacketID {
     return PACKET_GC_REMOVE_EFFECT
 }
 func (remove GCRemoveEffect) PacketSize() uint32 {
-    return 4 + 1 + 2*len(remove.EffectList)
+    return uint32(4 + 1 + 2*len(remove.EffectList))
 }
 func (remove GCRemoveEffect) String() string {
     return "remove effect"
@@ -1129,7 +1135,7 @@ func (failed *GCSkillFailed1Packet) PacketID() PacketID {
     return PACKET_GC_SKILL_FAILED_1
 }
 func (failed *GCSkillFailed1Packet) PacketSize() uint32 {
-    return 3 + failed.ModifyInfo.getSize()
+    return 3 + failed.ModifyInfo.Size()
 }
 func (failed *GCSkillFailed1Packet) String() string {
     return "skill failed1"
@@ -1185,7 +1191,7 @@ func (ok *GCSkillToObjectOK1) PacketID() PacketID {
     return PACKET_GC_SKILL_TO_OBJECT_OK_1
 }
 func (ok *GCSkillToObjectOK1) PacketSize() uint32 {
-    return 11 + ok.ModifyInfo.getSize()
+    return 11 + ok.ModifyInfo.Size()
 }
 func (ok *GCSkillToObjectOK1) String() string {
     return "skill to object ok 1"
@@ -1272,7 +1278,7 @@ func (ok *GCSkillToSelfOK1) PacketID() PacketID {
     return PACKET_GC_SKILL_TO_SELF_OK_1
 }
 func (ok *GCSkillToSelfOK1) PacketSize() uint32 {
-    return 7 + ok.ModifyInfo.getSize()
+    return 7 + ok.ModifyInfo.Size()
 }
 func (ok *GCSkillToSelfOK1) String() string {
     return "skill to self ok 1"
@@ -1329,7 +1335,7 @@ func (ok *GCSkillToTileOK1) PacketID() PacketID {
     return PACKET_GC_SKILL_TO_TILE_OK_1
 }
 func (ok *GCSkillToTileOK1) PacketSize() uint32 {
-    return 10 + 1 + len(ok.CreatureList)*4 + ok.ModifyInfo.getSize()
+    return 10 + 1 + uint32(len(ok.CreatureList)*4) + ok.ModifyInfo.Size()
 }
 func (ok *GCSkillToTileOK1) String() string {
     return "skill to tile ok 1"
@@ -1371,7 +1377,7 @@ func (ok GCSkillToTileOK2) PacketID() PacketID {
     return PACKET_GC_SKILL_TO_TILE_OK_2
 }
 func (ok GCSkillToTileOK2) PacketSize() uint32 {
-    return 11 + 1 + 4*ok.CList + 1 + ok.ModifyInfo.getSize()
+    return 11 + 1 + uint32(4*len(ok.CList)) + 1 + ok.ModifyInfo.Size()
 }
 func (ok *GCSkillToTileOK2) Write(buf io.Writer, code uint8) error {
 
@@ -1409,7 +1415,7 @@ func (ok *GCSkillToTileOK5) PacketID() PacketID {
     return PACKET_GC_SKILL_TO_TILE_OK_5
 }
 func (ok *GCSkillToTileOK5) PacketSize() uint32 {
-    return 12 + 1 + len(ok.CreatureList)*4
+    return uint32(12 + 1 + len(ok.CreatureList)*4)
 }
 
 func (ok *GCSkillToTileOK5) Write(buf io.Writer, code uint8) error {
@@ -1444,7 +1450,7 @@ func (ok *GCSkillToTileOK4) PacketID() PacketID {
     return PACKET_GC_SKILL_TO_TILE_OK_4
 }
 func (ok *GCSkillToTileOK4) PacketSize() uint32 {
-    return 8 + 1 + len(ok.CreatureList)*4
+    return uint32(8 + 1 + len(ok.CreatureList)*4)
 }
 func (ok *GCSkillToTileOK4) String() string {
     return "skill to tile ok 4"
@@ -1516,7 +1522,7 @@ func (msg *GCSystemMessagePacket) PacketID() PacketID {
     return PACKET_GC_SYSTEM_MESSAGE
 }
 func (msg *GCSystemMessagePacket) PacketSize() uint32 {
-    return 1 + len(msg.Message) + 4 + 1
+    return uint32(1 + len(msg.Message) + 4 + 1)
 }
 func (msg *GCSystemMessagePacket) String() string {
     return "system message"
@@ -1540,13 +1546,14 @@ type GCSkillInfoPacket struct {
     DummyRead
 
     PCType          PCType
-    PCSkillInfoList []SkillInfo
+    PCSkillInfoList []data.PCSkillInfo
 }
 
 func (info *GCSkillInfoPacket) PacketSize() uint32 {
-    sz := 2
+    var sz uint32
+    sz = 2
     for i := 0; i < len(info.PCSkillInfoList); i++ {
-        sz += info.PCSkillInfoList[i].getSize()
+        sz += info.PCSkillInfoList[i].Size()
     }
     return sz
 }
@@ -1561,76 +1568,9 @@ func (info *GCSkillInfoPacket) Write(buf io.Writer, code uint8) error {
     binary.Write(buf, binary.LittleEndian, uint8(info.PCType))
     binary.Write(buf, binary.LittleEndian, uint8(len(info.PCSkillInfoList)))
     for _, v := range info.PCSkillInfoList {
-        v.Dump(buf)
+        v.Write(buf)
     }
     return nil
-}
-
-type SkillInfo interface {
-    Dump(io.Writer)
-}
-type VampireSkillInfo struct {
-    LearnNewSkill           bool
-    SubVampireSkillInfoList []SubVampireSkillInfo
-}
-
-func (info VampireSkillInfo) Dump(writer io.Writer) {
-    if info.LearnNewSkill {
-        binary.Write(writer, binary.LittleEndian, uint8(1))
-    } else {
-        binary.Write(writer, binary.LittleEndian, uint8(0))
-    }
-
-    binary.Write(writer, binary.LittleEndian, uint8(len(info.SubVampireSkillInfoList)))
-    for _, v := range info.SubVampireSkillInfoList {
-        v.Dump(writer)
-    }
-}
-
-type SubVampireSkillInfo struct {
-    SkillType   SkillType_t
-    Interval    uint32
-    CastingTime uint32
-}
-
-func (info SubVampireSkillInfo) Dump(writer io.Writer) {
-    binary.Write(writer, binary.LittleEndian, info.SkillType)
-    binary.Write(writer, binary.LittleEndian, info.Interval)
-    binary.Write(writer, binary.LittleEndian, info.CastingTime)
-    return
-}
-
-type OusterSkillInfo struct {
-    LearnNewSkill          bool
-    SubOusterSkillInfoList []SubOusterSkillInfo
-}
-
-func (info OusterSkillInfo) Dump(writer io.Writer) {
-    if info.LearnNewSkill {
-        binary.Write(writer, binary.LittleEndian, uint8(1))
-    } else {
-        binary.Write(writer, binary.LittleEndian, uint8(0))
-    }
-
-    binary.Write(writer, binary.LittleEndian, uint8(len(info.SubOusterSkillInfoList)))
-    for _, v := range info.SubOusterSkillInfoList {
-        v.Dump(writer)
-    }
-}
-
-type SubOusterSkillInfo struct {
-    SkillType   SkillType_t
-    ExpLevel    ExpLevel_t
-    Interval    uint32
-    CastingTime uint32
-}
-
-func (info SubOusterSkillInfo) Dump(writer io.Writer) {
-    binary.Write(writer, binary.LittleEndian, info.SkillType)
-    binary.Write(writer, binary.LittleEndian, info.ExpLevel)
-    binary.Write(writer, binary.LittleEndian, info.Interval)
-    binary.Write(writer, binary.LittleEndian, info.CastingTime)
-    return
 }
 
 type GCMoveOK struct {

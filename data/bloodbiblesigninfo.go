@@ -11,6 +11,12 @@ type BloodBibleSignInfo struct {
     SignList []ItemType_t
 }
 
+func (info *BloodBibleSignInfo) Size() uint32 {
+    var sz uint32
+    sz = 5 + uint32(len(info.SignList))*2
+    return sz
+}
+
 func (info *BloodBibleSignInfo) Write(writer io.Writer) {
     binary.Write(writer, binary.LittleEndian, info.OpenNum)
     num := uint8(len(info.SignList))

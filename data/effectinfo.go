@@ -26,3 +26,7 @@ func (info *EffectInfo) Write(writer io.Writer) error {
     }
     return nil
 }
+
+func (info *EffectInfo) Size() uint32 {
+    return uint32(1 + len(info.EList)*2)
+}
