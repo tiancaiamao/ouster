@@ -1,10 +1,9 @@
 package main
 
 import (
-    "bytes"
     "github.com/tiancaiamao/ouster/config"
+    "github.com/tiancaiamao/ouster/log"
     "github.com/tiancaiamao/ouster/packet"
-    "log"
     "net"
 )
 
@@ -13,15 +12,15 @@ func main() {
     if err != nil {
         panic(err)
     }
-
+    log.Infoln("loginserver started")
     for {
         conn, err := ln.Accept()
         if err != nil {
-            log.Println("accept err:", err)
+            log.Errorln("accept err:", err)
             continue
         }
 
-        log.Println("receive a connect request")
+        log.Infoln("receive a connect request")
         go serve(conn)
     }
 }
@@ -36,12 +35,12 @@ func serve(conn net.Conn) {
         pkt, err := reader.Read(conn)
         if err != nil {
             if _, ok := err.(packet.NotImplementError); !ok {
-                log.Println("read packet error in loginserver's serve:", err)
+                log.Errorln("read packet error in loginserver's serve:", err)
                 return
             }
         }
 
-        log.Println("read a packet: ", pkt.PacketID())
+        log.Debugln("read a packet: ", pkt.PacketID())
 
         switch pkt.PacketID() {
         case packet.PACKET_CL_GET_WORLD_LIST:
@@ -58,17 +57,18 @@ func serve(conn net.Conn) {
             reconnect := &packet.LCReconnectPacket{
                 Ip:   config.GameServerIP,
                 Port: 9998,
-                Key:  3306,
+                Key:  82180,
             }
             writer.Write(conn, reconnect)
+            return
         default:
-            log.Printf("get a unknow packet: %d\n", pkt.PacketID())
+            log.Errorf("get a unknow packet: %d\n", pkt.PacketID())
         }
     }
 }
 
-func Debug(writer packet.Writer, pkt packet.Packet) {
-    stdout := &bytes.Buffer{}
-    writer.Write(stdout, pkt)
-    log.Println(stdout.Bytes())
-}
+// func Debug(writer packet.Writer, pkt packet.Packet) {
+//		 stdout := &bytes.Buffer{}
+//		 writer.Write(stdout, pkt)
+//		 log.Println(stdout.Bytes())
+// }

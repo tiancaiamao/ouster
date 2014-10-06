@@ -7,7 +7,7 @@ import (
 )
 
 type PCSkillInfo interface {
-    Write(io.Writer)
+    Write(io.Writer) error
     Size() uint32
 }
 type VampireSkillInfo struct {
@@ -23,7 +23,7 @@ func (info VampireSkillInfo) Size() uint32 {
     }
     return sz
 }
-func (info VampireSkillInfo) Write(writer io.Writer) {
+func (info VampireSkillInfo) Write(writer io.Writer) error {
     if info.LearnNewSkill {
         binary.Write(writer, binary.LittleEndian, uint8(1))
     } else {
@@ -34,6 +34,7 @@ func (info VampireSkillInfo) Write(writer io.Writer) {
     for _, v := range info.SubVampireSkillInfoList {
         v.Write(writer)
     }
+    return nil
 }
 
 type SubVampireSkillInfo struct {
@@ -45,11 +46,11 @@ type SubVampireSkillInfo struct {
 func (info *SubVampireSkillInfo) Size() uint32 {
     return 10
 }
-func (info SubVampireSkillInfo) Write(writer io.Writer) {
+func (info SubVampireSkillInfo) Write(writer io.Writer) error {
     binary.Write(writer, binary.LittleEndian, info.SkillType)
     binary.Write(writer, binary.LittleEndian, info.Interval)
     binary.Write(writer, binary.LittleEndian, info.CastingTime)
-    return
+    return nil
 }
 
 type OusterSkillInfo struct {
@@ -66,7 +67,7 @@ func (info OusterSkillInfo) Size() uint32 {
     return sz
 }
 
-func (info OusterSkillInfo) Write(writer io.Writer) {
+func (info OusterSkillInfo) Write(writer io.Writer) error {
     if info.LearnNewSkill {
         binary.Write(writer, binary.LittleEndian, uint8(1))
     } else {
@@ -77,6 +78,7 @@ func (info OusterSkillInfo) Write(writer io.Writer) {
     for _, v := range info.SubOusterSkillInfoList {
         v.Write(writer)
     }
+    return nil
 }
 
 type SubOusterSkillInfo struct {
@@ -90,10 +92,10 @@ func (info *SubOusterSkillInfo) Size() uint32 {
     return 12
 }
 
-func (info SubOusterSkillInfo) Write(writer io.Writer) {
+func (info SubOusterSkillInfo) Write(writer io.Writer) error {
     binary.Write(writer, binary.LittleEndian, info.SkillType)
     binary.Write(writer, binary.LittleEndian, info.ExpLevel)
     binary.Write(writer, binary.LittleEndian, info.Interval)
     binary.Write(writer, binary.LittleEndian, info.CastingTime)
-    return
+    return nil
 }

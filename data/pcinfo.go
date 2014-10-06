@@ -3,6 +3,7 @@ package data
 import (
     "encoding/binary"
     "errors"
+    "github.com/tiancaiamao/ouster/log"
     . "github.com/tiancaiamao/ouster/util"
     "io"
 )
@@ -70,7 +71,62 @@ func (info *PCOusterInfo) Size() uint32 {
 }
 
 func (info *PCOusterInfo) Read(reader io.Reader) error {
-    return errors.New("not implement yet!!!")
+    binary.Read(reader, binary.LittleEndian, &info.ObjectID)
+    var szName uint8
+    var buf [256]byte
+    binary.Read(reader, binary.LittleEndian, &szName)
+    reader.Read(buf[:szName])
+    info.Name = string(buf[:szName])
+    binary.Read(reader, binary.LittleEndian, &info.Level)
+    binary.Read(reader, binary.LittleEndian, &info.Sex)
+
+    binary.Read(reader, binary.LittleEndian, &info.HairColor)
+    binary.Read(reader, binary.LittleEndian, &info.MasterEffectColor)
+
+    binary.Read(reader, binary.LittleEndian, &info.Alignment)
+
+    binary.Read(reader, binary.LittleEndian, &info.STR[ATTR_CURRENT])
+    binary.Read(reader, binary.LittleEndian, &info.STR[ATTR_MAX])
+    binary.Read(reader, binary.LittleEndian, &info.STR[ATTR_BASIC])
+    binary.Read(reader, binary.LittleEndian, &info.DEX[ATTR_CURRENT])
+    binary.Read(reader, binary.LittleEndian, &info.DEX[ATTR_MAX])
+    binary.Read(reader, binary.LittleEndian, &info.DEX[ATTR_BASIC])
+    binary.Read(reader, binary.LittleEndian, &info.INI[ATTR_CURRENT])
+    binary.Read(reader, binary.LittleEndian, &info.INI[ATTR_MAX])
+    binary.Read(reader, binary.LittleEndian, &info.INI[ATTR_BASIC])
+
+    binary.Read(reader, binary.LittleEndian, &info.HP[ATTR_CURRENT])
+    binary.Read(reader, binary.LittleEndian, &info.HP[ATTR_MAX])
+
+    binary.Read(reader, binary.LittleEndian, &info.MP[ATTR_CURRENT])
+    binary.Read(reader, binary.LittleEndian, &info.MP[ATTR_MAX])
+
+    binary.Read(reader, binary.LittleEndian, &info.Rank)
+    binary.Read(reader, binary.LittleEndian, &info.RankExp)
+
+    binary.Read(reader, binary.LittleEndian, &info.Exp)
+    binary.Read(reader, binary.LittleEndian, &info.Fame)
+    binary.Read(reader, binary.LittleEndian, &info.Gold)
+    binary.Read(reader, binary.LittleEndian, &info.Sight)
+
+    binary.Read(reader, binary.LittleEndian, &info.Bonus)
+    binary.Read(reader, binary.LittleEndian, &info.SkillBonus)
+
+    binary.Read(reader, binary.LittleEndian, &info.SilverDamage)
+    binary.Read(reader, binary.LittleEndian, &info.Competence)
+    binary.Read(reader, binary.LittleEndian, &info.GuildID)
+
+    var szGuildName uint8
+    binary.Read(reader, binary.LittleEndian, &szGuildName)
+    reader.Read(buf[:szGuildName])
+    info.GuildName = string(buf[:szGuildName])
+
+    binary.Read(reader, binary.LittleEndian, &info.GuildMemberRank)
+    binary.Read(reader, binary.LittleEndian, &info.UnionID)
+    binary.Read(reader, binary.LittleEndian, &info.AdvancementLevel)
+    binary.Read(reader, binary.LittleEndian, &info.AdvancementGoalExp)
+
+    return nil
 }
 
 func (info *PCOusterInfo) Write(writer io.Writer) error {
@@ -172,11 +228,11 @@ type PCVampireInfo struct {
 
 // TODO
 func (info *PCVampireInfo) Size() uint32 {
-	return 0
+    return 0
 }
 
 func (info *PCVampireInfo) Read(reader io.Reader) error {
-    return errors.New("not implement yet!!!")
+    return errors.New("read PCVampireInfo not implement yet!!!")
 }
 func (info *PCVampireInfo) Write(writer io.Writer) error {
     binary.Write(writer, binary.LittleEndian, info.ObjectID)
@@ -277,7 +333,7 @@ type PCSlayerInfo struct {
 
 // TODO
 func (info *PCSlayerInfo) Size() uint32 {
-	return 0
+    return 0
 }
 
 func (info *PCSlayerInfo) Write(writer io.Writer) error {
@@ -343,15 +399,17 @@ func (info *PCSlayerInfo) Write(writer io.Writer) error {
 }
 
 func (info *PCSlayerInfo) Read(reader io.Reader) error {
-    var buf [256]byte
     binary.Read(reader, binary.LittleEndian, &info.ObjectID)
     var szName uint8
+    var buf [256]byte
     binary.Read(reader, binary.LittleEndian, &szName)
+    log.Debugln("szName=", szName)
     _, err := reader.Read(buf[:szName])
     if err != nil {
         return err
     }
     info.Name = string(buf[:szName])
+    log.Debugln("sdkjfasdlgasjdfasdf", info.Name, szName)
     binary.Read(reader, binary.LittleEndian, &info.Sex)
     binary.Read(reader, binary.LittleEndian, &info.HairStyle)
     binary.Read(reader, binary.LittleEndian, &info.HairColor)

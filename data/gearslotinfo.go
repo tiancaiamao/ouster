@@ -27,3 +27,6 @@ func (info *GearSlotInfo) Write(writer io.Writer) error {
     err = binary.Write(writer, binary.LittleEndian, info.SlotID)
     return err
 }
+func (info *GearSlotInfo) Size() uint32 {
+    return 1 + info.PCItemInfo.Size()
+}

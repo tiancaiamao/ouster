@@ -127,9 +127,9 @@ func (m *Scene) Login(agent *Agent) {
 
     addPCToTile(m, int(pc.X), int(pc.Y), pc, agent)
 
-    log.Debugln("login的时候应该是加入了的: ", pc.ObjectID, m.players[pc.ObjectID])
-    obj := m.getCreature(pc.ObjectID)
-    log.Debugln("立马能取出来: ", pc.ObjectID, obj)
+    // log.Debugln("login的时候应该是加入了的: ", pc.ObjectID, m.players[pc.ObjectID])
+    // obj := m.getCreature(pc.ObjectID)
+    // log.Debugln("立马能取出来: ", pc.ObjectID, obj)
 }
 
 func (m *Scene) Logout(agent *Agent) {

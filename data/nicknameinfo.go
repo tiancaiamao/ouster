@@ -13,6 +13,10 @@ type NicknameInfo struct {
     NicknameIndex uint16
 }
 
+func (info *NicknameInfo) Size() uint32 {
+    return 3
+}
+
 func (info *NicknameInfo) Write(writer io.Writer) error {
     binary.Write(writer, binary.LittleEndian, info.NicknameID)
     binary.Write(writer, binary.LittleEndian, uint8(0))

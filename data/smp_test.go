@@ -158,8 +158,8 @@ func TestReadSMP(t *testing.T) {
         if smp == nil {
             t.Fatalf("err不为空，smp却为空:%s\n", v)
         }
-        t.Logf("name: %s, id: %d\n", v, smp.ZoneID)
-        t.Logf("%#v\n", smp)
+        // t.Logf("name: %s, id: %d\n", v, smp.ZoneID)
+        // t.Logf("%#v\n", smp)
         if smp.Width == 0 || smp.Height == 0 {
             t.Fatal("这个地图不对：%s\n", v)
         }

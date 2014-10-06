@@ -271,7 +271,8 @@ func CGConnectHandler(pkt packet.Packet, agent *Agent) {
     agent.scene <- msg
     msg.wg.Wait()
 
-    log.Debugln("坐标：", agent.CreatureInstance().X, agent.CreatureInstance().Y)
+    // log.Debugln("坐标：", agent.CreatureInstance().X,
+    // agent.CreatureInstance().Y)
     info := &packet.GCUpdateInfoPacket{
         PCInfo: agent.PCInfo(),
         ZoneID: zid,
@@ -301,22 +302,11 @@ func CGConnectHandler(pkt packet.Packet, agent *Agent) {
         GuildUnionUserType: 2,
     }
 
-    switch agent.PlayerCreatureInterface.(type) {
-    case *Vampire:
-        info.PCType = 'V'
-    case *Ouster:
-        info.PCType = 'O'
-    case *Slayer:
-        info.PCType = 'S'
-    default:
-        log.Errorln("agent类型不对!!")
-    }
-
     code := Encrypt(uint16(agent.CreatureInstance().Scene.ZoneID), 1)
     agent.packetReader.Code = code
     agent.packetWriter.Code = code
 
-    if info.PCType == 'O' {
+    if _, ok := info.PCInfo.(*data.PCOusterInfo); ok {
         info.GearInfo = data.GearInfo{
             GearSlotInfoList: []data.GearSlotInfo{
                 data.GearSlotInfo{

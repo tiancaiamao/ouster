@@ -21,6 +21,7 @@ func (info *EffectInfo) Read(reader io.Reader) error {
 
 func (info *EffectInfo) Write(writer io.Writer) error {
     num := len(info.EList)
+    binary.Write(writer, binary.LittleEndian, uint8(num))
     for i := 0; i < int(num); i++ {
         binary.Write(writer, binary.LittleEndian, &info.EList[i])
     }

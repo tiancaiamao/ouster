@@ -17,14 +17,14 @@ func (info *BloodBibleSignInfo) Size() uint32 {
     return sz
 }
 
-func (info *BloodBibleSignInfo) Write(writer io.Writer) {
+func (info *BloodBibleSignInfo) Write(writer io.Writer) error {
     binary.Write(writer, binary.LittleEndian, info.OpenNum)
     num := uint8(len(info.SignList))
     binary.Write(writer, binary.LittleEndian, num)
     for i := 0; i < len(info.SignList); i++ {
         binary.Write(writer, binary.LittleEndian, info.SignList[i])
     }
-    return
+    return nil
 }
 
 func (info *BloodBibleSignInfo) Read(reader io.Reader) {

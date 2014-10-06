@@ -5,6 +5,7 @@ import (
     "encoding/binary"
     "errors"
     "github.com/tiancaiamao/ouster/data"
+    "github.com/tiancaiamao/ouster/log"
     . "github.com/tiancaiamao/ouster/util"
     "io"
 )
@@ -35,19 +36,14 @@ func (moveOk GCMoveOKPacket) String() string {
     return "move ok"
 }
 func (moveOk GCMoveOKPacket) Write(buf io.Writer, code uint8) error {
-    ret := make([]byte, 3)
-    offset := 0
     A := func() {
-        ret[offset] = moveOk.X ^ code
-        offset++
+        binary.Write(buf, binary.LittleEndian, moveOk.X^code)
     }
     B := func() {
-        ret[offset] = moveOk.Y ^ code
-        offset++
+        binary.Write(buf, binary.LittleEndian, moveOk.Y^code)
     }
     C := func() {
-        ret[offset] = moveOk.Dir ^ code
-        offset++
+        binary.Write(buf, binary.LittleEndian, moveOk.Dir^code)
     }
     SHUFFLE_STATEMENT_3(code, A, B, C)
     return nil
@@ -70,15 +66,11 @@ func (moveError GCMoveErrorPacket) String() string {
     return "move error"
 }
 func (moveError GCMoveErrorPacket) Write(buf io.Writer, code uint8) error {
-    ret := make([]byte, 2)
-    offset := 0
     A := func() {
-        ret[offset] = moveError.X ^ code
-        offset++
+        binary.Write(buf, binary.LittleEndian, moveError.X^code)
     }
     B := func() {
-        ret[offset] = moveError.Y ^ code
-        offset++
+        binary.Write(buf, binary.LittleEndian, moveError.Y^code)
     }
     SHUFFLE_STATEMENT_2(code, A, B)
     return nil
@@ -102,8 +94,10 @@ func (move GCMovePacket) PacketSize() uint32 {
 }
 
 func (move GCMovePacket) Write(buf io.Writer, code uint8) error {
-    ret := []byte{0, 0, 0, 0, byte(move.X), byte(move.Y), byte(move.Dir)}
-    binary.LittleEndian.PutUint32(ret[:], uint32(move.ObjectID))
+    binary.Write(buf, binary.LittleEndian, move.ObjectID)
+    binary.Write(buf, binary.LittleEndian, move.X)
+    binary.Write(buf, binary.LittleEndian, move.Y)
+    binary.Write(buf, binary.LittleEndian, move.Dir)
     return nil
 }
 
@@ -142,7 +136,6 @@ func (time GameTimeType) Dump(writer io.Writer) {
 
 type GCUpdateInfoPacket struct {
     // 'V'或者'O'或者'S'
-    PCType             byte
     PCInfo             data.PCInfo
     InventoryInfo      data.InventoryInfo
     GearInfo           data.GearInfo
@@ -184,24 +177,29 @@ func (info *GCUpdateInfoPacket) PacketID() PacketID {
 }
 func (info *GCUpdateInfoPacket) PacketSize() uint32 {
     var sz uint32
-    sz = info.PCInfo.Size() +
+    sz = 1 + info.PCInfo.Size() +
         info.InventoryInfo.Size() +
         info.GearInfo.Size() +
-        info.ExtraInfo.Size() + 1
+        info.ExtraInfo.Size() +
+        info.EffectInfo.Size()
 
+    sz += 1
     if info.hasMotorcycle {
         panic("not implement yet")
         // sz += info.RideMotorcycleInfo.Size()
     }
 
     sz = sz + 2 + 1 + 1 +
-        info.GameTime.Size() + 1 + 1 + 1
+        info.GameTime.Size() + 1 + 1 + 1 + 1
 
     sz = sz + 1 + uint32(len(info.NPCTypes))*2 + 1 + uint32(len(info.MonsterTypes))*2 + 1
 
     for i := 0; i < len(info.NPCInfos); i++ {
         sz += info.NPCInfos[i].Size()
     }
+
+    sz += 6
+    sz += info.NicknameInfo.Size()
     sz += 6
     sz += info.BloodBibleSignInfo.Size()
     sz += 4
@@ -212,9 +210,19 @@ func (info *GCUpdateInfoPacket) String() string {
     return "update info"
 }
 func (info *GCUpdateInfoPacket) Write(buf io.Writer, code uint8) error {
-    binary.Write(buf, binary.LittleEndian, info.PCType)
+    var PCType byte
+    switch info.PCInfo.(type) {
+    case *data.PCOusterInfo:
+        PCType = 'O'
+    case *data.PCSlayerInfo:
+        PCType = 'S'
+    case *data.PCVampireInfo:
+        PCType = 'V'
+    default:
+        log.Errorln("unknown PCInfo in GCUpdateInfoPacket")
+    }
+    binary.Write(buf, binary.LittleEndian, PCType)
     info.PCInfo.Write(buf)
-
     info.InventoryInfo.Write(buf)
     info.GearInfo.Write(buf)
     info.ExtraInfo.Write(buf)
@@ -226,7 +234,6 @@ func (info *GCUpdateInfoPacket) Write(buf io.Writer, code uint8) error {
         binary.Write(buf, binary.LittleEndian, uint8(0))
     }
 
-    // write zone info
     binary.Write(buf, binary.LittleEndian, info.ZoneID)
     binary.Write(buf, binary.LittleEndian, info.ZoneX)
     binary.Write(buf, binary.LittleEndian, info.ZoneY)
@@ -323,8 +330,9 @@ func (info *GCUpdateInfoPacket) Write(buf io.Writer, code uint8) error {
 }
 
 func (update *GCUpdateInfoPacket) Read(reader io.Reader, code uint8) error {
-    binary.Read(reader, binary.LittleEndian, &update.PCType)
-    switch update.PCType {
+    var PCType byte
+    binary.Read(reader, binary.LittleEndian, &PCType)
+    switch PCType {
     case 'S':
         update.PCInfo = &data.PCSlayerInfo{}
     case 'V':
@@ -346,7 +354,7 @@ func (update *GCUpdateInfoPacket) Read(reader io.Reader, code uint8) error {
 
     binary.Read(reader, binary.LittleEndian, &update.hasMotorcycle)
     if update.hasMotorcycle {
-        return errors.New("not implement yet!!!")
+        return errors.New("motorcycle not implement yet!!!")
     }
 
     binary.Read(reader, binary.LittleEndian, &update.ZoneID)
@@ -432,7 +440,7 @@ func (setPosition GCSetPositionPacket) PacketID() PacketID {
     return PACKET_GC_SET_POSITION
 }
 func (setPosition GCSetPositionPacket) PacketSize() uint32 {
-    return 24
+    return 3
 }
 func (setPosition GCSetPositionPacket) String() string {
     return "set position"
@@ -491,7 +499,7 @@ type GCAddMonsterFromBurrowing struct {
     X           uint8
     Y           uint8
     Dir         uint8
-    EffectInfo  []data.EffectInfo
+    EffectInfo  data.EffectInfo
     CurrentHP   uint16
     MaxHP       uint16
 }
@@ -501,9 +509,7 @@ func (monster *GCAddMonsterFromBurrowing) PacketID() PacketID {
 }
 func (monster *GCAddMonsterFromBurrowing) PacketSize() uint32 {
     sz := 4 + 2 + 1 + uint32(len(monster.MonsterName)) + 2 + 2 + 1 + 1 + 1 + 2 + 2
-    for i := 0; i < len(monster.EffectInfo); i++ {
-        sz += monster.EffectInfo[i].Size()
-    }
+    sz += monster.EffectInfo.Size()
     return sz
 }
 
@@ -511,7 +517,25 @@ func (monster *GCAddMonsterFromBurrowing) String() string {
     return "add monster from burrowing"
 }
 func (monster *GCAddMonsterFromBurrowing) Write(buf io.Writer, code uint8) error {
-    buf.Write([]byte{62, 48, 0, 0, 213, 0, 8, 185, 197, 181, 194, 203, 185, 182, 161, 53, 0, 0, 0, 137, 238, 0, 0, 54, 1, 54, 1})
+    // 62, 48, 0, 0, 213, 0, 8, 185, 197, 181, 194, 203, 185, 182, 161, 53, 0, 0, 0, 137, 238, 0, 0, 54, 1, 54, 1
+    binary.Write(buf, binary.LittleEndian, monster.ObjectID)
+    binary.Write(buf, binary.LittleEndian, monster.MonsterType)
+
+    binary.Write(buf, binary.LittleEndian, uint8(len(monster.MonsterName)))
+    if len(monster.MonsterName) > 0 {
+        io.WriteString(buf, monster.MonsterName)
+    }
+
+    binary.Write(buf, binary.LittleEndian, monster.MainColor)
+    binary.Write(buf, binary.LittleEndian, monster.SubColor)
+
+    binary.Write(buf, binary.LittleEndian, monster.X)
+    binary.Write(buf, binary.LittleEndian, monster.Y)
+    binary.Write(buf, binary.LittleEndian, monster.Dir)
+
+    monster.EffectInfo.Write(buf)
+    binary.Write(buf, binary.LittleEndian, monster.CurrentHP)
+    binary.Write(buf, binary.LittleEndian, monster.MaxHP)
     return nil
 }
 
@@ -526,7 +550,7 @@ type GCAddMonster struct {
     X           Coord_t
     Y           Coord_t
     Dir         Dir_t
-    EffectInfo  []data.EffectInfo
+    EffectInfo  data.EffectInfo
     CurrentHP   HP_t
     MaxHP       HP_t
     FromFlag    byte
@@ -538,9 +562,7 @@ func (monster *GCAddMonster) PacketID() PacketID {
 
 func (monster *GCAddMonster) PacketSize() uint32 {
     sz := 4 + 2 + 1 + uint32(len(monster.MonsterName)) + 2 + 2 + 1 + 1 + 1 + 2 + 2 + 1
-    for i := 0; i < len(monster.EffectInfo); i++ {
-        sz += monster.EffectInfo[i].Size()
-    }
+    sz += monster.EffectInfo.Size()
     return sz
 }
 
@@ -561,7 +583,7 @@ func (monster *GCAddMonster) Write(buf io.Writer, code uint8) error {
     binary.Write(buf, binary.LittleEndian, monster.X)
     binary.Write(buf, binary.LittleEndian, monster.Y)
     binary.Write(buf, binary.LittleEndian, monster.Dir)
-    binary.Write(buf, binary.LittleEndian, uint8(0))
+    monster.EffectInfo.Write(buf)
     binary.Write(buf, binary.LittleEndian, monster.CurrentHP)
     binary.Write(buf, binary.LittleEndian, monster.MaxHP)
     binary.Write(buf, binary.LittleEndian, monster.FromFlag)
@@ -895,18 +917,21 @@ func (bdo *GCBloodDrainOK1) Write(buf io.Writer, code uint8) error {
     return nil
 }
 
-type GCModifyInformationPacket ModifyInfo
+type GCModifyInformationPacket struct {
+    ModifyInfo
+}
 
 func (modify *GCModifyInformationPacket) PacketID() PacketID {
     return PACKET_GC_MODIFY_INFORMATION
 }
+func (info *GCModifyInformationPacket) PacketSize() uint32 {
+    return info.ModifyInfo.Size()
+}
 func (modify *GCModifyInformationPacket) String() string {
     return "modify information"
 }
-func (modify *GCModifyInformationPacket) Write(buf io.Writer, code uint8) error {
-
-    raw := (*ModifyInfo)(modify)
-    raw.Dump(buf)
+func (info *GCModifyInformationPacket) Write(buf io.Writer, code uint8) error {
+    info.Dump(buf)
     return nil
 }
 
@@ -1573,14 +1598,6 @@ func (info *GCSkillInfoPacket) Write(buf io.Writer, code uint8) error {
     return nil
 }
 
-type GCMoveOK struct {
-    DummyRead
-
-    X   uint8
-    Y   uint8
-    Dir uint8
-}
-
 type GCDisconnect struct {
     DummyRead
 
@@ -1591,7 +1608,7 @@ func (disconn GCDisconnect) PacketID() PacketID {
     return PACKET_GC_DISCONNECT
 }
 func (disconn GCDisconnect) PacketSize() uint32 {
-    return 3
+    return uint32(1 + len(disconn.Message))
 }
 
 func (disconn GCDisconnect) Write(buf io.Writer, code uint8) error {

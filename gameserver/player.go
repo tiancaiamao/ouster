@@ -77,7 +77,7 @@ func InitPlayer(player *Player, conn net.Conn) {
                     }
                 }
             }
-            // log.Debugln("读到了一个packet:", data)
+            log.Debugln("读到了一个packet:", data)
             read <- data
         }
     }()

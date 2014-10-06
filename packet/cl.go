@@ -18,16 +18,14 @@ func (ign NotImplementWrite) PacketSize() uint32 {
 
 type CLLoginPacket struct {
     NotImplementWrite
-    Username string
-    Password string
+    Username   string
+    Password   string
+    MacAddress [6]byte
+    LoginMode  uint8
 }
 
 func (login *CLLoginPacket) PacketID() PacketID {
     return PACKET_CL_LOGIN
-}
-
-func (_ *CLLoginPacket) PacketSize() uint32 {
-    return 0
 }
 
 func (login *CLLoginPacket) Read(reader io.Reader, code uint8) error {
@@ -47,6 +45,8 @@ func (login *CLLoginPacket) Read(reader io.Reader, code uint8) error {
     }
     login.Password = string(buf[:tmp])
 
+    reader.Read(login.MacAddress[:])
+    binary.Read(reader, binary.LittleEndian, &login.LoginMode)
     return nil
 }
 
@@ -55,15 +55,13 @@ type CLVersionCheckPacket struct {
 }
 
 func (ign *CLVersionCheckPacket) Read(reader io.Reader, code uint8) error {
+    var buf [4]byte
+    reader.Read(buf[:])
     return nil
 }
 
 func (v CLVersionCheckPacket) PacketID() PacketID {
     return PACKET_CL_VERSION_CHECK
-}
-
-func (_ *CLVersionCheckPacket) PacketSize() uint32 {
-    return 0
 }
 
 type CLGetWorldListPacket struct {
@@ -74,10 +72,6 @@ func (worldList CLGetWorldListPacket) PacketID() PacketID {
     return PACKET_CL_GET_WORLD_LIST
 }
 
-func (_ CLGetWorldListPacket) PacketSize() uint32 {
-    return 0
-}
-
 func (ign *CLGetWorldListPacket) Read(reader io.Reader, code uint8) error {
     return nil
 }
@@ -85,19 +79,15 @@ func (ign *CLGetWorldListPacket) Read(reader io.Reader, code uint8) error {
 type CLSelectWorldPacket struct {
     NotImplementWrite
 
-    Data uint8
+    WorldID uint8
 }
 
 func (sw CLSelectWorldPacket) PacketID() PacketID {
     return PACKET_CL_SELECT_WORLD
 }
 
-func (_ CLSelectWorldPacket) PacketSize() uint32 {
-    return 0
-}
-
 func (v *CLSelectWorldPacket) Read(reader io.Reader, code uint8) error {
-    binary.Read(reader, binary.LittleEndian, v.Data)
+    binary.Read(reader, binary.LittleEndian, &v.WorldID)
     return nil
 }
 
@@ -110,12 +100,8 @@ func (ss CLSelectServerPacket) PacketID() PacketID {
     return PACKET_CL_SELECT_SERVER
 }
 
-func (_ CLSelectServerPacket) PacketSize() uint32 {
-    return 0
-}
-
 func (v *CLSelectServerPacket) Read(reader io.Reader, code uint8) error {
-    binary.Read(reader, binary.LittleEndian, v)
+    binary.Read(reader, binary.LittleEndian, &v.Data)
     return nil
 }
 

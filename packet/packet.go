@@ -565,17 +565,17 @@ func (pkt RawPacket) MarshalBinary(code uint8) ([]byte, error) {
 }
 
 func ReadHeader(reader io.Reader, id *PacketID, size *uint32, seq *uint8) error {
-    err := binary.Read(reader, binary.LittleEndian, &id)
+    err := binary.Read(reader, binary.LittleEndian, id)
     if err != nil {
         return err
     }
 
-    err = binary.Read(reader, binary.LittleEndian, &size)
+    err = binary.Read(reader, binary.LittleEndian, size)
     if err != nil {
         return err
     }
 
-    err = binary.Read(reader, binary.LittleEndian, &seq)
+    err = binary.Read(reader, binary.LittleEndian, seq)
     if err != nil {
         return err
     }
@@ -618,6 +618,7 @@ func (r *Reader) Read(reader io.Reader) (ret Packet, err error) {
     }
     r.Seq = seq
 
+    log.Debugln("packet header:", id, sz, seq)
     if id >= PACKET_MAX {
         err = errors.New("packet id too large!")
         return
@@ -625,6 +626,7 @@ func (r *Reader) Read(reader io.Reader) (ret Packet, err error) {
 
     ret = packetTable[id]
     if ret == nil {
+        log.Debugln("reading a not implement packet:", id)
         var buf [500]byte
         raw := RawPacket{
             Id:  id,
@@ -644,6 +646,9 @@ func (r *Reader) Read(reader io.Reader) (ret Packet, err error) {
     }
 
     err = ret.Read(reader, r.Code)
+    if ret.PacketSize() != sz {
+        log.Warnf("packet not read clean: id=%d, sz=%d, read=%d", id, sz, ret.PacketSize())
+    }
     return
 }
 

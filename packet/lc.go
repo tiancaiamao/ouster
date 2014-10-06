@@ -117,7 +117,7 @@ type LCReconnectPacket struct {
     NotImplementWrite
 
     Ip   string
-    Port uint16
+    Port uint32
     Key  uint32
 }
 
@@ -125,7 +125,7 @@ func (rc *LCReconnectPacket) PacketID() PacketID {
     return PACKET_LC_RECONNECT
 }
 func (rc *LCReconnectPacket) PacketSize() uint32 {
-    return uint32(1 + len(rc.Ip) + 6)
+    return uint32(1 + len(rc.Ip) + 8)
 }
 func (rc *LCReconnectPacket) String() string {
     return "reconnect"
